@@ -26,6 +26,20 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 content.style.maxHeight = content.scrollHeight + "px";
             }
+            function openGameFullscreen() {
+    const iframe = document.getElementById('gameIframe');
+    if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+    } else if (iframe.mozRequestFullScreen) { // For Firefox
+        iframe.mozRequestFullScreen();
+    } else if (iframe.webkitRequestFullscreen) { // For Chrome, Safari, and Opera
+        iframe.webkitRequestFullscreen();
+    } else if (iframe.msRequestFullscreen) { // For IE/Edge
+        iframe.msRequestFullscreen();
+    } else {
+        alert('Fullscreen mode is not supported on this browser.');
+    }
+}
         });
     });
 });
