@@ -14,13 +14,12 @@ window.onload = function () {
 };
 
 document.addEventListener("DOMContentLoaded", function () {
+    // Collapsible functionality for the codex
     const collapsibles = document.querySelectorAll(".collapsible");
-
     collapsibles.forEach(collapsible => {
         collapsible.addEventListener("click", function () {
             this.classList.toggle("active");
             const content = this.nextElementSibling;
-
             if (content.style.maxHeight) {
                 content.style.maxHeight = null;
             } else {
@@ -28,6 +27,43 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+
+    // Load blog entries
+    const blogEntries = [
+        {
+            title: "Behind the Scenes of The Secrets of Silver Clouds",
+            date: "December 15, 2024",
+            content: "Discover the creative process and inspiration behind 'The Secrets of Silver Clouds.' From childhood dreams to publishing triumphs, join Silent on this incredible journey."
+        },
+        {
+            title: "Exploring the Characters",
+            date: "December 10, 2024",
+            content: "Meet the unforgettable characters of the Silver Clouds universe. Learn about their motivations, powers, and what makes them stand out in a crowded fantasy genre."
+        },
+        {
+            title: "Upcoming Events",
+            date: "November 25, 2024",
+            content: "Exciting events are on the horizon! Book signings, live Q&As, and more. Stay tuned for updates on how to connect with Silent and celebrate this epic fantasy series."
+        }
+    ];
+
+    // Function to load and display blog entries
+    function loadBlogEntries() {
+        const blogContainer = document.getElementById('blog-posts');
+        blogEntries.forEach(entry => {
+            const blogPost = document.createElement('article');
+            blogPost.classList.add('blog-post');
+            blogPost.innerHTML = `
+                <h3>${entry.title}</h3>
+                <p><em>${entry.date}</em></p>
+                <p>${entry.content}</p>
+            `;
+            blogContainer.appendChild(blogPost);
+        });
+    }
+
+    // Call to load blogs
+    loadBlogEntries();
 });
 
 // Fullscreen functionality for the game iframe
