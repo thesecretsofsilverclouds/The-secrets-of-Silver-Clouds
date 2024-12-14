@@ -45,3 +45,9 @@ function openGameFullscreen() {
         alert('Fullscreen mode is not supported on this browser.');
     }
 }
+
+// Function to open the game in a new tab
+function openGameNewTab() {
+    const gameUrl = "https://thesecretsofsilverclouds.github.io/Lintelgotchi/";
+    window.open(gameUrl, '_blank');
+}
