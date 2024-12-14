@@ -1,4 +1,4 @@
-window.onload = function() {
+window.onload = function () {
     const cloudLeft = document.getElementById('cloud-left');
     const cloudRight = document.getElementById('cloud-right');
 
@@ -13,11 +13,11 @@ window.onload = function() {
     }
 };
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const collapsibles = document.querySelectorAll(".collapsible");
 
     collapsibles.forEach(collapsible => {
-        collapsible.addEventListener("click", function() {
+        collapsible.addEventListener("click", function () {
             this.classList.toggle("active");
             const content = this.nextElementSibling;
 
