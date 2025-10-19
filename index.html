@@ -3,281 +3,1273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Secrets of Silver Clouds</title>
+    <title>The Secrets of Silver Clouds | Animantasy Epic by Silent Silver</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Experience The Secrets of Silver Clouds - an Animantasy epic blending urban fantasy, gangster action, and anime-inspired storytelling. Explore the world of Goaden Reeves, Ashai, and the Demon's Legion.">
+    <meta name="keywords" content="Animantasy, urban fantasy, anime, Silver Clouds, Silent Silver, Goaden Reeves, fantasy novel">
+    <meta name="author" content="Silent Silver">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="The Secrets of Silver Clouds">
+    <meta property="og:description" content="A fantastical journey of gangsters, action, and magic in an anime-inspired epic fantasy">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://thesecretsofsilverclouds.github.io">
+    
+    <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-    <link rel="manifest" href="images/site.webmanifest">
-    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <style>
-        @media only screen and (max-width: 768px) {
-            body {
-                overflow: auto; /* Enable scrolling for mobile */
-            }
+        :root {
+            --primary-dark: #0d1b2a;
+            --primary-blue: #1b263b;
+            --accent-blue: #415a77;
+            --accent-gold: #c0a97f;
+            --accent-teal: #2ec4b6;
+            --text-light: #f0e5d8;
+            --text-dark: #333;
+            --bg-light: #f4f4f9;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Fallback for desktop in case animation doesn't complete */
+        body.cloud-animating {
+            overflow: hidden;
+        }
+
+        body.loaded {
+            overflow: auto;
+        }
+
+        /* Cloud Animation Intro */
+        #cloud-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            z-index: 9999;
+            pointer-events: none;
+            background: url('images/cloud-parting-background.png') center/cover no-repeat;
+    background-color: var(--bg-light);
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+        }
+
+        #cloud-container.hidden {
+            display: none;
+        }
+
+        #cloud-left, #cloud-right {
+            width: 50%;
+            height: 100%;
+            object-fit: cover;
+            animation-duration: 3s;
+            animation-fill-mode: forwards;
+            animation-timing-function: ease-in-out;
+            will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+        }
+
+        #cloud-left {
+            animation-name: cloudLeft;
+        }
+
+        #cloud-right {
+            animation-name: cloudRight;
+        }
+
+        @keyframes cloudLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        @keyframes cloudRight {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: var(--accent-gold);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .site-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: var(--accent-gold);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            background: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            text-align: center;
+            color: white;
+            height: 70vh;
+            overflow: hidden;
+            background: transparent !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+        }
+
+        .hero-banner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hero-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(13, 27, 42, 0.85);
+            padding: 2rem 3rem;
+            border-radius: 10px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-content h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-button {
+            background: var(--accent-gold);
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background: var(--accent-teal);
+            transform: scale(1.05);
+        }
+
+        /* Main Content */
+        section {
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        section.hero {
+  max-width: none;       /* <-- key fix */
+  width: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+
+        section h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--primary-dark);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        section h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+        }
+
+        /* Reviews Section */
+        .review-card {
+            background: #f8f9fa;
+            border-left: 4px solid var(--accent-gold);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .review-card p {
+            font-style: italic;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .review-author {
+            text-align: right;
+            font-weight: 600;
+            color: var(--accent-blue);
+        }
+
+        /* Contact Form */
+        .contact-form {
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--accent-blue);
+            border-radius: 5px;
+            font-family: 'Raleway', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .submit-btn {
+            background: var(--accent-gold);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background: var(--accent-teal);
+            transform: translateY(-2px);
+        }
+
+        /* Game Section */
+        #game iframe {
+            width: 100%;
+            height: 600px;
+            border: 3px solid var(--accent-blue);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        #game button {
+            margin: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #game button:hover {
+            background: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        /* Codex Section */
+        .codex-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem;
+            border: 2px solid var(--accent-blue);
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--accent-blue);
+            background: white;
+            color: var(--accent-blue);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .lore-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .lore-card {
+            background: white;
+            border: 2px solid var(--accent-blue);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .lore-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .lore-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary-dark) 100%);
+        }
+
+        .lore-card-content {
+            padding: 1.5rem;
+        }
+
+        .lore-card h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .lore-tag {
+            display: inline-block;
+            background: var(--accent-teal);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin: 0.25rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--accent-blue);
+        }
+
+        .modal-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--accent-blue);
+        }
+
+        .modal-nav button {
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal-nav button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-dark);
+            color: var(--text-light);
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent-gold);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
             #cloud-container {
-                display: none; /* Hide clouds for better mobile experience */
+                display: none;
             }
 
-            header {
-                padding: 0.5rem;
-                text-align: center;
-            }
-
-            .site-title {
-                font-size: 1.8rem; /* Reduce size for mobile */
+            .mobile-menu-toggle {
+                display: block;
             }
 
             nav ul {
-                flex-direction: column; /* Stack links vertically */
-                padding: 0;
-                margin: 0;
-                align-items: center;
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--primary-dark);
+                padding: 1rem;
+                z-index: 2000;
             }
 
-            nav ul li {
-                margin: 0.5rem 0;
+            nav ul.active {
+                display: flex;
+            }
+
+            .site-title {
+                font-size: 1.5rem;
+            }
+
+            .hero {
+                height: 57vh;
+                background: transparent !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+                width: 100%; 
             }
 
             .hero-content {
+                padding: 1rem 1.5rem;
                 max-width: 90%;
-                padding: 1rem;
-                font-size: 1rem;
-                top: 20%;
-                left: 50%;
-                transform: translate(-50%, -20%);
             }
 
-            .cta-button {
-                font-size: 0.9rem;
-                padding: 0.5rem 1rem;
+            .hero-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+            }
+
+            .lore-grid {
+                grid-template-columns: 1fr;
             }
 
             section {
-                max-width: 95%;
-                margin: 1rem auto;
-                padding: 1rem;
+                padding: 1.5rem;
+                margin: 1.5rem;
             }
 
-            .codex-section .collapsible {
-                font-size: 0.9rem;
-                padding: 0.5rem;
+            #game iframe {
+                height: 400px;
             }
-
-            .codex-entry img {
-                width: 100%;
-                height: auto; /* Ensure images scale properly */
-                margin-bottom: 1rem;
-            }
-
-            footer {
-                font-size: 0.8rem;
-                padding: 1rem;
-            }
-
-            img, iframe {
-                max-width: 100%;
-                height: auto;
-            }
-
-            .hero-banner img {
-                object-fit: cover;
-            }
-        }
+}
     </style>
 </head>
 <body>
+    <!-- Cloud Parting Intro Animation -->
     <div id="cloud-container">
-        <img id="cloud-left" src="images/cloud-left.png" alt="Left Cloud">
-        <img id="cloud-right" src="images/cloud-right.png" alt="Right Cloud">
+        <img id="cloud-left" src="images/cloud-left.png" alt="Left Cloud" onerror="this.style.display='none'">
+        <img id="cloud-right" src="images/cloud-right.png" alt="Right Cloud" onerror="this.style.display='none'">
     </div>
+
     <header>
-        <h1 class="site-title">The Secrets of Silver Clouds</h1>
-        <nav>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About the Author</a></li>
-                <li><a href="#book">About the Book</a></li>
-                <li><a href="#codex">Codex</a></li>
-                <li><a href="#reviews">Reviews</a></li>
-                <li><a href="#blog">Blog</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
+        <div class="header-content">
+            <h1 class="site-title">Silver Clouds</h1>
+            <button class="mobile-menu-toggle" onclick="toggleMenu()">☰ Menu</button>
+            <nav>
+                <ul id="mainNav">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About Author</a></li>
+                    <li><a href="#book">About Book</a></li>
+                    <li><a href="#codex">Codex</a></li>
+                    <li><a href="#game">Play Game</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#reviews">Reviews</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
     <section id="home" class="hero">
         <div class="hero-banner">
-            <img src="images/website-banner.jpg" alt="Silver Cloud Banner">
+            <img src="images/website-banner.jpg" alt="The Secrets of Silver Clouds - Urban fantasy meets anime action">
             <div class="hero-content">
-                <p>A Fantastical Journey of Gangsters, Action, and Magic</p>
-                <a href="https://www.waterstones.com/book/the-secrets-of-silver-clouds/silent-silver/9781068727108#reviews" class="cta-button">Order Now</a>
+                <h2>The Secrets of Silver Clouds</h2>
+                <p>Where Urban Fantasy Meets Anime Action</p>
+                <a href="https://www.waterstones.com/book/the-secrets-of-silver-clouds/silent-silver/9781068727108" class="cta-button">Order Your Copy</a>
             </div>
         </div>
     </section>
 
-    <div class="main-content">
-       <section id="about">
-            <h2>About the Author</h2>
-            <p>Silent Silver, creator of the new literay genre, "Animantasy" (Anime inspired epic fantasy) is a debut author whose passion for storytelling has been a lifelong source of solace and inspiration. Born and raised in Slough, England, Silent faced significant challenges early in life, including childhood trauma, homelessness, and financial hardship. Through these difficult experiences, they discovered the transformative power of writing as a means of self-expression, healing, and connection with others. Over the past decade, Silent has poured their heart and soul into crafting "The Secrets of Silver Clouds," a novel that draws upon their personal experiences to explore universal themes of resilience, friendship, and the indomitable strength of the human spirit. The story follows the journey of Goaden Reeves, Ashai, and their companions as they navigate a fantastical world filled with magic, adventure, and the constant struggle between light and darkness. As a self-taught writer, Silent has worked tirelessly to hone their craft, seeking out resources and support from the writing community to develop their skills and refine their storytelling. They have participated in online writing workshops, attended conferences, and connected with fellow authors who have provided valuable feedback and encouragement throughout the creative process. Silent's writing style is characterized by rich, immersive world-building, complex and relatable characters, and a deep exploration of the human experience. They draw inspiration from a wide range of genres, including fantasy, Anime, science fiction, and adventure, blending elements of each to create a unique and compelling narrative. Beyond their passion for writing, Silent is an avid reader, a nature enthusiast, and a strong advocate for mental health awareness and support. They believe in the power of storytelling to foster empathy, understanding, and connection among people from all walks of life. "The Secrets of Silver Clouds" represents the culmination of Silent's creative journey and their desire to share a powerful and transformative story with the world. They invite readers to join them on this incredible adventure and to become an integral part of bringing this novel to life.</p>
-            <p>Thank you for embarking on this journey with me...</p>
-        </section>
+    <section id="about">
+        <h2>About Silent Silver</h2>
+        <p>Silent Silver, creator of the groundbreaking "Animantasy" genre (anime-inspired epic fantasy), is a debut author whose passion for storytelling has been a lifelong source of solace and inspiration. Born and raised in Slough, England, Silent faced significant challenges early in life, including childhood trauma, homelessness, and financial hardship.</p>
+        <p>Through these difficult experiences, they discovered the transformative power of writing as a means of self-expression, healing, and connection with others. Over the past decade, Silent has poured their heart and soul into crafting The Secrets of Silver Clouds, a novel that explores universal themes of resilience, friendship, and the indomitable strength of the human spirit.</p>
+    </section>
 
-        <section id="book">
-            <h2>About the Book</h2>
-            <p>Imagine if urban fantasy and action adventure had a wild night out in London, stumbled into a comic book shop, and emerged with a hangover and superpowers. Nine months later, The Secrets of Silver Clouds was born, an illegitimate love child, raised on a steady diet of manga and British wit. Step into a world where the lines between reality and fantasy blur, where magic pulses through the veins of London's streets, and where the fate of the city rests in the hands of unlikely heroes. "The Secrets of Silver Clouds" is an electrifying urban fantasy novel that combines the gritty allure of gangster life with the awe-inspiring spectacle of epic anime storytelling.</p>
-            <p>
-            <p>Prepare to be transported into a realm where ancient powers, secret societies, and Demonic entities collide in a battle for supremacy. At the heart of this struggle lies Ashai Bennet, a young woman gifted with celestial powers, and Goaden Reeves, a rebellious swordsman with a mysterious past. Together, they navigate a labyrinthine web of treachery and magic, forging alliances with the notorious Demon's Legion and the enigmatic agents of MI6.</p>
-            <p>
-            <p>As the shadows of a malevolent immortal loom over London, Ashai and Goaden must confront their own demons and unravel the secrets of their intertwined destinies. With each turn of the page, you'll find yourself immersed in a vividly realized world, populated by a cast of unforgettable characters - from the charismatic leader of the Demon's Legion, Truth Hughes, to the haunted and powerful Shonen Kartia.<p>
-            <p>  
-            <p>
-            <p>"The Secrets of Silver Clouds" is a masterful blend of urban fantasy, gangster grit, and anime-inspired action. Author Silent weaves a tapestry of magic and intrigue that will keep you on the edge of your seat, yearning for more. The novel's breakneck pacing, stunning set pieces, and profound character arcs create an immersive experience that feels like watching an epic anime movie unfold before your eyes.</p>
-            <p>
-            <p>This groundbreaking novel defies genre conventions, appealing to fans of urban fantasy, gangster dramas, and anime alike. Silent's prose crackles with energy, painting a vivid picture of a London transformed by magic and mayhem. The author's cinematic storytelling and deft handling of complex themes make "The Secrets of Silver Clouds" a must-read for anyone seeking a fresh, exhilarating take on the fantasy genre.</p>
-            <p>
-            <p>Don't miss your chance to embark on this unforgettable journey. Discover the secrets that lie hidden within the pages of this extraordinary novel. Join Ashai, Goaden, and the Demon's Legion as they fight to save London - and themselves - from the forces that threaten to tear their world apart. "The Secrets of Silver Clouds" is more than just a book; it's an invitation to step into a realm where anything is possible, and where the power of friendship, love, and sacrifice can change the course of destiny.</p>
-            <p>
-            <p>Order your copy of "The Secrets of Silver Clouds" today and experience the magic for yourself!</p>
-        </section>
+    <section id="book">
+        <h2>About the Book</h2>
+        <div style="text-align: center; margin: 2rem 0;">
+            <img src="images/updatedbookcover.png" 
+                 alt="The Secrets of Silver Clouds - Updated Book Cover" 
+                 style="max-width: 400px; width: 100%; height: auto; border-radius: 10px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);">
+        </div>
+        <p><strong>Imagine if urban fantasy and action adventure had a wild night out in London, stumbled into a comic book shop, and emerged with a hangover and superpowers. Nine months later, The Secrets Of Silver Clouds was born. An illegitimate love child, raised on a steady diet of manga and British wit.</strong></p>
+        <p>Welcome to a London where the veil between worlds is tissue-thin and magic crackles beneath the surface of everyday life. <span class="emphasis">The Secrets of Silver Clouds</span> is an electrifying urban fantasy that fuses the raw intensity of gangster grit with the breathtaking spectacle of anime-inspired action.
+        </p><span class="emphasis">Ashai Bennet</span> never asked to be special. Armed with her celestial pendant Thyia and powers she barely understands, she navigates a treacherous landscape of demons, Duskkin (cyber vampires who blend blood magic with cutting-edge tech) and shadowy government agencies that monitor the supernatural underworld. When an ancient spirit threatens to tear reality itself apart, Ashai finds herself thrust into a conflict that spans dimensions.</p>
+        <p>Enter <span class="emphasis">Goaden Reeves</span>, a morally grey swordsman wielding the celestial blade Vega, whose mysterious past is as dangerous as his silver flames. Together with the <span class="emphasis">Demon's Legion</span>: a notorious gang-turned-band who channel their magical abilities through music and mayhem—they must race against time to uncover the truth behind Ashai's origins and the legendary Silver Cloud Grimoire.
+        </p>
+    </section>
 
-<section id="codex" class="codex-section">
-    <h2>Codex</h2>
-    <button class="collapsible">Demon's Legion</button>
-    <div class="content">
-        <div class="codex-entry">
-            <img src="images/demons-legion.png" alt="Lore Character" style="width:300px; height:400px;">
-            <div class="codex-text">
-                <p>
-                    Demon's Legion Codex Entry: The Demon's Legion is a tight-knit group of young, rebellious individuals with unique abilities and backgrounds. United by their shared experiences and a strong sense of loyalty, they operate as a vigilante group in London, often taking on dangerous missions to protect the city and its inhabitants.
-                </p>
-                <p>
-                    <strong>Notable Members:</strong> Goaden Reeves (Former Leader): A skilled swordsman and wielder of the Holy Item, Vega. Goaden possesses a strong presence and the ability to manipulate silver flames.
-                </p>
-                <p>
-                    Truth Hughes (Current Leader): Truth has the power to manipulate light and is known for his strategic thinking and strong leadership skills.
-                </p>
-                <p>
-                    Rose: A nature-based magic user with the ability to control vines and plants. Rose is a fierce fighter and a loyal friend.
-                </p>
-                <p>
-                    Gabriel: With his blood wings and the ability to create blood projectiles, Gabriel provides aerial support during combat.
-                </p>
-                <p>
-                    Damien and Marley (The Dread Twins): These brothers are known for their perfect synchronicity in battle, making them a formidable duo.
-                </p>
-                <p>
-                    Anarchy: Sharing a soul with the Demon Balthazar, Anarchy has access to Demonic powers and is a crucial member of the team.
-                </p>
-                <p>
-                    <strong>Headquarters:</strong> The Demon's Legion operates from a hidden base in London, which serves as a sanctuary for its members and a place to plan their missions.
-                </p>
-                <p>
-                    <strong>Symbolism:</strong> The group's iconic bandanna, adorned with intricate mandala designs and floral motifs, serves as a symbol of their unity and shared purpose. Wearing the bandanna during battles is a sign of their commitment to each other and their cause.
-                </p>
+    <section id="codex">
+        <h2>World Codex</h2>
+        
+        <div class="codex-controls">
+            <input type="text" class="search-box" id="searchBox" placeholder="Search lore entries...">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="character">Characters</button>
+                <button class="filter-btn" data-filter="faction">Factions</button>
+                <button class="filter-btn" data-filter="creature">Creatures</button>
+                <button class="filter-btn" data-filter="item">Items</button>
+                <button class="filter-btn" data-filter="concept">Concepts</button>
             </div>
         </div>
-    </div>
-    
-    <!-- New Codex Entry -->
-    <button class="collapsible">Goaden Reeves</button>
-    <div class="content">
-        <div class="codex-entry">
-            <img src="images/goaden-reeves.png" alt="Lore Character" style="width:300px; height:400px;">
-            <div class="codex-text">
-                <p>
-                    Goaden Reeves: A force of nature wrapped in human form, Goaden stands as a pillar of strength within the Demon's Legion. His tall, athletic frame belies the tempest that rages within, a storm of power and emotion barely contained beneath his cocksure exterior. Dark curls frame a face etched with the scars of battles fought and won, while his eyes burn with an intensity that speaks of both fierce determination and hidden vulnerabilities. As former leader of the Demon's Legion, Goaden's influence ripples through the group like an undercurrent, his presence a lodestone that draws both allies and enemies into his orbit. His path intertwines inexorably with that of Ashai Bennet, their shared destiny a tapestry woven from threads of love, loss, and the unyielding desire to protect a world teetering on the brink of chaos.
-                </p>
-                <p>
-                <p>
-                    <strong>Abilities:</strong> Wielder of Vega, a celestial broadsword that sings with the power of fallen stars. Goaden's mastery over silver flames sets him apart, his presence a beacon of raw, untamed energy that can turn the tide of any conflict. His prowess in combat is matched only by his innate ability to inspire loyalty in those around him.
-                </p>
-                <p>
-                    <strong>Guardian:</strong> Kai, a diminutive dragon with scales of obsidian and ivory. Despite his small stature, Kai's wisdom spans eons, serving as both confidant and conscience to his impulsive ward. Their bond, forged in the crucible of shared trials, allows Goaden to tap into reserves of power that defy mortal understanding.
-                </p>
-                <!-- additional paragraphs as needed... -->
-            </div>
+
+        <div class="lore-grid" id="loreGrid">
+            <!-- Lore cards will be dynamically generated -->
         </div>
-    </div>
+    </section>
 
-    <button class="collapsible">Rose</button>
-    <div class="content">
-        <div class="codex-entry">
-            <img src="images/rose.png" alt="Lore Character" style="width:300px; height:400px;">
-            <div class="codex-text">
-                <p>
-                    Rose: A living embodiment of nature's untamed beauty and fierce resilience, Rose stands as a verdant oasis amidst the urban chaos of the Demon's Legion. Her lithe form moves with the fluid grace of a willow in the wind, fiery strands of hair cascading like autumn leaves around a face etched with both compassion and steel resolve. Intricate tattoos wind across her bronze skin, each one a living testament to her profound connection with the natural world. Rose's presence within the Legion serves as a grounding force, her earthy wisdom tempering the group's more volatile elements. Yet beneath her nurturing exterior lies a formidable warrior, capable of unleashing nature's fury upon those who threaten the delicate balance she strives to maintain.
-                </p>
-                <p>
-                <p>
-                    <strong>Abilities:</strong> Rose wields the very essence of nature itself, her body a conduit for primal forces that defy mortal comprehension. Rose can talk to animals and With but a thought, she can coax vines from barren concrete, their thorny tendrils ensnaring foes or providing sanctuary to allies. Her connection to the earth grants her unparalleled healing abilities, capable of knitting flesh and mending spirits with equal efficacy.
-                </p>
-                <p>
-                    <strong>Role in the Legion:</strong> Rose serves as the Legion's moral compass and healer, her gentle strength a balm to wounded bodies and souls alike. Her unwavering devotion to Truth, tempered by a fierce independence, often places her at the centre of the group's internal conflicts. As the Legion faces increasingly dire threats, Rose's ability to bridge the gap between the natural world and London's urban landscape proves invaluable, her insights offering new perspectives on age-old problems.
-                </p>
-                <!-- additional paragraphs as needed... -->
-            </div>
+    <section id="game">
+        <h2>Play Lintelgotchi</h2>
+        <p>Take care of your own Lintel creature in this virtual pet game!</p>
+        <iframe id="gameIframe" src="https://thesecretsofsilverclouds.github.io/Lintelgotchi/" allowfullscreen></iframe>
+        <div style="text-align: center;">
+            <button onclick="openGameFullscreen()">Open Fullscreen</button>
+            <button onclick="openGameNewTab()">Open in New Tab</button>
         </div>
-    </div>
+    </section>
 
-            <!-- Add more codex entries as needed -->
-        </section>
+    <section id="blog">
+        <h2>Updates from Silent Silver</h2>
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <a href="https://www.linkedin.com/in/silent-silver-3b8312137/" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: #0077b5; color: white; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s ease;">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                </svg>
+                Follow on LinkedIn
+            </a>
+        </div>
+        <div id="blogPosts"></div>
+    </section>
 
+    <section id="reviews">
+        <h2>Reviews</h2>
+        <div class="review-card">
+            <p>"An enchanting and immersive read!"</p>
+            <p class="review-author">- Beta Reader</p>
+        </div>
+        <div class="review-card">
+            <p>"I couldn't put it down!"</p>
+            <p class="review-author">- Early Reviewer</p>
+        </div>
+    </section>
 
-        <section id="reviews">
-            <h2>Reviews</h2>
-            <p>"An enchanting and immersive read!" - Beta Reader</p>
-            <p>"I couldn't put it down!" - Early Reviewer</p>
-        </section>
-
-<section id="blog">
-    <h2>Blog</h2>
-    <div id="blog-posts">
-        <!-- Blog entries will be dynamically added here -->
-    </div>
-</section>
-
-
-        <section id="contact">
-            <h2>Contact</h2>
-            <section id="contact">
-                <h2>Contact</h2>
-                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScrGrh1AV3OlADuDV0dUI37AvNCR-f-KOXkc6DPB3w3MSvGTw/viewform?embedded=true" width="640" height="602" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>"
-            </section>
-
-            <section id="game">
-    <h2>Play the Game</h2>
-    <iframe id="gameIframe" src="https://thesecretsofsilverclouds.github.io/Lintelgotchi/" frameborder="0" style="border:none; overflow:hidden;" allowfullscreen></iframe>
-    <br>
-    <button onclick="openGameFullscreen()" style="margin-top: 10px; padding: 10px 20px; font-size: 1rem; background-color: #415a77; color: white; border: none; border-radius: 5px; cursor: pointer;">Open Fullscreen</button>
-    <button onclick="openGameNewTab()" style="margin-top: 10px; padding: 10px 20px; font-size: 1rem; background-color: #c0a97f; color: white; border: none; border-radius: 5px; cursor: pointer;">Open in New Tab</button>
-</section>
-
-
-
-            <section id="contact">
+    <section id="contact">
         <h2>Contact</h2>
-        <p>If you have any questions or would like to get in touch, please email me at:</p>
-        <p><a href="mailto:thesecretsofsilverclouds@gmail.com">thesecretsofsilverclouds@gmail.com</a></p>
-        <p>Or fill out the form below:</p>
-        <form action="mailto:thesecretsofsilverclouds@gmail.com" method="post" enctype="text/plain">
-            <label for="name">Name:</label><br>
-            <input type="text" id="name" name="name"><br>
-            <label for="email">Email:</label><br>
-            <input type="email" id="email" name="email"><br>
-            <label for="message">Message:</label><br>
-            <textarea id="message" name="message" rows="4" cols="50"></textarea><br>
-            <input type="submit" value="Send">
-        </form>
+        <p style="text-align: center; margin-bottom: 2rem;">
+            If you have any questions or would like to get in touch, please email me at:
+            <a href="mailto:thesecretsofsilverclouds@gmail.com" style="color: var(--accent-teal); font-weight: 600;">thesecretsofsilverclouds@gmail.com</a>
+        </p>
+        <p style="text-align: center; margin-bottom: 2rem; color: var(--accent-blue);">Or fill out the form below:</p>
+        <div class="contact-form">
+            <!-- OPTION 1: Google Forms (Replace YOUR_GOOGLE_FORM_ID with your actual form ID) -->
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfYUSxpdGWwZKXw5Bd9KxAKDlyUveBH6rCDCvzIQoMgPoWKWA/viewform?usp=dialog" width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0" style="border-radius: 10px;">Loading…</iframe>
+            
+            <!-- OPTION 2: If you prefer a custom form with Formspree, uncomment this and comment out the iframe above
+            <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+            -->
+        </div>
     </section>
-    </div>
 
     <footer>
-        <p>&copy; 2024 Silent. All rights reserved.</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Explore</h3>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About the Author</a></li>
+                    <li><a href="#book">About the Book</a></li>
+                    <li><a href="#codex">World Codex</a></li>
+                    <li><a href="#game">Play Game</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect</h3>
+                <ul>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#reviews">Reviews</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="mailto:thesecretsofsilverclouds@gmail.com">Email</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>About Animantasy</h3>
+                <p>A groundbreaking literary genre blending urban fantasy with anime-inspired storytelling, featuring epic action, complex characters, and immersive world-building.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Silent Silver. All rights reserved.</p>
+        </div>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- Lore Entry Modal -->
+    <div id="loreModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+            <div class="modal-nav">
+                <button id="prevBtn" onclick="navigateLore(-1)">← Previous</button>
+                <button id="nextBtn" onclick="navigateLore(1)">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // FAILSAFE: Enable scrolling immediately, then attempt cloud animation
+        let scrollEnabled = false;
+        
+        function enableScrolling() {
+            if (!scrollEnabled) {
+                document.body.classList.remove('cloud-animating');
+                document.body.classList.add('loaded');
+                scrollEnabled = true;
+            }
+        }
+
+        // Failsafe #1: Enable scrolling after 4 seconds no matter what
+        setTimeout(enableScrolling, 4000);
+
+        // Cloud Animation on Load
+        window.addEventListener('load', function() {
+            const cloudContainer = document.getElementById('cloud-container');
+            const cloudLeft = document.getElementById('cloud-left');
+            const cloudRight = document.getElementById('cloud-right');
+            
+            // On mobile, skip animation entirely
+            if (window.innerWidth <= 768) {
+                cloudContainer.classList.add('hidden');
+                enableScrolling();
+                return;
+            }
+
+            // Check if cloud images exist and loaded successfully
+            const leftLoaded = cloudLeft.complete && cloudLeft.naturalHeight !== 0;
+            const rightLoaded = cloudRight.complete && cloudRight.naturalHeight !== 0;
+            
+            if (!leftLoaded || !rightLoaded) {
+                cloudContainer.classList.add('hidden');
+                enableScrolling();
+                return;
+            }
+
+            // Images loaded successfully
+            document.body.classList.add('cloud-animating');
+            
+            setTimeout(() => {
+                cloudContainer.classList.add('hidden');
+                enableScrolling();
+            }, 3000);
+        });
+
+        // Failsafe #2: Enable scrolling if images fail to load
+        document.getElementById('cloud-left').addEventListener('error', function() {
+            document.getElementById('cloud-container').classList.add('hidden');
+            enableScrolling();
+        });
+        
+        document.getElementById('cloud-right').addEventListener('error', function() {
+            document.getElementById('cloud-container').classList.add('hidden');
+            enableScrolling();
+        });
+
+        // Lore Database
+        const loreEntries = [
+            {
+                id: 'goaden-reeves',
+                name: 'Goaden Reeves',
+                type: 'character',
+                faction: "MI6",
+                image: 'images/goaden-reeves.png',
+                summary: 'Former leader of the Demon\'s Legion, wielder of the celestial broadsword Vega',
+                description: 'A force of nature wrapped in human form, Goaden stands as a pillar of strength within the Demon\'s Legion. His tall, athletic frame belies the tempest that rages within, a storm of power and emotion barely contained beneath his cocksure exterior.',
+                abilities: ['Silver Flames', 'Swordsmanship', 'Celestial Power'],
+                guardian: 'Kai (Diminutive Dragon)',
+                relatedEntries: ['vega', 'demons-legion']
+            },
+            {
+                id: 'rose',
+                name: 'Rose',
+                type: 'character',
+                faction: "Demon's Legion",
+                image: 'images/rose.png',
+                summary: 'Nature-based magic user with control over vines and plants',
+                description: 'A living embodiment of nature\'s untamed beauty and fierce resilience, Rose stands as a verdant oasis amidst the urban chaos of the Demon\'s Legion.',
+                abilities: ['Plant Manipulation', 'Animal Communication', 'Healing Magic'],
+                relatedEntries: ['demons-legion']
+            },
+            {
+                id: 'demons-legion',
+                name: "Demon's Legion",
+                type: 'faction',
+                image: 'images/demons-legion.png',
+                summary: 'A tight-knit group of young rebels with unique abilities, operating as vigilantes in London',
+                description: 'The Demon\'s Legion is a tight-knit group of young, rebellious individuals with unique abilities and backgrounds. United by their shared experiences and a strong sense of loyalty, they operate as a vigilante group in London.',
+                members: ['Goaden Reeves', 'Truth Hughes', 'Rose', 'Gabriel', 'Damien & Marley', 'Anarchy'],
+                relatedEntries: ['goaden-reeves', 'rose']
+            },
+            {
+                id: 'vega',
+                name: 'Vega',
+                type: 'item',
+                image: 'images/Vega.png',
+                summary: 'A celestial broadsword forged from fallen star fragments',
+                description: 'Vega, a broadsword bonded to Goaden Reeves. Forged from celestial fragments. Its blade, adorned with a star-shaped hole, seems to whisper of the cosmos from whence it came.',
+                abilities: ['Energy Channeling', 'Celestial Manifestation'],
+                wielder: ['Goaden Reeves'],
+                relatedEntries: ['goaden-reeves']
+            },
+            {
+                id: 'lintels',
+                name: 'Lintels',
+                type: 'creature',
+                image: 'images/lorelintel.png',
+                summary: 'Cloud-like ethereal creatures born from holy radiation and pollution',
+                description: 'Lintels are unique ethereal creatures born from the fusion of holy radiation and atmospheric pollution following the Holy Tragedy. They appear as delicate, cloud-like entities with shifting, translucent forms.',
+                abilities: ['Weather Manipulation', 'Magic Amplification', 'Healing Aura'],
+                relatedEntries: []
+            },
+            {
+                id: 'technomagic',
+                name: 'Technomagic',
+                type: 'concept',
+                image: 'images/technomagic.png',
+                summary: 'The fusion of advanced technology and magical principles',
+                description: 'Technomagic represents the revolutionary fusion of human technology and magical arts. Born from the exchange of knowledge between humans and magical beings, it has transformed society.',
+                examples: ['Rune Riders', 'Magi-tech Weapons', 'Magic Smartphones'],
+                relatedEntries: []
+            },
+            {
+                id: "ashai-bennet",
+                name: "Ashai Bennet",
+                type: "character",
+                faction: "MI6",
+                image: "images/ashai.png",
+                summary: "Gifted with celestial powers, Ashai is central to the battle for London's fate",
+                description: "Ashai Bennet is a young woman blessed with extraordinary celestial powers that mark her as pivotal to the cosmic struggle engulfing London. Her journey from an ordinary life to becoming a key figure in the supernatural conflicts defines much of the narrative. Ashai's connection to Goaden runs deeper than mere romance—it's a bond forged in starlight and destiny, their fates intertwined by forces beyond mortal comprehension. Her gentle strength masks a wellspring of power that, when unleashed, can reshape reality.",
+                abilities: ["Starlight Energy Manipulation", "Healing Powers", "Protective Barriers", "Light-based Attacks"],
+                relatedEntries: ["goaden-reeves", "demons-legion", "holy-tragedy"]
+            },
+            {
+                id: "truth-hughes",
+                name: "Truth Hughes",
+                type: "character",
+                faction: "Demon's Legion",
+                image: "images/truth-hughes.png",
+                summary: "Current leader of the Demon's Legion with light manipulation abilities and strategic brilliance",
+                description: "Truth Hughes leads the Demon's Legion with a combination of strategic genius and powerful light-based abilities. His calm demeanor masks a fierce protectiveness of his team and an unwavering commitment to their cause. Where Goaden led with raw charisma and strength, Truth brings tactical precision and measured wisdom. As leader, he must balance the diverse personalities and powers within the Legion while facing threats from multiple factions. His relationship with Rose adds depth to his character, showing that even the strongest leaders need someone to ground them.",
+                abilities: ["Light Manipulation", "Strategic Genius", "Enhanced Speed", "Leadership Aura"],
+                relatedEntries: ["demons-legion", "rose", "goaden-reeves"]
+            },
+            {
+                id: "greah",
+                name: "Greah",
+                type: "creature",
+                image: "images/greah.png",
+                summary: "Tiny halo-lit fairy-like being bound to celestial lore, known for sharp wit and luminous devotion",
+                description: "Greah, Ashai's guardian is a diminutive, halo-crowned creature whose iridescent dragonfly wings shimmer with prismatic light. Born in the wake of the Holy Tragedy, she is believed to be a fragment of celestial essence given consciousness by Fate herself. Blunt, clever, and mischievous in equal measure, she serves as a sharp-tongued guide whose humour cuts through the fog when others hesitate.",
+                abilities: ["Flight and Luminous Navigation", "Halo Illumination and Purification", "Celestial Communication"]
+            },
+            {
+                id: "kai",
+                name: "Kai",
+                type: "creature",
+                image: "images/kai.png",
+                summary: "Miniature dragon guardian bound to Goaden Reeves and the celestial broadsword Vega",
+                description: "Kai is a diminutive dragon with scales that shift between obsidian and ivory, each hue representing balance between creation and destruction. Born from the same celestial fragment that forged Vega, Kai embodies both the weapon's conscience and its fury. His eyes glow with the light of twin stars, reflecting ages of wisdom beyond mortal understanding. Though small enough to perch on Goaden's shoulder, Kai's spirit form stretches across dimensions, allowing him to sense distortions in Presence and reality alike. More than a guardian, he is Goaden's oldest confidant — the quiet anchor that keeps the warrior from succumbing to the storm within.",
+                abilities: ["Power Amplification", "Dimensional Sight", "Telepathic Communication", "Celestial Energy Stabilisation"]
+            },
+            {
+                id: "yukon",
+                name: "Yukon",
+                type: "character",
+                faction: "MI6 (Onari Liaison)",
+                image: "images/yukon.png",
+                summary: "Onari youth working under MI6 protection, bridging ancient Onari traditions with modern technomagic intelligence",
+                description: "Yukon is an Onari boy caught between two worlds: the spiritual legacy of his nature-born people and the calculated precision of MI6's technomagic operations. Recruited for his unique ability to shapeshift, Yukon acts as a cultural interpreter and liaison between MI6 and the Onari enclaves. Despite his youth and humour, he carries a quiet authority that even senior agents respect. Ashai Bennet regards him as a younger brother, and her protective instincts often put her at odds with MI6 handlers.",
+                abilities: ["Resonance Perception", "Cultural and Magical Translation", "Empathic Field Sensitivity", "Calming Presence"]
+            },
+            {
+                id: "mi6",
+                name: "MI6",
+                type: "faction",
+                image: "images/mi6.png",
+                summary: "British intelligence organization managing supernatural activity and Holy Item control across the UK",
+                description: "MI6 stands as one of the most influential and pragmatic forces within the post-Holy Tragedy world. Beyond its public role in national security, it now governs the regulation, containment, and strategic use of Holy Items and other supernatural artefacts. Known internally as 'The Armadillo Division,' MI6 combines cutting-edge technomagic with traditional intelligence tradecraft, operating from a heavily shielded facility along the Thames. To many, they are the arbiters of peace; to others, an organization willing to rewrite morality for the sake of stability.",
+                members: ["Cliff Henderson", "Agent Davis", "Yukon"],
+                relatedEntries: ["cliff-henderson", "agent-davis", "yukon", "the-order", "the-church"]
+            },
+            {
+                id: "the-church",
+                name: "The Church",
+                type: "faction",
+                image: "images/church.png",
+                summary: "Ancient religious institution wielding divine power and influence in the post-Holy Tragedy era",
+                description: "The Church remains one of the oldest surviving powers following the Holy Tragedy, both revered and feared for its command of sacred energy. It functions as a spiritual bastion, political force, and secret keeper of celestial knowledge. Having raised Shonen Kartia before his rebellion, the Church views itself as the rightful steward of divine order. Its priests, known as the Choir of Light, channel holy resonance through relics, maintaining their influence over believers and governments alike. Beneath its gilded altars lies a labyrinth of sealed relic vaults, forbidden scriptures, and truths too dangerous for mortal eyes.",
+                members: ["High Cardinal", "Choir of Light", "Sanctum Guardians"],
+                relatedEntries: ["shonen-kartia", "holy-tragedy", "fate", "the-order"]
+            },
+            {
+                id: "the-order",
+                name: "The Order",
+                type: "faction",
+                image: "images/the-order.png",
+                summary: "A powerful and secretive faction founded by Shonen Kartia to maintain global equilibrium through calculated intervention",
+                description: "Founded by Shonen Kartia after his excommunication from the Church, The Order operates from the shadows to enforce balance in a fractured world. Its members—strategists, mages, and former agents—serve as the silent arbiters of global stability. Bound by oaths of neutrality, they intervene only when the scale of power tilts too far toward chaos or tyranny. The Order's vast archives and dimensional observatories allow them to monitor both mortal and celestial realms, while their enigmatic leader continues his search for an end to his immortality.",
+                members: ["Shonen Kartia", "Head Captain", "The Silent Wardens"],
+                relatedEntries: ["shonen-kartia", "head-captain", "the-church", "mi6"]
+            },
+            {
+                id: "celestial-shattering",
+                name: "The Celestial Shattering",
+                type: "concept",
+                image: "images/celestial-shattering.png",
+                summary: "The cataclysmic event when a celestial being fell to Earth, fracturing the veil between realms",
+                description: "The Celestial Shattering, also known as the Holy Tragedy, marks the moment a star — one of the ancient astral beings — plummeted through the heavens and tore the veil separating worlds. Its impact scattered divine fragments across existence, seeding both miracles and monstrosities. The event redefined the laws of creation, binding mortal souls to celestial echoes and giving birth to the Holy Items. While some revere the Shattering as divine providence, others see it as the universe's original sin — a cosmic wound still bleeding through reality. The aftermath forever altered the structure of fate, spawning both magic and endless conflict.",
+                relatedEntries: ["holy-tragedy", "holy-items", "fate", "lintels", "the-merging"]
+            },
+            {
+                id: "the-merging",
+                name: "The Merging",
+                type: "concept",
+                image: "images/the-merging.png",
+                summary: "The dimensional convergence that fused human and celestial planes after the Celestial Shattering",
+                description: "The Merging was not an instant — it was a slow unraveling of reality, as the boundaries between dimensions dissolved following the Celestial Shattering. Ethereal realms bled into the mortal world, allowing spirits, demons, and celestial beings to cross freely. Cities began to pulse with strange energy, where technology and magic coexisted uneasily. Ancient forests awakened, rivers whispered prayers, and sky-borne citadels shimmered in the distance. Though many feared it, the Merging also enabled humanity's ascent into the technomagical age. It remains the foundation for the modern era — a time when no barrier between the divine and the mundane remains absolute.",
+                relatedEntries: ["celestial-shattering", "technomagic", "holy-tragedy", "lintels"]
+            },
+            {
+                id: "duskkin",
+                name: "Duskkin",
+                type: "concept",
+                image: "images/duskkin.png",
+                summary: "Cybernetic vampires born during the Merging, blending bloodcraft with human technomagic",
+                description: "The Duskkin emerged in the chaos following the Merging, when ancient vampiric lineages fused their dying essence with human technomagic. Rather than fading into myth, they embraced evolution — grafting cybernetic systems, synthetic veins, and nanite-infused blood into their forms. Their bodies became living engines of hunger and circuitry, sustained by both vitae and voltage. Their eyes glow with faint neon light, reflecting the cities they now haunt: towers of steel and circuitry pulsing like veins beneath the night sky. Once bound by bloodlines, the Duskkin now operate in clans that resemble data syndicates, feeding not only on blood but on energy, memory, and Presence. To encounter one is to glimpse the blurred boundary between the undead and the post-human.",
+                relatedEntries: ["the-merging", "technomagic", "presence", "mi6", "holy-tragedy"]
+            },
+            {
+                id: "sanctuary-in-the-sky",
+                name: "Sanctuary in the Sky",
+                type: "concept",
+                faction: "The Church",
+                image: "images/sanctuary-in-the-sky.png",
+                summary: "A cloud-borne enigma floating above London — born as holy refuge, transformed into a nightclub where the sacred and profane dance as one",
+                description: "The Sanctuary in the Sky floats serenely above London, nestled upon a foundation of clouds and imbued with the combined Presence of its creators. Originally built by reformist clergymen, scholars, and holy warriors as a bastion against the corruption that had seeped into the Church under Jedia the Faceless, this architectural marvel was meant to symbolize renewed faith. Yet after Jedia's downfall and the subsequent power vacuum, the Sanctuary underwent an unexpected transformation. What began as a divine retreat evolved into a paradoxical realm — serving as a place of sanctity by day and a den of sin and indulgence by night. Inside, the Sanctuary defies physical constraints, appearing far larger than its external dimensions suggest. Passing through an ornate archway leads visitors to a central hub from which thousands of portals branch off. Each doorway emanates a different aura, with music seeping through, beckoning visitors into unknown realms. Choosing a room feels like selecting a potion from an alchemist's array — some find solace and healing within the Dreamscape's magical paint parties or the Chill Lounge's fragrant smoke, while others lose themselves in the Sanctuary Bar's mind-altering cocktails. The nightclub attracts visitors from various realms and backgrounds, making it an ideal neutral ground for clandestine meetings and secret dealings. Some visitors emerge transformed by their experiences within its cloud-enveloped walls, while others disappear into its depths, never to return.",
+                rooms: ["Dreamscape (Magical Paint Party)", "Chill Lounge (Mystical Smoking Room)", "Sanctuary Bar (Soul Sips, Fire Water, Mind Melters)"],
+                origin: "Built by Church reformists as holy retreat, transformed into nightclub after Jedia's fall",
+                relatedEntries: ["the-church", "jedia", "holy-tragedy", "presence"]
+            },
+            {
+    id: 'thyia',
+    name: 'Thyia',
+    type: 'item',
+    image: 'images/thyia.png',
+    summary: 'A celestial pendant radiating starlight, bonded to Ashai Bennet',
+    description: 'Thyia, a celestial pendant forged in the aftermath of the Holy Tragedy, pulses with the light of distant stars. Worn close to Ashai\'s heart, it serves as both weapon and compass, guiding her through the veil between worlds. Its crystalline surface reflects constellations long forgotten, and when activated, floods its wielder with the power of the heavens.',
+    abilities: ['Starlight Energy Projection', 'Dimensional Sensing', 'Protective Barriers', 'Healing Resonance'],
+    wielder: ['Ashai Bennet'],
+    relatedEntries: ['ashai-bennet', 'holy-tragedy', 'celestial-shattering']
+}
+        ];
+
+        let currentFilter = 'all';
+        let currentSearch = '';
+        let currentLoreIndex = 0;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderLoreGrid();
+            setupFilters();
+            setupSearch();
+            loadBlog();
+        });
+
+        // Render lore grid with image error handling
+        function renderLoreGrid() {
+            const grid = document.getElementById('loreGrid');
+            const filtered = loreEntries.filter(entry => {
+                const matchesFilter = currentFilter === 'all' || entry.type === currentFilter;
+                const matchesSearch = entry.name.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                                    entry.summary.toLowerCase().includes(currentSearch.toLowerCase());
+                return matchesFilter && matchesSearch;
+            });
+
+            grid.innerHTML = filtered.map((entry, index) => `
+                <div class="lore-card" onclick="openModal(${loreEntries.indexOf(entry)})">
+                    <img src="${entry.image}" 
+                         alt="${entry.name}" 
+                         loading="lazy"
+                         onerror="this.style.opacity='0.3'">
+                    <div class="lore-card-content">
+                        <h3>${entry.name}</h3>
+                        <span class="lore-tag">${entry.type}</span>
+                        ${entry.faction ? `<span class="lore-tag">${entry.faction}</span>` : ''}
+                        <p>${entry.summary}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Setup filters
+        function setupFilters() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    renderLoreGrid();
+                });
+            });
+        }
+
+        // Setup search
+        function setupSearch() {
+            document.getElementById('searchBox').addEventListener('input', (e) => {
+                currentSearch = e.target.value;
+                renderLoreGrid();
+            });
+        }
+
+        // Modal functions
+        function openModal(index) {
+            currentLoreIndex = index;
+            const entry = loreEntries[index];
+            const modal = document.getElementById('loreModal');
+            const modalBody = document.getElementById('modalBody');
+
+            let content = `
+                <img src="${entry.image}" 
+                     alt="${entry.name}" 
+                     style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 10px; margin-bottom: 1.5rem;"
+                     onerror="this.style.display='none'">
+                <h2 style="font-family: 'Cinzel', serif; color: var(--primary-dark);">${entry.name}</h2>
+                <span class="lore-tag">${entry.type}</span>
+                ${entry.faction ? `<span class="lore-tag">${entry.faction}</span>` : ''}
+                <p style="margin-top: 1rem;">${entry.description}</p>
+            `;
+
+            if (entry.abilities) {
+                content += `<h3 style="margin-top: 1.5rem;">Abilities</h3><ul>`;
+                entry.abilities.forEach(ability => content += `<li>${ability}</li>`);
+                content += `</ul>`;
+            }
+            if (entry.wielder) {
+       content += `<h3 style="margin-top: 1.5rem; color: var(--accent-blue);">Wielder</h3><ul>`;
+       entry.wielder.forEach(w => content += `<li>${w}</li>`);
+       content += `</ul>`;
+   }
+
+            if (entry.members) {
+                content += `<h3 style="margin-top: 1.5rem;">Notable Members</h3><ul>`;
+                entry.members.forEach(member => content += `<li>${member}</li>`);
+                content += `</ul>`;
+            }
+
+            if (entry.rooms) {
+                content += `<h3 style="margin-top: 1.5rem;">Notable Rooms</h3><ul>`;
+                entry.rooms.forEach(room => content += `<li>${room}</li>`);
+                content += `</ul>`;
+            }
+
+            modalBody.innerHTML = content;
+            modal.style.display = 'block';
+            
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === loreEntries.length - 1;
+        }
+
+        function closeModal() {
+            document.getElementById('loreModal').style.display = 'none';
+        }
+
+        function navigateLore(direction) {
+            const newIndex = currentLoreIndex + direction;
+            if (newIndex >= 0 && newIndex < loreEntries.length) {
+                openModal(newIndex);
+            }
+        }
+
+        // Mobile menu toggle
+        function toggleMenu() {
+            document.getElementById('mainNav').classList.toggle('active');
+        }
+        
+        // Auto-close the mobile menu when a nav link is clicked
+Array.from(document.querySelectorAll('#mainNav a')).forEach(a =>
+a.addEventListener('click', () => document.getElementById('mainNav').classList.remove('active'))
+);
+
+        // Game functions
+        function openGameFullscreen() {
+            const iframe = document.getElementById('gameIframe');
+            if (iframe.requestFullscreen) {
+                iframe.requestFullscreen();
+            } else if (iframe.mozRequestFullScreen) {
+                iframe.mozRequestFullScreen();
+            } else if (iframe.webkitRequestFullscreen) {
+                iframe.webkitRequestFullscreen();
+            } else if (iframe.msRequestFullscreen) {
+                iframe.msRequestFullscreen();
+            } else {
+                alert('Fullscreen mode is not supported on this browser.');
+            }
+        }
+
+        function openGameNewTab() {
+            window.open('https://thesecretsofsilverclouds.github.io/Lintelgotchi/', '_blank');
+        }
+
+        // Blog updates loading
+        function loadBlog() {
+            const updates = [
+                {
+                    date: "December 2024",
+                    content: "🎥 The Silent Silver Story - Watch my journey from struggle to author. Your story matters too. 💪✨ #SilentSilver #AuthorJourney #NeverGiveUp",
+                    link: "https://vm.tiktok.com/ZNd7c5dmT/",
+                    linkText: "Watch My Story"
+                },
+                {
+                    date: "October 2025",
+                    content: "🎬 Born in the Stars - New TikTok video is live! Watch the story unfold. ✨ #Animantasy #SilverClouds #BornInTheStars",
+                    link: "https://vm.tiktok.com/ZNd7cg8t5/",
+                    linkText: "Watch on TikTok"
+                },
+                {
+                    date: "October 2025",
+                    content: "📝 The Inevitability of Animantasy - Read my latest LinkedIn article about creating a new genre and why it had to exist. #Animantasy #WritingCommunity",
+                    link: "https://www.linkedin.com/posts/silent-silver-3b8312137_publishing-animantasy-thesecretsofsilverclouds-activity-7382080783756476416-NEDQ?utm_source=share&utm_medium=member_desktop&rcm=ACoAACFT9LwB3twxPC0iUZ9fSGu0vyZWLXwa8u0",
+                    linkText: "Read Full Article"
+                }
+            ];
+
+            const container = document.getElementById('blogPosts');
+            container.innerHTML = updates.map(update => `
+                <article style="margin-bottom: 1.5rem; padding: 1.5rem; background: #f8f9fa; border-left: 4px solid var(--accent-gold); border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <p style="color: #666; font-size: 0.85rem; margin-bottom: 0.75rem; font-weight: 600;">
+                        ${update.date}
+                    </p>
+                    <p style="color: var(--text-dark); line-height: 1.7; margin-bottom: ${update.link ? '1rem' : '0'}; white-space: pre-line;">
+                        ${update.content}
+                    </p>
+                    ${update.link ? `
+                        <a href="${update.link}" target="_blank" style="display: inline-block; color: var(--accent-teal); font-weight: 600; text-decoration: none; transition: color 0.3s ease;">
+                            ${update.linkText || 'Learn More'} →
+                        </a>
+                    ` : ''}
+                </article>
+            `).join('');
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('loreModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
 </body>
 </html>
