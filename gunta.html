@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gunta | The Secrets of Silver Clouds</title>
+    <meta name="description" content="Captain Ash&#x27;s hulking ape-like lieutenant who relies on devastating physical strength and openly mocks his superior&#x27;s obsession with Holy Items">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap" rel="stylesheet">
+    <style>
+
+        :root {
+            --primary-dark: #1a1a2e;
+            --secondary-dark: #16213e;
+            --accent-blue: #0f4c75;
+            --accent-teal: #3282b8;
+            --accent-gold: #bbe1fa;
+            --text-dark: #2c2c2c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: white;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .lore-header {
+            background: rgba(26, 26, 46, 0.95);
+            padding: 1rem 2rem;
+            border-bottom: 3px solid var(--accent-teal);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .lore-nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .back-btn, .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover, .nav-btn:hover {
+            background: var(--accent-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(50, 130, 184, 0.3);
+        }
+
+        .nav-buttons { display: flex; gap: 1rem; }
+
+        .lore-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .lore-hero {
+            background: #f8f9fa;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 3px solid var(--accent-blue);
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .lore-hero img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: contain;
+            display: block;
+            background: #262638;
+        }
+
+        .lore-title {
+            text-align: center;
+            padding: 2.5rem 2rem;
+            background: linear-gradient(135deg, rgba(15, 76, 117, 0.9) 0%, rgba(50, 130, 184, 0.85) 100%);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .lore-title h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.8rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .lore-tags { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+
+        .lore-tag {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .lore-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--accent-teal);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .lore-section h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-blue);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .lore-section h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-teal);
+            font-size: 1.4rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .lore-section p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        /* Grids */
+        .abilities-list, .members-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .abilities-list li, .members-list li {
+            background: rgba(50, 130, 184, 0.15);
+            padding: 1.2rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-blue);
+            font-size: 1.05rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .gallery-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 3px solid var(--accent-blue);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 8px 24px rgba(50, 130, 184, 0.3);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 280px;
+            object-fit: contain;
+            display: block;
+            background: white;
+        }
+
+        .related-entries {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .related-link {
+            background: rgba(50, 130, 184, 0.15);
+            padding: 1.2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-dark);
+            border: 2px solid var(--accent-blue);
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+
+        .related-link:hover {
+            background: rgba(50, 130, 184, 0.25);
+            border-color: var(--accent-teal);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(50, 130, 184, 0.3);
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .lightbox.active { display: flex; }
+
+        .lightbox-content {
+            max-width: 1200px;
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-content img { 
+            max-width: 100%; 
+            max-height: 90vh;
+            width: auto; 
+            height: auto; 
+            object-fit: contain; 
+            display: block; 
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 3rem;
+            color: white;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        @media (max-width: 768px) {
+            .lore-header { padding: 1rem; }
+            .lore-nav { flex-direction: column; gap: 0.75rem; }
+            .nav-buttons { width: 100%; justify-content: space-between; }
+            .lore-container { padding: 1.5rem 1rem; }
+            .lore-title h1 { font-size: 2rem; }
+            .lore-section { padding: 1.5rem; }
+            .image-gallery { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+        }
+
+    </style>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Gunta | The Secrets of Silver Clouds",
+  "url": "https://thesecretsofsilverclouds.com/gunta.html",
+  "inLanguage": "en-GB",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "The Secrets of Silver Clouds",
+    "url": "https://thesecretsofsilverclouds.com/"
+  },
+  "about": {
+    "@type": "Book",
+    "name": "The Secrets of Silver Clouds",
+    "author": {
+      "@type": "Person",
+      "name": "Silent Silver"
+    }
+  },
+  "description": "Captain Ash&#x27;s hulking ape-like lieutenant who relies on devastating physical strength and openly mocks his superior&#x27;s obsession with Holy Items"
+}
+    </script>
+</head>
+<body>
+
+    <header class="lore-header">
+        <nav class="lore-nav">
+            <a href="index.html#codex" class="back-btn">← Back to Codex</a>
+        </nav>
+    </header>
+
+    <main class="lore-container">
+        <section class="lore-hero">
+            <img src="images/gunta.png" alt="Gunta">
+        </section>
+
+        <section class="lore-title">
+            <h1>Gunta</h1>
+            <div class="lore-tags">
+                <span class="lore-tag">Character</span>
+<span class="lore-tag">The Order</span>
+            </div>
+        </section>
+
+        
+        <section class="lore-section">
+            <h2>Summary</h2>
+            <p>Captain Ash&#x27;s hulking ape-like lieutenant who relies on devastating physical strength and openly mocks his superior&#x27;s obsession with Holy Items</p>
+        </section>
+    
+        <section class="lore-section">
+            <h2>Description</h2>
+            <p>Gunta towers over most members of The Order, a mountain of corded muscle and primal power wrapped in coarse, dark fur. His species—one of the rarer simian bloodlines that emerged from the dimensional rifts during The Merging—grants him a physique that makes even seasoned warriors think twice before engaging. Standing nearly eight feet tall with shoulders broad enough to fill doorways, arms thick as tree trunks, and fists the size of boulders, Gunta embodies raw physical dominance.</p>
+
+            <h3>Background</h3>
+
+            <p>His face bears the heavy brow and pronounced features of his ape-like heritage, though his eyes—dark and surprisingly expressive—hold a simple, straightforward intelligence that many mistake for stupidity. What Gunta lacks in tactical brilliance and strategic thinking, he more than compensates for with devastating effectiveness in combat. He's been assigned as Captain Ash's lieutenant not despite his limited intellect, but because of his unwavering reliability in battle and his unique ability to follow orders without the complications of personal ambition. Where Ash schemes and plots, Gunta simply acts. Where Ash hungers for a Holy Item to complete himself, Gunta finds the entire obsession baffling and endlessly amusing. His favourite pastime, much to Ash's barely contained fury, is needling his captain about the Holy Item fixation.</p>
+
+            <h3>Personality</h3>
+
+            <p>'Why you need shiny weapon, Captain?' he'll rumble during mission briefings, flexing his enormous fists with a gap-toothed grin. 'Gunta got all the weapon right here. Never breaks. Never needs permission from boss man Shonen.' The teasing is delivered with such genuine confusion rather than malice that even Ash struggles to formally reprimand him—though the volcanic side of the captain's face tends to glow noticeably brighter during these exchanges. Gunta's philosophy on combat is elegantly simple: hit things very hard until they stop moving. This approach has proven remarkably effective.</p>
+
+            <h3>Role in the story</h3>
+
+            <p>He's cracked Holy Item wielders' defences through sheer overwhelming force, shattered magical barriers with repeated pounding, and once punched a Duskkin Shadow Beast so hard it dispelled back to the shadow realm. His fellow Order members have learned to appreciate being on Gunta's side rather than facing him as an opponent. Despite his simple worldview, Gunta possesses an uncanny combat instinct—a primal awareness of positioning, timing, and weak points that operates on a level below conscious thought. In the chaos of battle, where Ash's tactical mind might calculate angles and probabilities, Gunta simply knows where to strike and when to dodge. This intuitive fighting style, combined with near-impervious toughness and strength that borders on superhuman even by post-Merging standards, makes him one of The Order's most effective field agents. The dynamic between Captain Ash and Lieutenant Gunta creates an odd partnership that somehow works.</p>
+
+            <h3>Relationships</h3>
+
+            <p>Ash provides the planning and strategy; Gunta provides the muscle and execution. Gunta undermines his superior's dignity at every opportunity, and it seems to be something even Shonen Kartia finds quietly amusing—perhaps the only thing about Captain Ash's unit that brings a slight smile to the immortal founder's face. When asked once why he doesn't pursue a Holy Item himself, Gunta's response was characteristically straightforward: 'Why carry extra weapon? Wastes good hand for punching.' He then proceeded to demonstrate by casually denting a reinforced steel bulkhead with a casual backhand. The discussion, as far as Gunta was concerned, was closed.</p>
+        </section>
+    
+        <section class="lore-section">
+            <h2>Affiliation</h2>
+            <p><strong>The Order</strong></p>
+        </section>
+        
+        <section class="lore-section">
+            <h2>Abilities</h2>
+            <ul class="abilities-list">
+<li>Superhuman Strength (Can shatter steel with bare hands)</li>
+<li>Near-Impervious Durability</li>
+<li>Enhanced Resilience</li>
+<li>Combat Instinct (Primal battlefield awareness)</li>
+<li>Intimidation Presence</li>
+<li>Ground-Shaking Strikes</li>
+<li>Grappling Mastery</li>
+<li>Pain Resistance</li>
+<li>Regenerative Recovery (Minor wounds heal quickly)</li>
+</ul>
+        </section>
+        
+        <section class="lore-section">
+            <h2>Gallery</h2>
+            <div class="image-gallery">
+                <div class="gallery-item" onclick="openLightbox('images/gunta.png')">
+                    <img src="images/gunta.png" alt="Gunta">
+                </div>
+                <!-- Add more images here -->
+            </div>
+        </section>
+    
+        <section class="lore-section">
+            <h2>Related Entries</h2>
+            <div class="related-entries">
+                <a href="captain-ash.html" class="related-link">→ Captain Ash</a>
+<a href="the-order.html" class="related-link">→ The Order</a>
+<a href="shonen-kartia.html" class="related-link">→ Shonen Kartia (The Singularity)</a>
+<a href="the-merging.html" class="related-link">→ The Merging</a>
+<a href="head-captain.html" class="related-link">→ Head Captain of The Order</a>
+            </div>
+        </section>
+        
+    </main>
+
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">×</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="">
+        </div>
+    </div>
+
+    <script>
+        function openLightbox(src) {
+            document.getElementById('lightbox').classList.add('active');
+            document.getElementById('lightbox-img').src = src;
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    </script>
+
+</body>
+</html>
