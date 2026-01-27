@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goaden Reeves | The Secrets of Silver Clouds</title>
+    <meta name="description" content="Former leader of the Demon's Legion, wielder of the celestial broadsword Vega.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-dark: #1a1a2e;
+            --secondary-dark: #16213e;
+            --accent-blue: #0f4c75;
+            --accent-teal: #3282b8;
+            --accent-gold: #bbe1fa;
+            --text-dark: #2c2c2c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: white;  /* WHITE BACKGROUND */
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .lore-header {
+            background: rgba(26, 26, 46, 0.95);
+            padding: 1rem 2rem;
+            border-bottom: 3px solid var(--accent-teal);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .lore-nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .back-btn, .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover, .nav-btn:hover {
+            background: var(--accent-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(50, 130, 184, 0.3);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Main Container */
+        .lore-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Video Hero Section */
+        .lore-video-hero {
+            background: #f8f9fa;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 3px solid var(--accent-blue);
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .lore-video-hero video {
+            width: 100%;
+            height: auto;
+            max-height: 450px;
+            display: block;
+            object-fit: contain;
+            background: #262638;
+        }
+
+        /* Title Section */
+        .lore-title {
+            text-align: center;
+            padding: 2.5rem 2rem;
+            background: linear-gradient(135deg, rgba(15, 76, 117, 0.9) 0%, rgba(50, 130, 184, 0.85) 100%);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .lore-title h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.8rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .lore-tags {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .lore-tag {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        /* Content Sections */
+        .lore-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--accent-teal);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .lore-section h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-blue);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .lore-section h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-teal);
+            font-size: 1.4rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .lore-section p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .lore-section ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .lore-section ul li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        /* Image Gallery */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .gallery-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 3px solid var(--accent-blue);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 8px 24px rgba(50, 130, 184, 0.3);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 280px;
+            object-fit: contain;
+            display: block;
+            background: white;
+        }
+
+        /* Abilities Grid */
+        .abilities-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .abilities-list li {
+            background: rgba(50, 130, 184, 0.15);
+            padding: 1.2rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-blue);
+            font-size: 1.05rem;
+            font-weight: 500;
+            text-align: center;
+            color: var(--text-dark);
+        }
+
+        /* Related Entries */
+        .related-entries {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .related-link {
+            background: rgba(50, 130, 184, 0.15);
+            padding: 1.2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-dark);
+            border: 2px solid var(--accent-blue);
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+
+        .related-link:hover {
+            background: rgba(50, 130, 184, 0.25);
+            border-color: var(--accent-teal);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(50, 130, 184, 0.3);
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .lightbox.active { display: flex; }
+
+        .lightbox-content {
+            max-width: 1200px;
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-content img { 
+            max-width: 100%; 
+            max-height: 90vh;
+            width: auto; 
+            height: auto; 
+            object-fit: contain; 
+            display: block; 
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 3rem;
+            color: white;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .lore-header {
+                padding: 1rem;
+            }
+
+            .lore-nav {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .nav-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .lore-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .lore-title h1 {
+                font-size: 2rem;
+            }
+
+            .lore-section {
+                padding: 1.5rem;
+            }
+
+            .image-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+    </style>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Goaden Reeves | The Secrets of Silver Clouds",
+  "url": "https://thesecretsofsilverclouds.com/goaden-reeves.html",
+  "inLanguage": "en-GB",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "The Secrets of Silver Clouds",
+    "url": "https://thesecretsofsilverclouds.com/"
+  },
+  "about": {
+    "@type": "Book",
+    "name": "The Secrets of Silver Clouds",
+    "author": {
+      "@type": "Person",
+      "name": "Silent Silver"
+    }
+  },
+  "description": "Former leader of the Demon"
+}
+    </script>
+</head>
+<body>
+
+    <header class="lore-header">
+        <nav class="lore-nav">
+            <a href="index.html#codex" class="back-btn">← Back to Codex</a>
+        </nav>
+    </header>
+
+    <main class="lore-container">
+        
+        <!-- Video Hero Section -->
+        <section class="lore-video-hero">
+            <video autoplay loop muted playsinline>
+                <source src="videos/goaden-reeves.mp4" type="video/mp4">
+            </video>
+        </section>
+
+        <!-- Title Section -->
+        <section class="lore-title">
+            <h1>Goaden Reeves</h1>
+            <div class="lore-tags">
+                <span class="lore-tag">Character</span>
+                <span class="lore-tag">MI6</span>
+                <span class="lore-tag">Demon's Legion</span>
+            </div>
+        </section>
+
+        <!-- Summary Section -->
+        <section class="lore-section">
+            <h2>Summary</h2>
+            <p>Former leader of the Demon's Legion, wielder of the celestial broadsword Vega. A force of nature with silver flames, Goaden embodies confident strength tempered by sarcasm and a deep-seated protectiveness for those he cares about.</p>
+        </section>
+
+        <!-- Full Description -->
+        <section class="lore-section">
+            <h2>Description</h2>
+            <p>A force of nature wrapped in human form, Goaden stands as a pillar of strength within the Demon's Legion. His tall, athletic frame belies the tempest that rages within—a storm of power and emotion barely contained beneath his cocksure exterior. With large flowing black curls, mixed-race heritage, and a dress sense as loud as his personality, Goaden commands attention wherever he goes.</p>
+            
+            <p>His signature look includes baseball jackets (his favourite being a red and black piece with a tiny tribal dragon), baggy jeans with torn knees, and multiple piercings adorning his ears and nose. But it's not just his appearance that makes him stand out—it's the way he moves through the world with an easy confidence that masks the brutal training and trauma of his past.</p>
+
+            <h3>Personality</h3>
+            <p>Goaden's speech embodies the cadence of casual audacity, words drawn out in a laid-back drawl, yet with an underlying bite of sarcasm. His sentences are usually short and punchy, with keen emphasis on his point. His tone has a certain musicality to it—an unpredictable rhythm like an improvisational jazz piece, reflecting his love for music. "Nah" rolls off his tongue with easy frequency, a verbal signature of his nonchalant dismissiveness.</p>
+            
+            <p>Confident, smart, violent, stylish, and funny, Goaden is occasionally arrogant but deep down cares fiercely for the people around him. His keen senses, honed through years of brutal training, make his dialogue sharper, filled with perceptive comments and accurate descriptions of his surroundings.</p>
+
+            <h3>Background & Training</h3>
+            <p>Goaden's brutal, torture-like training from his father Kane has given him keen senses, immunity to most common poisons, and the ability to withstand the Presence of enemies many times his own power—a skill unheard of. This harsh upbringing left deep scars: while he loves and respects his father, there's also a small amount of hate towards him because of how strict and cruel the training methods were.</p>
+            
+            <p>His relationship with his mother before she died was complex but loving. She was always there to help tend his wounds after training, torn between her love and respect for Kane, her love for her children, and her understanding that the world was dangerous and they had to be prepared. Her coping mechanism was alcohol, something Goaden understood even as a child.</p>
+
+            <h3>Holy Item: Vega</h3>
+            <p>Vega was gifted to Goaden by Fate herself when he was just 8 years old. This celestial broadsword, forged from fallen star fragments, features a tribal star-shaped hole near the hilt—a symbol of its divine heritage. The blade's iridescent quality shimmers with hues of silver and blue, reminiscent of a star-studded night sky.</p>
+            
+            <p>When wielding Vega, Goaden can borrow Kai's silver flames, turning the blade into bright silver fire—a devastating combination of celestial power and draconic fury.</p>
+
+            <h3>Motivations & Goals</h3>
+            <p>Goaden is driven by redemption. He feels deep regret for killing his brother and for the violent acts committed while leading the Demon's Legion. He wants his father's approval and seeks to become as powerful as he can be to protect his friends.</p>
+            
+            <p>He's heard rumours of the Silver Cloud Grimoire and would probably use its power to bring his brother back to life if given the chance. His growing feelings for Ashai Bennet complicate his emotional landscape—she makes him want to be better, strong enough to protect her, and perhaps even as trusting and caring as she is.</p>
+        </section>
+
+        <!-- Abilities -->
+        <section class="lore-section">
+            <h2>Abilities</h2>
+            <ul class="abilities-list">
+                <li>Silver Flames (borrowed from Kai)</li>
+                <li>Master Swordsman</li>
+                <li>Celestial Power Channeling</li>
+                <li>Poison Immunity</li>
+                <li>Presence Resistance</li>
+                <li>Enhanced Reflexes</li>
+            </ul>
+        </section>
+
+        <!-- Guardian -->
+        <section class="lore-section">
+            <h2>Guardian</h2>
+            <p><strong>Kai</strong> - A diminutive dragon with scales shifting between obsidian and ivory, Kai is Goaden's oldest confidant and the quiet anchor that keeps the warrior from succumbing to the storm within. Born from the same celestial fragment that forged Vega, Kai embodies both the weapon's conscience and its fury. Though small enough to perch on Goaden's shoulder, his spirit form stretches across dimensions.</p>
+        </section>
+
+        <!-- Combat Style -->
+        <section class="lore-section">
+            <h2>Combat Style</h2>
+            <p>Goaden prefers brute force but can quickly tap into his father Kane's strategic training when needed. As a master swordsman trained from childhood, his reflexes are lightning-fast and his strikes devastating. His impervious nature to most poisons—built up through years of micro-dosing by his father—makes him particularly dangerous in prolonged combat scenarios.</p>
+        </section>
+
+        <!-- Image Gallery -->
+        <section class="lore-section">
+            <h2>Gallery</h2>
+            <div class="image-gallery">
+                <div class="gallery-item" onclick="openLightbox('images/goaden-reeves.png')">
+                    <img src="images/goaden-reeves.png" alt="Goaden Reeves - Portrait">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('images/goaden2.png')">
+                    <img src="images/goaden2.png" alt="Goaden Reeves - Portrait">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('images/goaden3.png')">
+                    <img src="images/goaden3.png" alt="Goaden Reeves - Portrait">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('images/goaden4.png')">
+                    <img src="images/goaden4.png" alt="Goaden Reeves - Portrait">
+                </div>
+                <!-- ADD MORE IMAGES HERE -->
+            </div>
+        </section>
+
+        <!-- Related Entries -->
+        <section class="lore-section">
+            <h2>Related Entries</h2>
+            <div class="related-entries">
+                <a href="vega.html" class="related-link">→ Vega</a>
+                <a href="kai.html" class="related-link">→ Kai</a>
+                <a href="demons-legion.html" class="related-link">→ Demon's Legion</a>
+                <a href="ashai-bennet.html" class="related-link">→ Ashai Bennet</a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">×</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="">
+        </div>
+    </div>
+
+    <script>
+        function openLightbox(src) {
+            document.getElementById('lightbox').classList.add('active');
+            document.getElementById('lightbox-img').src = src;
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    </script>
+
+</body>
+</html>
