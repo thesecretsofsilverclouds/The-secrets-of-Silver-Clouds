@@ -24,7 +24,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
     
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Raleway:wght@300;400;600&amp;display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -153,16 +153,19 @@
         nav ul {
             list-style: none;
             display: flex;
-            gap: 1rem;
+            gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         nav ul li a {
             color: white;
             text-decoration: none;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.75rem;
             border-radius: 5px;
             background: rgba(255,255,255,0.1);
             transition: all 0.3s ease;
+            font-size: 0.95rem;
+            white-space: nowrap;
         }
 
         nav ul li a:hover {
@@ -430,11 +433,19 @@
 
         .lore-card {
             background: white;
+            display: block;
+            text-decoration: none;
+            color: inherit;
             border: 2px solid var(--accent-blue);
             border-radius: 10px;
             overflow: hidden;
             transition: all 0.3s ease;
             cursor: pointer;
+        }
+
+        .lore-card:focus {
+            outline: 3px solid var(--accent-gold);
+            outline-offset: 3px;
         }
 
         .lore-card:hover {
@@ -734,6 +745,7 @@
                     <li><a href="#home">Home</a></li>
                     <li><a href="#about">About Author</a></li>
                     <li><a href="#book">About Book</a></li>
+                    <li><a href="animantasy.html">Animantasy</a></li>
                     <li><a href="#codex">Codex</a></li>
                     <li><a href="#game">Play Game</a></li>
                     <li><a href="#blog">Blog</a></li>
@@ -1983,6 +1995,55 @@
         "Longevity (Centuries for elder specimens)"
     ],
     relatedEntries: ["duskkin", "urban-jungle", "sanguine-forging", "zara", "kobu", "eirik", "prowlers", "the-great-hunts", "duskkin-council"]
+},
+{
+    id: "fate",
+    name: "Fate",
+    type: "concept",
+    image: "images/fate.png",
+    summary: "The cosmic entity who transformed the shattered star's fragments into Holy Items and created the Guardians, weaving destiny itself into the fabric of mortal reality",
+    description: "Fate stands beyond mortal comprehension—not a goddess in the traditional sense, but a cosmic force given consciousness, purpose, and terrifying agency. When the star fell during the Celestial Shattering, tearing through dimensions and scattering divine fragments across existence, Fate intervened at the precise moment reality threatened to unravel. Recognising both the immense power and profound danger these celestial shards represented, she gathered the fragments—not all of them, for some fell into places even she could not or would not reach—and transformed them into artefacts of focused intention: the Holy Items. Each transformation was unique, blending the fragment's inherent properties with Fate's design to create weapons, pendants, boots, blades, and stranger objects still. Vega, Thyia, Might, Stormcleaver, Oblivion, Abythyia—each item a masterwork of cosmic engineering, each imbued with a fraction of her own power. But the Holy Items were only half her intervention. Understanding that raw divine power in mortal hands risked corruption or self-destruction, Fate created the Guardians—celestial beings forged from the star's essence, each bonded to a specific Holy Item and destined to bond with its bearer. The Guardians serve as protectors, guides, and conscience for those who wield power they may not fully understand. Yet Fate's true motivations remain inscrutable. The souls she deems 'worthy' follow no pattern mortals can discern—heroes and villains, saints and sinners all find themselves chosen at pivotal moments. Some theologians argue she seeks cosmic balance. Others claim she's playing an infinitely complex game. The most cynical suggest she simply enjoys watching what happens when mortals receive the power to reshape reality. Whatever her nature, Fate's presence looms over the world like a second sky—invisible most of the time, but always there, always watching, always waiting for the next moment when intervention becomes necessary.",
+    abilities: [
+        "Cosmic Intervention (Acts at pivotal moments in reality)",
+        "Artefact Creation (Transforms celestial fragments into Holy Items)",
+        "Guardian Creation (Births celestial protectors from star essence)",
+        "Destiny Manipulation (Weaves threads of fate)",
+        "Soul Assessment (Determines worthiness for Holy Items)",
+        "Reality Stabilisation (Prevented uncontrolled cosmic collapse)",
+        "Omniscient Observation (Sees across time and possibility)",
+        "Divine Power Distribution",
+        "Mysterious Manifestation (Appears differently to each witness)"
+    ],
+    relatedEntries: ["celestial-shattering", "vega", "thyia", "might", "stormcleaver", "oblivion", "abythyia", "shonen-kartia", "goaden-reeves", "ashai-bennet", "holy-item-radiation", "the-church"]
+},
+{
+    id: "demons-legion-bandana",
+    name: "Demon's Legion Bandana",
+    type: "item",
+    image: "images/demons-legion-bandana.png",
+    summary: "Light grey bandanas woven from a fallen star fragment, serving as both symbol of unity and gateway to legendary status within the Demon's Legion",
+    description: "The Demon's Legion bandana is far more than mere cloth—it's a symbol of rebellion, unity, and earned respect that has become one of the most recognisable icons in London's underground culture. Unusually long and dyed distinctive light grey, each is adorned with intricate black symbols and woven from a fallen star fragment, infusing them with subtle yet unmistakable power. The Legion acquired these bandanas after helping a powerful mage overthrow a tyrant ruling their magical society. In gratitude, the mage crafted the bandanas, imbuing them with magical essence and star fragments. They became both symbol and source of power, enhancing the Legion's abilities through heightened awareness, increased resilience, and connection to cosmic forces. In everyday life, the bandanas declare allegiance to the Legion's cause. In battle, when pulled over the face, they signal transformation—the musician becomes the warrior, and things get brutal. The most fascinating tradition: during performances, Legion members occasionally toss bandanas into the crowd. Whoever possesses one after a year earns the right to attempt the Trial—lasting three minutes in combat against each Legion member. Not winning, merely surviving. Three minutes against Truth's light manipulation, Rose's vines, Anarchy's demon limbs, the Dread Twins' synchronised assault, and finally Goaden with Vega. Few pass. Those who do become family. Those who fail but survive earn respect. The bandanas represent something radical in a world where Fate chooses who receives godlike power: the belief that anyone can become extraordinary if willing to fight for it. Counterfeits flood the market, but those who truly know can tell the difference—real ones hum with power, their star-fragment threads catching light impossibly, symbols shifting when you're not looking directly at them.",
+    abilities: [
+        "Power Enhancement (Subtle amplification of wearer's abilities)",
+        "Holy Radiation Attunement (Connected to star fragments)",
+        "Heightened Awareness",
+        "Increased Resilience",
+        "Magical Essence (Imbued by mage)",
+        "Symbol of Authority (Recognised throughout London)",
+        "Trial Gateway (Grants opportunity to join Legion after one year)",
+        "Cosmic Connection (Links to Holy Tragedy's power)"
+    ],
+    relatedEntries: ["demons-legion", "goaden-reeves", "truth-hughes", "rose", "gabriel", "anarchy-balthazar", "dread-twins", "celestial-shattering", "vega"]
+},
+{
+    id: 'history',
+    name: 'History',
+    type: 'concept',
+    faction: "Timeline",
+    image: 'images/modern-era.png',
+    summary: 'A chronological overview of the Animantasy Universe — from the Primordial Silence to the Modern Era.',
+    description: 'Explore the major eras that shaped the world, including the Holy Tragedy, the Merging, Technomagic, the Gods’ War, and the Reconstruction.',
+    relatedEntries: ['animantasy', 'celestial-shattering', 'technomagic', 'the-order', 'church', 'mi6', 'duskkin', 'fairy-kingdom', 'demons-legion']
 }            
         ];
 
@@ -2009,7 +2070,7 @@
             });
 
             grid.innerHTML = filtered.map((entry, index) => `
-                <div class="lore-card" onclick="openModal(${loreEntries.indexOf(entry)})">
+                <a class="lore-card" href="${entry.id}.html" aria-label="Open ${entry.name} entry">
                     <img src="${entry.image}" 
                          alt="${entry.name}" 
                          loading="lazy"
@@ -2020,7 +2081,7 @@
                         ${entry.faction ? `<span class="lore-tag">${entry.faction}</span>` : ''}
                         <p>${entry.summary}</p>
                     </div>
-                </div>
+                </a>
             `).join('');
         }
 
