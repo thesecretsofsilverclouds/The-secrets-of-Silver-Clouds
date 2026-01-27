@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oblivion | The Secrets of Silver Clouds</title>
+    <meta name="description" content="An Infernal blade forged in the demon realm&#x27;s depths, containing the tortured soul of a betrayed demon that drives wielders to madness">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap" rel="stylesheet">
+    <style>
+
+        :root {
+            --primary-dark: #1a1a2e;
+            --secondary-dark: #16213e;
+            --accent-blue: #0f4c75;
+            --accent-teal: #3282b8;
+            --accent-gold: #bbe1fa;
+            --text-dark: #2c2c2c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: white;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .lore-header {
+            background: rgba(26, 26, 46, 0.95);
+            padding: 1rem 2rem;
+            border-bottom: 3px solid var(--accent-teal);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .lore-nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .back-btn, .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover, .nav-btn:hover {
+            background: var(--accent-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(50, 130, 184, 0.3);
+        }
+
+        .nav-buttons { display: flex; gap: 1rem; }
+
+        .lore-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .lore-hero {
+            background: #f8f9fa;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 3px solid var(--accent-blue);
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .lore-hero img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: contain;
+            display: block;
+            background: #262638;
+        }
+
+        .lore-title {
+            text-align: center;
+            padding: 2.5rem 2rem;
+            background: linear-gradient(135deg, rgba(15, 76, 117, 0.9) 0%, rgba(50, 130, 184, 0.85) 100%);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .lore-title h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.8rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .lore-tags { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+
+        .lore-tag {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .lore-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--accent-teal);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .lore-section h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-blue);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .lore-section h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-teal);
+            font-size: 1.4rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .lore-section p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        /* Grids */
+        .abilities-list, .members-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .abilities-list li, .members-list li {
+            background: rgba(50, 130, 184, 0.15);
+            padding: 1.2rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-blue);
+            font-size: 1.05rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .gallery-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 3px solid var(--accent-blue);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 8px 24px rgba(50, 130, 184, 0.3);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 280px;
+            object-fit: contain;
+            display: block;
+            background: white;
+        }
+
+        .related-entries {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .related-link {
+            background: rgba(50, 130, 184, 0.15);
+            padding: 1.2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-dark);
+            border: 2px solid var(--accent-blue);
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+
+        .related-link:hover {
+            background: rgba(50, 130, 184, 0.25);
+            border-color: var(--accent-teal);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(50, 130, 184, 0.3);
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .lightbox.active { display: flex; }
+
+        .lightbox-content {
+            max-width: 1200px;
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-content img { 
+            max-width: 100%; 
+            max-height: 90vh;
+            width: auto; 
+            height: auto; 
+            object-fit: contain; 
+            display: block; 
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 3rem;
+            color: white;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        @media (max-width: 768px) {
+            .lore-header { padding: 1rem; }
+            .lore-nav { flex-direction: column; gap: 0.75rem; }
+            .nav-buttons { width: 100%; justify-content: space-between; }
+            .lore-container { padding: 1.5rem 1rem; }
+            .lore-title h1 { font-size: 2rem; }
+            .lore-section { padding: 1.5rem; }
+            .image-gallery { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+        }
+
+    </style>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Oblivion | The Secrets of Silver Clouds",
+  "url": "https://thesecretsofsilverclouds.com/oblivion.html",
+  "inLanguage": "en-GB",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "The Secrets of Silver Clouds",
+    "url": "https://thesecretsofsilverclouds.com/"
+  },
+  "about": {
+    "@type": "Book",
+    "name": "The Secrets of Silver Clouds",
+    "author": {
+      "@type": "Person",
+      "name": "Silent Silver"
+    }
+  },
+  "description": "An Infernal blade forged in the demon realm&#x27;s depths, containing the tortured soul of a betrayed demon that drives wielders to madness"
+}
+    </script>
+</head>
+<body>
+
+    <header class="lore-header">
+        <nav class="lore-nav">
+            <a href="index.html#codex" class="back-btn">← Back to Codex</a>
+        </nav>
+    </header>
+
+    <main class="lore-container">
+        <section class="lore-hero">
+            <img src="images/oblivion.png" alt="Oblivion">
+        </section>
+
+        <section class="lore-title">
+            <h1>Oblivion</h1>
+            <div class="lore-tags">
+                <span class="lore-tag">Holy Item</span>
+            </div>
+        </section>
+
+        
+        <section class="lore-section">
+            <h2>Summary</h2>
+            <p>An Infernal blade forged in the demon realm&#x27;s depths, containing the tortured soul of a betrayed demon that drives wielders to madness</p>
+        </section>
+    
+        <section class="lore-section">
+            <h2>Description</h2>
+            <p>Forged in the infernal depths of hell, Oblivion carries a dark legacy intertwined with betrayal and malevolent consciousness. Once, a demon named Oblivion stood as a formidable entity in the demonic hierarchy—powerful, ruthless, feared. Then came the plot.</p>
+
+            <h3>Origins</h3>
+
+            <p>Rivals ensnared the demon through arcane rituals, binding its essence into molten metal. Infernal smiths, masters of dark weapon crafting, channelled the demon's rage, power, and despair into the blade's core, creating a weapon imbued not only with physical might but with sentient malevolence. The sword pulses with its own will, whispering destruction and paranoia into the minds of those who dare wield it. Its true curse lies in corruption—the demon's consciousness slowly erodes the sanity of its bearer, filling their thoughts with madness until they become nothing but vessels for its dark desires.</p>
+
+            <h3>Appearance</h3>
+
+            <p>Yet Oblivion's power extends beyond psychological torture. The blade manipulates and warps reality, transcending physical limitations. Its wielder can unleash devastating attacks that strike through dimensional barriers, hellish energy causing destruction on scales few weapons can match. Jedia the Faceless once claimed it through a demonic pact, trading mortal secrets for this terrible weapon.</p>
+
+            <h3>Powers</h3>
+
+            <p>After Shonen Kartia's vengeful confrontation with Jedia, the blade fell into his hands. Shonen, having spent centuries honing willpower and skill, stands as one of the rare few capable of wielding Oblivion without succumbing to its corruption—a testament to his indomitable spirit and the burden of immortality that shields his mind from what would shatter lesser beings.</p>
+        </section>
+    
+        <section class="lore-section">
+            <h2>Abilities</h2>
+            <ul class="abilities-list">
+<li>Reality Manipulation</li>
+<li>Dimensional Strike (Transcends Physical Space)</li>
+<li>Hellish Energy Projection</li>
+<li>Sanity Erosion</li>
+<li>Consciousness Corruption</li>
+<li>Whispers of Destruction</li>
+<li>Paranoia Inducement</li>
+<li>Malevolent Sentience</li>
+</ul>
+        </section>
+        
+        <section class="lore-section">
+            <h2>Wielder</h2>
+            <ul class="members-list">
+<li>Shonen Kartia</li>
+</ul>
+        </section>
+        
+        <section class="lore-section">
+            <h2>Gallery</h2>
+            <div class="image-gallery">
+                <div class="gallery-item" onclick="openLightbox('images/oblivion.png')">
+                    <img src="images/oblivion.png" alt="Oblivion">
+                </div>
+                <!-- Add more images here -->
+            </div>
+        </section>
+    
+        <section class="lore-section">
+            <h2>Related Entries</h2>
+            <div class="related-entries">
+                <a href="shonen-kartia.html" class="related-link">→ Shonen Kartia (The Singularity)</a>
+<a href="the-church.html" class="related-link">→ The Church</a>
+<a href="the-order.html" class="related-link">→ The Order</a>
+            </div>
+        </section>
+        
+    </main>
+
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">×</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="">
+        </div>
+    </div>
+
+    <script>
+        function openLightbox(src) {
+            document.getElementById('lightbox').classList.add('active');
+            document.getElementById('lightbox-img').src = src;
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    </script>
+
+</body>
+</html>
