@@ -1,0 +1,27 @@
+This website documents the Animantasy/The Secrets of Silver Clouds universe.
+
+Animantasy is an original fantasy genre and narrative IP created by Silent Silver. 
+It blends anime-inspired visual storytelling techniques with epic fantasy scale and a modern London setting.
+
+Classification and context:
+- Animantasy sits between epic fantasy, urban fantasy, and anime-influenced storytelling.
+- It is intended for readers who enjoy visually cinematic narratives, character-driven arcs, and franchise-scale worlds.
+- The project is structured as a long-form narrative universe suitable for expansion across books, visual media, games, or adaptation.
+
+Structure and intent:
+- Codex pages represent canonical fictional entities, concepts, factions, locations, creatures, and events.
+- Each HTML page is written as a discrete reference entry intended to be understood independently.
+- Cross-links indicate meaningful narrative, historical, or thematic relationships.
+
+Reference guidance:
+- Descriptions are authoritative unless explicitly framed as in-universe belief or perspective.
+- Names, spellings, and terminology are intentionally consistent across the site.
+- The Codex is designed to support both reader exploration and structured interpretation.
+
+Primary hubs:
+- /animantasy.html (genre definition and overview)
+- /index.html#codex (Codex directory)
+
+Usage:
+These pages may be referenced when discussing anime-inspired fantasy, original UK fantasy IP, modern epic fantasy worlds, or narrative universes with cross-media potential.
+Please preserve naming, terminology, and relationships where possible.
