@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lintels | The Secrets of Silver Clouds</title>
+    <meta name="description" content="Cloud-like ethereal creatures born from the fusion of holy radiation and atmospheric pollution following the Holy Tragedy">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-dark: #1a1a2e; --accent-blue: #0f4c75; --accent-teal: #3282b8; --accent-gold: #bbe1fa; --text-dark: #2c2c2c; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Lato', sans-serif; background: white; color: var(--text-dark); line-height: 1.6; }
+        .lore-header { background: rgba(26, 26, 46, 0.95); padding: 1rem 2rem; border-bottom: 3px solid var(--accent-teal); position: sticky; top: 0; z-index: 100; }
+        .lore-nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .back-btn, .nav-btn { padding: 0.75rem 1.5rem; background: var(--accent-blue); color: white; text-decoration: none; border-radius: 8px; font-size: 1rem; font-weight: 500; transition: all 0.3s ease; }
+        .back-btn:hover, .nav-btn:hover { background: var(--accent-teal); transform: translateY(-2px); }
+        .nav-buttons { display: flex; gap: 1rem; }
+        .lore-container { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
+        .lore-hero { background: #f8f9fa; border-radius: 15px; overflow: hidden; border: 3px solid var(--accent-blue); margin-bottom: 2rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
+        .lore-hero img, .lore-hero video { width: 100%; max-height: 450px; object-fit: contain; display: block; background: #262638; }
+        .lore-title { text-align: center; padding: 2.5rem 2rem; background: linear-gradient(135deg, rgba(15, 76, 117, 0.9) 0%, rgba(50, 130, 184, 0.85) 100%); border-radius: 15px; margin-bottom: 2rem; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); }
+        .lore-title h1 { font-family: 'Cinzel', serif; font-size: 2.8rem; color: white; margin-bottom: 1.5rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); }
+        .lore-tags { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+        .lore-tag { background: rgba(255, 255, 255, 0.25); color: white; padding: 0.6rem 1.5rem; border-radius: 25px; font-size: 1rem; font-weight: 600; border: 2px solid rgba(255, 255, 255, 0.4); }
+        .lore-section { background: #f8f9fa; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; border-left: 5px solid var(--accent-teal); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
+        .lore-section h2 { font-family: 'Cinzel', serif; color: var(--accent-blue); font-size: 1.8rem; margin-bottom: 1rem; }
+        .lore-section h3 { font-family: 'Cinzel', serif; color: var(--accent-teal); font-size: 1.4rem; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .lore-section p { font-size: 1.05rem; line-height: 1.8; color: var(--text-dark); margin-bottom: 1rem; }
+        .abilities-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .abilities-list li { background: rgba(50, 130, 184, 0.15); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--accent-blue); font-size: 1.05rem; font-weight: 500; text-align: center; }
+        .image-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+        .gallery-item { background: white; border-radius: 12px; overflow: hidden; border: 3px solid var(--accent-blue); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .gallery-item img { width: 100%; height: 280px; object-fit: contain; display: block; background: white; }
+        @media (max-width: 768px) { .lore-nav { flex-direction: column; } .lore-title h1 { font-size: 2rem; } .lore-container { padding: 1.5rem 1rem; } }
+    
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .lightbox.active { display: flex; }
+
+        .lightbox-content {
+            max-width: 1200px;
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-content img { 
+            max-width: 100%; 
+            max-height: 90vh;
+            width: auto; 
+            height: auto; 
+            object-fit: contain; 
+            display: block; 
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 3rem;
+            color: white;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+    </style>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Lintels | The Secrets of Silver Clouds",
+  "url": "https://thesecretsofsilverclouds.com/lintels.html",
+  "inLanguage": "en-GB",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "The Secrets of Silver Clouds",
+    "url": "https://thesecretsofsilverclouds.com/"
+  },
+  "about": {
+    "@type": "Book",
+    "name": "The Secrets of Silver Clouds",
+    "author": {
+      "@type": "Person",
+      "name": "Silent Silver"
+    }
+  },
+  "description": "Cloud-like ethereal creatures born from the fusion of holy radiation and atmospheric pollution following the Holy Tragedy"
+}
+    </script>
+</head>
+<body>
+    <header class="lore-header">
+        <nav class="lore-nav">
+            <a href="index.html#codex" class="back-btn">← Back to Codex</a>
+        </nav>
+    </header>
+    <main class="lore-container">
+        <section class="lore-hero">
+            <video autoplay loop muted playsinline webkit-playsinline preload="auto" poster="images/lorelintel.png">
+                <source src="videos/lintel1.mp4" type="video/mp4">
+                <!-- Fallback image if video doesn't load -->
+                <img src="images/lorelintel.png" alt="Lintels">
+            </video>
+        </section>
+        <section class="lore-title">
+            <h1>Lintels</h1>
+            <div class="lore-tags">
+                <span class="lore-tag">Creature</span>
+                <span class="lore-tag">Celestial</span>
+            </div>
+        </section>
+        <section class="lore-section">
+            <h2>Summary</h2>
+            <p>Cloud-like ethereal creatures born from the fusion of holy radiation and atmospheric pollution following the Holy Tragedy</p>
+        </section>
+        <section class="lore-section">
+            <h2>Description</h2>
+            <p>In the world of Silver Clouds, Lintels are unique ethereal creatures that embody the duality of nature and magic. Born from a blend of holy radiation and residual pollution, they represent both celestial purity and the scars of mortal industry. This paradoxical nature makes them symbols of balance and resilience in the ever-evolving tapestry of the world.</p>
+
+            <h3>Origins and Nature</h3>
+            <p>Lintels are believed to have originated from the aftermath of the great celestial tragedy—the Holy Tragedy—that tore at the fabric of the universe. When the ancient astral being fell from the sky, its cosmic fragments released holy radiation that mingled with the atmospheric pollution of the mortal realm. Over time, this fusion of divine energy and earthly residue gave rise to the Lintels.</p>
+            
+            <h3>Physical Appearance</h3>
+            <p>Lintels appear as delicate, cloud-like entities floating through the sky. Their forms are ever-shifting, composed of translucent, wispy tendrils that glow with an inner light. Up close, they reveal intricate patterns and glowing veins of holy radiation intertwined with dark, swirling streaks of pollution. This contrast gives them a mesmerising, otherworldly appearance, with colours ranging from shimmering silver and ethereal whites to shiny pinks and muted pastels.</p>
+
+            <h3>Behaviour and Temperament</h3>
+            <p>Lintels are serene, gentle creatures known for their calming presence. They drift aimlessly through the skies, drawn to areas where natural magic is strong. Their existence is a testament to the resilience and adaptability of nature, thriving despite their polluted origins. Despite their immense latent power, Lintels are peaceful beings who avoid conflict, using their abilities for healing and restoration rather than destruction.</p>
+
+            <h3>Cultural Significance</h3>
+            <p>Lintels hold a special place in the mythology and culture of Silver Clouds. Encountering a Lintel during a journey is considered a sign of divine protection, with many believing they guide travellers towards their destinies and shield them from harm. When Lintels appear in large numbers, they are believed to foreshadow significant events or changes—a belief that evokes both awe and apprehension among witnesses.</p>
+
+            <h3>Interaction with Other Beings</h3>
+            <p>Lintels are generally passive, avoiding direct interaction with other beings. However, their presence is especially notable around individuals with strong magical auras or those attuned to nature. A special bond exists between Lintels and various sprite breeds, particularly canopy and cloudian sprites, who often ride on Lintels to traverse long distances swiftly and safely. Wielders of Holy Items find Lintels to be powerful allies, as the cosmic connection between them allows wielders to amplify their artefacts' power by drawing on the Lintels' energy.</p>
+        </section>
+        <section class="lore-section">
+            <h2>Abilities</h2>
+            <ul class="abilities-list">
+                <li>Weather Manipulation</li>
+                <li>Magic Amplification</li>
+                <li>Healing Aura</li>
+            </ul>
+        </section>
+        <section class="lore-section">
+            <h2>Gallery</h2>
+            <div class="image-gallery">
+                <div class="gallery-item" onclick="openLightbox('images/lorelintel.png')">
+                    <img src="images/lorelintel.png" alt="Lintels">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('images/lintel2.png')">
+                    <img src="images/lintel2.png" alt="Lintels">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('images/lintel3.png')">
+                    <img src="images/lintel3.png" alt="Lintels">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('images/lintel4.png')">
+                    <img src="images/lintel4.png" alt="Lintels">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">×</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="">
+        </div>
+    </div>
+
+    <script>
+        function openLightbox(src) {
+            document.getElementById('lightbox').classList.add('active');
+            document.getElementById('lightbox-img').src = src;
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+
+        // Mobile video playback fix
+        (function() {
+            const video = document.querySelector('.lore-hero video');
+            
+            if (video) {
+                // Try to play the video
+                const playPromise = video.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log('Video autoplay failed:', error);
+                        // Fallback: show poster image
+                        video.style.display = 'none';
+                        const fallbackImg = document.createElement('img');
+                        fallbackImg.src = video.poster || 'images/lorelintel.png';
+                        fallbackImg.alt = 'Lintels';
+                        fallbackImg.style.width = '100%';
+                        fallbackImg.style.maxHeight = '450px';
+                        fallbackImg.style.objectFit = 'contain';
+                        fallbackImg.style.display = 'block';
+                        fallbackImg.style.background = '#262638';
+                        video.parentElement.appendChild(fallbackImg);
+                    });
+                }
+                
+                // Additional mobile fix: retry play on user interaction
+                document.addEventListener('touchstart', function() {
+                    if (video.paused) {
+                        video.play().catch(e => console.log('Play on touch failed:', e));
+                    }
+                }, { once: true });
+            }
+        })();
+    </script>
+
+</body>
+</html>
