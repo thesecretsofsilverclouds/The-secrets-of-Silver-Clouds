@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duskkin | The Secrets of Silver Clouds</title>
+    <meta name="description" content="Cybernetic vampires blending ancient bloodlust with modern technology">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-dark: #1a1a2e; --accent-blue: #0f4c75; --accent-teal: #3282b8; --accent-gold: #bbe1fa; --text-dark: #2c2c2c; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Lato', sans-serif; background: white; color: var(--text-dark); line-height: 1.6; }
+        .lore-header { background: rgba(26, 26, 46, 0.95); padding: 1rem 2rem; border-bottom: 3px solid var(--accent-teal); position: sticky; top: 0; z-index: 100; }
+        .lore-nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .back-btn, .nav-btn { padding: 0.75rem 1.5rem; background: var(--accent-blue); color: white; text-decoration: none; border-radius: 8px; font-size: 1rem; font-weight: 500; transition: all 0.3s ease; }
+        .back-btn:hover, .nav-btn:hover { background: var(--accent-teal); transform: translateY(-2px); }
+        .nav-buttons { display: flex; gap: 1rem; }
+        .lore-container { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
+        .lore-hero { background: #f8f9fa; border-radius: 15px; overflow: hidden; border: 3px solid var(--accent-blue); margin-bottom: 2rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
+        .lore-hero img { width: 100%; max-height: 450px; object-fit: contain; display: block; background: #262638; }
+        .lore-title { text-align: center; padding: 2.5rem 2rem; background: linear-gradient(135deg, rgba(15, 76, 117, 0.9) 0%, rgba(50, 130, 184, 0.85) 100%); border-radius: 15px; margin-bottom: 2rem; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); }
+        .lore-title h1 { font-family: 'Cinzel', serif; font-size: 2.8rem; color: white; margin-bottom: 1.5rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); }
+        .lore-tags { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+        .lore-tag { background: rgba(255, 255, 255, 0.25); color: white; padding: 0.6rem 1.5rem; border-radius: 25px; font-size: 1rem; font-weight: 600; border: 2px solid rgba(255, 255, 255, 0.4); }
+        .lore-section { background: #f8f9fa; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; border-left: 5px solid var(--accent-teal); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
+        .lore-section h2 { font-family: 'Cinzel', serif; color: var(--accent-blue); font-size: 1.8rem; margin-bottom: 1rem; }
+        .lore-section h3 { font-family: 'Cinzel', serif; color: var(--accent-teal); font-size: 1.4rem; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .lore-section p { font-size: 1.05rem; line-height: 1.8; color: var(--text-dark); margin-bottom: 1rem; }
+        .abilities-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .abilities-list li { background: rgba(50, 130, 184, 0.15); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--accent-blue); font-size: 1.05rem; font-weight: 500; text-align: center; }
+        .image-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+        .gallery-item { background: white; border-radius: 12px; overflow: hidden; border: 3px solid var(--accent-blue); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .gallery-item img { width: 100%; height: 280px; object-fit: contain; display: block; background: white; }
+        @media (max-width: 768px) { .lore-nav { flex-direction: column; } .lore-title h1 { font-size: 2rem; } .lore-container { padding: 1.5rem 1rem; } }
+    
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .lightbox.active { display: flex; }
+
+        .lightbox-content {
+            max-width: 1200px;
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-content img { 
+            max-width: 100%; 
+            max-height: 90vh;
+            width: auto; 
+            height: auto; 
+            object-fit: contain; 
+            display: block; 
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 3rem;
+            color: white;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+    </style>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Duskkin | The Secrets of Silver Clouds",
+  "url": "https://thesecretsofsilverclouds.com/duskkin.html",
+  "inLanguage": "en-GB",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "The Secrets of Silver Clouds",
+    "url": "https://thesecretsofsilverclouds.com/"
+  },
+  "about": {
+    "@type": "Book",
+    "name": "The Secrets of Silver Clouds",
+    "author": {
+      "@type": "Person",
+      "name": "Silent Silver"
+    }
+  },
+  "description": "Cybernetic vampires blending ancient bloodlust with modern technology"
+}
+    </script>
+</head>
+<body>
+    <header class="lore-header">
+        <nav class="lore-nav">
+            <a href="index.html#codex" class="back-btn">← Back to Codex</a>
+        </nav>
+    </header>
+    <main class="lore-container">
+        <section class="lore-hero">
+            <img src="images/duskkin.png" alt="Duskkin">
+        </section>
+        <section class="lore-title">
+            <h1>Duskkin</h1>
+            <div class="lore-tags">
+                <span class="lore-tag">Race</span>
+                <span class="lore-tag">Faction</span>
+            </div>
+        </section>
+        <section class="lore-section">
+            <h2>Summary</h2>
+            <p>Cybernetic vampires blending ancient bloodlust with cutting-edge technology</p>
+        </section>
+        <section class="lore-section">
+            <h2>Description</h2>
+            <p>Nestled in the secluded northern reaches lies the enigmatic Duskkin Clan, a race of vampiric beings descended from ancient vampiric nobility. Renowned for their unique fusion of cybernetics and blood magic, the Duskkin have long embraced alchemical arts to augment and transcend their natural abilities.</p>
+            
+            <h3>Origins & Evolution</h3>
+            <p>Over generations, the Duskkin's relentless pursuit of power and perfection led them down the path of experimentation, culminating in a groundbreaking synthesis of technology and vampiric magic. Their slender forms are often sheathed in sleek, futuristic armour that gleams dully in the shadows—a testament to their technological prowess. This armour, adorned with strange tubing and cables, integrates seamlessly with their physiology, enhancing their natural capabilities.</p>
+            
+            <p>In the annals of Duskkin history, there was a time when these vampiric beings were not so different from the savage, human-preying vampires of legend. However, the turning point came with the Great Revelation—a period of enlightenment that swept through Duskkin society. The Duskkin elders, in their wisdom, recognised that the path of unrestrained human feeding would ultimately lead to their downfall.</p>
+            
+            <p>Thus began the Great Transition, a time of profound change and adaptation. The Duskkin learned to harness the power of the blood of mythical creatures, discovering that this potent essence could sustain them in ways that human blood never could. This transformation established their cardinal law: never feed on humans—a prohibition enforced with brutal efficiency.</p>
+
+            <h3>Sanguine Forging & Blood Potency</h3>
+            <p>A cornerstone of Duskkin innovation is the practice of "sanguine forging"—a sacred ritual where blood is directly converted into energy. This energy is then used to power and fuse with mechanical body parts and weaponry, transforming the Duskkin into formidable cybernetic predators. This process symbolises a rite of passage, marking the transition from mere vampiric beings to apex hunters.</p>
+            
+            <p>The blood potency system has created a complex hierarchy within Duskkin society. A hunter who feeds on a Prowler's blood might exhibit enhanced agility and stealth, their movements taking on feline grace. Feed on an Iron Bloom Behemoth, and your skin develops a metallic sheen whilst your strength multiplies exponentially. These manifestations serve as both mark of prowess and warning to adversaries.</p>
+
+            <h3>The Urban Jungle</h3>
+            <p>The Duskkin territory, known as the Urban Jungle, is a vast and sprawling landscape—a fusion of ancient magic and modern technology. Within this techno-organic maze roam mythical creatures of extraordinary power: Prowlers with spectral forms, Iron Bloom Behemoths whose metallic hides can withstand artillery, Shadow Beasts bound to elite warriors through blood magic rituals, and countless other specimens drawn to the territory's unique energy signature.</p>
+
+            <h3>The Great Hunts</h3>
+            <p>The Great Hunts are the spiritual cornerstone of Duskkin culture—ritualistic pursuits where cybernetically enhanced vampires clad in specialised armour track their quarry through neon-lit alleyways and biomechanical forests. Those who consistently bring down the most powerful prey are accorded immense respect and status. Their cybernetic modifications grow more elaborate with each successful hunt—additional data processing implants allow instant environmental analysis, blood magic receivers stream tactical information directly into their minds, enhanced sensory suites track prey across dimensions.</p>
+            
+            <p>They're no longer merely vampires. They're apex predators engineered for perfection.</p>
+        </section>
+        <section class="lore-section">
+            <h2>Abilities</h2>
+            <ul class="abilities-list">
+                <li>Sanguine Forging (Blood to Energy)</li>
+                <li>Cybernetic Integration</li>
+                <li>Blood Magic</li>
+                <li>Enhanced Strength & Speed</li>
+                <li>Instant Environmental Analysis</li>
+                <li>Direct Data Streaming</li>
+                <li>Blood Potency Manifestation</li>
+            </ul>
+        </section>
+        <section class="lore-section">
+            <h2>Gallery</h2>
+            <div class="image-gallery">
+                <div class="gallery-item" onclick="openLightbox('images/duskkin.png')">
+                    <img src="images/duskkin.png" alt="Duskkin">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('images/duskkin1.png')">
+                    <img src="images/duskkin1.png" alt="Duskkin">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('images/duskkin2.png')">
+                    <img src="images/duskkin2.png" alt="Duskkin">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('images/zara.png')">
+                    <img src="images/zara.png" alt="Zara">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">×</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="">
+        </div>
+    </div>
+
+    <script>
+        function openLightbox(src) {
+            document.getElementById('lightbox').classList.add('active');
+            document.getElementById('lightbox-img').src = src;
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    </script>
+
+</body>
+</html>
