@@ -745,7 +745,7 @@
                     <li><a href="#home">Home</a></li>
                     <li><a href="#about">About Author</a></li>
                     <li><a href="#book">About Book</a></li>
-                    <li><a href="animantasy.html">Animantasy</a></li>
+                    <li><a href="/animantasy">Animantasy</a></li>
                     <li><a href="#codex">Codex</a></li>
                     <li><a href="#game">Play Game</a></li>
                     <li><a href="#blog">Blog</a></li>
@@ -2070,7 +2070,7 @@
             });
 
             grid.innerHTML = filtered.map((entry, index) => `
-                <a class="lore-card" href="${entry.id}.html" aria-label="Open ${entry.name} entry">
+                <a class="lore-card" href="/${entry.id}" aria-label="Open ${entry.name} entry">
                     <img src="${entry.image}" 
                          alt="${entry.name}" 
                          loading="lazy"
