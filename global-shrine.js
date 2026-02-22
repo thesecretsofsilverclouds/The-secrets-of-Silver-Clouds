@@ -46,7 +46,7 @@
       padding: 0 24px; display: flex; flex-direction: column; align-items: center; gap: 0;
     }
     #gift-panel.open #gift-body { max-height: 50vh; padding: 16px 24px 20px; overflow-y: auto; overflow-x: hidden; }
-    
+
     /* Scrollbar for the Shrine */
     #gift-body::-webkit-scrollbar { width: 6px; }
     #gift-body::-webkit-scrollbar-track { background: rgba(0,0,0,0.4); border-radius: 4px; }
@@ -98,6 +98,17 @@
       width: 80%; height: 1px; margin: 4px 0; flex-shrink: 0;
       background: linear-gradient(to right, transparent 0%, rgba(180,130,20,0.5) 30%, rgba(180,130,20,0.5) 70%, transparent 100%);
     }
+
+    #gift-share-btn {
+      margin-top: 8px; padding: 8px 20px;
+      background: rgba(138,104,32,0.15); border: 1px solid rgba(200,160,20,0.4);
+      border-radius: 6px; color: #c8a030; cursor: pointer;
+      font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px;
+      text-transform: uppercase; transition: all 0.3s ease; user-select: none;
+    }
+    #gift-share-btn:hover { background: rgba(200,160,20,0.25); border-color: #e8c040; color: #e8c040; }
+    #gift-share-btn:active { transform: scale(0.97); }
+    #gift-share-btn.sharing { opacity: 0.5; pointer-events: none; }
 
     /* Mobile adjustments: keep it flush with the bottom edge on small screens */
     @media (max-width: 768px) {
@@ -155,6 +166,7 @@
             <span class="gc-lore" id="gc-weapon-lore"></span>
           </div>
         </div>
+        <button id="gift-share-btn" onclick="window.giftShare()">✦ Share Your Gift ✦</button>
       </div>
     </div>
   `;
@@ -267,6 +279,319 @@
     // Automatically open slightly delayed if requested (not typical for global inject, we usually keep it closed)
     // setTimeout(() => panel.classList.add('open'), animate ? 500 : 100);
   }
+
+  // ── SHARE CARD ──────────────────────────────────
+  const FACTION_IMAGES = {
+    D: '/images/demons-legion.png',
+    O: '/images/the-order.png',
+    C: '/images/church.png',
+    M: '/images/mi6.png',
+    R: '/images/ragnorir.png'
+  };
+
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('Failed to load: ' + src));
+      img.src = src;
+    });
+  }
+
+  function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+    const words = text.split(' ');
+    let line = '';
+    let lineCount = 0;
+    const lines = [];
+    for (let i = 0; i < words.length; i++) {
+      const testLine = line + words[i] + ' ';
+      if (ctx.measureText(testLine).width > maxWidth && line !== '') {
+        lines.push(line.trim());
+        line = words[i] + ' ';
+      } else {
+        line = testLine;
+      }
+    }
+    lines.push(line.trim());
+    for (let i = 0; i < Math.min(lines.length, maxLines); i++) {
+      let drawLine = lines[i];
+      if (i === maxLines - 1 && lines.length > maxLines) {
+        drawLine = drawLine.slice(0, -3) + '...';
+      }
+      ctx.fillText(drawLine, x, y + i * lineHeight);
+      lineCount++;
+    }
+    return lineCount * lineHeight;
+  }
+
+  function drawCircleImage(ctx, img, cx, cy, radius) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
+    const size = radius * 2;
+    const aspect = img.width / img.height;
+    let sw = size, sh = size;
+    if (aspect > 1) sh = size / aspect;
+    else sw = size * aspect;
+    ctx.drawImage(img, cx - sw / 2, cy - sh / 2, sw, sh);
+    ctx.restore();
+    // Border
+    ctx.strokeStyle = 'rgba(200,160,20,0.7)';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  function drawRoundedImage(ctx, img, x, y, w, h, r) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+    ctx.clip();
+    const aspect = img.width / img.height;
+    let sw = w, sh = h;
+    if (aspect > 1) sh = w / aspect;
+    else sw = h * aspect;
+    ctx.drawImage(img, x + (w - sw) / 2, y + (h - sh) / 2, sw, sh);
+    ctx.restore();
+    ctx.strokeStyle = 'rgba(200,160,20,0.4)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+    ctx.stroke();
+  }
+
+  async function generateShareCard() {
+    const stored = localStorage.getItem('fateGift');
+    if (!stored) return null;
+    const gift = JSON.parse(stored);
+    const fm = FACTIONS_META[gift.faction];
+    if (!fm) return null;
+
+    const W = 1080, H = 1350;
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    // Background
+    ctx.fillStyle = '#0a0806';
+    ctx.fillRect(0, 0, W, H);
+
+    // Load images in parallel
+    const creatureFile = '/gift-assets/' + gift.creature.file.split('/').pop();
+    const weaponFile = '/gift-assets/' + gift.weapon.file.split('/').pop();
+    const factionBgSrc = FACTION_IMAGES[gift.faction];
+
+    let factionBgImg = null, creatureImg = null, weaponImg = null;
+    try {
+      [factionBgImg, creatureImg, weaponImg] = await Promise.all([
+        loadImage(factionBgSrc),
+        loadImage(creatureFile),
+        loadImage(weaponFile)
+      ]);
+    } catch (e) {
+      console.error('Share card image load failed:', e);
+      return null;
+    }
+
+    // ── HEADER: Faction image background (top 35%) ──
+    const headerH = 470;
+    // Clip so faction image doesn't bleed into guardian section
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, W, headerH);
+    ctx.clip();
+    // Draw faction image cover-style
+    const fAspect = factionBgImg.width / factionBgImg.height;
+    let fDrawW = W, fDrawH = headerH;
+    if (fAspect > W / headerH) {
+      fDrawH = headerH;
+      fDrawW = headerH * fAspect;
+    } else {
+      fDrawW = W;
+      fDrawH = W / fAspect;
+    }
+    ctx.drawImage(factionBgImg, (W - fDrawW) / 2, (headerH - fDrawH) / 2, fDrawW, fDrawH);
+    ctx.restore();
+
+    // Dark gradient overlay
+    const hGrad = ctx.createLinearGradient(0, 0, 0, headerH);
+    hGrad.addColorStop(0, 'rgba(10,8,6,0.3)');
+    hGrad.addColorStop(0.6, 'rgba(10,8,6,0.55)');
+    hGrad.addColorStop(1, 'rgba(10,8,6,0.95)');
+    ctx.fillStyle = hGrad;
+    ctx.fillRect(0, 0, W, headerH);
+
+    // Faction name + rune
+    ctx.textAlign = 'center';
+    ctx.fillStyle = fm.color;
+    ctx.font = 'bold 28px Georgia, serif';
+    ctx.fillText(fm.rune + '  ' + fm.name.toUpperCase() + '  ' + fm.rune, W / 2, headerH - 80);
+
+    // "YOUR HOLY GIFT" title
+    ctx.fillStyle = '#e8c040';
+    ctx.font = 'bold 48px Georgia, serif';
+    ctx.fillText('YOUR HOLY GIFT', W / 2, headerH - 30);
+
+    // ── Thin gold separator ──
+    const sepY = headerH + 10;
+    const grad1 = ctx.createLinearGradient(100, 0, W - 100, 0);
+    grad1.addColorStop(0, 'transparent');
+    grad1.addColorStop(0.3, 'rgba(200,160,20,0.6)');
+    grad1.addColorStop(0.7, 'rgba(200,160,20,0.6)');
+    grad1.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad1;
+    ctx.fillRect(100, sepY, W - 200, 2);
+
+    // ── GUARDIAN SECTION ──
+    const guardianY = sepY + 50;
+    const imgSize = 180;
+    const imgCenterX = 160;
+    const textLeft = imgCenterX + imgSize / 2 + 40;
+    const textMaxW = W - textLeft - 60;
+
+    // "GUARDIAN" label
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#8a6820';
+    ctx.font = '20px Georgia, serif';
+    ctx.letterSpacing = '3px';
+    ctx.fillText('GUARDIAN', textLeft, guardianY + 10);
+
+    // Guardian image (circle)
+    drawCircleImage(ctx, creatureImg, imgCenterX, guardianY + imgSize / 2, imgSize / 2);
+
+    // Guardian name
+    ctx.fillStyle = '#e0d0a8';
+    ctx.font = 'bold 30px Georgia, serif';
+    const gNameY = guardianY + 50;
+    wrapText(ctx, gift.creature.name, textLeft, gNameY, textMaxW, 36, 2);
+
+    // Guardian lore
+    ctx.fillStyle = '#8a7a5a';
+    ctx.font = 'italic 22px Georgia, serif';
+    wrapText(ctx, gift.creature.lore, textLeft, gNameY + 75, textMaxW, 30, 4);
+
+    // ── Gold rune separator ──
+    const sep2Y = guardianY + imgSize + 40;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(200,160,20,0.5)';
+    ctx.font = '24px Georgia, serif';
+    ctx.fillText('─────  ✦  ─────', W / 2, sep2Y);
+
+    // ── HOLY ITEM SECTION ──
+    const weaponY = sep2Y + 40;
+
+    // "HOLY ITEM" label
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#8a6820';
+    ctx.font = '20px Georgia, serif';
+    ctx.fillText('HOLY ITEM', textLeft, weaponY + 10);
+
+    // Weapon image (rounded rect)
+    drawRoundedImage(ctx, weaponImg, imgCenterX - imgSize / 2, weaponY, imgSize, imgSize, 20);
+
+    // Weapon name
+    ctx.fillStyle = '#e0d0a8';
+    ctx.font = 'bold 30px Georgia, serif';
+    const wNameY = weaponY + 50;
+    wrapText(ctx, gift.weapon.name, textLeft, wNameY, textMaxW, 36, 2);
+
+    // Weapon lore
+    ctx.fillStyle = '#8a7a5a';
+    ctx.font = 'italic 22px Georgia, serif';
+    wrapText(ctx, gift.weapon.lore, textLeft, wNameY + 75, textMaxW, 30, 4);
+
+    // ── FOOTER ──
+    const footerY = H - 100;
+    const grad2 = ctx.createLinearGradient(100, 0, W - 100, 0);
+    grad2.addColorStop(0, 'transparent');
+    grad2.addColorStop(0.3, 'rgba(200,160,20,0.4)');
+    grad2.addColorStop(0.7, 'rgba(200,160,20,0.4)');
+    grad2.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad2;
+    ctx.fillRect(100, footerY, W - 200, 1);
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#c8a030';
+    ctx.font = 'bold 22px Georgia, serif';
+    ctx.fillText('thesecretsofsilverclouds.com', W / 2, footerY + 40);
+    ctx.fillStyle = '#6a5a3a';
+    ctx.font = 'italic 20px Georgia, serif';
+    ctx.fillText('Take the Faction Assessment to discover your own Holy Gift', W / 2, footerY + 72);
+
+    // Outer border
+    ctx.strokeStyle = 'rgba(200,160,20,0.3)';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(20, 20, W - 40, H - 40);
+
+    return canvas;
+  }
+
+  window.giftShare = async function () {
+    const btn = document.getElementById('gift-share-btn');
+    if (!btn) return;
+    btn.classList.add('sharing');
+    btn.textContent = 'Generating...';
+
+    try {
+      const canvas = await generateShareCard();
+      if (!canvas) {
+        btn.textContent = 'Error';
+        setTimeout(() => { btn.textContent = '✦ Share Your Gift ✦'; btn.classList.remove('sharing'); }, 2000);
+        return;
+      }
+
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      const file = new File([blob], 'my-holy-gift.png', { type: 'image/png' });
+
+      // Try Web Share API (mobile native share sheet)
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: 'My Holy Gift — The Secrets of Silver Clouds',
+          text: 'I discovered my Holy Gift! Take the Faction Assessment to find yours.',
+          files: [file]
+        });
+      } else {
+        // Desktop fallback: download the image
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'my-holy-gift.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+    } catch (e) {
+      // User cancelled share or error
+      if (e.name !== 'AbortError') console.error('Share failed:', e);
+    }
+
+    btn.textContent = '✦ Share Your Gift ✦';
+    btn.classList.remove('sharing');
+  };
 
   // ── PUBLIC API ────────────────────────────────
   window.giftToggle = () => panel.classList.toggle('open');
