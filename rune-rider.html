@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <link rel="canonical" href="https://thesecretsofsilverclouds.com/rune-rider" />
+    <link rel="canonical" href="https://thesecretsofsilverclouds.com/rune-rider" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rune Rider | The Secrets of Silver Clouds</title>
-    <meta name="description" content="A metallic bookmark that transforms into a swift velocipede through arcane engineering">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap" rel="stylesheet">
+    <meta name="description"
+        content="A metallic bookmark that transforms into a swift velocipede through arcane engineering">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap"
+        rel="stylesheet">
     <style>
-
         :root {
             --primary-dark: #1a1a2e;
             --secondary-dark: #16213e;
@@ -18,7 +21,11 @@
             --text-dark: #2c2c2c;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Lato', sans-serif;
@@ -47,7 +54,8 @@
             flex-wrap: wrap;
         }
 
-        .back-btn, .nav-btn {
+        .back-btn,
+        .nav-btn {
             padding: 0.75rem 1.5rem;
             background: var(--accent-blue);
             color: white;
@@ -58,13 +66,17 @@
             transition: all 0.3s ease;
         }
 
-        .back-btn:hover, .nav-btn:hover {
+        .back-btn:hover,
+        .nav-btn:hover {
             background: var(--accent-teal);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(50, 130, 184, 0.3);
         }
 
-        .nav-buttons { display: flex; gap: 1rem; }
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
 
         .lore-container {
             max-width: 1000px;
@@ -106,7 +118,12 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .lore-tags { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+        .lore-tags {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
 
         .lore-tag {
             background: rgba(255, 255, 255, 0.25);
@@ -150,7 +167,8 @@
         }
 
         /* Grids */
-        .abilities-list, .members-list {
+        .abilities-list,
+        .members-list {
             list-style: none;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -158,7 +176,8 @@
             margin-top: 1rem;
         }
 
-        .abilities-list li, .members-list li {
+        .abilities-list li,
+        .members-list li {
             background: rgba(50, 130, 184, 0.15);
             padding: 1.2rem;
             border-radius: 10px;
@@ -241,7 +260,9 @@
             padding: 2rem;
         }
 
-        .lightbox.active { display: flex; }
+        .lightbox.active {
+            display: flex;
+        }
 
         .lightbox-content {
             max-width: 1200px;
@@ -251,13 +272,13 @@
             justify-content: center;
         }
 
-        .lightbox-content img { 
-            max-width: 100%; 
+        .lightbox-content img {
+            max-width: 100%;
             max-height: 90vh;
-            width: auto; 
-            height: auto; 
-            object-fit: contain; 
-            display: block; 
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
         }
 
         .lightbox-close {
@@ -278,15 +299,36 @@
         }
 
         @media (max-width: 768px) {
-            .lore-header { padding: 1rem; }
-            .lore-nav { flex-direction: column; gap: 0.75rem; }
-            .nav-buttons { width: 100%; justify-content: space-between; }
-            .lore-container { padding: 1.5rem 1rem; }
-            .lore-title h1 { font-size: 2rem; }
-            .lore-section { padding: 1.5rem; }
-            .image-gallery { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-        }
+            .lore-header {
+                padding: 1rem;
+            }
 
+            .lore-nav {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .nav-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .lore-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .lore-title h1 {
+                font-size: 2rem;
+            }
+
+            .lore-section {
+                padding: 1.5rem;
+            }
+
+            .image-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
     </style>
 
     <script type="application/ld+json">
@@ -313,6 +355,7 @@
 }
     </script>
 </head>
+
 <body>
 
     <header class="lore-header">
@@ -333,38 +376,46 @@
             </div>
         </section>
 
-        
+
         <section class="lore-section">
             <h2>Summary</h2>
             <p>A metallic bookmark that transforms into a swift velocipede through arcane engineering</p>
         </section>
-    
+
         <section class="lore-section">
             <h2>Description</h2>
-            <p>The Rune Rider is a marvel of arcane engineering, appearing in its dormant state as a simple metallic bookmark etched with intricate runic patterns that shimmer and dance in the light. When activated by a specific gesture or incantation, it unfolds and expands with mechanical precision—clicks and whirrs accompany the transformation as the bookmark becomes a sleek, streamlined velocipede. Its wheels, adorned with the same glowing runes, propel the vehicle with supernatural speed and agility. The frame is constructed from a lightweight, magically-reinforced alloy capable of withstanding significant impacts. Crystalline energy cells serve as regenerative power sources, drawing in ambient magical energies during downtime. The runes can be customized by skilled artificers—some built for speed, others for comfort, creating a smooth, almost floating ride.</p>
+            <p>The Rune Rider is a marvel of arcane engineering, appearing in its dormant state as a simple metallic
+                bookmark etched with intricate runic patterns that shimmer and dance in the light. When activated by a
+                specific gesture or incantation, it unfolds and expands with mechanical precision—clicks and whirrs
+                accompany the transformation as the bookmark becomes a sleek, streamlined velocipede. Its wheels,
+                adorned with the same glowing runes, propel the vehicle with supernatural speed and agility. The frame
+                is constructed from a lightweight, magically-reinforced alloy capable of withstanding significant
+                impacts. Crystalline energy cells serve as regenerative power sources, drawing in ambient magical
+                energies during downtime. The runes can be customized by skilled artificers—some built for speed, others
+                for comfort, creating a smooth, almost floating ride.</p>
         </section>
-    
+
         <section class="lore-section">
             <h2>Abilities</h2>
             <ul class="abilities-list">
-<li>Transforms from Bookmark to Velocipede</li>
-<li>Rune-Powered Propulsion</li>
-<li>Customizable Performance (Speed or Comfort)</li>
-<li>Silent and Smooth Operation</li>
-<li>Regenerative Energy System</li>
-<li>Adaptable to Various Terrains</li>
-</ul>
+                <li>Transforms from Bookmark to Velocipede</li>
+                <li>Rune-Powered Propulsion</li>
+                <li>Customizable Performance (Speed or Comfort)</li>
+                <li>Silent and Smooth Operation</li>
+                <li>Regenerative Energy System</li>
+                <li>Adaptable to Various Terrains</li>
+            </ul>
         </section>
-        
+
         <section class="lore-section">
             <h2>Examples</h2>
             <ul class="members-list">
-<li>Personal transportation for urban travel</li>
-<li>Used by Ashai to find calm under the stars</li>
-<li>Easily concealed as a bookmark</li>
-</ul>
+                <li>Personal transportation for urban travel</li>
+                <li>Used by Ashai to find calm under the stars</li>
+                <li>Easily concealed as a bookmark</li>
+            </ul>
         </section>
-        
+
         <section class="lore-section">
             <h2>Gallery</h2>
             <div class="image-gallery">
@@ -374,8 +425,8 @@
                 <div class="gallery-item" onclick="openLightbox('images/rune-rider1.png')">
                     <img src="images/rune-rider1.png" alt="Rune Rider">
                 </div>
-                <div class="gallery-item" onclick="openLightbox('images/rune-rider2.png')">
-                    <img src="images/rune-rider2.png" alt="Rune Rider">
+                <div class="gallery-item" onclick="openLightbox('images/rune-rider2.webp')">
+                    <img src="images/rune-rider2.webp" alt="Rune Rider" loading="lazy">
                 </div>
                 <div class="gallery-item" onclick="openLightbox('images/rune-rider3.png')">
                     <img src="images/rune-rider3.png" alt="Rune Rider">
@@ -383,21 +434,21 @@
                 <div class="gallery-item" onclick="openLightbox('images/rune-rider4.png')">
                     <img src="images/rune-rider4.png" alt="Rune Rider">
                 </div>
-                <div class="gallery-item" onclick="openLightbox('images/rune-rider5.png')">
-                    <img src="images/rune-rider5.png" alt="Rune Rider">
+                <div class="gallery-item" onclick="openLightbox('images/rune-rider5.webp')">
+                    <img src="images/rune-rider5.webp" alt="Rune Rider" loading="lazy">
                 </div>
                 <!-- Add more images here -->
             </div>
         </section>
-    
+
         <section class="lore-section">
             <h2>Related Entries</h2>
             <div class="related-entries">
                 <a href="/technomagic" class="related-link">→ Technomagic</a>
-<a href="/ashai-bennet" class="related-link">→ Ashai Bennet</a>
+                <a href="/ashai-bennet" class="related-link">→ Ashai Bennet</a>
             </div>
         </section>
-        
+
     </main>
 
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
@@ -417,12 +468,15 @@
             document.getElementById('lightbox').classList.remove('active');
         }
 
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 closeLightbox();
             }
         });
     </script>
 
+    <!-- Shrine JS Injector -->
+    <script src="global-shrine.js"></script>
 </body>
+
 </html>

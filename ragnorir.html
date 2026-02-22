@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <link rel="canonical" href="https://thesecretsofsilverclouds.com/ragnorir" />
+    <link rel="canonical" href="https://thesecretsofsilverclouds.com/ragnorir" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ragnorir | The Secrets of Silver Clouds</title>
-    <meta name="description" content="A fierce Viking-descended faction where storm and steel are one—warriors who command tempests and forge legends in blades and blood">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap" rel="stylesheet">
+    <meta name="description"
+        content="A fierce Viking-descended faction where storm and steel are one—warriors who command tempests and forge legends in blades and blood">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet">
     <style>
-
         :root {
             --primary-dark: #1a1a2e;
             --secondary-dark: #16213e;
@@ -18,7 +21,11 @@
             --text-dark: #2c2c2c;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Lato', sans-serif;
@@ -47,7 +54,8 @@
             flex-wrap: wrap;
         }
 
-        .back-btn, .nav-btn {
+        .back-btn,
+        .nav-btn {
             padding: 0.75rem 1.5rem;
             background: var(--accent-blue);
             color: white;
@@ -58,13 +66,17 @@
             transition: all 0.3s ease;
         }
 
-        .back-btn:hover, .nav-btn:hover {
+        .back-btn:hover,
+        .nav-btn:hover {
             background: var(--accent-teal);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(50, 130, 184, 0.3);
         }
 
-        .nav-buttons { display: flex; gap: 1rem; }
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
 
         .lore-container {
             max-width: 1000px;
@@ -89,6 +101,14 @@
             background: #262638;
         }
 
+        .lore-hero video {
+            width: 100%;
+            max-height: 450px;
+            object-fit: contain;
+            display: block;
+            background: #262638;
+        }
+
         .lore-title {
             text-align: center;
             padding: 2.5rem 2rem;
@@ -106,7 +126,12 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .lore-tags { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+        .lore-tags {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
 
         .lore-tag {
             background: rgba(255, 255, 255, 0.25);
@@ -150,7 +175,8 @@
         }
 
         /* Grids */
-        .abilities-list, .members-list {
+        .abilities-list,
+        .members-list {
             list-style: none;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -158,7 +184,8 @@
             margin-top: 1rem;
         }
 
-        .abilities-list li, .members-list li {
+        .abilities-list li,
+        .members-list li {
             background: rgba(50, 130, 184, 0.15);
             padding: 1.2rem;
             border-radius: 10px;
@@ -241,7 +268,9 @@
             padding: 2rem;
         }
 
-        .lightbox.active { display: flex; }
+        .lightbox.active {
+            display: flex;
+        }
 
         .lightbox-content {
             max-width: 1200px;
@@ -251,13 +280,13 @@
             justify-content: center;
         }
 
-        .lightbox-content img { 
-            max-width: 100%; 
+        .lightbox-content img {
+            max-width: 100%;
             max-height: 90vh;
-            width: auto; 
-            height: auto; 
-            object-fit: contain; 
-            display: block; 
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
         }
 
         .lightbox-close {
@@ -277,16 +306,81 @@
             line-height: 1;
         }
 
-        @media (max-width: 768px) {
-            .lore-header { padding: 1rem; }
-            .lore-nav { flex-direction: column; gap: 0.75rem; }
-            .nav-buttons { width: 100%; justify-content: space-between; }
-            .lore-container { padding: 1.5rem 1rem; }
-            .lore-title h1 { font-size: 2rem; }
-            .lore-section { padding: 1.5rem; }
-            .image-gallery { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+        .quiz-promo-banner {
+            background: linear-gradient(135deg, #0f1a2a 0%, #1a2d42 50%, #0f1a2a 100%);
+            border: 1px solid rgba(74, 107, 140, 0.5);
+            border-radius: 12px;
+            padding: 2.5rem 2rem;
+            margin-top: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 24px rgba(74, 107, 140, 0.2);
         }
 
+        .quiz-promo-banner h2 {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: clamp(1.4rem, 4vw, 2rem);
+            color: #6fa3d0;
+            margin-bottom: 0.75rem;
+        }
+
+        .quiz-promo-banner p {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .quiz-promo-btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #4a6b8c, #6fa3d0);
+            color: white;
+            font-family: 'Cinzel', serif;
+            font-size: 0.95rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(74, 107, 140, 0.4);
+        }
+
+        .quiz-promo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(74, 107, 140, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .lore-header {
+                padding: 1rem;
+            }
+
+            .lore-nav {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .nav-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .lore-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .lore-title h1 {
+                font-size: 2rem;
+            }
+
+            .lore-section {
+                padding: 1.5rem;
+            }
+
+            .image-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
     </style>
 
     <script type="application/ld+json">
@@ -313,6 +407,7 @@
 }
     </script>
 </head>
+
 <body>
 
     <header class="lore-header">
@@ -323,7 +418,10 @@
 
     <main class="lore-container">
         <section class="lore-hero">
-            <img src="images/ragnorir.png" alt="Ragnorir">
+            <video autoplay loop muted playsinline>
+                <source src="videos/ragnorir.webm" type="video/webm">
+                <source src="videos/ragnorir.mp4" type="video/mp4">
+            </video>
         </section>
 
         <section class="lore-title">
@@ -333,47 +431,69 @@
             </div>
         </section>
 
-        
+
         <section class="lore-section">
             <h2>Summary</h2>
-            <p>A fierce Viking-descended faction where storm and steel are one—warriors who command tempests and forge legends in blades and blood</p>
+            <p>A fierce Viking-descended faction where storm and steel are one—warriors who command tempests and forge
+                legends in blades and blood</p>
         </section>
-    
+
         <section class="lore-section">
             <h2>Description</h2>
-            <p>In the frozen northern reaches, where mountains pierce clouds and ancient forests whisper saga, stands Ragnorir—a faction forged from Viking blood and tempered by storm. Not merely warriors. Descendants of legends, children of thunder, heirs to a tradition that predates written history.</p>
+            <p>In the frozen northern reaches, where mountains pierce clouds and ancient forests whisper saga, stands
+                Ragnorir—a faction forged from Viking blood and tempered by storm. Not merely warriors. Descendants of
+                legends, children of thunder, heirs to a tradition that predates written history.</p>
 
             <h3>Purpose</h3>
 
-            <p>When the Celestial Shattering merged realms and shattered the old world order, most civilisations scrambled to adapt. Ragnorir didn't need to. They'd been preparing for Ragnarok since the first longship touched foreign shores. The faction's culture revolves around a singular truth: strength is earned through trial, honour is proven in battle, and glory is measured by the legends you leave behind. Their territory is as brutal as their people—harsh terrain where only the strong survive, where volcanic forges burn eternal and the World Tree's roots run deep beneath frozen earth. Their healing traditions—passed down through generations—harness storm energy for restoration as readily as destruction.</p>
+            <p>When the Celestial Shattering merged realms and shattered the old world order, most civilisations
+                scrambled to adapt. Ragnorir didn't need to. They'd been preparing for Ragnarok since the first longship
+                touched foreign shores. The faction's culture revolves around a singular truth: strength is earned
+                through trial, honour is proven in battle, and glory is measured by the legends you leave behind. Their
+                territory is as brutal as their people—harsh terrain where only the strong survive, where volcanic
+                forges burn eternal and the World Tree's roots run deep beneath frozen earth. Their healing
+                traditions—passed down through generations—harness storm energy for restoration as readily as
+                destruction.</p>
 
             <h3>Structure</h3>
 
-            <p>Life-giving rains that mend wounds. Lightning that purges infection. Thunder that resets broken bones. This duality makes Ragnorir self-sufficient in ways other factions envy, capable of sustaining prolonged campaigns without external support. In the complex political landscape following the realm merging, Ragnorir maintains careful neutrality—not from weakness, but from strength. They don't need alliances.</p>
+            <p>Life-giving rains that mend wounds. Lightning that purges infection. Thunder that resets broken bones.
+                This duality makes Ragnorir self-sufficient in ways other factions envy, capable of sustaining prolonged
+                campaigns without external support. In the complex political landscape following the realm merging,
+                Ragnorir maintains careful neutrality—not from weakness, but from strength. They don't need alliances.
+            </p>
 
             <h3>Methods &amp; culture</h3>
 
-            <p>Don't need treaties. Their reputation alone ensures respect. When MI6 overreaches, when The Order becomes too zealous, when the Church pushes too hard—Ragnorir reminds everyone why you don't anger the descendants of those who raided coasts and toppled empires. But they're not isolationists. Ragnorir trades—weapons, storm-essence, magic items—commanding premium prices for their unmatched craftsmanship. Their warriors serve as mercenaries, though they choose contracts carefully, refusing any that dishonour their codes.</p>
+            <p>Don't need treaties. Their reputation alone ensures respect. When MI6 overreaches, when The Order
+                becomes too zealous, when <a href="/the-church" class="codex-link">the Church</a> pushes too
+                hard—Ragnorir reminds everyone why you don't anger the descendants of those who raided coasts and
+                toppled empires. But they're not isolationists. Ragnorir trades—weapons, storm-essence, magic
+                items—commanding premium prices for their unmatched craftsmanship. Their warriors serve as mercenaries,
+                though they choose contracts carefully, refusing any that dishonour their codes.</p>
 
             <h3>Influence</h3>
 
-            <p>Some say they're testing the other factions, gathering intelligence, preparing for some future conflict. Others claim they're simply maintaining the warrior tradition, keeping their edge sharp for when the true threat emerges. Lad has made it abundantly clear that any who seek to claim their homeland will pay a price too steep for any sane leader to consider.</p>
+            <p>Some say they're testing the other factions, gathering intelligence, preparing for some future conflict.
+                Others claim they're simply maintaining the warrior tradition, keeping their edge sharp for when the
+                true threat emerges. Lad has made it abundantly clear that any who seek to claim their homeland will pay
+                a price too steep for any sane leader to consider.</p>
         </section>
-    
+
         <section class="lore-section">
             <h2>Abilities</h2>
             <ul class="abilities-list">
-<li>Storm Manipulation and Channelling</li>
-<li>Legendary Weapon Forging (Star-metal &amp; Yggdrasil Wood)</li>
-<li>Elemental Healing Techniques</li>
-<li>Berserker Combat Mastery</li>
-<li>Viking Strategic Warfare</li>
-<li>Lightning Riding</li>
-<li>Thunder Summoning</li>
-<li>Dwarven Smith Collaboration</li>
-</ul>
+                <li>Storm Manipulation and Channelling</li>
+                <li>Legendary Weapon Forging (Star-metal &amp; Yggdrasil Wood)</li>
+                <li>Elemental Healing Techniques</li>
+                <li>Berserker Combat Mastery</li>
+                <li>Viking Strategic Warfare</li>
+                <li>Lightning Riding</li>
+                <li>Thunder Summoning</li>
+                <li>Dwarven Smith Collaboration</li>
+            </ul>
         </section>
-        
+
         <section class="lore-section">
             <h2>Gallery</h2>
             <div class="image-gallery">
@@ -383,18 +503,25 @@
                 <!-- Add more images here -->
             </div>
         </section>
-    
+
         <section class="lore-section">
             <h2>Related Entries</h2>
             <div class="related-entries">
                 <a href="/lad-ragnorir" class="related-link">→ Lad of Ragnorir</a>
-<a href="/ten-lightning-serpent" class="related-link">→ Ten - The Lightning Serpent</a>
-<a href="/stormcleaver" class="related-link">→ Stormcleaver</a>
-<a href="/mi6" class="related-link">→ MI6</a>
-<a href="/the-order" class="related-link">→ The Order</a>
+                <a href="/ten-lightning-serpent" class="related-link">→ Ten - The Lightning Serpent</a>
+                <a href="/stormcleaver" class="related-link">→ Stormcleaver</a>
+                <a href="/mi6" class="related-link">→ MI6</a>
+                <a href="/the-order" class="related-link">→ The Order</a>
             </div>
         </section>
-        
+
+        <div class="quiz-promo-banner">
+            <h2>Do you belong here?</h2>
+            <p>Storm forges the worthy. Prove your mettle — take the Faction Assessment and discover where you truly
+                stand.</p>
+            <a href="/faction-quiz" class="quiz-promo-btn">Take the Assessment →</a>
+        </div>
+
     </main>
 
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
@@ -414,12 +541,15 @@
             document.getElementById('lightbox').classList.remove('active');
         }
 
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 closeLightbox();
             }
         });
     </script>
 
+    <!-- Shrine JS Injector -->
+    <script src="global-shrine.js"></script>
 </body>
+
 </html>

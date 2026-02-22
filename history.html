@@ -1,135 +1,368 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <link rel="canonical" href="https://thesecretsofsilverclouds.com/history" />
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Eras — Animantasy/ Timeline</title>
-  <meta name="description" content="Explore the complete timeline of the Animantasy universe from the Primordial Silence through the Celestial Shattering to the Modern Era. Interactive timeline of all major historical events in the Silver Clouds world." />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Silver Clouds Timeline</title>
+  <meta name="description" content="A timeline of the Silver Clouds universe.">
   <style>
     :root {
-  /* Site-matching palette (light, blue-led) */
-  --bg:#e3edf8;
-  --panel:#ffffff;
-  --panel2:#2f6f9a;
-  --panel2b:#3f86b5;
-  --text:#0e1a2b;
-  --muted:rgba(14,26,43,.72);
-  --line:rgba(12,32,58,.14);
-  --line2:rgba(12,32,58,.10);
-  --r:18px;
-
-  /* Card background image controls */
-  --cardImgOpacity:.34;
-  --cardImgOpacityActive:.48;
-  --cardOverlayTop:rgba(255,255,255,.55);
-  --cardOverlayBottom:rgba(255,255,255,.78);
-  --cardOverlayTopActive:rgba(255,255,255,.42);
-  --cardOverlayBottomActive:rgba(255,255,255,.70);
-
-  /* Soft shadow like the rest of your site */
-  --shadow:0 10px 30px rgba(18,38,64,.10);
-  --shadow2:0 14px 34px rgba(18,38,64,.14);
-}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
-    .wrap{max-width:1100px;margin:0 auto;padding:22px}
-    .header{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
-    .back{display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:14px;background:linear-gradient(180deg,var(--panel2b),var(--panel2));border:1px solid rgba(255,255,255,.28);box-shadow:var(--shadow);text-decoration:none;color:#fff}
-    .pill{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(14,26,43,.72)}
-    h1{font-size:clamp(28px,4vw,44px);margin:10px 0 6px}
-    .subhead{color:var(--muted);max-width:90ch;margin:0 0 16px;line-height:1.6}
-
-    .strip{
-      display:flex;gap:14px;overflow-x:auto;padding:10px 2px 14px;
-      scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+      --bg: #0e1a2b;
+      --text: #e0e6ed;
+      --card-bg: rgba(14, 26, 43, 0.9);
+      --accent-blue: #00f0ff;
     }
-    .strip::-webkit-scrollbar{height:10px}
-    .strip::-webkit-scrollbar-thumb{background:rgba(18,38,64,.26);border-radius:999px}
-    .card{
-  flex:0 0 min(390px, 88vw);
-  scroll-snap-align:start;
-  border-radius:var(--r);
-  border:1px solid var(--line);
-  padding:16px;
-  text-align:left;
-  color:inherit;
-  cursor:pointer;
-  position:relative;
-  overflow:hidden;
-  background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.90));
-  box-shadow:var(--shadow);
-  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
-  isolation:isolate;
-}
-.card::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background-image:var(--era-bg, none);
-  background-size:cover;
-  background-position:center;
-  opacity:var(--cardImgOpacity);
-  transform:scale(1.02);
-  filter:saturate(1.06) contrast(1.02);
-  z-index:-2;
-}
-.card::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    radial-gradient(120% 95% at 50% 0%, var(--cardOverlayTop), transparent 80%),
-    linear-gradient(180deg, var(--cardOverlayTop), var(--cardOverlayBottom));
-  z-index:-1;
-}
-.card:hover{
-  transform:translateY(-2px);
-  box-shadow:var(--shadow2);
-  border-color:rgba(18,38,64,.20);
-}
-.card .k{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgba(14,26,43,.62)}
-.card .t{font-size:20px;margin:8px 0 8px;line-height:1.15;font-weight:900;color:rgba(14,26,43,.95)}
-.card .b{color:rgba(14,26,43,.82);line-height:1.45}
-.card .tag{
-  display:inline-block;margin-top:10px;font-size:12px;
-  color:rgba(14,26,43,.72);
-  padding:6px 10px;border:1px solid rgba(18,38,64,.16);
-  border-radius:999px;background:rgba(255,255,255,.55)
-}
-.card.active{
-  border-color:rgba(18,38,64,.26);
-  box-shadow:var(--shadow2);
-}
-.card.active::before{ opacity:var(--cardImgOpacityActive); }
-.card.active::after{
-  background:
-    radial-gradient(120% 95% at 50% 0%, var(--cardOverlayTopActive), transparent 90%),
-    linear-gradient(180deg, var(--cardOverlayTopActive), var(--cardOverlayBottomActive));
-}
 
-/* Per-era background images (replace filenames to match your /images/ paths) */
-.card[data-era="primordial-silence"]{ --era-bg:url("images/primordial-silence.png"); }
-.card[data-era="celestial-shattering"]{ --era-bg:url("images/celestial-shattering.png"); }
-.card[data-era="the-merging"]{ --era-bg:url("images/the-merging.png"); }
-.card[data-era="age-of-blood"]{ --era-bg:url("images/age-of-blood.png"); }
-.card[data-era="golden-age-of-alchemy"]{ --era-bg:url("images/golden-age-of-alchemy.png"); }
-.card[data-era="alchemical-fall"]{ --era-bg:url("images/alchemical-fall.png"); }
-.card[data-era="great-convergence"]{ --era-bg:url("images/great-convergence.png"); }
-.card[data-era="technomagic-revolution"]{ --era-bg:url("images/technomagic.png"); }
-.card[data-era="gods-war"]{ --era-bg:url("images/gods-war.png"); }
-.card[data-era="reconstruction"]{ --era-bg:url("images/nimbus2.png"); }
-.card[data-era="modern-era"]{ --era-bg:url("images/modern-era.png"); }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      background-image: url('images/rune-rider.png');
+      /* Epic fixed background */
+      background-attachment: fixed;
+      background-position: center;
+      background-size: cover;
+      color: var(--text);
+      overflow-x: hidden;
+      transition: background-color 0.8s ease;
+    }
 
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(14, 26, 43, 0.85);
+      /* Overlay to ensure text readability */
+      z-index: -1;
+      position: fixed;
+    }
 
-    .detail{margin-top:10px;padding:20px;border-radius:var(--r);background:var(--panel);border:1px solid var(--line2);box-shadow:var(--shadow)}
-    .detail h2{margin:0;font-size:22px}
-    .detail .sub{color:rgba(14,26,43,.72);font-style:italic;margin:6px 0 12px}
-    .detail .body p{margin:0 0 12px;line-height:1.75;max-width:92ch;color:rgba(14,26,43,.86)}
-    .detail .body p:last-child{margin-bottom:0}
-    .meta{color:rgba(14,26,43,.62);font-size:13px;margin-top:10px}
+    .wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .back {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 600;
+      opacity: 0.7;
+    }
+
+    .pill {
+      background: rgba(14, 26, 43, 0.05);
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      margin-bottom: 10px;
+      line-height: 1.1;
+    }
+
+    .subhead {
+      font-size: 1.1rem;
+      opacity: 0.7;
+      margin-bottom: 40px;
+      max-width: 600px;
+    }
+
+    /* Timeline Strip */
+    .strip {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      padding-bottom: 30px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      margin: 0 -20px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .strip::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .strip::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .strip::-webkit-scrollbar-thumb {
+      background: rgba(14, 26, 43, 0.2);
+      border-radius: 4px;
+    }
+
+    .card {
+      flex: 0 0 280px;
+      background: var(--card-bg);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 16px;
+      padding: 25px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      scroll-snap-align: center;
+      position: relative;
+      text-align: left;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .card.active {
+      border: 2px solid #00f0ff;
+      transform: scale(1.02);
+      box-shadow: 0 15px 30px rgba(0, 240, 255, 0.15);
+    }
+
+    .k {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.5;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .t {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .b {
+      font-size: 0.95rem;
+      opacity: 0.8;
+      line-height: 1.5;
+    }
+
+    .tag {
+      margin-top: 15px;
+      font-size: 12px;
+      color: #00f0ff;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .card:hover .tag,
+    .card.active .tag {
+      opacity: 1;
+    }
+
+    /* Detail View */
+    .detail {
+      margin-top: 40px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px;
+      min-height: 300px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+      scroll-margin-top: 20px;
+    }
+
+    .detail h2 {
+      margin-top: 0;
+      font-size: 2rem;
+      color: var(--text);
+    }
+
+    .detail .sub {
+      font-size: 1.1rem;
+      color: #00f0ff;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .detail p {
+      line-height: 1.8;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+      color: rgba(14, 26, 43, 0.8);
+    }
+
+    .meta {
+      color: rgba(14, 26, 43, .62);
+      font-size: 13px;
+      margin-top: 10px
+    }
+
+    /* --- FEATURE 12: TIMELINE UPGRADE --- */
+    #ambient-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -5;
+      transition: background-color 0.8s ease, background-image 0.8s ease;
+      pointer-events: none;
+      opacity: 0.15;
+    }
+
+    /* Era-specific ambiances */
+    body[data-era="primordial-silence"] #ambient-bg {
+      background-color: #000;
+    }
+
+    body[data-era="celestial-shattering"] #ambient-bg {
+      background-color: #4a90e2;
+    }
+
+    body[data-era="the-merging"] #ambient-bg {
+      background-color: #9b59b6;
+    }
+
+    body[data-era="age-of-blood"] #ambient-bg {
+      background-color: #c0392b;
+    }
+
+    body[data-era="golden-age-of-alchemy"] #ambient-bg {
+      background-color: #f1c40f;
+    }
+
+    body[data-era="alchemical-fall"] #ambient-bg {
+      background-color: #7f8c8d;
+    }
+
+    body[data-era="great-convergence"] #ambient-bg {
+      background-color: #2ecc71;
+    }
+
+    body[data-era="technomagic-revolution"] #ambient-bg {
+      background-color: #00f0ff;
+    }
+
+    body[data-era="gods-war"] #ambient-bg {
+      background-color: #e74c3c;
+    }
+
+    body[data-era="reconstruction"] #ambient-bg {
+      background-color: #e67e22;
+    }
+
+    body[data-era="modern-era"] #ambient-bg {
+      background-color: #34495e;
+    }
+
+    /* Card Intro Animation */
+    .card {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: cardFadeIn 0.5s ease forwards;
+    }
+
+    @keyframes cardFadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Stagger delay for cards */
+    .card:nth-child(1) {
+      animation-delay: 0.1s;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('images/primordial-silence.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card:nth-child(2) {
+      animation-delay: 0.2s;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('images/celestial-shattering.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card:nth-child(3) {
+      animation-delay: 0.3s;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('images/the-merging.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card:nth-child(4) {
+      animation-delay: 0.4s;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('images/age-of-blood.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card:nth-child(5) {
+      animation-delay: 0.5s;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('images/golden-age-of-alchemy.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card:nth-child(6) {
+      animation-delay: 0.6s;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('images/alchemical-fall.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card:nth-child(7) {
+      animation-delay: 0.7s;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('images/great-convergence.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card:nth-child(8) {
+      animation-delay: 0.8s;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('images/technomagic.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card:nth-child(9) {
+      animation-delay: 0.9s;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('images/gods-war.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card:nth-child(10) {
+      animation-delay: 1.0s;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('images/new-big-ben.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card:nth-child(11) {
+      animation-delay: 1.1s;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('images/modern-era.png');
+      background-size: cover;
+      background-position: center;
+    }
   </style>
-  
+
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -149,10 +382,12 @@
 }
   </script>
 </head>
+
 <body>
+  <div id="ambient-bg"></div>
   <div class="wrap">
     <div class="header">
-      <a class="back" href="/#codex">← Back to Codex</a>
+      <a class="back" href="index.html#codex">← Back to Codex</a>
       <div class="pill">Concepts • Timeline</div>
     </div>
 
@@ -160,60 +395,74 @@
     <p class="subhead">Hybrid “app-like” timeline: swipe the era cards, tap one to expand the full era entry below.</p>
 
     <div class="strip" id="strip" aria-label="Era cards">
-<button class="card" data-era="primordial-silence" aria-controls="detail" aria-expanded="false">
+      <button class="card" data-era="primordial-silence" data-bg="images/primordial-silence.png" aria-controls="detail"
+        aria-expanded="false">
         <div class="k">Before the Fall</div>
         <div class="t">THE PRIMORDIAL SILENCE</div>
         <div class="b">Realms existed as sealed chambers, each a universe unto itself.</div>
         <div class="tag">Tap to expand ↓</div>
-      </button><button class="card" data-era="celestial-shattering" aria-controls="detail" aria-expanded="false">
+      </button><button class="card" data-era="celestial-shattering" data-bg="images/celestial-shattering.png"
+        aria-controls="detail" aria-expanded="false">
         <div class="k">The Holy Tragedy</div>
         <div class="t">THE CELESTIAL SHATTERING</div>
         <div class="b">A star fell.</div>
         <div class="tag">Tap to expand ↓</div>
-      </button><button class="card" data-era="the-merging" aria-controls="detail" aria-expanded="false">
+      </button><button class="card" data-era="the-merging" data-bg="images/the-merging.png" aria-controls="detail"
+        aria-expanded="false">
         <div class="k">When Boundaries Dissolved</div>
         <div class="t">THE MERGING</div>
         <div class="b">Reality unravelled slowly, dimension bleeding into dimension.</div>
         <div class="tag">Tap to expand ↓</div>
-      </button><button class="card" data-era="age-of-blood" aria-controls="detail" aria-expanded="false">
+      </button><button class="card" data-era="age-of-blood" data-bg="images/age-of-blood.png" aria-controls="detail"
+        aria-expanded="false">
         <div class="k">Conflict and Chaos</div>
         <div class="t">THE AGE OF BLOOD</div>
         <div class="b">Upheaval.</div>
         <div class="tag">Tap to expand ↓</div>
-      </button><button class="card" data-era="golden-age-of-alchemy" aria-controls="detail" aria-expanded="false">
+      </button><button class="card" data-era="golden-age-of-alchemy" data-bg="images/golden-age-of-alchemy.png"
+        aria-controls="detail" aria-expanded="false">
         <div class="k">The City of Wonders</div>
         <div class="t">THE GOLDEN AGE OF ALCHEMY</div>
         <div class="b">Amidst the chaos, the Alchemical Society flourished.</div>
         <div class="tag">Tap to expand ↓</div>
-      </button><button class="card" data-era="alchemical-fall" aria-controls="detail" aria-expanded="false">
+      </button><button class="card" data-era="alchemical-fall" data-bg="images/alchemical-fall.png"
+        aria-controls="detail" aria-expanded="false">
         <div class="k">Ruins and Lessons</div>
         <div class="t">THE ALCHEMICAL FALL</div>
-        <div class="b">A malevolent demonic spirit, obsessed with the Philosopher's Stone, manipulated factions against the Society.</div>
+        <div class="b">A malevolent demonic spirit, obsessed with the Philosopher's Stone, manipulated factions against
+          the Society.</div>
         <div class="tag">Tap to expand ↓</div>
-      </button><button class="card" data-era="great-convergence" aria-controls="detail" aria-expanded="false">
+      </button><button class="card" data-era="great-convergence" data-bg="images/great-convergence.png"
+        aria-controls="detail" aria-expanded="false">
         <div class="k">Peace Through Necessity</div>
         <div class="t">THE GREAT CONVERGENCE</div>
         <div class="b">Exhaustion breeds wisdom.</div>
         <div class="tag">Tap to expand ↓</div>
-      </button><button class="card" data-era="technomagic-revolution" aria-controls="detail" aria-expanded="false">
+      </button><button class="card" data-era="technomagic-revolution" data-bg="images/technomagic.png"
+        aria-controls="detail" aria-expanded="false">
         <div class="k">Fusion and Innovation</div>
         <div class="t">THE TECHNOMAGIC REVOLUTION</div>
         <div class="b">From collaboration, something unprecedented: Technomagic.</div>
         <div class="tag">Tap to expand ↓</div>
-      </button><button class="card" data-era="gods-war" aria-controls="detail" aria-expanded="false">
+      </button><button class="card" data-era="gods-war" data-bg="images/gods-war.png" aria-controls="detail"
+        aria-expanded="false">
         <div class="k">London's Scars</div>
         <div class="t">THE GODS' WAR</div>
-        <div class="b">Jedia the Faceless—mage who'd poisoned the Church from within—trapped Shonen Kartia in a timeless void.</div>
+        <div class="b">Jedia the Faceless—mage who'd poisoned the Church from within—trapped Shonen Kartia in a timeless
+          void.</div>
         <div class="tag">Tap to expand ↓</div>
-      </button><button class="card" data-era="reconstruction" aria-controls="detail" aria-expanded="false">
+      </button><button class="card" data-era="reconstruction" data-bg="images/new-big-ben.png" aria-controls="detail"
+        aria-expanded="false">
         <div class="k">Rising From Ashes</div>
         <div class="t">THE RECONSTRUCTION</div>
         <div class="b">In destruction's wake, unprecedented collaboration.</div>
         <div class="tag">Tap to expand ↓</div>
-      </button><button class="card" data-era="modern-era" aria-controls="detail" aria-expanded="false">
+      </button><button class="card" data-era="modern-era" data-bg="images/modern-era.png" aria-controls="detail"
+        aria-expanded="false">
         <div class="k">Present Day</div>
         <div class="t">THE MODERN ERA</div>
-        <div class="b">Technology and magic no longer coexist uneasily—they're inseparable, woven into the fabric of daily existence.</div>
+        <div class="b">Technology and magic no longer coexist uneasily—they're inseparable, woven into the fabric of
+          daily existence.</div>
         <div class="tag">Tap to expand ↓</div>
       </button>
     </div>
@@ -221,97 +470,227 @@
     <div class="detail" id="detail" aria-live="polite">
       <h2>Loading…</h2>
       <div class="sub">Please wait</div>
-      <div class="body"><p></p></div>
+      <div class="body">
+        <p></p>
+      </div>
       <div class="meta">Tip: swipe horizontally on mobile; on desktop, drag or trackpad-scroll.</div>
     </div>
 
     <div id="all-era-content" hidden>
-<section class="era-full" id="content-primordial-silence" hidden>
-      <h2>THE PRIMORDIAL SILENCE</h2>
-      <div class="sub">Before the Fall</div>
-      <div class="body"><p>Realms existed as sealed chambers, each a universe unto itself. Humanity walked beneath stars that had never shed their light upon mortal soil. Magic slumbered in dimensions the human tongue had no words for. The veil between worlds stood absolute.</p></div>
-    </section><section class="era-full" id="content-celestial-shattering" hidden>
-      <h2>THE CELESTIAL SHATTERING</h2>
-      <div class="sub">The Holy Tragedy</div>
-      <div class="body"><p>A star fell. Not as metaphor, but as cosmic fact—an ancient astral being plummeting through the skin of reality itself. Its descent tore wounds across the fabric separating worlds, divine fragments scattering like shrapnel through dimensions. Fate intervened, transforming shattered celestial matter into Holy Items, binding them to human souls deemed capable. The first Guardians emerged from stardust. Miracles and monstrosities seeded the earth in equal measure. Holy Item radiation began filling the atmosphere, changing everything it touched.</p></div>
-    </section><section class="era-full" id="content-the-merging" hidden>
-      <h2>THE MERGING</h2>
-      <div class="sub">When Boundaries Dissolved</div>
-      <div class="body"><p>Reality unravelled slowly, dimension bleeding into dimension. The veil didn't shatter—it dissolved, membrane growing permeable until spirits, demons, celestial beings walked freely between worlds. Cities pulsed with energies they had no framework to comprehend. Ancient forests woke. Rivers learned to whisper prayers. Sky-borne citadels shimmered into view above London's grey skyline.</p>
-<p>Humans encountered fairies, Duskkin, demons, Onari—beings from hundreds of realms spilling into a world unprepared for their arrival. Lintels formed in the atmosphere, cloud-creatures born from the marriage of holy radiation and industrial pollution.</p></div>
-    </section><section class="era-full" id="content-age-of-blood" hidden>
-      <h2>THE AGE OF BLOOD</h2>
-      <div class="sub">Conflict and Chaos</div>
-      <div class="body"><p>Upheaval. Confusion. Fear transmuting into violence. Humans fought to comprehend beings whose very existence defied their understanding of reality. The Duskkin hunted, driven by bloodlust and tradition. Demons pursued their enigmatic agendas. Fairies under a cruel monarch executed dissenters, entire families erased for perceived disloyalty.</p>
-<p>Territorial wars erupted. Each faction carved domains from the chaos, power struggles leaving scars across multiple realms. The Fairy Kingdom's Emerald Glades still bear veins of poisoned metal from those conflicts. Trafalgar Square stood witness to battles that reshaped city blocks. Blood—human and otherwise—stained streets that had never known such carnage.</p></div>
-    </section><section class="era-full" id="content-golden-age-of-alchemy" hidden>
-      <h2>THE GOLDEN AGE OF ALCHEMY</h2>
-      <div class="sub">The City of Wonders</div>
-      <div class="body"><p>Amidst the chaos, the Alchemical Society flourished. Their magnificent city rose—architecture defying gravity, streets imbued with spells for wellbeing, buildings that seemed to breathe with enchanted life. The Philosopher's Stone, guarded by Kartel Hammond, pulsed at the city's heart, powering wonders that bordered on miraculous.</p>
-<p>Alchemists melded arcane and scientific in ways the world had never witnessed. Their utopia stood as proof that magic and technology could coexist, that knowledge pursued with wisdom could create paradise.</p>
-<p>Then a demon coveted what they'd built.</p></div>
-    </section><section class="era-full" id="content-alchemical-fall" hidden>
-      <h2>THE ALCHEMICAL FALL</h2>
-      <div class="sub">Ruins and Lessons</div>
-      <div class="body"><p>A malevolent demonic spirit, obsessed with the Philosopher's Stone, manipulated factions against the Society. War came to their city of wonders. Magnificent structures crumbled. Magical innovations were lost to ash and devastation. The Stone shattered, its fragments scattering across existence.</p>
-<p>Kartel Hammond survived, taking a vow of silence, haunted by loss. The city's ruins became a pilgrimage site, a monument to the fragility of power and the consequences of unchecked ambition.</p></div>
-    </section><section class="era-full" id="content-great-convergence" hidden>
-      <h2>THE GREAT CONVERGENCE</h2>
-      <div class="sub">Peace Through Necessity</div>
-      <div class="body"><p>Exhaustion breeds wisdom. The races, battered by endless conflict, recognised a simple truth: mutual destruction or mutual survival. Peace treaties were forged not from idealism but pragmatism. Borders were established. Collaborative councils formed to maintain balance between realms.</p>
-<p>Knowledge began flowing between worlds. Humans offered scientific understanding, technological innovation. In return, magical beings shared arcane principles, fundamental forces governing reality itself. The Celestial Veil festival emerged—the Church's annual celebration of interdimensional harmony, week-long markets where enchanted wares from distant dimensions mingled with human ingenuity.</p></div>
-    </section><section class="era-full" id="content-technomagic-revolution" hidden>
-      <h2>THE TECHNOMAGIC REVOLUTION</h2>
-      <div class="sub">Fusion and Innovation</div>
-      <div class="body"><p>From collaboration, something unprecedented: Technomagic. Science wed to sorcery. Runic magic channelling through engineered systems. Magi-tech weapons. Screening devices merging crystal balls with computer screens. Magic smartphones creating holographic communication that bridged realms.</p>
-<p>Rune Riders transformed from metal bookmarks into motorcycles. The Streamliner carved paths through London on rails of solidified light. The Sanctuary in the Sky rose above the city—originally built by reformist clergymen as a bastion against Church corruption, eventually becoming something stranger: holy refuge by day, den of indulgence by night.</p>
-<p>Technomages became the most sought-after individuals in existence. Factions vied for their services. Innovation accelerated beyond anything previously imagined.</p></div>
-    </section><section class="era-full" id="content-gods-war" hidden>
-      <h2>THE GODS' WAR</h2>
-      <div class="sub">London's Scars</div>
-      <div class="body"><p>Jedia the Faceless—mage who'd poisoned the Church from within—trapped Shonen Kartia in a timeless void. When Shonen discovered the truth, grief-maddened rage consumed him. He slaughtered his own wife and child, then turned his immortal fury upon the Church itself.</p>
-<p>Years of rampage followed. A tide of blood and fire. When Shonen and Jedia finally clashed, their duel didn't simply damage London—it unmade portions of reality. Big Ben fell. Trafalgar Square became ruins. Buildings scorched and crumbling bore mute testimony to devastation wrought by primordial forces.</p>
-<p>Even realms untouched by direct conflict suffered echoes. The Fairy Kingdom's Emerald Glades gained veins of poisoned metal. Reality itself bore scars.</p></div>
-    </section><section class="era-full" id="content-reconstruction" hidden>
-      <h2>THE RECONSTRUCTION</h2>
-      <div class="sub">Rising From Ashes</div>
-      <div class="body"><p>In destruction's wake, unprecedented collaboration. Races that had warred now laboured side by side, rebuilding what gods had unmade. New Big Ben rose from the heart of London—tower crafted from mystical alloy pulsing with inner light, clock face adorned with gold grooves forming protective enchantments.</p>
-<p>When the hour strikes, visible waves of energy radiate across the city. The Chimes of Renewal, they're called—pulses carrying positive energy, promoting healing and growth wherever they touch. At night, the tower becomes a beacon, soft glow visible for miles.</p>
-<p>Max Prison emerged around this same period. A joint-faction facility, publicly united though privately fractious. MI6 provided technomagic infrastructure. The Order contributed arcane suppression systems. The Yakuza-Triad syndicate supplied ruthless efficiency. The Church, while publicly condemning it, secretly wove holy seals into its foundation.</p>
-<p>A grim compromise: the price of safety in a world where gods walk among mortals.</p></div>
-    </section><section class="era-full" id="content-modern-era" hidden>
-      <h2>THE MODERN ERA</h2>
-      <div class="sub">Present Day</div>
-      <div class="body"><p>Technology and magic no longer coexist uneasily—they're inseparable, woven into the fabric of daily existence. Lintels float above magic-infused buildings, feeding on ambient energies. Cloud Mantas soar through skies while Streamliners carve paths through city streets.</p>
-<p>Factions maintain delicate balance. MI6, The Order, the Church, Yakuza-Triad, Demon's Legion—each pursuing agendas that sometimes align, often conflict. Holy Items continue changing hands, Guardians bound to new charges. The Sanctuary in the Sky still floats above London, sacred and profane dancing as one.</p>
-<p>Eirik's laws transformed Duskkin culture, redirecting bloodlust toward mythical creatures in the Urban Jungle. The Fairy Kingdom evolved under new leadership, gossamer thrones surrounded by holographic advisors. Demons slip between realms through corrupted portal technology, biomechanical constructs powered by trapped souls.</p>
-<p>The Celestial Shattering's radiation still fills the atmosphere. Reality's veil remains permeable. And somewhere, Shonen Kartia searches for the death his immortality denies him, while the world holds its breath.</p></div>
-    </section>
+      <section class="era-full" id="content-primordial-silence" hidden>
+        <h2>THE PRIMORDIAL SILENCE</h2>
+        <div class="sub">Before the Fall</div>
+        <div class="body">
+          <p>Realms existed as sealed chambers, each a universe unto itself. Humanity walked beneath stars that had
+            never shed their light upon mortal soil. Magic slumbered in dimensions the human tongue had no words for.
+            The veil between worlds stood absolute.</p>
+        </div>
+      </section>
+      <section class="era-full" id="content-celestial-shattering" hidden>
+        <h2>THE CELESTIAL SHATTERING</h2>
+        <div class="sub">The Holy Tragedy</div>
+        <div class="body">
+          <p>A star fell. Not as metaphor, but as cosmic fact—an ancient astral being plummeting through the skin of
+            reality itself. Its descent tore wounds across the fabric separating worlds, divine fragments scattering
+            like shrapnel through dimensions. Fate intervened, transforming shattered celestial matter into Holy Items,
+            binding them to human souls deemed capable. The first Guardians emerged from stardust. Miracles and
+            monstrosities seeded the earth in equal measure. Holy Item radiation began filling the atmosphere, changing
+            everything it touched.</p>
+        </div>
+      </section>
+      <section class="era-full" id="content-the-merging" hidden>
+        <h2>THE MERGING</h2>
+        <div class="sub">When Boundaries Dissolved</div>
+        <div class="body">
+          <p>Reality unravelled slowly, dimension bleeding into dimension. The veil didn't shatter—it dissolved,
+            membrane growing permeable until spirits, demons, celestial beings walked freely between worlds. Cities
+            pulsed with energies they had no framework to comprehend. Ancient forests woke. Rivers learned to whisper
+            prayers. Sky-borne citadels shimmered into view above London's grey skyline.</p>
+          <p>Humans encountered fairies, <a href="/duskkin" class="codex-link">Duskkin</a>, demons, Onari—beings from
+            hundreds of realms spilling into a world
+            unprepared for their arrival. Lintels formed in the atmosphere, cloud-creatures born from the marriage of
+            holy radiation and industrial pollution.</p>
+        </div>
+      </section>
+      <section class="era-full" id="content-age-of-blood" hidden>
+        <h2>THE AGE OF BLOOD</h2>
+        <div class="sub">Conflict and Chaos</div>
+        <div class="body">
+          <p>Upheaval. Confusion. Fear transmuting into violence. Humans fought to comprehend beings whose very
+            existence defied their understanding of reality. The Duskkin hunted, driven by bloodlust and tradition.
+            Demons pursued their enigmatic agendas. Fairies under a cruel monarch executed dissenters, entire families
+            erased for perceived disloyalty.</p>
+          <p>Territorial wars erupted. Each faction carved domains from the chaos, power struggles leaving scars across
+            multiple realms. The Fairy Kingdom's Emerald Glades still bear veins of poisoned metal from those conflicts.
+            Trafalgar Square stood witness to battles that reshaped city blocks. Blood—human and otherwise—stained
+            streets that had never known such carnage.</p>
+        </div>
+      </section>
+      <section class="era-full" id="content-golden-age-of-alchemy" hidden>
+        <h2>THE GOLDEN AGE OF ALCHEMY</h2>
+        <div class="sub">The City of Wonders</div>
+        <div class="body">
+          <p>Amidst the chaos, the Alchemical Society flourished. Their magnificent city rose—architecture defying
+            gravity, streets imbued with spells for wellbeing, buildings that seemed to breathe with enchanted life. The
+            Philosopher's Stone, guarded by <a href="/kartel-hammond" class="codex-link">Kartel Hammond</a>, pulsed at the city's heart, powering wonders that bordered
+            on miraculous.</p>
+          <p>Alchemists melded arcane and scientific in ways the world had never witnessed. Their utopia stood as proof
+            that magic and technology could coexist, that knowledge pursued with wisdom could create paradise.</p>
+          <p>Then a demon coveted what they'd built.</p>
+        </div>
+      </section>
+      <section class="era-full" id="content-alchemical-fall" hidden>
+        <h2>THE ALCHEMICAL FALL</h2>
+        <div class="sub">Ruins and Lessons</div>
+        <div class="body">
+          <p>A malevolent demonic spirit, obsessed with the Philosopher's Stone, manipulated factions against the
+            Society. War came to their city of wonders. Magnificent structures crumbled. Magical innovations were lost
+            to ash and devastation. The Stone shattered, its fragments scattering across existence.</p>
+          <p>Kartel Hammond survived, taking a vow of silence, haunted by loss. The city's ruins became a pilgrimage
+            site, a monument to the fragility of power and the consequences of unchecked ambition.</p>
+        </div>
+      </section>
+      <section class="era-full" id="content-great-convergence" hidden>
+        <h2>THE GREAT CONVERGENCE</h2>
+        <div class="sub">Peace Through Necessity</div>
+        <div class="body">
+          <p>Exhaustion breeds wisdom. The races, battered by endless conflict, recognised a simple truth: mutual
+            destruction or mutual survival. Peace treaties were forged not from idealism but pragmatism. Borders were
+            established. Collaborative councils formed to maintain balance between realms.</p>
+          <p>Knowledge began flowing between worlds. Humans offered scientific understanding, technological innovation.
+            In return, magical beings shared arcane principles, fundamental forces governing reality itself. The
+            Celestial Veil festival emerged—<a href="/the-church" class="codex-link">the Church</a>'s annual celebration
+            of interdimensional harmony, week-long
+            markets where enchanted wares from distant dimensions mingled with human ingenuity.</p>
+        </div>
+      </section>
+      <section class="era-full" id="content-technomagic-revolution" hidden>
+        <h2>THE TECHNOMAGIC REVOLUTION</h2>
+        <div class="sub">Fusion and Innovation</div>
+        <div class="body">
+          <p>From collaboration, something unprecedented: <a href="/technomagic" class="codex-link">Technomagic</a>.
+            Science wed to sorcery. Runic magic channelling
+            through engineered systems. Magi-tech weapons. Screening devices merging crystal balls with computer
+            screens. Magic smartphones creating holographic communication that bridged realms.</p>
+          <p>Rune Riders transformed from metal bookmarks into motorcycles. The Streamliner carved paths through London
+            on rails of solidified light. The Sanctuary in the Sky rose above the city—originally built by reformist
+            clergymen as a bastion against Church corruption, eventually becoming something stranger: holy refuge by
+            day, den of indulgence by night.</p>
+          <p>Technomages became the most sought-after individuals in existence. Factions vied for their services.
+            Innovation accelerated beyond anything previously imagined.</p>
+        </div>
+      </section>
+      <section class="era-full" id="content-gods-war" hidden>
+        <h2>THE GODS' WAR</h2>
+        <div class="sub">London's Scars</div>
+        <div class="body">
+          <p>Jedia the Faceless—mage who'd poisoned the Church from within—trapped Shonen Kartia in a timeless void.
+            When Shonen discovered the truth, grief-maddened rage consumed him. He slaughtered his own wife and child,
+            then turned his immortal fury upon the Church itself.</p>
+          <p>Years of rampage followed. A tide of blood and fire. When Shonen and Jedia finally clashed, their duel
+            didn't simply damage London—it unmade portions of reality. Big Ben fell. Trafalgar Square became ruins.
+            Buildings scorched and crumbling bore mute testimony to devastation wrought by primordial forces.</p>
+          <p>Even realms untouched by direct conflict suffered echoes. The Fairy Kingdom's Emerald Glades gained veins
+            of poisoned metal. Reality itself bore scars.</p>
+        </div>
+      </section>
+      <section class="era-full" id="content-reconstruction" hidden>
+        <h2>THE RECONSTRUCTION</h2>
+        <div class="sub">Rising From Ashes</div>
+        <div class="body">
+          <p>In destruction's wake, unprecedented collaboration. Races that had warred now laboured side by side,
+            rebuilding what gods had unmade. New Big Ben rose from the heart of London—tower crafted from mystical alloy
+            pulsing with inner light, clock face adorned with gold grooves forming protective enchantments.</p>
+          <p>When the hour strikes, visible waves of energy radiate across the city. The Chimes of Renewal, they're
+            called—pulses carrying positive energy, promoting healing and growth wherever they touch. At night, the
+            tower becomes a beacon, soft glow visible for miles.</p>
+          <p><a href="/max-prison" class="codex-link">Max Prison</a> emerged around this same period. A joint-faction
+            facility, publicly united though privately
+            fractious. <a href="/mi6" class="codex-link">MI6</a> provided technomagic infrastructure. <a
+              href="/the-order" class="codex-link">The Order</a> contributed arcane suppression systems. The
+            Yakuza-Triad syndicate supplied ruthless efficiency. The Church, while publicly condemning it, secretly wove
+            holy seals into its foundation.</p>
+          <p>A grim compromise: the price of safety in a world where gods walk among mortals.</p>
+        </div>
+      </section>
+      <section class="era-full" id="content-modern-era" hidden>
+        <h2>THE MODERN ERA</h2>
+        <div class="sub">Present Day</div>
+        <div class="body">
+          <p>Technology and magic no longer coexist uneasily—they're inseparable, woven into the fabric of daily
+            existence. Lintels float above magic-infused buildings, feeding on ambient energies. Cloud Mantas soar
+            through skies while Streamliners carve paths through city streets.</p>
+          <p>Factions maintain delicate balance. MI6, The Order, the Church, Yakuza-Triad, <a href="/demons-legion"
+              class="codex-link">Demon's Legion</a>—each pursuing
+            agendas that sometimes align, often conflict. Holy Items continue changing hands, Guardians bound to new
+            charges. The Sanctuary in the Sky still floats above London, sacred and profane dancing as one.</p>
+          <p>Eirik's laws transformed Duskkin culture, redirecting bloodlust toward mythical creatures in the Urban
+            Jungle. The Fairy Kingdom evolved under new leadership, gossamer thrones surrounded by holographic advisors.
+            Demons slip between realms through corrupted portal technology, biomechanical constructs powered by trapped
+            souls.</p>
+          <p>The Celestial Shattering's radiation still fills the atmosphere. Reality's veil remains permeable. And
+            somewhere, Shonen Kartia searches for the death his immortality denies him, while the world holds its
+            breath.</p>
+        </div>
+      </section>
     </div>
   </div>
 
   <script>
     const cards = Array.from(document.querySelectorAll('.card'));
     const detail = document.getElementById('detail');
+    const sections = document.querySelectorAll('.era-full');
+    const detailBox = document.getElementById('detail'); // Redundant, but keeping as per instruction
 
-    function renderEra(id) {
-      const src = document.getElementById('content-' + id);
-      if (!src) return;
-      detail.innerHTML = src.innerHTML + '<div class="meta">Tip: swipe horizontally on mobile; on desktop, drag or trackpad-scroll.</div>';
-    }
-
+    // Add click event to cards
     cards.forEach(card => {
       card.addEventListener('click', () => {
+        // Remove active class from all
         cards.forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
         cards.forEach(c => c.setAttribute('aria-expanded', 'false'));
+
+        // Add active class to clicked
+        card.classList.add('active');
         card.setAttribute('aria-expanded', 'true');
-        renderEra(card.dataset.era);
-        detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Update Body Background
+        const bgImage = card.getAttribute('data-bg');
+        if (bgImage) {
+          document.body.style.backgroundImage = `url('${bgImage}')`;
+        }
+
+        // Hide detail box placeholder
+        detailBox.hidden = true;
+        detailBox.style.display = 'none';
+
+        // Unhide the parent container for era content
+        const allEraContent = document.getElementById('all-era-content');
+        if (allEraContent) {
+          allEraContent.hidden = false;
+          allEraContent.removeAttribute('hidden');
+        }
+
+        // Hide all full content sections
+        sections.forEach(sec => sec.hidden = true);
+
+        // Show specific content
+        const eraId = card.getAttribute('data-era');
+        const activeSection = document.getElementById(`content-${eraId}`);
+        if (activeSection) {
+          activeSection.hidden = false;
+          // Smooth scroll to content
+          activeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Smooth center the card in the strip
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       });
     });
 
     if (cards[0]) cards[0].click();
   </script>
+    <!-- Shrine JS Injector -->
+    <script src="global-shrine.js"></script>
 </body>
+
 </html>

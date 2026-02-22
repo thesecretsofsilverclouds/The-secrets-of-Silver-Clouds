@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <link rel="canonical" href="https://thesecretsofsilverclouds.com/celestial-shattering" />
+    <link rel="canonical" href="https://thesecretsofsilverclouds.com/celestial-shattering" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Celestial Shattering | The Secrets of Silver Clouds</title>
-    <meta name="description" content="The cataclysmic event when a celestial being fell to Earth, fracturing the veil between realms">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap" rel="stylesheet">
+    <meta name="description"
+        content="The cataclysmic event when a celestial being fell to Earth, fracturing the veil between realms">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap"
+        rel="stylesheet">
     <style>
-
         :root {
             --primary-dark: #1a1a2e;
             --secondary-dark: #16213e;
@@ -18,7 +21,11 @@
             --text-dark: #2c2c2c;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Lato', sans-serif;
@@ -47,7 +54,8 @@
             flex-wrap: wrap;
         }
 
-        .back-btn, .nav-btn {
+        .back-btn,
+        .nav-btn {
             padding: 0.75rem 1.5rem;
             background: var(--accent-blue);
             color: white;
@@ -58,13 +66,17 @@
             transition: all 0.3s ease;
         }
 
-        .back-btn:hover, .nav-btn:hover {
+        .back-btn:hover,
+        .nav-btn:hover {
             background: var(--accent-teal);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(50, 130, 184, 0.3);
         }
 
-        .nav-buttons { display: flex; gap: 1rem; }
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
 
         .lore-container {
             max-width: 1000px;
@@ -107,7 +119,12 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .lore-tags { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+        .lore-tags {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
 
         .lore-tag {
             background: rgba(255, 255, 255, 0.25);
@@ -151,7 +168,8 @@
         }
 
         /* Grids */
-        .abilities-list, .members-list {
+        .abilities-list,
+        .members-list {
             list-style: none;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -159,7 +177,8 @@
             margin-top: 1rem;
         }
 
-        .abilities-list li, .members-list li {
+        .abilities-list li,
+        .members-list li {
             background: rgba(50, 130, 184, 0.15);
             padding: 1.2rem;
             border-radius: 10px;
@@ -242,7 +261,9 @@
             padding: 2rem;
         }
 
-        .lightbox.active { display: flex; }
+        .lightbox.active {
+            display: flex;
+        }
 
         .lightbox-content {
             max-width: 1200px;
@@ -252,13 +273,13 @@
             justify-content: center;
         }
 
-        .lightbox-content img { 
-            max-width: 100%; 
+        .lightbox-content img {
+            max-width: 100%;
             max-height: 90vh;
-            width: auto; 
-            height: auto; 
-            object-fit: contain; 
-            display: block; 
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
         }
 
         .lightbox-close {
@@ -279,15 +300,36 @@
         }
 
         @media (max-width: 768px) {
-            .lore-header { padding: 1rem; }
-            .lore-nav { flex-direction: column; gap: 0.75rem; }
-            .nav-buttons { width: 100%; justify-content: space-between; }
-            .lore-container { padding: 1.5rem 1rem; }
-            .lore-title h1 { font-size: 2rem; }
-            .lore-section { padding: 1.5rem; }
-            .image-gallery { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-        }
+            .lore-header {
+                padding: 1rem;
+            }
 
+            .lore-nav {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .nav-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .lore-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .lore-title h1 {
+                font-size: 2rem;
+            }
+
+            .lore-section {
+                padding: 1.5rem;
+            }
+
+            .image-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
     </style>
 
     <script type="application/ld+json">
@@ -314,6 +356,7 @@
 }
     </script>
 </head>
+
 <body>
 
     <header class="lore-header">
@@ -325,6 +368,7 @@
     <main class="lore-container">
         <section class="lore-hero">
             <video autoplay loop playsinline controls>
+                <source src="videos/celestial-shattering.webm" type="video/webm">
                 <source src="videos/celestial-shattering.mp4" type="video/mp4">
             </video>
         </section>
@@ -336,17 +380,23 @@
             </div>
         </section>
 
-        
+
         <section class="lore-section">
             <h2>Summary</h2>
             <p>The cataclysmic event when a celestial being fell to Earth, fracturing the veil between realms</p>
         </section>
-    
+
         <section class="lore-section">
             <h2>Description</h2>
-            <p>The Celestial Shattering, also known as the Holy Tragedy, marks the moment a star — one of the ancient astral beings — plummeted through the heavens and tore the veil separating worlds. Its impact scattered divine fragments across existence, seeding both miracles and monstrosities. The event redefined the laws of creation, binding mortal souls to celestial echoes and giving birth to the Holy Items. While some revere the Shattering as divine providence, others see it as the universe&#x27;s original sin — a cosmic wound still bleeding through reality. The aftermath forever altered the structure of fate, spawning both magic and endless conflict.</p>
+            <p>The Celestial Shattering, also known as the Holy Tragedy, marks the moment a star — one of the ancient
+                astral beings — plummeted through the heavens and tore the veil separating worlds. Its impact scattered
+                divine fragments across existence, seeding both miracles and monstrosities. The event redefined the laws
+                of creation, binding mortal souls to celestial echoes and giving birth to the Holy Items. While some
+                revere the Shattering as divine providence, others see it as the universe&#x27;s original sin — a cosmic
+                wound still bleeding through reality. The aftermath forever altered the structure of fate, spawning both
+                magic and endless conflict.</p>
         </section>
-    
+
         <section class="lore-section">
             <h2>Gallery</h2>
             <div class="image-gallery">
@@ -359,28 +409,28 @@
                 <div class="gallery-item" onclick="openLightbox('images/celestial-shattering2.png')">
                     <img src="images/celestial-shattering2.png" alt="The Celestial Shattering">
                 </div>
-                <div class="gallery-item" onclick="openLightbox('images/celestial-shattering3.png')">
-                    <img src="images/celestial-shattering3.png" alt="The Celestial Shattering">
+                <div class="gallery-item" onclick="openLightbox('images/celestial-shattering3.webp')">
+                    <img src="images/celestial-shattering3.webp" alt="The Celestial Shattering" loading="lazy">
                 </div>
                 <div class="gallery-item" onclick="openLightbox('images/celestial-shattering4.png')">
                     <img src="images/celestial-shattering4.png" alt="The Celestial Shattering">
                 </div>
-                <div class="gallery-item" onclick="openLightbox('images/celestial-shattering5.png')">
-                    <img src="images/celestial-shattering5.png" alt="The Celestial Shattering">
+                <div class="gallery-item" onclick="openLightbox('images/celestial-shattering5.webp')">
+                    <img src="images/celestial-shattering5.webp" alt="The Celestial Shattering" loading="lazy">
                 </div>
                 <!-- Add more images here -->
             </div>
         </section>
-    
+
         <section class="lore-section">
             <h2>Related Entries</h2>
             <div class="related-entries">
-<a href="/fate" class="related-link">→ Fate</a>
-<a href="/lintels" class="related-link">→ Lintels</a>
-<a href="/the-merging" class="related-link">→ The Merging</a>
+                <a href="/fate" class="related-link">→ Fate</a>
+                <a href="/lintels" class="related-link">→ Lintels</a>
+                <a href="/the-merging" class="related-link">→ The Merging</a>
             </div>
         </section>
-        
+
     </main>
 
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
@@ -400,12 +450,15 @@
             document.getElementById('lightbox').classList.remove('active');
         }
 
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 closeLightbox();
             }
         });
     </script>
 
+    <!-- Shrine JS Injector -->
+    <script src="global-shrine.js"></script>
 </body>
+
 </html>

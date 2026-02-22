@@ -1,324 +1,452 @@
 <!DOCTYPE html>
-<html lang="en-GB">
+<html lang="en">
+
 <head>
-  <link rel="canonical" href="https://thesecretsofsilverclouds.com/animantasy" />
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>What is Animantasy? | The Secrets of Silver Clouds</title>
-  <meta name="description" content="Animantasy blends anime-inspired storytelling with epic fantasy stakes and modern urban worlds. Here’s what that means in practice." />
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What is Animantasy? The Genre Defining Silver Clouds</title>
+  <meta name="description"
+    content="Animantasy is the explosive fusion of Anime aesthetics and High Fantasy world-building. Discover the genre that powers The Secrets of Silver Clouds.">
+  <link rel="canonical" href="https://thesecretsofsilverclouds.com/animantasy.html">
   <style>
     :root {
-      --primary-dark: #1a1a2e;
-      --accent-blue: #0f4c75;
-      --accent-teal: #3282b8;
-      --accent-gold: #bbe1fa;
-      --text-dark: #2c2c2c;
+      --primary: #0e1a2b;
+      --accent-blue: #00f0ff;
+      --accent-purple: #bc13fe;
+      --text: #e3edf8;
+      --glass: rgba(14, 26, 43, 0.85);
     }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'Lato', sans-serif;
-      background: white;
-      color: var(--text-dark);
+      margin: 0;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--primary);
+      color: var(--text);
       line-height: 1.6;
+      overflow-x: hidden;
     }
 
-    .lore-header {
-      background: rgba(26, 26, 46, 0.95);
-      padding: 1rem 2rem;
-      border-bottom: 3px solid var(--accent-teal);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .lore-nav {
-      max-width: 1200px;
-      margin: 0 auto;
+    .hero {
+      height: 80vh;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .back-btn, .nav-btn {
-      padding: 0.75rem 1.5rem;
-      background: var(--accent-blue);
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      display: inline-block;
-    }
-
-    .back-btn:hover, .nav-btn:hover {
-      background: var(--accent-teal);
-      transform: translateY(-2px);
-    }
-
-    .nav-buttons {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .lore-container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
-    }
-
-    .lore-hero {
-      border-radius: 15px;
-      overflow: hidden;
-      border: 3px solid var(--accent-blue);
-      margin-bottom: 2rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      background:
-        linear-gradient(135deg, rgba(15, 76, 117, 0.15) 0%, rgba(50, 130, 184, 0.10) 100%),
-        url("images/celestial-shattering.png");
-      background-size: cover;
-      background-position: center;
-      min-height: 420px;
+      justify-content: center;
+      text-align: center;
+      background: radial-gradient(circle at center, #1a2f4b 0%, var(--primary) 70%);
       position: relative;
     }
 
-    .lore-hero::after {
-      content: "";
+    .hero::before {
+      content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(26,26,46,0.25) 0%, rgba(26,26,46,0.55) 100%);
+      background: url('images/celestial-shattering.png') center/cover;
+      opacity: 0.3;
+      mix-blend-mode: overlay;
     }
 
-    .hero-text {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: flex-end;
-      padding: 1.75rem;
-      z-index: 1;
-      color: white;
+    h1 {
+      font-size: clamp(3rem, 8vw, 6rem);
+      margin: 0;
+      background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
     }
 
-    .hero-text h2 {
-      font-family: 'Cinzel', serif;
-      font-size: 2rem;
-      line-height: 1.2;
-      text-shadow: 0 6px 18px rgba(0,0,0,0.35);
-    }
-
-    .lore-title {
-      text-align: center;
-      padding: 2.25rem 2rem;
-      background: linear-gradient(135deg, rgba(15, 76, 117, 0.9) 0%, rgba(50, 130, 184, 0.85) 100%);
-      border-radius: 15px;
-      margin-bottom: 2rem;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-      color: white;
-    }
-
-    .lore-title h1 {
-      font-family: 'Cinzel', serif;
-      font-size: 2.7rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .lore-title p {
-      font-size: 1.1rem;
-      opacity: 0.95;
+    .tagline {
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      opacity: 0.9;
       max-width: 800px;
-      margin: 0.5rem auto 0;
+      margin: 20px auto;
     }
 
-    .lore-tags {
-      margin-top: 1rem;
-      display: flex;
-      gap: 0.75rem;
-      justify-content: center;
-      flex-wrap: wrap;
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
     }
 
-    .lore-tag {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 0.6rem 1.25rem;
-      border-radius: 25px;
-      font-size: 1rem;
-      font-weight: 600;
-      border: 2px solid rgba(255, 255, 255, 0.35);
-    }
-
-    .lore-section {
-      background: #f8f9fa;
-      border-radius: 12px;
-      padding: 2rem;
-      margin-bottom: 1.5rem;
-      border-left: 5px solid var(--accent-teal);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-
-    .lore-section h2 {
-      font-family: 'Cinzel', serif;
-      color: var(--accent-blue);
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-    }
-
-    .lore-section h3 {
-      font-family: 'Cinzel', serif;
-      color: var(--accent-teal);
-      font-size: 1.4rem;
-      margin-top: 1.5rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .lore-section p {
-      font-size: 1.05rem;
-      line-height: 1.8;
-      margin-bottom: 1rem;
-    }
-
-    .pillars {
-      list-style: none;
+    .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 40px;
+      margin: 60px 0;
     }
 
-    .pillars li {
-      background: rgba(50, 130, 184, 0.15);
-      padding: 1.2rem;
-      border-radius: 10px;
-      border-left: 4px solid var(--accent-blue);
-      font-size: 1.05rem;
-      font-weight: 500;
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s ease;
     }
 
-    .cta-row {
+    .card:hover {
+      transform: translateY(-10px);
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--accent-blue);
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      color: var(--accent-blue);
+      margin-bottom: 30px;
+    }
+
+    h3 {
+      color: #fff;
+      font-size: 1.5rem;
+      margin-top: 0;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 40px 0;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 20px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .comparison-table th {
+      background: rgba(255, 255, 255, 0.05);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 0.9rem;
+      color: var(--accent-blue);
+    }
+
+    .cta-section {
+      text-align: center;
+      padding: 100px 20px;
+      background: linear-gradient(to bottom, var(--primary), #000);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 20px 50px;
+      font-size: 1.5rem;
+      background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+      color: #fff;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: bold;
+      box-shadow: 0 10px 30px rgba(188, 19, 254, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 40px rgba(188, 19, 254, 0.6);
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px;
+      opacity: 0.6;
+      font-size: 0.9rem;
+    }
+
+    .cinematic-break {
+      border: 0;
+      height: 1px;
+      background-image: linear-gradient(to right, rgba(0, 240, 255, 0), rgba(0, 240, 255, 0.75), rgba(0, 240, 255, 0));
+      margin: 60px 0;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+    }
+
+    .parallax-section {
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      min-height: 400px;
       display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-top: 1rem;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin: 60px 0;
+      border-radius: 16px;
+      /* Inset parallax looks nice here */
+      overflow: hidden;
     }
 
-    @media (max-width: 768px) {
-      .lore-nav { flex-direction: column; align-items: stretch; }
-      .nav-buttons { justify-content: flex-start; }
-      .lore-title h1 { font-size: 2rem; }
-      .lore-hero { min-height: 320px; }
-      .lore-container { padding: 1.5rem 1rem; }
+    .parallax-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .parallax-text {
+      position: relative;
+      z-index: 2;
+      background: rgba(14, 26, 43, 0.9);
+      padding: 40px;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      max-width: 700px;
+      border: 1px solid var(--accent-blue);
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .cast-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .cast-card {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.2));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 25px;
+      text-align: left;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cast-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent-blue);
+      opacity: 0.5;
+      transition: opacity 0.3s;
+    }
+
+    .cast-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      border-color: var(--accent-purple);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .cast-card:hover::before {
+      opacity: 1;
+      box-shadow: 0 0 15px var(--accent-blue);
+    }
+
+    .cast-name {
+      color: var(--accent-blue);
+      font-size: 1.5rem;
+      margin: 0 0 5px 0;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .cast-role {
+      color: var(--accent-purple);
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+      font-style: italic;
+      display: block;
+      font-weight: 600;
     }
   </style>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "name": "Animantasy",
-  "headline": "What is Animantasy?",
-  "description": "Animantasy is anime meets epic fantasy\u2014cinematic, POV-driven prose with dynamic scene cuts, montage-like page breaks, and lore-rich worldbuilding, as seen in The Secrets of Silver Clouds.",
-  "url": "https://thesecretsofsilverclouds.com/animantasy",
-  "image": [
-    "https://thesecretsofsilverclouds.com/images/celestial-shattering.png"
-  ],
-  "author": {
-    "@type": "Person",
-    "name": "Silent Silver"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "The Secrets of Silver Clouds",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://thesecretsofsilverclouds.com/images/logo.png"
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "What is Animantasy?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Animantasy is a literary and artistic genre that blends the visual aesthetics and tropes of Anime (Japanese animation) with the depth and world-building of Western High Fantasy. It bridges the gap between visual storytelling and written narrative."
+        }
+      }, {
+        "@type": "Question",
+        "name": "Is Silver Clouds an anime or a book?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The Secrets of Silver Clouds is an Animantasy novel. It is written as a book but designed to be experienced like an anime, with vivid descriptions, 'cinematic' pacing, and accompanying visual assets."
+        }
+      }, {
+        "@type": "Question",
+        "name": "What are the core elements of Animantasy?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Core elements include: Technomagic (magic/tech fusion), stylised action sequences, high-stakes emotional drama, distinct character designs (often with signature weapons or items), and a power system based on internal energy (like 'Presence' or 'Ki')."
+        }
+      }]
     }
-  }
-}
-</script>
+    </script>
 </head>
 
 <body>
-  <header class="lore-header">
-    <nav class="lore-nav">
-      <a href="/" class="back-btn">← Back Home</a>
-      <div class="nav-buttons">
-        <a href="/#codex" class="nav-btn">Explore Codex →</a>
-      </div>
-    </nav>
+
+  <header class="hero">
+    <div style="z-index: 2; padding: 20px;">
+      <h1>Animantasy</h1>
+      <p class="tagline">Where the visual rush of Anime meets the epic depth of Fantasy.</p>
+      <a href="/" class="btn" style="margin-top: 30px; font-size: 1rem; padding: 15px 30px;">Enter the
+        Universe</a>
+    </div>
   </header>
 
-  <main class="lore-container">
-    <section class="lore-hero" aria-label="Animantasy hero image">
-      <div class="hero-text">
-        <h2>Anime energy. Fantasy scale. London edge.</h2>
+  <main class="container">
+    <section>
+      <h2>The Missing Link</h2>
+      <p style="font-size: 1.2rem; max-width: 800px;">
+        For decades, fans have had to choose. You either watch <strong>Anime</strong> for the hype moments, the visual
+        flair, and the raw emotion... or you read <strong>Fantasy</strong> for the deep lore, the political intrigue,
+        and the majestic scope.
+      </p>
+      <p style="font-size: 1.2rem; max-width: 800px;">
+        <strong>Animantasy</strong> refuses to choose. It is a new genre defined by <em>Silent Silver</em> to describe
+        stories that read like your favourite anime looks.
+      </p>
+
+      <hr class="cinematic-break">
+
+      <!-- CINEMATIC LENS / CAMERA POV -->
+      <div class="parallax-section" style="background-image: url('images/rune-rider.png');">
+        <div class="parallax-text">
+          <h2>The Cinematic Lens</h2>
+          <p><strong>Driven by visuals. Directed by words.</strong></p>
+          <p>In Animantasy, the narrator functions like a camera lens. The POV switches dynamically—panning, zooming,
+            and cutting to capture the action. Page breaks act as scene fades, transitioning between moments with the
+            pacing of an edited sequence.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="grid">
+      <div class="card">
+        <h3>For Anime Fans</h3>
+        <p>If you love <em>Bleach</em>, <em>Arcane</em>, or <em>Final Fantasy</em>, you're already an Animantasy fan.
+          You'll find the same character-driven action, transformation sequences ('Bankai' moments), and rule-of-cool
+          magic systems here.</p>
+      </div>
+      <div class="card">
+        <h3>For Fantasy Readers</h3>
+        <p>If you enjoy Sanderson's hard magic systems or Rothfuss's prose but crave more kinetic energy and visual
+          description, Animantasy offers a faster-paced, more vibrant alternative to traditional Grimdark or High
+          Fantasy.</p>
+      </div>
+      <div class="card">
+        <h3>The Aesthetics</h3>
+        <p>Neon runes floating over cobblestone streets. Swords that are 6-feet long and glow with starlight. Characters
+          with distinct silhouettes. The visual language is unapologetically bold.</p>
+      </div>
+    </div>
+
+    <hr class="cinematic-break">
+
+    <!-- CAST SECTION -->
+    <section>
+      <h2>Larger Than Life Cast</h2>
+      <p style="text-align: center; max-width: 700px; margin: 0 auto 30px auto;">
+        Characters in Silver Clouds aren't just people—they are forces of nature, defined by distinct silhouettes,
+        signature abilities, and deep emotional scars.
+      </p>
+      <div class="cast-grid">
+        <div class="cast-card">
+          <div class="cast-name">Gabriel</div>
+          <span class="cast-role">The Blood Angel</span>
+          <p><a href="/demons-legion" class="codex-link">The Legion</a>'s rapper and aerial ace. He weaponises his own
+            blood to manifest massive crimson wings, reigning
+            from the skies as a terrifying force of nature.</p>
+        </div>
+        <div class="cast-card">
+          <div class="cast-name">Shonen Kartia</div>
+          <span class="cast-role">The Singularity</span>
+          <p>The immortal founder of <a href="/the-order" class="codex-link">The Order</a>. Born with a Holy Item, he
+            seeks only one thing after centuries of
+            god-like power: his own end.</p>
+        </div>
+        <div class="cast-card">
+          <div class="cast-name">Emily Grimm</div>
+          <span class="cast-role">The Eternal Child</span>
+          <p>Trapped in a 12-year-old's body for millennia. She mastered the forbidden 'Fade' technique, turning her
+            curse into a weapon.</p>
+        </div>
+        <div class="cast-card">
+          <div class="cast-name">Nameless</div>
+          <span class="cast-role">The Wildcard</span>
+          <p>A wraith wrapped in chains and mystery. His unpredictable "Flicker" combat style makes him a nightmare for
+            friend and foe alike.</p>
+        </div>
+        <div class="cast-card">
+          <div class="cast-name">Zara</div>
+          <span class="cast-role">The Duskkin Hunter</span>
+          <p>A reformed hunter who traded bloodlust for purpose. As <a href="/mi6" class="codex-link">MI6</a>'s most
+            valuable ally, she tracks mythical
+            threats through the <a href="/urban-jungle" class="codex-link">Urban Jungle</a> with unmatched instinct.</p>
+        </div>
       </div>
     </section>
 
-    <section class="lore-title">
-      <h1>What is Animantasy?</h1>
-      <div class="lore-tags">
-        <span class="lore-tag">Genre</span>
-        <span class="lore-tag">Style</span>
-        <span class="lore-tag">Storytelling</span>
-      </div>
-      <p>
-        Animantasy is a way of telling epic fantasy like it’s being directed with an anime camera —
-        while keeping the emotional weight, grit, and lived-in detail of a modern urban world.
-      </p>
+    <hr class="cinematic-break">
+
+    <section>
+      <h2>Genre Comparison</h2>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Traditional Fantasy</th>
+            <th>Animantasy (Silver Clouds)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Magic System</strong></td>
+            <td>Often subtle, ancient, mysterious</td>
+            <td>Explicit, visual, 'Technomagic', quantifiable (Presence)</td>
+          </tr>
+          <tr>
+            <td><strong>Pacing</strong></td>
+            <td>Slow burn, descriptive</td>
+            <td>Cinematic, high-octane, 'Episodes'</td>
+          </tr>
+          <tr>
+            <td><strong>World</strong></td>
+            <td>Medieval Europe inspired</td>
+            <td>Urban Fantasy / Sci-Fi hybrid (London + Magic)</td>
+          </tr>
+          <tr>
+            <td><strong>Themes</strong></td>
+            <td>Good vs Evil, Destiny</td>
+            <td>Identity, Trauma, Found Family, Power Scales</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
-    <section class="lore-section">
-      <h2>The quick definition</h2>
-      <p>
-        Animantasy blends anime-inspired storytelling (clarity of motion, heightened emotion, bold “set pieces”)
-        with fantasy-scale stakes and an urban reality you can smell — rain on concrete, neon reflections, late-night buses,
-        and the feeling that something ancient is hiding behind something ordinary.
+    <section class="cta-section">
+      <h2>Experience the Flagship Title</h2>
+      <p style="margin-bottom: 40px; font-size: 1.2rem;">The Secrets of Silver Clouds is the first true Animantasy saga.
       </p>
-
-      <h3>What it looks like on the page</h3>
-      <ul class="pillars">
-        <li><strong>Cinematic clarity:</strong> You always know where everyone is, what moved, and why it matters.</li>
-        <li><strong>POV as a camera:</strong> The “lens” can rotate, punch-in, widen, and cut like a scene.</li>
-        <li><strong>Editing-style transitions:</strong> Page breaks act like “fade to black,” hard cuts, smash cuts, and montage beats — the pacing moves like film editing.</li>
-        <li><strong>Power with rules:</strong> Magic has texture, cost, and consequences — not just vibes.</li>
-        <li><strong>Emotional honesty:</strong> Big feelings without cheesy shortcuts.</li>
-      </ul>
-    </section>
-
-    <section class="lore-section">
-      <h2>Why now?</h2>
-      <p>
-        Audiences are already fluent in anime language — the pacing, visual logic, and emotional rhythm.
-        Animantasy just uses that fluency to tell fantasy stories with sharper momentum and bigger moments.
-      </p>
-
-      <h3>Adult animation isn’t a niche</h3>
-      <p>
-        “Animation” is a delivery system, not an age bracket. The same way live-action can be silly or prestige,
-        animation can be light or devastating. Animantasy is built to play in that emotionally-mature space.
-      </p>
-    </section>
-
-    <section class="lore-section">
-      <h2>How Silver Clouds uses it (no spoilers)</h2>
-      <p>
-        <em>The Secrets of Silver Clouds</em> is an Animantasy epic: urban fantasy + gangster energy + anime-styled set pieces,
-        all grounded in London.
-      </p>
-
-      <h3>Start here</h3>
-      <div class="cta-row">
-        <a class="nav-btn" href="/#codex">Enter the World Codex</a>
-        <a class="nav-btn" href="/#game">Play the Doorway Game</a>
-      </div>
+      <a href="/#codex" class="btn">Read the Lore</a>
     </section>
   </main>
+
+  <footer>
+    <p>© 2026 The Secrets of Silver Clouds. All Rights Reserved.</p>
+    <p><a href="/" style="color: var(--accent-blue); text-decoration: none;">Return to Home</a></p>
+  </footer>
+
+    <!-- Shrine JS Injector -->
+    <script src="global-shrine.js"></script>
 </body>
+
 </html>

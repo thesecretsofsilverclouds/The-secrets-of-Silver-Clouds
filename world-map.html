@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive World Map - 3D Prototype (Local)</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1a1a2e;
+            --accent-blue: #0f4c75;
+            --accent-gold: #ffd700;
+            --text-light: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            background: #000;
+            font-family: 'Lato', sans-serif;
+            color: var(--text-light);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            background: linear-gradient(to bottom, #ffd700, #ffaa00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5));
+            animation: textShimmer 3s infinite alternate;
+        }
+
+        @keyframes textShimmer {
+            0% {
+                filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.3));
+            }
+
+            100% {
+                filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.8));
+            }
+        }
+
+
+        /* Video Background Layer (Double Buffer) */
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .bg-video.active {
+            opacity: 1;
+        }
+
+        /* 3D Canvas Layer */
+        #map-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+
+        /* UI Overlay Layer */
+        .ui-layer {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .title-block {
+            pointer-events: auto;
+        }
+
+        p.subtitle {
+            color: #ccc;
+            font-size: 0.9rem;
+            max-width: 300px;
+        }
+
+        /* Detail Panel (Slide-in) */
+        .detail-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 100%;
+            background: rgba(26, 26, 46, 0.92);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid var(--accent-blue);
+            z-index: 9005;
+            /* Elevated above global shrine (9001) to prevent obscuring Visit button */
+            padding: 2rem;
+            transform: translateX(100%);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .detail-panel.active {
+            transform: translateX(0);
+        }
+
+        .detail-video-container {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid var(--accent-blue);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Cosmic Static BG in panel */
+        .panel-bg-static {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.4;
+            z-index: 1;
+        }
+
+        .detail-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: relative;
+            z-index: 2;
+        }
+
+        .detail-header h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .faction-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .detail-content p {
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        .back-btn {
+            margin-top: auto;
+            background: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 1rem;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .back-btn:hover {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .visit-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            background: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .visit-btn:hover {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Loading Overlay */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--accent-gold);
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Secret Quiz Rune on Map (Organic funnel) */
+        .map-quiz-rune {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            /* Positioned bottom left out of the way */
+            z-index: 50;
+            font-size: 2.5rem;
+            color: rgba(255, 215, 0, 0.3);
+            text-decoration: none;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            animation: runePulse 4s infinite alternate;
+        }
+
+        .map-quiz-rune:hover {
+            color: rgba(255, 215, 0, 0.9);
+            text-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+            transform: scale(1.1);
+        }
+
+        @keyframes runePulse {
+            0% {
+                opacity: 0.4;
+                filter: blur(1px);
+            }
+
+            100% {
+                opacity: 0.7;
+                filter: blur(0px);
+            }
+        }
+
+        /* Mobile Portrait: Full Screen Panel */
+        @media (max-width: 768px) {
+            .detail-panel {
+                width: 100%;
+                top: 0;
+                bottom: 0;
+                height: 100%;
+                /* Full screen */
+                transform: translateY(100%);
+                border-left: none;
+                border-top: none;
+                display: flex;
+                flex-direction: column;
+                overflow-y: auto;
+                z-index: 9005;
+                /* Ensure it fully covers map and shrine */
+                padding-bottom: 2rem;
+            }
+
+            .detail-panel.active {
+                transform: translateY(0);
+            }
+
+            .detail-video-container {
+                height: 250px;
+                min-height: 250px;
+                flex-shrink: 0;
+            }
+
+            .detail-content {
+                flex: 1;
+                padding-bottom: 20px;
+            }
+
+            /* Hide scrolling hint */
+            .subtitle {
+                display: none;
+            }
+
+            /* Move quiz rune above shrine and ensure it's not covered by it */
+            .map-quiz-rune {
+                bottom: 160px;
+                left: 20px;
+                z-index: 9002;
+            }
+        }
+
+        /* Mute Toggle */
+        #mute-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 100px;
+            z-index: 25;
+            background: rgba(26, 26, 46, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #mute-btn:hover {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Fullscreen Toggle (Mobile Only) */
+        #fullscreen-btn {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            bottom: 220px;
+            right: 20px;
+            z-index: 25;
+            /* High z-index to sit above UI layer */
+            background: rgba(26, 26, 46, 0.9);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--accent-gold);
+            color: var(--accent-gold);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Show on mobile/tablet */
+        @media (max-width: 1024px) {
+            #fullscreen-btn {
+                display: flex;
+            }
+
+            #mute-btn {
+                bottom: 160px;
+                left: auto;
+                right: 20px;
+            }
+        }
+
+        /* Hide buttons when detail panel is open (sibling combinator works since panel covers screen) */
+        .detail-panel.active~#fullscreen-btn {
+            display: none !important;
+        }
+
+        /* Mobile Landscape: Revert panel to desktop style (side panel) */
+        /* Mobile Landscape: Revert panel to desktop style (side panel with vertical scroll) */
+        @media (max-width: 1024px) and (orientation: landscape) {
+            .detail-panel {
+                width: 350px;
+                height: 100%;
+                top: 0;
+                bottom: auto;
+                right: 0;
+                transform: translateX(100%);
+                border-top: none;
+                border-left: 1px solid var(--accent-blue);
+                display: block;
+                /* Use block to allow normal flow */
+                overflow-y: auto;
+                /* Scroll the whole panel */
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .detail-panel.active {
+                transform: translateX(0);
+            }
+
+            /* Video container settings */
+            .detail-video-container {
+                height: 180px;
+                /* Give it enough height */
+                min-height: 180px;
+                width: 100%;
+            }
+
+            .detail-content {
+                padding-bottom: 20px;
+                overflow: visible;
+                /* Let parent scroll */
+            }
+
+            /* Adjust title for landscape height */
+            .title-block {
+                top: 10px;
+                left: 30px;
+                /* More padding for notch/safe area */
+                max-width: none;
+                /* Allow full width */
+                width: auto;
+            }
+
+            /* Hide scrolling hint in tight landscape */
+            .subtitle {
+                display: none;
+            }
+
+            h1 {
+                font-size: 1.2rem;
+                /* Find a size that fits "WORLD MAP" without wrapping/cutting */
+                margin-bottom: 0;
+                white-space: nowrap;
+                /* Force single line if possible */
+            }
+        }
+
+        /* -- END OF CSS -- */
+    </style>
+
+    <!-- Three.js Dependencies (UMD/Global - r128) -->
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loader">Initializing Map...</div>
+
+    <!-- Background Video (Double Buffer for Smooth Loop) -->
+    <video id="bg-video-1" class="bg-video active" muted playsinline>
+        <source src="videos/cosmicmapbackground.mp4" type="video/mp4">
+        <source src="videos/cosmicmapbackground.webm" type="video/webm">
+    </video>
+    <video id="bg-video-2" class="bg-video" muted playsinline>
+        <source src="videos/cosmicmapbackground.mp4" type="video/mp4">
+        <source src="videos/cosmicmapbackground.webm" type="video/webm">
+    </video>
+
+    <!-- Ambient Music -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="music/Legends-of-Dawn.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Main 3D Canvas -->
+    <canvas id="map-canvas"></canvas>
+
+    <!-- UI Overlay -->
+    <div class="ui-layer">
+        <div class="title-block">
+            <h1>World Map</h1>
+            <p class="subtitle">Drag to rotate • Scroll to zoom • Click a location</p>
+        </div>
+    </div>
+
+    <!-- Detail Panel -->
+    <div class="detail-panel" id="detail-panel">
+        <div class="detail-header">
+            <span class="faction-badge" id="d-faction">Faction</span>
+            <h2 id="d-title">Location Name</h2>
+        </div>
+
+        <div class="detail-video-container">
+            <img src="images/cosmicmapbackground.png" class="panel-bg-static" alt="Starfield">
+            <video id="d-video" class="detail-video" loop muted playsinline crossorigin="anonymous">
+                <!-- Source set dynamically -->
+            </video>
+        </div>
+
+        <div class="detail-content">
+            <p id="d-desc">Location description goes here...</p>
+        </div>
+
+        <button class="back-btn" id="d-back">← Back to Map</button>
+        <a class="visit-btn" id="d-visit" href="#" target="_blank" rel="noopener">Visit Location</a>
+    </div>
+
+    <!-- Secret Quiz Entrance -->
+    <a href="faction-quiz" class="map-quiz-rune" title="Do you belong here? Assessment Awaits.">✦</a>
+
+    <!-- Mute Toggle Button -->
+    <button id="mute-btn" title="Toggle Music">🔊</button>
+
+    <!-- Fullscreen/Landscape Toggle -->
+    <button id="fullscreen-btn" title="Enter Fullscreen Landscape">⛶</button>
+
+    <!-- Logic (Standard Script, No Module) -->
+    <script>
+        // Use Global Variables
+        const OrbitControls = THREE.OrbitControls;
+        const TWEEN = window.TWEEN;
+
+        // --- Config ---
+        const LOCATIONS = [
+            {
+                id: 'mi6',
+                name: 'MI6 HQ (The Armadillo)',
+                faction: 'MI6',
+                // Canon: "The Armadillo... fusion of modern engineering and arcane protection... energy-dispersive scales."
+                desc: 'The Armadillo: A fortress of data and defense on the Thames. Features energy-dispersive scales and an experimental reactor core.',
+                // Coords: London area (SE UK) - Raised
+                x: 0.28, y: -0.28,
+                flyHeight: 0.15,
+                color: 0x3282b8,
+                video: 'videos/map-icon-mi6hq.mp4',
+                icon: 'images/map-icon-mi6hq.png',
+                codexUrl: 'mi6.html'
+            },
+            {
+                id: 'sanctuary',
+                name: 'Sanctuary in the Sky',
+                faction: 'The Church',
+                // Canon: "Paradoxical realm... divine refuge by day... den of sin and indulgence by night."
+                desc: 'A floating cathedral and paradoxical realm. A divine refuge by day, transforming into a den of sin and indulgence by night.',
+                // Coords: Above London - Higher Y - Raised
+                x: 0.50, y: -0.26,
+                flyHeight: 0.15,
+                color: 0xffd700,
+                video: 'videos/map-icon-sanctuary-in-the-sky.mp4',
+                icon: 'images/map-icon-sanctuary-in-the-sky.png',
+                codexUrl: 'sanctuary-in-the-sky.html'
+            },
+            {
+                id: 'bigben',
+                name: 'New Big Ben',
+                faction: 'Neutral',
+                // Canon: Implicit connection to Time Magic / Neutral ground.
+                desc: 'The beating heart of London, pulsing with time magic and watching over the city\'s transformation.',
+                // Coords: Central London - Slightly Left - Raised
+                x: 0.42, y: -0.35,
+                flyHeight: 0.15,
+                color: 0x708090, // SlateGray for visibility
+                video: 'videos/map-icon-new-big-ben.mp4',
+                icon: 'images/map-icon-new-big-ben.png',
+                codexUrl: 'new-big-ben.html'
+            },
+            {
+                id: 'streamliner',
+                name: 'The Streamliner',
+                faction: 'Neutral',
+                // Canon: "Magical transit... phasing transport."
+                desc: 'A high-speed magical transit system connecting the realms, phasing through physical barriers.',
+                // Coords: Generic route (London outward) - Further East - Raised
+                x: 0.56, y: -0.37,
+                flyHeight: 0.15,
+                color: 0x00ffff,
+                video: 'videos/map-icon-streamliner.mp4',
+                icon: 'images/map-icon-streamliner.png',
+                codexUrl: 'streamliner.html'
+            },
+            {
+                id: 'ragnorir',
+                name: 'Ragnorir',
+                faction: 'Viking',
+                // Canon: Polished placeholder (Viking/Northern/Fortress).
+                desc: 'The frozen fortress of the Northern Highlands, echoing with the songs of ancient battles and cold steel.',
+                // Coords: Scotland (North) - Moved Further South-West
+                x: -0.27, y: 0.25,
+                flyHeight: 0.2,
+                color: 0x4a90d9,
+                video: 'videos/map-icon-ragnorir.mp4',
+                icon: 'images/map-icon-ragnorir.png',
+                codexUrl: 'ragnorir.html'
+            },
+            {
+                id: 'alchemical',
+                name: 'Alchemical Society Ruins',
+                faction: 'Destroyed',
+                // Canon: "Ruins of broken dreams... cautionary tale of unchecked ambition."
+                desc: 'The shattered remains of a lost golden era. A cautionary tale of unchecked ambition and the war that destroyed it.',
+                // Coords: N. Ireland (West) - Moved further left (West)
+                x: -0.64, y: 0.07,
+                flyHeight: 0.2,
+                color: 0x888888,
+                video: 'videos/map-icon-alchemical-society -ruins.mp4',
+                icon: 'images/map-icon-alchemical-society -ruins.png',
+                codexUrl: 'alchemical-society.html'
+            },
+            {
+                id: 'urbanjungle',
+                name: 'The Urban Jungle',
+                faction: 'Duskkin',
+                // Canon: "Duskkin territory... cybernetics and blood magic."
+                desc: 'A secluded domain of the Duskkin Clan, where vampire heritage fuses with cybernetic evolution.',
+                // Coords: Below Ragnorir - Slightly Right
+                x: -0.05, y: 0.30,
+                color: 0x9b59b6,
+                video: 'videos/map-icon-urban-jungle.mp4',
+                icon: 'images/map-icon-urban-jungle.png',
+                codexUrl: 'urban-jungle.html'
+            },
+            {
+                id: 'infinity',
+                name: 'Infinity\'s Quill',
+                faction: 'Neutral',
+                // Canon: Polished placeholder (Knowledge/Library).
+                desc: 'A limitless repository of knowledge where history is written and rewritten by the ink of fate.',
+                // Coords: Moved further West (Left) to avoid Ragnorir overlap
+                x: -0.25, y: 0.59,
+                color: 0x708090, // SlateGray for visibility
+                video: 'videos/map-icon-infinitys-Quill.mp4',
+                icon: 'images/map-icon-infinitys-Quill.png',
+                codexUrl: 'infinitys-quill.html'
+            },
+            {
+                id: 'wooburn',
+                name: 'Wooburn Forest',
+                faction: 'Nature',
+                // Canon: "Living Tapestry of Memories... ethereal stage of nature."
+                desc: 'The Living Tapestry of Memories. An ethereal forest where cherished moments are etched into the very bark of the trees.',
+                // Coords: Near London (West)
+                x: 0.15, y: -0.40,
+                color: 0x2ecc71,
+                video: 'videos/map-icon-wooburn-forest.mp4',
+                icon: 'images/map-icon-wooburn-forest.png',
+                codexUrl: 'wooburn-forest.html'
+            },
+            {
+                id: 'onari',
+                name: 'Onari Village',
+                faction: 'Onari',
+                // Canon: "Sacred Grove Yaluma... Lifetree."
+                desc: 'Home to the Sacred Grove of Yaluma and the Lifetree. A place where the spirit clan communes with Yuvan, the God of Nature.',
+                // Coords: Near Wooburn - Further West/South
+                x: 0.04, y: -0.52,
+                color: 0xffaa00,
+                video: 'videos/map-icon-onari-village.mp4',
+                icon: 'images/map-icon-onari-village.png',
+                codexUrl: 'onari.html'
+            },
+            {
+                id: 'ironglyph1',
+                name: 'Iron Glyph',
+                faction: 'Independent',
+                desc: 'A runic forge site where raw iron is etched with ancient glyphs of power. The symbols hum with latent energy, waiting to be awakened.',
+                x: -0.56, y: 0.49,
+                color: 0xb87333, // Copper
+                video: 'videos/map-icon-Iron-glyph.mp4',
+                icon: 'images/map-icon-Iron-glyph.png',
+                spriteScale: 0.13,
+                codexUrl: 'iron-glyph.html'
+            },
+            {
+                id: 'ironglyph2',
+                name: 'Iron Glyph',
+                faction: 'Independent',
+                desc: 'A runic forge site where raw iron is etched with ancient glyphs of power. The symbols hum with latent energy, waiting to be awakened.',
+                x: -0.10, y: -0.25,
+                color: 0xb87333, // Copper
+                video: 'videos/map-icon-Iron-glyph.mp4',
+                icon: 'images/map-icon-Iron-glyph.png',
+                spriteScale: 0.13,
+                codexUrl: 'iron-glyph.html'
+            },
+            {
+                id: 'enchantedink',
+                name: 'Enchanted Ink',
+                faction: 'Independent',
+                desc: 'A magical moving tattoo parlour, the only one in existence.',
+                x: 0.32, y: -0.46,
+                color: 0x6a0dad, // Deep Purple
+                video: 'videos/map-icon-enchanted-Ink.mp4',
+                icon: 'images/map-icon-enchanted-Ink.png',
+                codexUrl: 'enchanted-ink.html'
+            },
+            {
+                id: 'demonportal',
+                name: 'Demon Realm Portal',
+                faction: 'Independent',
+                desc: 'A tear in the fabric of reality — a volatile gateway to the Demon Realm. Its crimson glow warns all who approach.',
+                x: 0.46, y: 0.37,
+                color: 0xff2200, // Demon Red
+                video: 'videos/map-icon-demon-realm-portal.mp4',
+                icon: 'images/map-icon-demon-realm-portal.png',
+                codexUrl: 'demon-realm.html'
+            },
+            {
+                id: 'fairyportal',
+                name: 'Fairy Realm Portal',
+                faction: 'Independent',
+                desc: 'A shimmering doorway wreathed in light and pollen. Beyond it lies the Fairy Realm — a land of beauty and unseen peril.',
+                x: 0.08, y: 0.11,
+                color: 0x00ff88, // Fairy Green
+                video: 'videos/map-icon-fairy-realm-portal.mp4',
+                icon: 'images/map-icon-fairy-realm-portal.png',
+                codexUrl: 'fairy-realm.html'
+            },
+            {
+                id: 'maxprison',
+                name: 'Max Prison',
+                faction: 'MI6 / Order / Church',
+                desc: 'A maximum-security fortress jointly operated by MI6, The Order, and The Church. Built to contain the most dangerous supernatural threats known to the world.',
+                x: 0.68, y: -0.30,
+                color: 0x555555, // Dark Gray
+                video: 'videos/map-icon-max-prison.mp4',
+                icon: 'images/map-icon-max-prison.png',
+                codexUrl: 'max-prison.html'
+            }
+        ];
+
+        // --- Init ---
+        const canvas = document.getElementById('map-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x000000, 0.02);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 3.5, 3.5);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.maxPolarAngle = Math.PI / 2 - 0.1;
+        controls.minDistance = 1;
+        controls.maxDistance = 8;
+
+        const ambientLight = new THREE.AmbientLight(0x444466, 1.5);
+        scene.add(ambientLight);
+        const dirLight = new THREE.DirectionalLight(0xffeedd, 1);
+        dirLight.position.set(5, 10, 5);
+        scene.add(dirLight);
+
+        // --- Map Plane ---
+        const textureLoader = new THREE.TextureLoader();
+
+        console.log('Loading map texture...');
+        textureLoader.load('images/map-outline.png', (tex) => {
+            console.log('Map texture loaded');
+            const geometry = new THREE.PlaneGeometry(3.2, 1.8);
+            const material = new THREE.MeshBasicMaterial({
+                map: tex,
+                transparent: true,
+                side: THREE.DoubleSide
+            });
+            const plane = new THREE.Mesh(geometry, material);
+            plane.rotation.x = -Math.PI / 2;
+            scene.add(plane);
+
+            document.getElementById('loader').style.opacity = 0;
+            setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+        },
+            undefined,
+            (err) => {
+                console.error('Texture load error:', err);
+                document.getElementById('loader').innerHTML = 'Texture Blocked by Browser Security.<br>Please run <b>start_map_server.bat</b> to view 3D textures.';
+                document.getElementById('loader').style.color = '#ffaa00';
+
+                // Wireframe fallback
+                const geometry = new THREE.PlaneGeometry(3.2, 1.8, 10, 10);
+                const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+                const plane = new THREE.Mesh(geometry, material);
+                plane.rotation.x = -Math.PI / 2;
+                scene.add(plane);
+
+                document.getElementById('loader').style.opacity = 1; // Keep visible for error
+            });
+
+        // --- Helpers ---
+        function createCircularSprite(texture, color) {
+            const size = 256;
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            // 1. Draw Image centered
+            const aspect = texture.image.width / texture.image.height;
+            let drawW = size;
+            let drawH = size;
+            if (aspect > 1) drawH = size / aspect;
+            else drawW = size * aspect;
+
+            ctx.drawImage(texture.image, (size - drawW) / 2, (size - drawH) / 2, drawW, drawH);
+
+            // 2. Circle Mask (Destination-In)
+            // This keeps only the pixels that overlap with the source (circle)
+            ctx.globalCompositeOperation = 'destination-in';
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, size / 2 - 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 3. Reset Composite for Border
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.strokeStyle = '#' + color.toString(16).padStart(6, '0');
+            ctx.lineWidth = 10;
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, size / 2 - 5, 0, Math.PI * 2);
+            ctx.stroke();
+
+            const newTex = new THREE.CanvasTexture(canvas);
+            newTex.minFilter = THREE.LinearFilter;
+            return newTex;
+        }
+
+        // --- Pins ---
+        const markers = [];
+        const raycaster = new THREE.Raycaster();
+        const pointer = new THREE.Vector2();
+
+        LOCATIONS.forEach(loc => {
+            const group = new THREE.Group();
+            // INVERT Y for Z axis:
+            group.position.set(loc.x, 0.05, -loc.y);
+            group.userData = { id: loc.id, ...loc };
+            scene.add(group);
+            markers.push(group);
+
+            // Add cache buster to avoid stuck textures
+            const iconUrl = (loc.icon || 'images/map-icon-mi6hq.png') + '?v=cache1';
+
+            textureLoader.load(iconUrl, (tex) => {
+                // Process texture to circular sprite
+                const circleTex = createCircularSprite(tex, loc.color);
+
+                const flyY = loc.flyHeight || 0.1; // Custom height support
+
+                const mat = new THREE.SpriteMaterial({
+                    map: circleTex,
+                    transparent: true,
+                    alphaTest: 0.05 // Discard transparent pixels
+                });
+                const sprite = new THREE.Sprite(mat);
+                const sc = loc.spriteScale || 0.18;
+                sprite.scale.set(sc, sc, sc);
+                sprite.position.y = flyY; // Use flyY
+                sprite.renderOrder = 1;
+                group.add(sprite);
+
+                group.userData.sprite = sprite;
+                group.userData.startY = flyY; // Use flyY
+                group.userData.offset = Math.random() * Math.PI * 2;
+            }, undefined, (err) => {
+                const flyY = loc.flyHeight || 0.1;
+                console.error('Sprite load error', err);
+                const geo = new THREE.SphereGeometry(0.05);
+                const mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: loc.color }));
+                mesh.position.y = flyY;
+                group.add(mesh);
+            });
+
+            const flyY = loc.flyHeight || 0.1;
+            const ringY = flyY * 0.2; // Keep ring proportional
+
+            const ringGeo = new THREE.RingGeometry(0.08, 0.12, 32);
+            const ringMat = new THREE.MeshBasicMaterial({
+                color: loc.color,
+                transparent: true,
+                opacity: 0.6,
+                side: THREE.DoubleSide
+            });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = -Math.PI / 2;
+            ring.position.y = ringY; // Use ringY
+            group.add(ring);
+        });
+
+        // --- Interaction ---
+        let selectedLocation = null;
+
+        function onPointerDown(event) {
+            // Skip if clicking on UI elements (panel, buttons, etc.)
+            const panel = document.getElementById('detail-panel');
+            const muteBtn = document.getElementById('mute-btn');
+            if (panel.contains(event.target) || event.target === muteBtn) return;
+
+            pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+            pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(pointer, camera);
+            const intersects = raycaster.intersectObjects(scene.children, true);
+
+            // Filter to sprite hits only (ignore ring meshes) and find closest
+            let bestTarget = null;
+            let bestDist = Infinity;
+            for (const hit of intersects) {
+                if (hit.object.isSprite && hit.distance < bestDist) {
+                    let target = hit.object;
+                    while (target.parent && target.parent !== scene) {
+                        target = target.parent;
+                    }
+                    if (target.userData && target.userData.id) {
+                        bestTarget = target;
+                        bestDist = hit.distance;
+                    }
+                }
+            }
+
+            if (bestTarget) {
+                focusLocation(bestTarget);
+            }
+        }
+
+        function focusLocation(group) {
+            if (selectedLocation === group) return;
+            selectedLocation = group;
+
+            const targetPos = {
+                x: group.position.x,
+                y: group.position.y + 0.8,
+                z: group.position.z + 0.8
+            };
+
+            new TWEEN.Tween(camera.position)
+                .to(targetPos, 1000)
+                .easing(TWEEN.Easing.Cubic.InOut)
+                .start();
+
+            new TWEEN.Tween(controls.target)
+                .to({ x: group.position.x, y: 0, z: group.position.z }, 1000)
+                .easing(TWEEN.Easing.Cubic.InOut)
+                .start();
+
+            openPanel(group.userData);
+        }
+
+        function resetView() {
+            selectedLocation = null;
+            new TWEEN.Tween(camera.position)
+                .to({ x: 0, y: 3.5, z: 3.5 }, 1200)
+                .easing(TWEEN.Easing.Cubic.InOut)
+                .start();
+
+            new TWEEN.Tween(controls.target)
+                .to({ x: 0, y: 0, z: 0 }, 1200)
+                .easing(TWEEN.Easing.Cubic.InOut)
+                .start();
+
+            closePanel();
+        }
+
+        // --- UI Logic ---
+        const panel = document.getElementById('detail-panel');
+        const dVideo = document.getElementById('d-video');
+        const dTitle = document.getElementById('d-title');
+        const dFaction = document.getElementById('d-faction');
+        const dDesc = document.getElementById('d-desc');
+        const dVisit = document.getElementById('d-visit');
+        const backBtn = document.getElementById('d-back');
+
+        function openPanel(data) {
+            dTitle.textContent = data.name;
+            dFaction.textContent = data.faction;
+            dFaction.style.background = '#' + data.color.toString(16).padStart(6, '0');
+            dDesc.textContent = data.desc;
+            // Prefer webm, fallback to mp4
+            const webmSrc = data.video.replace('.mp4', '.webm');
+            dVideo.innerHTML = '';
+            const srcWebm = document.createElement('source');
+            srcWebm.src = webmSrc;
+            srcWebm.type = 'video/webm';
+            const srcMp4 = document.createElement('source');
+            srcMp4.src = data.video;
+            srcMp4.type = 'video/mp4';
+            dVideo.appendChild(srcWebm);
+            dVideo.appendChild(srcMp4);
+            dVideo.load();
+            dVideo.play().catch(e => console.log(e));
+            // Set visit button
+            const colorHex = '#' + data.color.toString(16).padStart(6, '0');
+            dVisit.href = data.codexUrl || '#';
+            dVisit.textContent = 'Visit ' + data.name;
+            dVisit.style.borderColor = colorHex;
+            dVisit.style.color = colorHex;
+            panel.classList.add('active');
+        }
+
+        function closePanel() {
+            panel.classList.remove('active');
+            dVideo.pause();
+        }
+
+        backBtn.addEventListener('click', resetView);
+        window.addEventListener('pointerdown', onPointerDown);
+
+        // --- Video Loop Logic (Double Buffer) ---
+        const video1 = document.getElementById('bg-video-1');
+        const video2 = document.getElementById('bg-video-2');
+        let activeVideo = video1;
+        let inactiveVideo = video2;
+        let loopCheckInterval;
+
+        function startDoubleBufferLoop() {
+            // Ensure first video is playing
+            activeVideo.play().catch(e => console.log('Autoplay blocked:', e));
+
+            // Check every 100ms
+            clearInterval(loopCheckInterval);
+            loopCheckInterval = setInterval(() => {
+                if (!activeVideo.duration) return;
+
+                const timeLeft = activeVideo.duration - activeVideo.currentTime;
+                // Start crossfade 2 seconds before end
+                if (timeLeft < 2 && inactiveVideo.paused) {
+                    console.log('Crossfading video...');
+
+                    // Reset and play inactive video
+                    inactiveVideo.currentTime = 0;
+                    inactiveVideo.play();
+
+                    // Fade in active, Fade out inactive (CSS handles transition)
+                    inactiveVideo.classList.add('active');
+                    activeVideo.classList.remove('active');
+
+                    // Swap references
+                    const temp = activeVideo;
+                    activeVideo = inactiveVideo;
+                    inactiveVideo = temp;
+                }
+            }, 100);
+        }
+
+        // --- Loop ---
+        const clock = new THREE.Clock();
+
+        function animate(time) {
+            requestAnimationFrame(animate);
+            const dt = clock.getDelta();
+            const elapsed = clock.getElapsedTime();
+
+            TWEEN.update(time);
+            controls.update();
+
+            markers.forEach(m => {
+                if (m.userData.sprite) {
+                    m.userData.sprite.position.y = m.userData.startY + Math.sin(elapsed * 2 + m.userData.offset) * 0.05;
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        startDoubleBufferLoop();
+        animate();
+
+        // --- Ambient Music ---
+        const bgMusic = document.getElementById('bg-music');
+        const muteBtn = document.getElementById('mute-btn');
+        bgMusic.volume = 0.06; // Very quiet
+
+        // Try to autoplay (will likely be blocked until user interacts)
+        function tryPlayMusic() {
+            bgMusic.play().catch(() => { });
+        }
+        tryPlayMusic();
+
+        // Start music on first user interaction if autoplay was blocked
+        function onFirstInteraction() {
+            tryPlayMusic();
+            document.removeEventListener('click', onFirstInteraction);
+            document.removeEventListener('pointerdown', onFirstInteraction);
+        }
+        document.addEventListener('click', onFirstInteraction);
+        document.addEventListener('pointerdown', onFirstInteraction);
+
+        // Mute toggle
+        muteBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Don't trigger map click
+            if (bgMusic.paused || bgMusic.muted) {
+                bgMusic.muted = false;
+                tryPlayMusic();
+                muteBtn.textContent = '🔊';
+            } else {
+                bgMusic.muted = true;
+                muteBtn.textContent = '🔇';
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // --- Fullscreen & Orientation Logic ---
+        const fsBtn = document.getElementById('fullscreen-btn');
+
+        fsBtn.addEventListener('click', toggleFullscreen);
+
+        async function toggleFullscreen() {
+            try {
+                if (!document.fullscreenElement) {
+                    await document.documentElement.requestFullscreen();
+                    if (screen.orientation && screen.orientation.lock) {
+                        try {
+                            await screen.orientation.lock('landscape');
+                        } catch (err) {
+                            console.log('Orientation lock failed (likely iOS or unsupported):', err);
+                        }
+                    }
+                    fsBtn.textContent = '✕'; // Exit icon
+                } else {
+                    if (document.exitFullscreen) {
+                        await document.exitFullscreen();
+                    }
+                    if (screen.orientation && screen.orientation.unlock) {
+                        screen.orientation.unlock();
+                    }
+                    fsBtn.textContent = '⛶'; // Enter icon
+                }
+            } catch (err) {
+                console.error('Fullscreen error:', err);
+            }
+        }
+
+        // Reset icon if user exits fullscreen via ESC or swipe
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                fsBtn.textContent = '⛶';
+                if (screen.orientation && screen.orientation.unlock) {
+                    screen.orientation.unlock();
+                }
+            } else {
+                fsBtn.textContent = '✕';
+            }
+        });
+
+
+
+    </script>
+    <!-- Shrine JS Injector -->
+    <script src="global-shrine.js"></script>
+</body>
+
+</html>

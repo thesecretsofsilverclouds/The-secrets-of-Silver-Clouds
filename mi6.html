@@ -1,25 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <link rel="canonical" href="https://thesecretsofsilverclouds.com/mi6" />
+    <link rel="canonical" href="https://thesecretsofsilverclouds.com/mi6" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MI6 | The Secrets of Silver Clouds</title>
     <meta name="description" content="Britain's covert supernatural defense organization">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap"
+        rel="stylesheet">
     <style>
-        :root { --primary-dark: #1a1a2e; --accent-blue: #0f4c75; --accent-teal: #3282b8; --accent-gold: #bbe1fa; --text-dark: #2c2c2c; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Lato', sans-serif; background: white; color: var(--text-dark); line-height: 1.6; }
-        .lore-header { background: rgba(26, 26, 46, 0.95); padding: 1rem 2rem; border-bottom: 3px solid var(--accent-teal); position: sticky; top: 0; z-index: 100; }
-        .lore-nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
-        .back-btn, .nav-btn { padding: 0.75rem 1.5rem; background: var(--accent-blue); color: white; text-decoration: none; border-radius: 8px; font-size: 1rem; font-weight: 500; transition: all 0.3s ease; }
-        .back-btn:hover, .nav-btn:hover { background: var(--accent-teal); transform: translateY(-2px); }
-        .nav-buttons { display: flex; gap: 1rem; }
-        .lore-container { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
-        .lore-hero { background: #f8f9fa; border-radius: 15px; overflow: hidden; border: 3px solid var(--accent-blue); margin-bottom: 2rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
-        .lore-hero img { width: 100%; max-height: 450px; object-fit: contain; display: block; background: white; }
-        
+        :root {
+            --primary-dark: #1a1a2e;
+            --accent-blue: #0f4c75;
+            --accent-teal: #3282b8;
+            --accent-gold: #bbe1fa;
+            --text-dark: #2c2c2c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: white;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .lore-header {
+            background: rgba(26, 26, 46, 0.95);
+            padding: 1rem 2rem;
+            border-bottom: 3px solid var(--accent-teal);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .lore-nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .back-btn,
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover,
+        .nav-btn:hover {
+            background: var(--accent-teal);
+            transform: translateY(-2px);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .lore-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .lore-hero {
+            background: #f8f9fa;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 3px solid var(--accent-blue);
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .lore-hero img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: contain;
+            display: block;
+            background: white;
+        }
+
 
         .lore-video-hero {
             background: #f8f9fa;
@@ -38,21 +115,127 @@
             object-fit: contain;
             background: #262638;
         }
-.lore-title { text-align: center; padding: 2.5rem 2rem; background: linear-gradient(135deg, rgba(15, 76, 117, 0.9) 0%, rgba(50, 130, 184, 0.85) 100%); border-radius: 15px; margin-bottom: 2rem; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); }
-        .lore-title h1 { font-family: 'Cinzel', serif; font-size: 2.8rem; color: white; margin-bottom: 1.5rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); }
-        .lore-tags { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-        .lore-tag { background: rgba(255, 255, 255, 0.25); color: white; padding: 0.6rem 1.5rem; border-radius: 25px; font-size: 1rem; font-weight: 600; border: 2px solid rgba(255, 255, 255, 0.4); }
-        .lore-section { background: #f8f9fa; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; border-left: 5px solid var(--accent-teal); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
-        .lore-section h2 { font-family: 'Cinzel', serif; color: var(--accent-blue); font-size: 1.8rem; margin-bottom: 1rem; }
-        .lore-section h3 { font-family: 'Cinzel', serif; color: var(--accent-teal); font-size: 1.4rem; margin-top: 1.5rem; margin-bottom: 0.75rem; }
-        .lore-section p { font-size: 1.05rem; line-height: 1.8; color: var(--text-dark); margin-bottom: 1rem; }
-        .members-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
-        .members-list li { background: rgba(50, 130, 184, 0.15); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--accent-blue); font-size: 1.05rem; font-weight: 500; text-align: center; }
-        .image-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
-        .gallery-item { background: white; border-radius: 12px; overflow: hidden; border: 3px solid var(--accent-blue); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
-        .gallery-item img { width: 100%; height: 280px; object-fit: contain; display: block; background: white; }
-        @media (max-width: 768px) { .lore-nav { flex-direction: column; } .lore-title h1 { font-size: 2rem; } .lore-container { padding: 1.5rem 1rem; } }
-    
+
+        .lore-title {
+            text-align: center;
+            padding: 2.5rem 2rem;
+            background: linear-gradient(135deg, rgba(15, 76, 117, 0.9) 0%, rgba(50, 130, 184, 0.85) 100%);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .lore-title h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.8rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .lore-tags {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .lore-tag {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .lore-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--accent-teal);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .lore-section h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-blue);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .lore-section h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-teal);
+            font-size: 1.4rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .lore-section p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .members-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .members-list li {
+            background: rgba(50, 130, 184, 0.15);
+            padding: 1.2rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-blue);
+            font-size: 1.05rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .gallery-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 3px solid var(--accent-blue);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 280px;
+            object-fit: contain;
+            display: block;
+            background: white;
+        }
+
+        @media (max-width: 768px) {
+            .lore-nav {
+                flex-direction: column;
+            }
+
+            .lore-title h1 {
+                font-size: 2rem;
+            }
+
+            .lore-container {
+                padding: 1.5rem 1rem;
+            }
+        }
+
         /* Lightbox */
         .lightbox {
             display: none;
@@ -68,7 +251,9 @@
             padding: 2rem;
         }
 
-        .lightbox.active { display: flex; }
+        .lightbox.active {
+            display: flex;
+        }
 
         .lightbox-content {
             max-width: 1200px;
@@ -78,13 +263,13 @@
             justify-content: center;
         }
 
-        .lightbox-content img { 
-            max-width: 100%; 
+        .lightbox-content img {
+            max-width: 100%;
             max-height: 90vh;
-            width: auto; 
-            height: auto; 
-            object-fit: contain; 
-            display: block; 
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
         }
 
         .lightbox-close {
@@ -103,7 +288,6 @@
             justify-content: center;
             line-height: 1;
         }
-
     </style>
 
     <script type="application/ld+json">
@@ -130,6 +314,7 @@
 }
     </script>
 </head>
+
 <body>
     <header class="lore-header">
         <nav class="lore-nav">
@@ -139,6 +324,7 @@
     <main class="lore-container">
         <section class="lore-video-hero">
             <video autoplay loop muted playsinline>
+                <source src="videos/mi6.webm" type="video/webm">
                 <source src="videos/mi6.mp4" type="video/mp4">
             </video>
         </section>
@@ -154,15 +340,31 @@
         </section>
         <section class="lore-section">
             <h2>Description</h2>
-            <p>MI6's supernatural division operates in the deepest shadows of British intelligence, handling threats that official records can never acknowledge. While the public faces of MI6 deals with conventional espionage, a select few know of the department that wages silent war against forces beyond mortal comprehension.</p>
+            <p>MI6's supernatural division operates in the deepest shadows of British intelligence, handling threats
+                that official records can never acknowledge. While the public faces of MI6 deals with conventional
+                espionage, a select few know of the department that wages silent war against forces beyond mortal
+                comprehension.</p>
             <h3>Structure & Operations</h3>
-            <p>This covert branch maintains strict secrecy even within MI6 itself. Only those with clearance level Omega-7 or higher even know it exists. Recruitment happens through careful observation—agents who demonstrate unusual resilience or encounter the supernatural are quietly approached and offered a choice: forget what they've seen, or join the fight.</p>
-            <p>The organization operates out of secure facilities hidden throughout London and the British Isles. Their headquarters, known only as "The Armoured-dillo," in reference to it's eight interconnected sections, contains archives of supernatural threats dating back centuries, as well as containment facilities for artifacts too dangerous to destroy but too powerful to leave unguarded.</p>
+            <p>This covert branch maintains strict secrecy even within MI6 itself. Only those with clearance level
+                Omega-7 or higher even know it exists. Recruitment happens through careful observation—agents who
+                demonstrate unusual resilience or encounter the supernatural are quietly approached and offered a
+                choice: forget what they've seen, or join the fight.</p>
+            <p>The organization operates out of secure facilities hidden throughout London and the British Isles. Their
+                headquarters, known only as "The Armoured-dillo," in reference to it's eight interconnected sections,
+                contains archives of supernatural threats dating back centuries, as well as containment facilities for
+                artifacts too dangerous to destroy but too powerful to leave unguarded.</p>
             <h3>Mandate & Methods</h3>
-            <p>MI6's supernatural division exists to protect British interests and citizens from otherworldly threats. They work with—and sometimes against—other organizations like the Demon's Legion, The Order, and The Church, depending on circumstances and objectives.</p>
-            <p>Their methods blend conventional espionage tradecraft with specialized knowledge of the supernatural. Agents receive training in recognizing magical signatures, handling blessed weapons, and surviving encounters with entities that defy conventional understanding.</p>
+            <p>MI6's supernatural division exists to protect British interests and citizens from otherworldly threats.
+                They work with—and sometimes against—other organizations like the <a href="/demons-legion" class="codex-link">Demon's Legion</a>, <a href="/the-order" class="codex-link">The Order</a>, and The
+                Church, depending on circumstances and objectives.</p>
+            <p>Their methods blend conventional espionage tradecraft with specialized knowledge of the supernatural.
+                Agents receive training in recognizing magical signatures, handling blessed weapons, and surviving
+                encounters with entities that defy conventional understanding.</p>
             <h3>Current Operations</h3>
-            <p>In the present day, MI6's supernatural branch finds itself stretched thin. The frequency of supernatural incidents has increased dramatically, and old alliances grow strained as different factions pursue conflicting agendas. The organization must balance its duty to protect Britain with the growing realization that some threats require cooperation with groups they've historically opposed.</p>
+            <p>In the present day, MI6's supernatural branch finds itself stretched thin. The frequency of supernatural
+                incidents has increased dramatically, and old alliances grow strained as different factions pursue
+                conflicting agendas. The organization must balance its duty to protect Britain with the growing
+                realization that some threats require cooperation with groups they've historically opposed.</p>
         </section>
         <section class="lore-section">
             <h2>Notable Members</h2>
@@ -198,6 +400,13 @@
                 </div>
             </div>
         </section>
+    
+        <section class="lore-section quiz-promo" style="text-align: center; padding: 4rem 2rem; background: linear-gradient(180deg, transparent 0%, rgba(50, 130, 184, 0.05) 100%); border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: 2rem;">
+            <p style="font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 0.2em; color: var(--accent-teal, #3282b8); text-transform: uppercase; margin-bottom: 1rem;">London is watching</p>
+            <h2 style="font-family: 'Cinzel Decorative', serif; font-size: 2.5rem; color: var(--primary-dark, #1a1a2e); margin-bottom: 1.5rem;">Do you belong here?</h2>
+            <p style="font-size: 1.1rem; line-height: 1.6; color: #4a6b8c; max-width: 600px; margin: 0 auto 2.5rem;">The city is divided. Ancient powers move through its streets. Take the official assessment and discover which faction truly claims your loyalty.</p>
+            <a href="faction-quiz" style="display: inline-block; padding: 1.2rem 3rem; background: linear-gradient(135deg, #0f4c75, #3282b8); color: white; font-family: 'Cinzel', serif; font-size: 1rem; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; border-radius: 4px; box-shadow: 0 4px 24px rgba(50, 130, 184, 0.3); transition: transform 0.3s ease;">Start Assessment</a>
+        </section>
     </main>
 
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
@@ -217,12 +426,15 @@
             document.getElementById('lightbox').classList.remove('active');
         }
 
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 closeLightbox();
             }
         });
     </script>
 
+    <!-- Shrine JS Injector -->
+    <script src="global-shrine.js"></script>
 </body>
+
 </html>

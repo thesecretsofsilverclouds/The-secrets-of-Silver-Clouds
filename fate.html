@@ -1,39 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <link rel="canonical" href="https://thesecretsofsilverclouds.com/fate" />
+    <link rel="canonical" href="https://thesecretsofsilverclouds.com/fate" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fate | The Secrets of Silver Clouds</title>
-    <meta name="description" content="The cosmic entity who transformed shattered star fragments into Holy Items and created the Guardians">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap" rel="stylesheet">
+    <meta name="description"
+        content="The cosmic entity who transformed shattered star fragments into Holy Items and created the Guardians">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap"
+        rel="stylesheet">
     <style>
-        :root { --primary-dark: #1a1a2e; --accent-blue: #0f4c75; --accent-teal: #3282b8; --accent-gold: #bbe1fa; --text-dark: #2c2c2c; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Lato', sans-serif; background: white; color: var(--text-dark); line-height: 1.6; }
-        .lore-header { background: rgba(26, 26, 46, 0.95); padding: 1rem 2rem; border-bottom: 3px solid var(--accent-teal); position: sticky; top: 0; z-index: 100; }
-        .lore-nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
-        .back-btn, .nav-btn { padding: 0.75rem 1.5rem; background: var(--accent-blue); color: white; text-decoration: none; border-radius: 8px; font-size: 1rem; font-weight: 500; transition: all 0.3s ease; }
-        .back-btn:hover, .nav-btn:hover { background: var(--accent-teal); transform: translateY(-2px); }
-        .nav-buttons { display: flex; gap: 1rem; }
-        .lore-container { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
-        .lore-hero { background: #f8f9fa; border-radius: 15px; overflow: hidden; border: 3px solid var(--accent-blue); margin-bottom: 2rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
-        .lore-hero img { width: 100%; max-height: 450px; object-fit: contain; display: block; background: #262638; }
-        .lore-title { text-align: center; padding: 2.5rem 2rem; background: linear-gradient(135deg, rgba(15, 76, 117, 0.9) 0%, rgba(50, 130, 184, 0.85) 100%); border-radius: 15px; margin-bottom: 2rem; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); }
-        .lore-title h1 { font-family: 'Cinzel', serif; font-size: 2.8rem; color: white; margin-bottom: 1.5rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); }
-        .lore-tags { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-        .lore-tag { background: rgba(255, 255, 255, 0.25); color: white; padding: 0.6rem 1.5rem; border-radius: 25px; font-size: 1rem; font-weight: 600; border: 2px solid rgba(255, 255, 255, 0.4); }
-        .lore-section { background: #f8f9fa; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; border-left: 5px solid var(--accent-teal); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
-        .lore-section h2 { font-family: 'Cinzel', serif; color: var(--accent-blue); font-size: 1.8rem; margin-bottom: 1rem; }
-        .lore-section h3 { font-family: 'Cinzel', serif; color: var(--accent-teal); font-size: 1.4rem; margin-top: 1.5rem; margin-bottom: 0.75rem; }
-        .lore-section p { font-size: 1.05rem; line-height: 1.8; color: var(--text-dark); margin-bottom: 1rem; }
-        .abilities-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
-        .abilities-list li { background: rgba(50, 130, 184, 0.15); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--accent-blue); font-size: 1.05rem; font-weight: 500; text-align: center; }
-        .image-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
-        .gallery-item { background: white; border-radius: 12px; overflow: hidden; border: 3px solid var(--accent-blue); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
-        .gallery-item img { width: 100%; height: 280px; object-fit: contain; display: block; background: white; }
-        @media (max-width: 768px) { .lore-nav { flex-direction: column; } .lore-title h1 { font-size: 2rem; } .lore-container { padding: 1.5rem 1rem; } }
-    
+        :root {
+            --primary-dark: #1a1a2e;
+            --accent-blue: #0f4c75;
+            --accent-teal: #3282b8;
+            --accent-gold: #bbe1fa;
+            --text-dark: #2c2c2c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: white;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .lore-header {
+            background: rgba(26, 26, 46, 0.95);
+            padding: 1rem 2rem;
+            border-bottom: 3px solid var(--accent-teal);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .lore-nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .back-btn,
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover,
+        .nav-btn:hover {
+            background: var(--accent-teal);
+            transform: translateY(-2px);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .lore-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .lore-hero {
+            background: #f8f9fa;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 3px solid var(--accent-blue);
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .lore-hero img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: contain;
+            display: block;
+            background: #262638;
+        }
+
+        .lore-title {
+            text-align: center;
+            padding: 2.5rem 2rem;
+            background: linear-gradient(135deg, rgba(15, 76, 117, 0.9) 0%, rgba(50, 130, 184, 0.85) 100%);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .lore-title h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.8rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .lore-tags {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .lore-tag {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .lore-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--accent-teal);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .lore-section h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-blue);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .lore-section h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-teal);
+            font-size: 1.4rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .lore-section p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .abilities-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .abilities-list li {
+            background: rgba(50, 130, 184, 0.15);
+            padding: 1.2rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-blue);
+            font-size: 1.05rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .gallery-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 3px solid var(--accent-blue);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 280px;
+            object-fit: contain;
+            display: block;
+            background: white;
+        }
+
+        @media (max-width: 768px) {
+            .lore-nav {
+                flex-direction: column;
+            }
+
+            .lore-title h1 {
+                font-size: 2rem;
+            }
+
+            .lore-container {
+                padding: 1.5rem 1rem;
+            }
+        }
+
         /* Lightbox */
         .lightbox {
             display: none;
@@ -49,7 +233,9 @@
             padding: 2rem;
         }
 
-        .lightbox.active { display: flex; }
+        .lightbox.active {
+            display: flex;
+        }
 
         .lightbox-content {
             max-width: 1200px;
@@ -59,13 +245,13 @@
             justify-content: center;
         }
 
-        .lightbox-content img { 
-            max-width: 100%; 
+        .lightbox-content img {
+            max-width: 100%;
             max-height: 90vh;
-            width: auto; 
-            height: auto; 
-            object-fit: contain; 
-            display: block; 
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
         }
 
         .lightbox-close {
@@ -84,7 +270,6 @@
             justify-content: center;
             line-height: 1;
         }
-
     </style>
 
     <script type="application/ld+json">
@@ -111,6 +296,7 @@
 }
     </script>
 </head>
+
 <body>
     <header class="lore-header">
         <nav class="lore-nav">
@@ -130,19 +316,37 @@
         </section>
         <section class="lore-section">
             <h2>Summary</h2>
-            <p>The cosmic entity who transformed the shattered star's fragments into Holy Items and created the Guardians, weaving destiny itself into the fabric of mortal reality</p>
+            <p>The cosmic entity who transformed the shattered star's fragments into Holy Items and created the
+                Guardians, weaving destiny itself into the fabric of mortal reality</p>
         </section>
         <section class="lore-section">
             <h2>Description</h2>
-            <p>Fate stands beyond mortal comprehension—not a goddess in the traditional sense, but a cosmic force given consciousness, purpose, and terrifying agency. When the star fell during the Celestial Shattering, tearing through dimensions and scattering divine fragments across existence, Fate intervened at the precise moment reality threatened to unravel.</p>
+            <p>Fate stands beyond mortal comprehension—not a goddess in the traditional sense, but a cosmic force given
+                consciousness, purpose, and terrifying agency. When the star fell during the Celestial Shattering,
+                tearing through dimensions and scattering divine fragments across existence, Fate intervened at the
+                precise moment reality threatened to unravel.</p>
             <h3>The Divine Intervention</h3>
-            <p>Recognising both the immense power and profound danger these celestial shards represented, she gathered the fragments—not all of them, for some fell into places even she could not or would not reach—and transformed them into artefacts of focused intention: the Holy Items. Each transformation was unique, blending the fragment's inherent properties with Fate's design to create weapons, pendants, boots, blades, and stranger objects still.</p>
-            <p>Vega, Thyia, Might, Stormcleaver, Oblivion, Abythyia—each item a masterwork of cosmic engineering, each imbued with a fraction of her own power. But the Holy Items were only half her intervention.</p>
+            <p>Recognising both the immense power and profound danger these celestial shards represented, she gathered
+                the fragments—not all of them, for some fell into places even she could not or would not reach—and
+                transformed them into artefacts of focused intention: the Holy Items. Each transformation was unique,
+                blending the fragment's inherent properties with Fate's design to create weapons, pendants, boots,
+                blades, and stranger objects still.</p>
+            <p>Vega, Thyia, Might, Stormcleaver, Oblivion, Abythyia—each item a masterwork of cosmic engineering, each
+                imbued with a fraction of her own power. But the Holy Items were only half her intervention.</p>
             <h3>Creation of the Guardians</h3>
-            <p>Understanding that raw divine power in mortal hands risked corruption or self-destruction, Fate created the Guardians—celestial beings forged from the star's essence, each bonded to a specific Holy Item and destined to bond with its bearer. The Guardians serve as protectors, guides, and conscience for those who wield power they may not fully understand.</p>
+            <p>Understanding that raw divine power in mortal hands risked corruption or self-destruction, Fate created
+                the Guardians—celestial beings forged from the star's essence, each bonded to a specific Holy Item and
+                destined to bond with its bearer. The Guardians serve as protectors, guides, and conscience for those
+                who wield power they may not fully understand.</p>
             <h3>Inscrutable Motivations</h3>
-            <p>Yet Fate's true motivations remain inscrutable. The souls she deems 'worthy' follow no pattern mortals can discern—heroes and villains, saints and sinners all find themselves chosen at pivotal moments. Some theologians argue she seeks cosmic balance. Others claim she's playing an infinitely complex game. The most cynical suggest she simply enjoys watching what happens when mortals receive the power to reshape reality.</p>
-            <p>Whatever her nature, Fate's presence looms over the world like a second sky—invisible most of the time, but always there, always watching, always waiting for the next moment when intervention becomes necessary.</p>
+            <p>Yet Fate's true motivations remain inscrutable. The souls she deems 'worthy' follow no pattern mortals
+                can discern—heroes and villains, saints and sinners all find themselves chosen at pivotal moments. Some
+                theologians argue she seeks cosmic balance. Others claim she's playing an infinitely complex game. The
+                most cynical suggest she simply enjoys watching what happens when mortals receive the power to reshape
+                reality.</p>
+            <p>Whatever her nature, Fate's presence looms over the world like a second sky—invisible most of the time,
+                but always there, always watching, always waiting for the next moment when intervention becomes
+                necessary.</p>
         </section>
         <section class="lore-section">
             <h2>Abilities</h2>
@@ -164,26 +368,26 @@
                 <div class="gallery-item" onclick="openLightbox('images/fate.png')">
                     <img src="images/fate.png" alt="Fate">
                 </div>
-                <div class="gallery-item" onclick="openLightbox('images/fate1.png')">
-                    <img src="images/fate1.png" alt="Fate">
+                <div class="gallery-item" onclick="openLightbox('images/fate1.webp')">
+                    <img src="images/fate1.webp" alt="Fate" loading="lazy">
                 </div>
-                <div class="gallery-item" onclick="openLightbox('images/fate2.png')">
-                    <img src="images/fate2.png" alt="Fate">
+                <div class="gallery-item" onclick="openLightbox('images/fate2.webp')">
+                    <img src="images/fate2.webp" alt="Fate" loading="lazy">
                 </div>
-                <div class="gallery-item" onclick="openLightbox('images/fate3.png')">
-                    <img src="images/fate3.png" alt="Fate">
+                <div class="gallery-item" onclick="openLightbox('images/fate3.webp')">
+                    <img src="images/fate3.webp" alt="Fate" loading="lazy">
                 </div>
-                <div class="gallery-item" onclick="openLightbox('images/fate4.png')">
-                    <img src="images/fate4.png" alt="Fate">
+                <div class="gallery-item" onclick="openLightbox('images/fate4.webp')">
+                    <img src="images/fate4.webp" alt="Fate" loading="lazy">
                 </div>
-                <div class="gallery-item" onclick="openLightbox('images/fate5.png')">
-                    <img src="images/fate5.png" alt="Fate">
+                <div class="gallery-item" onclick="openLightbox('images/fate5.webp')">
+                    <img src="images/fate5.webp" alt="Fate" loading="lazy">
                 </div>
-                <div class="gallery-item" onclick="openLightbox('images/fate6.png')">
-                    <img src="images/fate6.png" alt="Fate">
+                <div class="gallery-item" onclick="openLightbox('images/fate6.webp')">
+                    <img src="images/fate6.webp" alt="Fate" loading="lazy">
                 </div>
-                <div class="gallery-item" onclick="openLightbox('images/fate7.png')">
-                    <img src="images/fate7.png" alt="Fate">
+                <div class="gallery-item" onclick="openLightbox('images/fate7.webp')">
+                    <img src="images/fate7.webp" alt="Fate" loading="lazy">
                 </div>
                 <div class="gallery-item" onclick="openLightbox('images/fate8.png')">
                     <img src="images/fate8.png" alt="Fate">
@@ -209,12 +413,15 @@
             document.getElementById('lightbox').classList.remove('active');
         }
 
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 closeLightbox();
             }
         });
     </script>
 
+    <!-- Shrine JS Injector -->
+    <script src="global-shrine.js"></script>
 </body>
+
 </html>

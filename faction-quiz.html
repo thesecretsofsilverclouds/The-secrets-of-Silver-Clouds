@@ -1,0 +1,2069 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Which Faction Claims You? | The Secrets of Silver Clouds</title>
+  <meta name="description"
+    content="London is divided. The Order, The Church, MI6, the Demon's Legion, and Ragnorir each hold a claim on this city — and on you. Find out where you truly belong.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lato:wght@300;400;700&family=Cinzel+Decorative:wght@700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --primary-dark: #1a1a2e;
+      --mid-dark: #16213e;
+      --accent-blue: #0f4c75;
+      --accent-teal: #3282b8;
+      --accent-gold: #bbe1fa;
+      --text-light: #e8f4fd;
+      --text-muted: #8ab4d4;
+      --legion-primary: #c0392b;
+      --legion-glow: rgba(192, 57, 43, 0.4);
+      --order-primary: #6c3483;
+      --order-glow: rgba(108, 52, 131, 0.4);
+      --church-primary: #b7950b;
+      --church-glow: rgba(183, 149, 11, 0.4);
+      --mi6-primary: #1a7a4a;
+      --mi6-glow: rgba(26, 122, 74, 0.4);
+      --ragnorir-primary: #4a6b8c;
+      --ragnorir-glow: rgba(74, 107, 140, 0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--primary-dark);
+      color: var(--text-light);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* PARTICLES */
+    .bg-particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(50, 130, 184, 0.08) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(15, 76, 117, 0.12) 0%, transparent 50%), radial-gradient(ellipse at 60% 80%, rgba(15, 76, 117, 0.06) 0%, transparent 40%), var(--primary-dark);
+    }
+
+    .bg-particles::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(1px 1px at 10% 15%, rgba(187, 225, 250, 0.4) 0%, transparent 100%), radial-gradient(1px 1px at 30% 45%, rgba(187, 225, 250, 0.3) 0%, transparent 100%), radial-gradient(1.5px 1.5px at 55% 25%, rgba(187, 225, 250, 0.5) 0%, transparent 100%), radial-gradient(1px 1px at 75% 60%, rgba(187, 225, 250, 0.25) 0%, transparent 100%), radial-gradient(1px 1px at 90% 10%, rgba(187, 225, 250, 0.4) 0%, transparent 100%), radial-gradient(1.5px 1.5px at 15% 80%, rgba(187, 225, 250, 0.3) 0%, transparent 100%), radial-gradient(1px 1px at 45% 70%, rgba(187, 225, 250, 0.35) 0%, transparent 100%), radial-gradient(1px 1px at 65% 90%, rgba(187, 225, 250, 0.2) 0%, transparent 100%), radial-gradient(1.5px 1.5px at 85% 40%, rgba(187, 225, 250, 0.45) 0%, transparent 100%), radial-gradient(1px 1px at 5% 55%, rgba(187, 225, 250, 0.3) 0%, transparent 100%);
+    }
+
+    /* RESULT BG VIDEO */
+    #result-video-bg {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 2s ease-in-out;
+    }
+
+    #result-video-bg.playing {
+      opacity: 0.25;
+    }
+
+    /* HEADER */
+    .quiz-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(26, 26, 46, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(50, 130, 184, 0.3);
+      padding: 1rem 2rem;
+    }
+
+    .quiz-nav {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .back-btn {
+      color: var(--accent-teal);
+      text-decoration: none;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+
+    .back-btn:hover {
+      color: var(--accent-gold);
+    }
+
+    .site-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* WRAPPER */
+    .quiz-wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    /* INTRO */
+    #intro-screen {
+      text-align: center;
+      padding: 3rem 0;
+      animation: fadeIn 0.8s ease;
+    }
+
+    .intro-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: var(--accent-teal);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .intro-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.15;
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 60px rgba(50, 130, 184, 0.5);
+    }
+
+    .intro-subtitle {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto 3rem;
+    }
+
+    .faction-preview {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      max-width: 640px;
+      margin: 0 auto 3rem;
+    }
+
+    .faction-chip {
+      flex: 0 1 calc(50% - 0.5rem);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .faction-chip.legion {
+      border-color: rgba(192, 57, 43, 0.4);
+      color: #e74c3c;
+    }
+
+    .faction-chip.order {
+      border-color: rgba(108, 52, 131, 0.4);
+      color: #9b59b6;
+    }
+
+    .faction-chip.church {
+      border-color: rgba(183, 149, 11, 0.4);
+      color: #f1c40f;
+    }
+
+    .faction-chip.mi6 {
+      border-color: rgba(26, 122, 74, 0.4);
+      color: #2ecc71;
+    }
+
+    .faction-chip.ragnorir {
+      border-color: rgba(74, 107, 140, 0.4);
+      color: #6fa3d0;
+    }
+
+    .start-btn {
+      display: inline-block;
+      padding: 1.1rem 3rem;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal));
+      color: white;
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 24px rgba(50, 130, 184, 0.3);
+    }
+
+    .start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(50, 130, 184, 0.5);
+    }
+
+    /* PROGRESS */
+    .progress-bar-wrap {
+      margin-bottom: 2.5rem;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 0.08em;
+    }
+
+    .progress-track {
+      height: 3px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-teal), var(--accent-gold));
+      border-radius: 2px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* QUIZ SCREEN */
+    #quiz-screen {
+      display: none;
+    }
+
+    .question-card {
+      animation: slideUp 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .question-number {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--accent-teal);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .question-scene {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-bottom: 0.75rem;
+      line-height: 1.6;
+      padding: 0.75rem 1rem;
+      border-left: 2px solid rgba(50, 130, 184, 0.4);
+      background: rgba(50, 130, 184, 0.04);
+    }
+
+    .question-text {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      line-height: 1.5;
+      color: var(--text-light);
+      margin-bottom: 2rem;
+    }
+
+    .answers-grid {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .answer-btn {
+      display: block;
+      width: 100%;
+      padding: 1.1rem 1.5rem;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: var(--text-light);
+      font-family: 'Lato', sans-serif;
+      font-size: 1rem;
+      line-height: 1.5;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .answer-btn::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0;
+      background: var(--accent-teal);
+      opacity: 0.08;
+      transition: width 0.3s ease;
+    }
+
+    .answer-btn:hover {
+      border-color: var(--accent-teal);
+      background: rgba(50, 130, 184, 0.08);
+      transform: translateX(4px);
+    }
+
+    .answer-btn:hover::before {
+      width: 100%;
+    }
+
+    .answer-btn::after {
+      content: '';
+      position: absolute;
+      left: -100%;
+      top: 0;
+      width: 2px;
+      height: 100%;
+      background: var(--accent-gold);
+      box-shadow: 0 0 10px 2px var(--accent-teal);
+      opacity: 0;
+      transition: none;
+    }
+
+    .answer-btn:hover::after {
+      left: 100%;
+      opacity: 1;
+      transition: left 0.8s ease-in-out, opacity 0.3s ease;
+    }
+
+    .answer-btn .letter {
+      display: inline-block;
+      width: 1.6rem;
+      height: 1.6rem;
+      line-height: 1.6rem;
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 1px solid rgba(50, 130, 184, 0.5);
+      border-radius: 3px;
+      margin-right: 0.75rem;
+      color: var(--accent-teal);
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+
+    .answer-btn.selected {
+      border-color: var(--accent-teal);
+      background: rgba(50, 130, 184, 0.15);
+      pointer-events: none;
+    }
+
+    /* RESULT SCREEN */
+    #result-screen {
+      display: none;
+      animation: fadeIn 0.8s ease;
+    }
+
+    .result-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .result-card {
+      border-radius: 12px;
+      padding: 3rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .result-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, transparent 100%);
+    }
+
+    .result-card.legion {
+      background: linear-gradient(135deg, rgba(192, 57, 43, 0.12) 0%, rgba(26, 26, 46, 0.95) 60%);
+      border: 1px solid rgba(192, 57, 43, 0.35);
+      box-shadow: 0 0 60px rgba(192, 57, 43, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .result-card.order {
+      background: linear-gradient(135deg, rgba(108, 52, 131, 0.12) 0%, rgba(26, 26, 46, 0.95) 60%);
+      border: 1px solid rgba(108, 52, 131, 0.35);
+      box-shadow: 0 0 60px rgba(108, 52, 131, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .result-card.church {
+      background: linear-gradient(135deg, rgba(183, 149, 11, 0.12) 0%, rgba(26, 26, 46, 0.95) 60%);
+      border: 1px solid rgba(183, 149, 11, 0.35);
+      box-shadow: 0 0 60px rgba(183, 149, 11, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .result-card.mi6 {
+      background: linear-gradient(135deg, rgba(26, 122, 74, 0.12) 0%, rgba(26, 26, 46, 0.95) 60%);
+      border: 1px solid rgba(26, 122, 74, 0.35);
+      box-shadow: 0 0 60px rgba(26, 122, 74, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .result-card.ragnorir {
+      background: linear-gradient(135deg, rgba(74, 107, 140, 0.12) 0%, rgba(26, 26, 46, 0.95) 60%);
+      border: 1px solid rgba(74, 107, 140, 0.35);
+      box-shadow: 0 0 60px rgba(74, 107, 140, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .result-faction-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      position: relative;
+    }
+
+    .result-card.legion .result-faction-label {
+      color: #e74c3c;
+    }
+
+    .result-card.order .result-faction-label {
+      color: #9b59b6;
+    }
+
+    .result-card.church .result-faction-label {
+      color: #f1c40f;
+    }
+
+    .result-card.mi6 .result-faction-label {
+      color: #2ecc71;
+    }
+
+    .result-card.ragnorir .result-faction-label {
+      color: #6fa3d0;
+    }
+
+    .result-faction-name {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.1;
+      color: var(--text-light);
+      margin-bottom: 1.2rem;
+      position: relative;
+    }
+
+    .result-tagline {
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .result-description {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: rgba(232, 244, 253, 0.8);
+      position: relative;
+    }
+
+    .result-trait-bar {
+      margin-top: 2rem;
+      position: relative;
+    }
+
+    .trait-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .trait-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .trait-track {
+      flex: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .trait-fill {
+      height: 100%;
+      border-radius: 2px;
+      width: 0;
+      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .result-card.legion .trait-fill {
+      background: linear-gradient(90deg, #c0392b, #e74c3c);
+    }
+
+    .result-card.order .trait-fill {
+      background: linear-gradient(90deg, #6c3483, #9b59b6);
+    }
+
+    .result-card.church .trait-fill {
+      background: linear-gradient(90deg, #b7950b, #f1c40f);
+    }
+
+    .result-card.mi6 .trait-fill {
+      background: linear-gradient(90deg, #1a7a4a, #2ecc71);
+    }
+
+    .result-card.ragnorir .trait-fill {
+      background: linear-gradient(90deg, #4a6b8c, #6fa3d0);
+    }
+
+    /* RESULT ACTIONS */
+    .result-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .btn-primary {
+      padding: 1rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: block;
+    }
+
+    .btn-codex {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--text-light);
+    }
+
+    .btn-codex:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-retry {
+      background: transparent;
+      border: 1px solid rgba(50, 130, 184, 0.4);
+      color: var(--accent-teal);
+    }
+
+    .btn-retry:hover {
+      background: rgba(50, 130, 184, 0.1);
+      border-color: var(--accent-teal);
+      transform: translateY(-1px);
+    }
+
+    /* DISCORD BANNER */
+    .discord-banner {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      background: rgba(88, 101, 242, 0.08);
+      border: 1px solid rgba(88, 101, 242, 0.25);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-top: 2rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .discord-banner:hover {
+      background: rgba(88, 101, 242, 0.14);
+      border-color: rgba(88, 101, 242, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .discord-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+    }
+
+    .discord-text h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      color: var(--text-light);
+      margin-bottom: 0.2rem;
+    }
+
+    .discord-text p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .discord-arrow {
+      margin-left: auto;
+      color: rgba(88, 101, 242, 0.8);
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════
+       FATE CINEMATIC OVERLAY
+    ══════════════════════════════════════ */
+    #fate-cinematic {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      background: #000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    #fate-cinematic.active {
+      display: flex;
+    }
+
+    #fate-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+
+    #fate-video.visible {
+      opacity: 1;
+    }
+
+    #fate-text-overlay {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem;
+      opacity: 0;
+      transition: opacity 2.5s ease;
+      pointer-events: none;
+    }
+
+    #fate-text-overlay.visible {
+      opacity: 1;
+    }
+
+    .fate-line-1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.75rem, 1.5vw, 1rem);
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(187, 225, 250, 0.7);
+      margin-bottom: 1.25rem;
+      text-shadow: 0 0 40px rgba(187, 225, 250, 0.6);
+    }
+
+    .fate-line-2 {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1.4rem, 3.5vw, 2.4rem);
+      color: var(--text-light);
+      text-shadow: 0 0 80px rgba(187, 225, 250, 0.9), 0 0 160px rgba(50, 130, 184, 0.6);
+      line-height: 1.3;
+    }
+
+    .fate-line-3 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.7rem, 1.3vw, 0.9rem);
+      letter-spacing: 0.25em;
+      color: rgba(187, 225, 250, 0.5);
+      margin-top: 1.5rem;
+      font-style: italic;
+    }
+
+    #fate-cinematic-veil {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 0;
+    }
+
+    #fate-cinematic-fade {
+      position: absolute;
+      inset: 0;
+      background: #000;
+      z-index: 2;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1.2s ease;
+    }
+
+    #fate-cinematic-fade.active {
+      opacity: 1;
+    }
+
+    /* ══════════════════════════════════════
+       GIFT REVEAL SECTION
+    ══════════════════════════════════════ */
+    .gift-reveal-section {
+      margin-top: 2.5rem;
+      animation: fadeIn 0.9s ease 0.4s both;
+    }
+
+    .gift-reveal-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .gift-reveal-divider::before,
+    .gift-reveal-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(200, 160, 20, 0.4), transparent);
+    }
+
+    .gift-reveal-divider span {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: #c8a030;
+      white-space: nowrap;
+    }
+
+    .gift-reveal-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      text-align: center;
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 40px rgba(200, 160, 20, 0.3);
+    }
+
+    .gift-reveal-subtitle {
+      text-align: center;
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .gift-items-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .gift-item {
+      flex: 1;
+      max-width: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .gift-item-tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #8a6820;
+      font-family: 'Cinzel', serif;
+    }
+
+    .gift-item-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.95rem;
+      color: #e0d0a8;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .gift-item-lore {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.65;
+      font-style: italic;
+      max-width: 210px;
+    }
+
+    .gift-sprite-box {
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .gift-sprite-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .gift-sprite-box.creature {
+      width: 148px;
+      height: 148px;
+      border-radius: 50%;
+      border: 2px solid rgba(200, 160, 20, 0.55);
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7), 0 0 14px rgba(200, 160, 20, 0.2);
+      animation: giftBob 3.2s ease-in-out infinite;
+    }
+
+    .gift-sprite-box.weapon {
+      width: 148px;
+      height: 148px;
+      border-radius: 14px;
+      border: 1px solid rgba(200, 160, 20, 0.3);
+    }
+
+    .gift-sprite-box.weapon img {
+      animation: giftGlow 3s ease-in-out infinite;
+    }
+
+    .gift-separator {
+      width: 1px;
+      height: 200px;
+      background: linear-gradient(to bottom, transparent 0%, rgba(180, 130, 20, 0.5) 30%, rgba(180, 130, 20, 0.5) 70%, transparent 100%);
+      margin: 0 10px;
+      flex-shrink: 0;
+      align-self: center;
+    }
+
+    @keyframes giftBob {
+
+      0%,
+      100% {
+        transform: translateY(0px) scale(1);
+      }
+
+      50% {
+        transform: translateY(-7px) scale(1.02);
+      }
+    }
+
+    @keyframes giftGlow {
+
+      0%,
+      100% {
+        filter: brightness(1) drop-shadow(0 0 4px rgba(220, 180, 40, 0.3));
+      }
+
+      50% {
+        filter: brightness(1.08) drop-shadow(0 0 14px rgba(220, 180, 40, 0.8));
+      }
+    }
+
+    /* ══════════════════════════════════════
+       SHRINE PANEL (bottom corner — for embedding on other pages)
+    ══════════════════════════════════════ */
+    #gift-shimmer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9000;
+      opacity: 0;
+      background: radial-gradient(ellipse at center, rgba(255, 220, 80, 0.18) 0%, rgba(255, 180, 20, 0.06) 50%, transparent 70%);
+    }
+
+    #gift-shimmer.active {
+      animation: giftShimmerFade 2.4s ease-out forwards;
+    }
+
+    @keyframes giftShimmerFade {
+      0% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    #gift-panel {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(660px, 96vw);
+      z-index: 9001;
+      display: none;
+    }
+
+    #gift-panel.visible {
+      display: block;
+    }
+
+    @keyframes giftPanelReveal {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    #gift-panel.reveal {
+      animation: giftPanelReveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    #gift-header {
+      background: linear-gradient(135deg, #120e04 0%, #2e2208 50%, #120e04 100%);
+      border: 1px solid #a07010;
+      border-bottom: none;
+      border-radius: 14px 14px 0 0;
+      padding: 11px 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      user-select: none;
+      transition: background 0.25s;
+    }
+
+    #gift-header:hover {
+      background: linear-gradient(135deg, #1e1808 0%, #443210 50%, #1e1808 100%);
+    }
+
+    .gh-rune {
+      color: #c8a030;
+      font-size: 14px;
+    }
+
+    .gh-label {
+      color: #e8c040;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .gh-chevron {
+      color: #a07010;
+      font-size: 10px;
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #gift-panel.open .gh-chevron {
+      transform: rotate(180deg);
+    }
+
+    #gift-body {
+      background: linear-gradient(180deg, #0e0c06 0%, #161008 100%);
+      border: 1px solid #a07010;
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.42s cubic-bezier(0.4, 0, 0.2, 1), padding 0.42s ease;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    #gift-panel.open #gift-body {
+      max-height: 420px;
+      padding: 16px 24px 20px;
+    }
+
+    #gc-faction {
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #7a6820;
+      text-align: center;
+      width: 100%;
+      margin-bottom: 6px;
+      transition: color 0.5s;
+    }
+
+    #gift-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      gap: 0;
+    }
+
+    .gc {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .gc-tag {
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: #8a6820;
+      text-transform: uppercase;
+    }
+
+    .gc-name {
+      font-size: 13px;
+      color: #e0d0a8;
+      text-align: center;
+      max-width: 180px;
+      line-height: 1.4;
+    }
+
+    .gc-lore {
+      font-size: 10.5px;
+      color: #6a5a3a;
+      text-align: center;
+      max-width: 190px;
+      line-height: 1.55;
+      font-style: italic;
+    }
+
+    .gc-name-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      max-width: 190px;
+    }
+
+    .gc-rename-btn {
+      background: none;
+      border: none;
+      color: rgba(138, 104, 32, 0.5);
+      cursor: pointer;
+      font-size: 11px;
+      padding: 1px 3px;
+      line-height: 1;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .gc-rename-btn:hover {
+      color: #e0d0a8;
+    }
+
+    .gc-rename-form {
+      display: none;
+      align-items: center;
+      gap: 5px;
+      margin-top: 3px;
+    }
+
+    .gc-rename-form input {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(138, 104, 32, 0.4);
+      color: #e0d0a8;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-family: inherit;
+      font-size: 12px;
+      width: 130px;
+      text-align: center;
+    }
+
+    .gc-rename-form input:focus {
+      outline: none;
+      border-color: rgba(224, 208, 168, 0.6);
+    }
+
+    .gc-rename-form button {
+      background: rgba(138, 104, 32, 0.2);
+      border: 1px solid rgba(138, 104, 32, 0.4);
+      color: #e0d0a8;
+      cursor: pointer;
+      border-radius: 3px;
+      padding: 3px 7px;
+      font-size: 11px;
+    }
+
+    .gc-rename-form button:hover {
+      background: rgba(138, 104, 32, 0.4);
+    }
+
+    .sprite-box {
+      position: relative;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .sprite-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .sprite-box.creature {
+      width: 148px;
+      height: 148px;
+      border-radius: 50%;
+      border: 2px solid rgba(200, 160, 20, 0.55);
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7), 0 0 14px rgba(200, 160, 20, 0.2);
+      animation: giftBob 3.2s ease-in-out infinite;
+    }
+
+    .sprite-box.weapon {
+      width: 148px;
+      height: 148px;
+      border-radius: 14px;
+      border: 1px solid rgba(200, 160, 20, 0.3);
+    }
+
+    .sprite-box.weapon img {
+      animation: giftGlow 3s ease-in-out infinite;
+    }
+
+    .gift-sep {
+      width: 1px;
+      height: 180px;
+      background: linear-gradient(to bottom, transparent 0%, rgba(180, 130, 20, 0.5) 30%, rgba(180, 130, 20, 0.5) 70%, transparent 100%);
+      margin: 0 10px;
+      flex-shrink: 0;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes revealGlow {
+      from {
+        opacity: 0;
+        transform: scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .result-reveal {
+      animation: revealGlow 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:600px) {
+      .faction-preview {
+        grid-template-columns: 1fr;
+      }
+
+      .result-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .result-card {
+        padding: 2rem 1.5rem;
+      }
+
+      .quiz-nav .site-title {
+        display: none;
+      }
+
+      .gift-items-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      .gift-separator {
+        display: none;
+      }
+
+      .gift-item {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-particles"></div>
+  <video id="result-video-bg" autoplay loop muted playsinline></video>
+
+  <!-- FATE CINEMATIC OVERLAY -->
+  <div id="fate-cinematic">
+    <div id="fate-cinematic-veil"></div>
+    <video id="fate-video" muted playsinline></video>
+    <div id="fate-text-overlay">
+      <p class="fate-line-1">The threads of destiny converge</p>
+      <p class="fate-line-2">Fate has stepped<br>from the shadows</p>
+      <p class="fate-line-3">Your soul's resonance has been heard</p>
+    </div>
+    <div id="fate-cinematic-fade"></div>
+  </div>
+
+  <!-- SHRINE PANEL (for embedding on other pages — reads localStorage) -->
+  <div id="gift-shimmer"></div>
+  <div id="gift-panel">
+    <div id="gift-header" onclick="giftToggle()">
+      <span class="gh-rune">✦</span>
+      <span class="gh-label">Your Holy Gift</span>
+      <span class="gh-rune">✦</span>
+      <span class="gh-chevron">▲</span>
+    </div>
+    <div id="gift-body">
+      <div id="gc-faction"></div>
+      <div id="gift-row">
+        <div class="gc">
+          <span class="gc-tag">Guardian</span>
+          <div class="sprite-box creature"><img id="gc-creature" src="" alt=""></div>
+          <div class="gc-name-wrap">
+            <span class="gc-name" id="gc-creature-name">—</span>
+            <button class="gc-rename-btn" id="gc-rename-btn" title="Name your guardian">✎</button>
+          </div>
+          <div class="gc-rename-form" id="gc-rename-form">
+            <input type="text" id="gc-rename-input" maxlength="40" placeholder="Enter a name…">
+            <button id="gc-rename-confirm">✓</button>
+          </div>
+          <span class="gc-lore" id="gc-creature-lore"></span>
+        </div>
+        <div class="gift-sep"></div>
+        <div class="gc">
+          <span class="gc-tag">Holy Item</span>
+          <div class="sprite-box weapon"><img id="gc-weapon" src="" alt=""></div>
+          <span class="gc-name" id="gc-weapon-name">—</span>
+          <span class="gc-lore" id="gc-weapon-lore"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <header class="quiz-header">
+    <nav class="quiz-nav">
+      <a href="/" class="back-btn">← Return to Site</a>
+      <span class="site-title">The Secrets of Silver Clouds</span>
+    </nav>
+  </header>
+
+  <div class="quiz-wrapper">
+
+    <!-- INTRO SCREEN -->
+    <div id="intro-screen">
+      <p class="intro-eyebrow">London is watching</p>
+      <h1 class="intro-title">Which Faction<br>Claims You?</h1>
+      <p class="intro-subtitle">The city is divided. Ancient powers move through its streets, each with their own code,
+        their own cause, their own price. The Demon's Legion. The Order. The Church. MI6. Ragnorir. One of them has
+        always been waiting for you.</p>
+      <div class="faction-preview">
+        <div class="faction-chip legion">⚔ Demon's Legion</div>
+        <div class="faction-chip order">📜 The Order</div>
+        <div class="faction-chip church">✦ The Church</div>
+        <div class="faction-chip mi6">◈ MI6</div>
+        <div class="faction-chip ragnorir">ᚢ Ragnorir</div>
+      </div>
+      <button class="start-btn" onclick="startQuiz()">Begin the Assessment</button>
+    </div>
+
+    <!-- QUIZ SCREEN -->
+    <div id="quiz-screen">
+      <div class="progress-bar-wrap">
+        <div class="progress-meta">
+          <span id="progress-label">Assessment Phase I</span>
+          <span id="progress-pct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+      <div id="question-container"></div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen"></div>
+
+  </div>
+
+  <script>
+    // ══════════════════════════════════════════════════════════════
+    // QUIZ DATA — 12 questions total (8 faction + 4 hidden)
+    // hidden:true questions score profile (CUTE/CREEPY/HOLY/BADASS)
+    // profileType:'creature' scores creatureScores
+    // profileType:'weapon'   scores weaponScores
+    // ══════════════════════════════════════════════════════════════
+    const questions = [
+      // Q1 — faction
+      {
+        hidden: false,
+        scene: "The hour is late. Southwark is quiet — except it isn't. Just past the bridge, something old and hungry has cornered someone against a wall. Nobody else is around.",
+        text: "What do you do?",
+        answers: [
+          { text: "Step in. No hesitation. You don't walk past people who need help — that's not who you are.", faction: 'D' },
+          { text: "Observe first. You need to understand what you're dealing with before you act. Knowledge saves more lives than impulse.", faction: 'O' },
+          { text: "Draw on your conviction. Your faith has faced worse. This is exactly what you were made for.", faction: 'C' },
+          { text: "Assess and contain. A controlled, documented response prevents this from becoming something the public has to know about.", faction: 'M' },
+          { text: "Challenge it directly. If it's strong enough to still be standing after that, you'll deal with what comes next.", faction: 'R' }
+        ]
+      },
+      // Q2 — faction
+      {
+        hidden: false,
+        scene: "A Holy Item has surfaced in the East End markets. It's changing hands fast — ordinary people, none of them knowing what they're holding.",
+        text: "What's your priority?",
+        answers: [
+          { text: "Get to it before any faction can weaponise it against the people who live here.", faction: 'D' },
+          { text: "Retrieve and archive it. In untrained hands, power of that magnitude is a disaster waiting to happen.", faction: 'O' },
+          { text: "Secure it under sanctified protection. Sacred artefacts were not meant for the street.", faction: 'C' },
+          { text: "Monitor first. Intelligence before extraction — we need to know who else is watching.", faction: 'M' },
+          { text: "Take it. If you're strong enough to hold it, it belongs with you. That's always been the law of things.", faction: 'R' }
+        ]
+      },
+      // Q3 — faction
+      {
+        hidden: false,
+        scene: "You've been offered a position of authority. Real power. The kind that comes with rooms you've never been allowed into, and people who have to listen.",
+        text: "What matters most to you about accepting?",
+        answers: [
+          { text: "Whether the cause is just. Rank means nothing if you're pointing it in the wrong direction.", faction: 'D' },
+          { text: "The access. Restricted archives, sealed texts, forbidden histories — that's the real prize.", faction: 'O' },
+          { text: "Whether it serves something greater. Power without purpose is just weight.", faction: 'C' },
+          { text: "The clearance level. Information is the only currency worth collecting.", faction: 'M' },
+          { text: "Whether you earned it. Authority handed down is hollow. Authority won through trial is the only kind worth keeping.", faction: 'R' }
+        ]
+      },
+      // H1 — hidden, creature profile
+      {
+        hidden: true,
+        profileType: 'creature',
+        scene: "You find an abandoned creature in the rain outside St. Paul's — small, injured, impossible to explain.",
+        text: "What draws you to it?",
+        answers: [
+          { text: "Its innocence. Something this fragile shouldn't be out here.", profile: 'CUTE' },
+          { text: "There's something wrong with it. Not broken — wrong. And you need to understand why.", profile: 'CREEPY' },
+          { text: "A faint glow surrounds it. It doesn't feel like it belongs to this world.", profile: 'HOLY' },
+          { text: "It snarled at the last person who approached. Good instincts.", profile: 'BADASS' }
+        ]
+      },
+      // Q4 — faction
+      {
+        hidden: false,
+        scene: "Three factions are hours from open conflict. The streets of London are about to become something no one comes back from. You have one move.",
+        text: "What is it?",
+        answers: [
+          { text: "Rally your people and get between the factions and the civilians. Let it break on you, not them.", faction: 'D' },
+          { text: "Invoke the ancient accords. There are laws older than any of these factions, and they bind all of them.", faction: 'O' },
+          { text: "Demand a ceasefire. This bloodshed serves no holy purpose — and you have the authority to say so.", faction: 'C' },
+          { text: "Back-channel. You've already been talking to all three sides. The deal happens before the first shot is fired.", faction: 'M' },
+          { text: "Step into the middle of it. Not to negotiate — to remind every faction what happens when the storm decides something is over.", faction: 'R' }
+        ]
+      },
+      // Q5 — faction
+      {
+        hidden: false,
+        scene: "London, in all its brutal generosity, offers you one gift. Something true, something yours.",
+        text: "What do you reach for?",
+        answers: [
+          { text: "People who would take a bullet for you, and for whom you'd do the same.", faction: 'D' },
+          { text: "A library of forbidden knowledge sealed for centuries. The answers no one else can find.", faction: 'O' },
+          { text: "The unshakeable clarity that comes from absolute conviction. No doubt, no hesitation.", faction: 'C' },
+          { text: "A network. Informants, contacts, people who owe you — information that flows to you before anyone else.", faction: 'M' },
+          { text: "A legend worth dying for. Something your name will still be attached to long after the storm has passed.", faction: 'R' }
+        ]
+      },
+      // H2 — hidden, creature profile
+      {
+        hidden: true,
+        profileType: 'creature',
+        scene: "A recurring dream. You're standing at the edge of a vast dark forest, and something is watching from the treeline.",
+        text: "What do you hope it is?",
+        answers: [
+          { text: "Something small and harmless — just curious about you.", profile: 'CUTE' },
+          { text: "Something ancient. A thing that shouldn't still exist.", profile: 'CREEPY' },
+          { text: "A guide. A being of light that was sent to find you.", profile: 'HOLY' },
+          { text: "Something powerful enough to be worth facing.", profile: 'BADASS' }
+        ]
+      },
+      // Q6 — faction
+      {
+        hidden: false,
+        scene: "Someone in power is hurting people who have no way to fight back. You can see it clearly. Others either don't, or won't.",
+        text: "What do you do?",
+        answers: [
+          { text: "You move. You don't wait for permission when people are suffering now.", faction: 'D' },
+          { text: "You document, escalate, and pursue it through established channels. The system has weight — use it.", faction: 'O' },
+          { text: "You name it for what it is. Corruption must be called out, publicly, with everything you have.", faction: 'C' },
+          { text: "You collect the evidence, build the file, and ensure they're quietly and permanently dismantled.", faction: 'M' },
+          { text: "You make sure they know you're coming. Then you come. There's no honour in a victim who never saw you as a threat.", faction: 'R' }
+        ]
+      },
+      // Q7 — faction
+      {
+        hidden: false,
+        scene: "A choice. Not dramatic — just a quiet moment where the truth about who you are becomes visible.",
+        text: "Which of these words defines you?",
+        answers: [
+          { text: "Loyalty — to the people standing beside you, and those you protect.", faction: 'D' },
+          { text: "Knowledge — because understanding the world is the only real power.", faction: 'O' },
+          { text: "Faith — in something larger than yourself, and in your own purpose.", faction: 'C' },
+          { text: "Control — over information, circumstance, and outcome.", faction: 'M' },
+          { text: "Honour — because once your word is given, breaking it would be worse than dying.", faction: 'R' }
+        ]
+      },
+      // H3 — hidden, weapon profile
+      {
+        hidden: true,
+        profileType: 'weapon',
+        scene: "You're given one object to carry into the unknown. No explanation — just a choice.",
+        text: "What matters most to you about it?",
+        answers: [
+          { text: "It's beautiful. Something that brings a strange comfort just holding it.", profile: 'CUTE' },
+          { text: "It feels wrong in the best way — like it has its own will.", profile: 'CREEPY' },
+          { text: "It carries weight beyond its form. Something consecrated.", profile: 'HOLY' },
+          { text: "It's efficient. Built for a single brutal purpose, nothing more.", profile: 'BADASS' }
+        ]
+      },
+      // Q8 — faction
+      {
+        hidden: false,
+        scene: "You've uncovered a secret. A real one. The kind that could shift London's power balance if it ever came to light.",
+        text: "What do you do with it?",
+        answers: [
+          { text: "Tell your crew. Secrets between allies are how trust dies. You don't operate that way.", faction: 'D' },
+          { text: "Archive it meticulously. Document everything. The right moment to act hasn't come — but it will.", faction: 'O' },
+          { text: "Bring it into the light. The truth has to be heard, whatever the cost to you personally.", faction: 'C' },
+          { text: "Hold it. A secret is currency. You spend it when the moment is worth spending it on.", faction: 'M' },
+          { text: "Use it. Now. Waiting for the perfect moment is how warriors lose the only moment they had.", faction: 'R' }
+        ]
+      },
+      // H4 — hidden, weapon profile (LAST — triggers cinematic)
+      {
+        hidden: true,
+        profileType: 'weapon',
+        scene: "Your enemy pauses the moment they see what you're carrying.",
+        text: "What do you want them to feel?",
+        answers: [
+          { text: "Confused. Off-balance. They weren't expecting that.", profile: 'CUTE' },
+          { text: "Dread. Something old waking behind their eyes.", profile: 'CREEPY' },
+          { text: "Awe. Like they're suddenly facing something beyond their rank.", profile: 'HOLY' },
+          { text: "Fear. Clean and unambiguous.", profile: 'BADASS' }
+        ]
+      }
+    ];
+
+    // ══════════════════════════════════════════════════════════════
+    // FACTION RESULT DATA
+    // ══════════════════════════════════════════════════════════════
+    const factionData = {
+      D: {
+        id: 'legion', name: "Demon's Legion", label: "You are",
+        tagline: "You were never in it for glory. You were in it for the people standing behind you.",
+        description: "The Legion didn't find you. You were always heading toward them. Born from the streets, forged in sacrifice, the Demon's Legion fights for the ones the other factions have already written off. Loyalty isn't a value to you — it's the only thing that's ever felt real. You don't need a hierarchy to tell you who to protect. You already know.",
+        traits: [{ label: "Loyalty", value: 95 }, { label: "Courage", value: 88 }, { label: "Instinct", value: 80 }],
+        codexLink: "demons-legion.html", videoMp4: "videos/demons-legion-bandana.mp4", videoWebm: null
+      },
+      O: {
+        id: 'order', name: "The Order", label: "You belong to",
+        tagline: "Power unchecked is power wasted. You understood that long before anyone told you.",
+        description: "Ancient as the city's oldest stones, The Order has kept watch over knowledge that lesser minds would misuse. Your mind moves slower than impulse — and that's exactly what makes you dangerous. While others react, you document. While others rush, you understand. The Order doesn't recruit the reckless. They wait for the ones who already know that patience is its own form of strength.",
+        traits: [{ label: "Wisdom", value: 95 }, { label: "Discipline", value: 90 }, { label: "Restraint", value: 85 }],
+        codexLink: "the-order.html", videoMp4: "videos/the-order.mp4", videoWebm: "videos/the-order.webm"
+      },
+      C: {
+        id: 'church', name: "The Church", label: "You serve",
+        tagline: "Faith isn't blind. It's the clearest thing you have — and you've never doubted it.",
+        description: "When the darkness closes in, most people look for somewhere to run. You look for somewhere to stand. The Church doesn't promise safety — it demands conviction. And you have it in full measure. Your faith isn't a comfort. It's a weapon, and a shield, and a reason to walk into rooms that would break anyone who wasn't absolutely certain of what they believe.",
+        traits: [{ label: "Conviction", value: 95 }, { label: "Courage", value: 87 }, { label: "Purpose", value: 90 }],
+        codexLink: "the-church.html", videoMp4: "videos/the-church.mp4", videoWebm: null
+      },
+      M: {
+        id: 'mi6', name: "MI6", label: "You operate within",
+        tagline: "The loudest move is rarely the right one. You learned that before anyone had to teach you.",
+        description: "Britain's covert supernatural division doesn't advertise. It doesn't need to. MI6 operates in the spaces other factions never think to look — in clearance levels, in back channels, in the quiet architecture of influence. You think before you act, plan before you commit, and know that the best outcome is usually one no one else saw happening. The Vault has been waiting for someone like you.",
+        traits: [{ label: "Strategy", value: 94 }, { label: "Patience", value: 90 }, { label: "Control", value: 88 }],
+        codexLink: "mi6.html", videoMp4: "videos/mi6.mp4", videoWebm: "videos/mi6.webm"
+      },
+      R: {
+        id: 'ragnorir', name: "Ragnorir", label: "You ride with",
+        tagline: "You were never meant for walls and treaties. You were forged for the storm.",
+        description: "Ragnorir didn't recruit you. The storm chose you. Descended from Viking blood and tempered by elemental fury, Ragnorir are not conquerors — they are a force of nature that has simply decided where it stands. You don't need alliances, don't need approval, and don't need anyone to explain what honour means. Strength is earned through trial. Glory is what you leave behind. And the legends that follow your name are only just beginning.",
+        traits: [{ label: "Strength", value: 96 }, { label: "Honour", value: 91 }, { label: "Resilience", value: 89 }],
+        codexLink: "ragnorir.html", videoMp4: "videos/ragnorir.mp4", videoWebm: "videos/ragnorir.webm"
+      }
+    };
+
+    // ══════════════════════════════════════════════════════════════
+    // GIFT POOLS — creatures and weapons by profile type
+    // ══════════════════════════════════════════════════════════════
+    // Each item carries a profiles[] array.
+    // Items with multiple profiles appear in combined pools when
+    // a player's two hidden answers land on different profiles.
+    // ══════════════════════════════════════════════════════════════
+    const ALL_CREATURES = [
+      // ── CUTE ────────────────────────────────────────────────────
+      { profiles: ['CUTE'], name: 'Lumis, the Hollow Foal', file: 'gift-assets/Baby_Unicorn_Meadow_Prance.png', lore: 'Its laughter dissolves the memories of all who hear it, leaving only a hollow contentment. Those who follow it never find their way home.' },
+      { profiles: ['CUTE'], name: 'Embyr, the First Flame', file: 'gift-assets/Chirping_Baby_Phoenix_Crystal_Nest.png', lore: 'Born from the ashes of a dying star, its chirps carry frequencies that slowly calcify the bones of those nearby. It has never once known it causes harm.' },
+      { profiles: ['CUTE'], name: 'Nixie, the Mirror Kitsune', file: 'gift-assets/Crystal_Rainbow_Fox_Cavern.png', lore: 'Its crystalline body reflects your deepest desires back at you. Three people have reached for their reflection in its fur. None have been found since.' },
+      { profiles: ['CUTE'], name: 'Mochi, the Ancient', file: 'gift-assets/Cute_Pastel_Dragon_Garden.png', lore: 'It seems harmless, sitting among the flowers. But it is older than the garden, older than the soil beneath it. It has simply chosen to wait.' },
+      { profiles: ['CUTE'], name: 'Sproat, the Root Mind', file: 'gift-assets/Forest_Plant_Spirit_Glade.png', lore: 'Every plant, mushroom, and root for a hundred miles is part of its nervous system. It smiles because it already knows every step you will take.' },
+      { profiles: ['CUTE'], name: 'The Petal Between', file: 'gift-assets/The_Petal_Between.png', lore: 'It crosses where the living and dead share a breath. It wears flowers for both sides, and has never decided which side it prefers.' },
+      { profiles: ['CUTE'], name: 'The Silver Born', file: 'gift-assets/The_Silver_Born.png', lore: 'Made entirely of what Silver Clouds are made of. Soft, quiet, and older than the city. It drifts close to those who are about to lose something.' },
+      { profiles: ['CUTE'], name: 'The Gentle Void', file: 'gift-assets/The_Gentle_Void.png', lore: 'A piece of the universe that got lonely. It carries galaxies in its chest like anyone else carries hope — pressing them close so they do not go out.' },
+      { profiles: ['CUTE'], name: 'The First Infernal', file: 'gift-assets/The_First_Infernal.png', lore: 'The first demon born after the great ceasefire. It has never learned why the war started. Everyone who remembers is too embarrassed to explain.' },
+      { profiles: ['CUTE'], name: 'The Quiet Descent', file: 'gift-assets/The_Quiet_Descent.png', lore: 'It fell from somewhere higher, very quietly, and landed without breaking anything. It has not tried to go back. It seems to prefer it here, which worries those who sent it.' },
+      { profiles: ['CUTE'], name: 'The Threshold Soft', file: 'gift-assets/The_Threshold_Soft.png', lore: 'It is made of whatever limbo is made of — which is to say, it is made of waiting. It has been between things for so long it has forgotten which side it came from. It does not seem to mind.' },
+      // ── CUTE + CREEPY ───────────────────────────────────────────
+      { profiles: ['CUTE', 'CREEPY'], name: 'The Small Summoning', file: 'gift-assets/The_Small_Summoning.png', lore: 'It holds the skull-wand like it found it, not like it earned it. The ghosts come when it calls because it is lonely. They come because they cannot say no.' },
+      { profiles: ['CUTE', 'CREEPY'], name: 'The Unread', file: 'gift-assets/The_Unread.png', lore: 'It formed in a library where no one came. It read every book itself. Now it opens pages at visitors who cannot read what it has learned. This upsets it deeply.' },
+      { profiles: ['CUTE', 'CREEPY'], name: 'The In Between', file: 'gift-assets/The_In_Between.png', lore: 'It lives where the walls between places are thinnest. The runes it leaves on surfaces are not warnings — they are directions. No one who has followed them has reported back, but several have sent letters saying they are fine and not to worry.' },
+      { profiles: ['CUTE', 'CREEPY'], name: 'The Pleased Watcher', file: 'gift-assets/The_Pleased_Watcher.png', lore: 'Every eye sees something different. It has been watching since before the city had walls and it is still pleased with what it sees. This should perhaps be more concerning than it is.' },
+      { profiles: ['CUTE', 'CREEPY'], name: 'The Maker Left', file: 'gift-assets/The_Maker_Left.png', lore: 'It was the last thing finished. The maker did not come back. It has been assembling the toys around it ever since — imperfectly, because it was never taught how. It keeps trying. The workshop is very full now.' },
+      // ── CUTE + BADASS ────────────────────────────────────────────
+      { profiles: ['CUTE', 'BADASS'], name: 'The Storm Heir', file: 'gift-assets/The_Storm_Heir.png', lore: 'It breathes runes, not fire. Each one it exhales was a word someone spoke in anger and never took back. It has been breathing since before it hatched.' },
+      // ── HOLY ────────────────────────────────────────────────────
+      { profiles: ['HOLY'], name: 'Vaelith, the Pale Wanderer', file: 'gift-assets/Cosmic_Stag_Enchanted_Meadow.png', lore: 'Where it walks, time bends. Entire civilisations have risen and collapsed in the moments it paused to drink from a stream.' },
+      { profiles: ['HOLY'], name: 'The Radiant Convergence', file: 'gift-assets/Radiant_Convergence.png', lore: 'It has no body — it is entirely wings, the pure act of arriving. Everything it passes through undergoes an irreversible transformation. It does not stay long enough to witness the result.' },
+      { profiles: ['HOLY'], name: 'The Ascendant', file: 'gift-assets/Ethereal_Light_Elemental_Celestial_Temple.png', lore: 'The light it emits is not light — it is the absence of shadow. Everything it touches loses its darkness permanently, including its soul.' },
+      { profiles: ['HOLY'], name: 'The Sovereign Seal', file: 'gift-assets/The_Sovereign_Seal.png', lore: 'It predates the gods it was used to summon. Whatever it is, it is not a symbol — symbols represent things. This thing represents itself, and it has been watching for a very long time.' },
+      // ── CREEPY ──────────────────────────────────────────────────
+      { profiles: ['CREEPY'], name: 'Malveth, the Gatekeeper', file: 'gift-assets/Nightmare_Demon_Fantasy_Realm.png', lore: 'It sits at the threshold between sleep and death. Every nightmare you have ever had was its breath on your neck. It has been watching you specifically for some time now.' },
+      { profiles: ['CREEPY'], name: 'Seraveth, the Chained', file: 'gift-assets/Cursed_Spirit_Tomb_Chamber.png', lore: 'Bound in death by chains she herself forged, she wanders her tomb searching for the one who betrayed her. She has found them seventeen times. It has not been enough.' },
+      { profiles: ['CREEPY'], name: 'Morvan, the Pale Hunter', file: 'gift-assets/Shadow_Wolf_Graveyard_Moonlight.png', lore: 'It does not kill its prey. It follows them until they beg for it. The runes on its hide are the true names of everyone who has ever run from it.' },
+      { profiles: ['CREEPY'], name: "Xal'verath, the Watcher", file: 'gift-assets/Eldritch_Void_Entity_Realm.png', lore: 'It does not hunt. It watches with its many eyes until the watched can no longer sleep, eat, or think of anything but the void staring back.' },
+      { profiles: ['CREEPY'], name: 'Thornwrath, the Blighted', file: 'gift-assets/Corrupted_Forest_Guardian.png', lore: 'It was the protector of the oldest forest in the world. When the forest burned, it did not die — it became something that makes burning seem merciful.' },
+      { profiles: ['CREEPY'], name: 'Archon Null', file: 'gift-assets/Skeletal_Technomage_Sentinel_Graveyard.png', lore: 'Bound by runes carved into its own bones, it cannot stop fighting. It has defended a grave for three centuries. It no longer remembers whose.' },
+      { profiles: ['CREEPY'], name: 'Veth, the Hollow', file: 'gift-assets/Shadow_Wraith_Cathedral_Technomagic_Anime.png', lore: 'It was once a person of great faith. The cathedral it haunts is where it made its final prayer — and heard an answer it could not survive.' },
+      { profiles: ['CREEPY'], name: 'The Hollow Warren', file: 'gift-assets/The_Hollow_Warren.png', lore: 'It used to be a rabbit. The mushrooms found it first and have been speaking through it since. It would very much like to stop. The mushrooms are not finished.' },
+      { profiles: ['CREEPY'], name: 'The Smiling Storm', file: 'gift-assets/The_Smiling_Storm.png', lore: 'It looks like weather. The skulls in its body are clouds that grew heavy with grief and never dispersed.' },
+      // ── BADASS ──────────────────────────────────────────────────
+      { profiles: ['BADASS'], name: 'Pyrethis, the Eternal Pyre', file: 'gift-assets/Ethereal_Volcanic_Phoenix_Rise.png', lore: 'Every time it dies, it rises hotter. Every time it rises, the sky burns a little longer. It has died four thousand times. The sky has not fully recovered.' },
+      { profiles: ['BADASS'], name: 'Vorreth, the Living Storm', file: 'gift-assets/Majestic_Storm_Elemental_Amidst_Sky.png', lore: 'It is not a being of storms — it is the storm itself. Every bolt it releases is the voice of a soul it has consumed, screaming to be freed.' },
+      { profiles: ['BADASS'], name: 'Ourovex, the Rune Serpent', file: 'gift-assets/Cosmic_Nebula_Serpent_Medium_Shot.png', lore: 'Each rune on its scales is the name of a world it has swallowed whole. It circles the outer dark, waiting for the last star to die before it feeds again.' },
+      { profiles: ['BADASS'], name: 'Prismael, the Shattered', file: 'gift-assets/Crystal_Dragon_Cavern_Technomagic_Wonder.png', lore: 'Its body refracts light into frequencies beyond mortal sight. Those who gaze too long see truths they were never meant to know — and cannot look away.' },
+      { profiles: ['BADASS'], name: 'Nyx, the Recompiled', file: 'gift-assets/Cyber_Phoenix_Digital_Rebirth.png', lore: 'It dies in a burst of corrupted code and reboots from the wreckage of its own signal. Every rebirth rewrites the machines around it. It has no memory of what it first was.' },
+      { profiles: ['BADASS'], name: 'Rixk, the Signal Hound', file: 'gift-assets/Cyber_Wolf_Techno_Tribal_Urban.png', lore: 'Its tribal runes are not decorative — they are live code, rewriting the city grid with every step. The urban legends that follow it were written by the city itself.' },
+      { profiles: ['BADASS'], name: 'The Ashen Familiar', file: 'gift-assets/The_Ashen_Familiar.png', lore: 'Born where fire met grief. It does not burn things — it decides what survives. It has been choosing for a very long time.' },
+      { profiles: ['BADASS'], name: 'The Small Reaping', file: 'gift-assets/The_Small_Reaping.png', lore: 'The last thing many have seen is something they almost laughed at. Almost. It carries its scythe the way other things carry certainty.' },
+      { profiles: ['BADASS'], name: 'The Null Hatchling', file: 'gift-assets/The_Null_Hatchling.png', lore: 'Its heart is a wound in reality. It has not decided what to do about that yet. When it does, the decision will be permanent.' },
+      { profiles: ['BADASS'], name: 'The Burning Crowned', file: 'gift-assets/The_Burning_Crowned.png', lore: 'It ate a fire spirit and wore the antlers. Now it walks ahead of the flame — not to lead it, but because it refuses to follow anything.' },
+      { profiles: ['BADASS'], name: 'The Verdant Plague', file: 'gift-assets/The_Verdant_Plague.png', lore: 'The forest made something small out of everything it was killing. It followed you home. The mushrooms growing in your walls are not a coincidence.' }
+    ];
+
+    const ALL_WEAPONS = [
+      // ── CUTE ────────────────────────────────────────────────────
+      { profiles: ['CUTE'], name: 'Sylvarrow', file: 'gift-assets/Enchanted_Bow_Forest_Glade.png', lore: "It grew in the forest — it was never made. Each arrow it fires knows its target's name before it is loosed. It has never missed. It has never been forgiven." },
+      // ── CUTE + HOLY (celestial aesthetic, soft magic) ───────────
+      { profiles: ['CUTE', 'HOLY'], name: "Lunara's Touch", file: 'gift-assets/Celestial_Magic_Wand_Night_Realm.png', lore: 'Carved from the first crescent moon, it bends reality in gentle arcs. Those it marks become tied to the lunar cycle — aging only in moonlight, which is always watching.' },
+      { profiles: ['CUTE', 'HOLY'], name: "The Dreamer's Gavel", file: 'gift-assets/Dreamy_Celestial_Hammer.png', lore: 'Tap it gently and a person sleeps. Strike with intent and they dream forever — vivid, peaceful, and completely disconnected from the world of the living.' },
+      // ── CUTE + BADASS ────────────────────────────────────────────
+      { profiles: ['CUTE', 'BADASS'], name: 'Lumi, the Smiling Blade', file: 'gift-assets/Celestial_Kawaii_Rainbow_Sword_Garden.png', lore: 'It has a face because it wanted one. It smiles because it cannot feel fear the way living things do. The last warrior who wielded it won every battle and never slept again.' },
+      // ── HOLY ────────────────────────────────────────────────────
+      { profiles: ['HOLY'], name: "The Archivist's Burden", file: 'gift-assets/Arcane_Staff_Library_Anime.png', lore: 'Every book in every library it has visited added itself to its memory. It knows every secret ever written down. It is still searching for the one it cannot find.' },
+      { profiles: ['HOLY'], name: "The Maker's Wrath", file: 'gift-assets/Celestial_Forge_Hammer.png', lore: 'Used to forge the first weapons of the gods, it still remembers the shape of every soul it has destroyed. It prefers creation. It is very good at destruction.' },
+      { profiles: ['HOLY'], name: 'Abyssal Throne', file: 'gift-assets/Celestial_Trident_Underwater_Palace.png', lore: 'Plunged into the ocean floor, it drew the first tide. Pulled free, it would draw the last. It has been plunged back in — for now.' },
+      { profiles: ['HOLY'], name: 'Aurelius', file: 'gift-assets/Divine_Longsword_Cathedral_Ascension.png', lore: 'Consecrated in the light of a dying god, it carries the weight of every prayer ever spoken to it. The prayers were all granted. The cost was paid by others.' },
+      { profiles: ['HOLY'], name: "Maelstrom's Fang", file: 'gift-assets/Divine_Oceanic_Trident_Technomagic_Illustration.png', lore: "Pulled from a sea god's corpse, it still carries the god's dying rage. Every ocean on every world it has visited has had one unexplained catastrophe since." },
+      { profiles: ['HOLY'], name: 'Valkyrion', file: 'gift-assets/Divine_Technomagic_Longsword_Space.png', lore: 'It does not cut through armour — it cuts through worthiness. Those found undeserving feel nothing. They simply cease to be deserving of anything.' },
+      { profiles: ['HOLY'], name: 'Thundercleft', file: 'gift-assets/Storm_Blade_Divine_Longsword.png', lore: 'The storm surrounding it is not weather — it is the echo of every strike it has ever landed, still reverberating through the atmosphere centuries later.' },
+      { profiles: ['HOLY'], name: "The Conductor's Key", file: 'gift-assets/The_Conductors_Key.png', lore: "Every storm on every world channels through it at some point. It doesn't cause lightning — it is what lightning asks permission from before striking." },
+      { profiles: ['HOLY'], name: 'The First Proclamation', file: 'gift-assets/The_First_Proclamation.png', lore: 'The first decree of the celestial court was not words — it was this lance thrown through the dark. Whatever it struck became law. Three unspeakable laws are still buried at its first impact point.' },
+      { profiles: ['HOLY'], name: 'The Verdant Witness', file: 'gift-assets/The_Verdant_Witness.png', lore: 'The eye on its crown cannot close. It has watched every death the scythe has caused and recorded each one in a language no living being can read. It is almost out of room.' },
+      // ── CREEPY ──────────────────────────────────────────────────
+      { profiles: ['CREEPY'], name: "The Warden's Verdict", file: 'gift-assets/Celestial_Mace_Agony_Chamber.png', lore: 'Every spike contains the compressed suffering of a soul it has judged. When swung, the screams become audible. Witnesses have confessed to crimes they had not yet committed.' },
+      { profiles: ['CREEPY'], name: 'Soulrender', file: 'gift-assets/Celestial_Reaper_Scythe_Necropolis.png', lore: 'It does not reap grain. It reaps what remains after death — the memories, the love, the regrets. Those taken by it leave nothing behind. Not even grief.' },
+      { profiles: ['CREEPY'], name: 'Atraxis, the Rift-Born', file: 'gift-assets/Cursed_Celestial_Sword_Void.png', lore: 'It was a holy blade until it drank from the void once and could not stop. The divine script on its edge now reads as a warning in the language of things that have ended.' },
+      { profiles: ['CREEPY'], name: 'Ignar, the Consumed', file: 'gift-assets/Ignar_the_Consumed.png', lore: 'The face in the blade is not a decoration — it is the last wielder, fused in after refusing to put it down. They are still aware. They are not unhappy about it.' },
+      { profiles: ['CREEPY'], name: 'The All-Seeing Root', file: 'gift-assets/Ocular_Necromantic_Staff_Bio_Horror.png', lore: 'The eye is still alive. It belonged to a necromancer who wanted to see death from the inside. The eye saw. The rest of the necromancer is still screaming somewhere in the wood.' },
+      { profiles: ['CREEPY'], name: "The Mourner's Arc", file: 'gift-assets/Phantom_Bow_Haunted_Archery.png', lore: "Its arrows pass through everything except what they are meant to hit. It was built by someone who could not let go. It has never missed what it loves, and it has loved many things that no longer exist." },
+      { profiles: ['CREEPY'], name: 'The Resonant Harvest', file: 'gift-assets/Soul_Harvest_Scythe_Anime_Technomagic.png', lore: "Built to harvest souls at industrial efficiency, it doesn't wait for death — it simply unbinds the soul and moves on. The bodies left behind continue living. They report no complaints. They report nothing." },
+      { profiles: ['CREEPY'], name: 'The Attendant', file: 'gift-assets/The_Attendant.png', lore: 'It was the suit of a god who attended every funeral. When the god died, no one attended theirs — no one was left. The suit has been searching ever since for a death worthy of its presence.' },
+      { profiles: ['CREEPY'], name: 'The Bleeding Throne', file: 'gift-assets/The_Bleeding_Throne.png', lore: "It was not wielded — it was worshipped. The cult believed the eye at its centre was a god. They were close. It was a god's wound, and it has been weeping fire ever since." },
+      { profiles: ['CREEPY'], name: 'The Omnichip', file: 'gift-assets/brain-chip.png', lore: 'Implanted by the first god who sought to think faster than fate. It worked. They thought of everything — including their own end. They thought of it first.' },
+      // ── BADASS ──────────────────────────────────────────────────
+      { profiles: ['BADASS'], name: 'Frostcleave', file: 'gift-assets/Axe_Of_Frozen_Nordic_Magic.png', lore: 'Forged from a glacier that had never once thawed, its blade cuts not just flesh but warmth itself. Three kingdoms went cold on the day it was first swung.' },
+      { profiles: ['BADASS'], name: 'Gorethis, the Hungering Maw', file: 'gift-assets/Bio_Horror_Celestial_Hammer.png', lore: 'It was once a hammer. Then it began to grow. Every wound it deals is absorbed into its mass — bone, memory, intent. It has not stopped growing since it was first swung.' },
+      { profiles: ['BADASS'], name: 'The Observatory', file: 'gift-assets/Cosmic_Arcane_Staff.png', lore: 'Its orb contains not a galaxy but the memory of one — a universe that ended. Those who stare into it begin to understand why.' },
+      { profiles: ['BADASS'], name: 'The First Harvest', file: 'gift-assets/Cosmic_Creation_Scythe.png', lore: 'Before stars could be born, something had to cut the dark. This scythe made the first incision. The nebulae it left behind are still fertile with consequence.' },
+      { profiles: ['BADASS'], name: 'The Gravity Absolute', file: 'gift-assets/Cosmic_Gravity_Hammer_Anime.png', lore: "It doesn't strike — it pulls everything toward a single point of impact. The first time it was swung it created a crater where a mountain used to be. The mountain is still falling inward." },
+      { profiles: ['BADASS'], name: 'The Entropy Codex', file: 'gift-assets/Entropy_Orb_Cosmic_Library.png', lore: 'It contains every law of the universe, rewritten once. The original laws still exist — but they obey the orb now, not the other way around.' },
+      { profiles: ['BADASS'], name: 'The Infinite Rings', file: 'gift-assets/Mystic_Chakrams_Temple_Spin.png', lore: 'Once thrown, they never truly stop — only return to rest. The trails they leave in the air remain visible to those who are about to die.' },
+      { profiles: ['BADASS'], name: 'The Primordial Hour', file: 'gift-assets/Primordial_Temporal_Staff.png', lore: "It doesn't stop time — it ages it. One touch and a moment stretches into centuries for those inside it. Several civilisations have ended in what appeared to bystanders as a single afternoon." },
+      { profiles: ['BADASS'], name: 'The Nexus Draw', file: 'gift-assets/Primordial_Void_Bow_Nexus.png', lore: 'Its bowstring is a thread of void pulled between two points that should not touch. Every arrow creates a permanent connection between archer and target — a connection that outlasts the wound by lifetimes.' },
+      { profiles: ['BADASS'], name: 'Godsplitter', file: 'gift-assets/Storm_Hammer_Divine_Might.png', lore: 'The mountain it rests on was created by its first swing. Three peaks in the range were created by the second. It has never needed a third.' },
+      { profiles: ['BADASS'], name: "The Arbiter's Face", file: 'gift-assets/The_Arbiters_Face.png', lore: "It shows the wearer every person's true name written across their skin. Those who wear it too long forget which face is theirs. Two have chosen to keep wearing it anyway." },
+      { profiles: ['BADASS'], name: 'The Endless Grind', file: 'gift-assets/The_Endless_Grind.png', lore: "They look cheerful. They have only two settings: running toward something, or running from it. The last person who put them on has been running for eleven years. They have never looked happier." },
+      { profiles: ['BADASS'], name: 'The Long Judgment', file: 'gift-assets/The_Long_Judgment.png', lore: 'It has no range. Every shot arrives at exactly the right moment — even if that moment is centuries ahead. Those fated to fall by it have already been marked.' },
+      { profiles: ['BADASS'], name: 'The Unending Stride', file: 'gift-assets/The_Unending_Stride.png', lore: 'Whoever wears them cannot stop moving. They have carried six different wearers across five different worlds. None of the wearers chose to stop.' }
+    ];
+
+    // Pick from a flat pool filtered by active profiles, deduped by file
+    function pickFromPool(allItems, activeProfiles) {
+      const profileSet = new Set(activeProfiles);
+      const seen = new Set();
+      const pool = allItems.filter(item => {
+        if (!item.profiles.some(p => profileSet.has(p))) return false;
+        if (seen.has(item.file)) return false;
+        seen.add(item.file);
+        return true;
+      });
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // QUIZ STATE
+    // ══════════════════════════════════════════════════════════════
+    let scores = { D: 0, O: 0, C: 0, M: 0, R: 0 };
+    let creatureScores = { CUTE: 0, CREEPY: 0, HOLY: 0, BADASS: 0 };
+    let weaponScores = { CUTE: 0, CREEPY: 0, HOLY: 0, BADASS: 0 };
+    let currentQ = 0;
+    let answered = false;
+    let currentAnswers = [];
+
+    const TOTAL_Q = questions.length; // 12
+
+    function startQuiz() {
+      document.getElementById('intro-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'block';
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      answered = false;
+      const q = questions[currentQ];
+      const pct = Math.round((currentQ / TOTAL_Q) * 100);
+      const romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+      const phaseText = romanNumerals[currentQ] || (currentQ + 1);
+
+      document.getElementById('progress-label').textContent = `Assessment Phase ${phaseText}`;
+      document.getElementById('progress-pct').textContent = `${pct}%`;
+      document.getElementById('progress-fill').style.width = `${pct}%`;
+
+      // Shuffle answers
+      let shuffled = [...q.answers];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      currentAnswers = shuffled;
+
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+      const answersHTML = shuffled.map((a, i) => `
+        <button class="answer-btn" onclick="selectAnswer(${i}, this)">
+          <span class="letter">${letters[i]}</span>${a.text}
+        </button>
+      `).join('');
+
+      document.getElementById('question-container').innerHTML = `
+        <div class="question-card">
+          <p class="question-number">Phase ${phaseText}</p>
+          <p class="question-scene">${q.scene}</p>
+          <h2 class="question-text">${q.text}</h2>
+          <div class="answers-grid">${answersHTML}</div>
+        </div>
+      `;
+    }
+
+    function selectAnswer(idx, btn) {
+      if (answered) return;
+      answered = true;
+      btn.classList.add('selected');
+
+      const q = questions[currentQ];
+      const a = currentAnswers[idx];
+
+      if (q.hidden) {
+        // Secret profile scoring — never visible to user
+        if (q.profileType === 'creature') creatureScores[a.profile]++;
+        else weaponScores[a.profile]++;
+      } else {
+        scores[a.faction]++;
+      }
+
+      setTimeout(() => {
+        currentQ++;
+        if (currentQ < TOTAL_Q) {
+          renderQuestion();
+        } else {
+          // All questions answered — trigger Fate cinematic
+          triggerFateCinematic();
+        }
+      }, 480);
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // FATE CINEMATIC
+    // ══════════════════════════════════════════════════════════════
+    function triggerFateCinematic() {
+      // Calculate faction winner
+      const winner = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+
+      // Find all profiles tied at the highest score (cross-profile pooling)
+      const maxCreatureScore = Math.max(...Object.values(creatureScores));
+      const activeCreatureProfiles = Object.keys(creatureScores).filter(k => creatureScores[k] === maxCreatureScore);
+      const maxWeaponScore = Math.max(...Object.values(weaponScores));
+      const activeWeaponProfiles = Object.keys(weaponScores).filter(k => weaponScores[k] === maxWeaponScore);
+
+      // Draw from the combined pool of all active profiles
+      const chosenCreature = pickFromPool(ALL_CREATURES, activeCreatureProfiles);
+      const chosenWeapon = pickFromPool(ALL_WEAPONS, activeWeaponProfiles);
+
+      // Save to localStorage
+      const giftData = {
+        faction: winner,
+        creatureProfiles: activeCreatureProfiles,
+        weaponProfiles: activeWeaponProfiles,
+        creature: chosenCreature,
+        weapon: chosenWeapon
+      };
+      localStorage.setItem('fateGift', JSON.stringify(giftData));
+      localStorage.setItem('holyGiftFaction', winner); // backward compat
+
+      // Progress to 100%
+      document.getElementById('progress-fill').style.width = '100%';
+      document.getElementById('progress-pct').textContent = '100%';
+
+      // Hide quiz screen
+      setTimeout(() => {
+        document.getElementById('quiz-screen').style.display = 'none';
+
+        // Launch cinematic overlay
+        const overlay = document.getElementById('fate-cinematic');
+        const fateVideo = document.getElementById('fate-video');
+        const textEl = document.getElementById('fate-text-overlay');
+        const fadeEl = document.getElementById('fate-cinematic-fade');
+
+        overlay.classList.add('active');
+
+        // Load and play the Fate appearance video (WebM preferred, MP4 fallback)
+        fateVideo.innerHTML = '<source src="gift-assets/gift-intro.webm" type="video/webm"><source src="gift-assets/gift-intro.mp4" type="video/mp4">';
+        fateVideo.load();
+
+        let textShown = false;
+        let transitioned = false;
+
+        function doTransition() {
+          if (transitioned) return;
+          transitioned = true;
+          // Fade out the overlay
+          fadeEl.classList.add('active');
+          setTimeout(() => {
+            overlay.classList.remove('active');
+            fateVideo.pause();
+            fateVideo.innerHTML = '';
+            showResult(giftData);
+          }, 1200);
+        }
+
+        fateVideo.addEventListener('canplay', () => {
+          fateVideo.classList.add('visible');
+          fateVideo.play().catch(() => { });
+        }, { once: true });
+
+        // Show text overlay after 2 seconds
+        setTimeout(() => {
+          if (!textShown) { textShown = true; textEl.classList.add('visible'); }
+        }, 2000);
+
+        // On video end — transition to result
+        fateVideo.addEventListener('ended', doTransition, { once: true });
+
+        // Fallback: if video doesn't end after 14s, move on anyway
+        setTimeout(doTransition, 14000);
+
+      }, 480);
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // SHOW RESULT
+    // ══════════════════════════════════════════════════════════════
+    function showResult(giftData) {
+      const resultEl = document.getElementById('result-screen');
+      resultEl.style.display = 'block';
+
+      const f = factionData[giftData.faction];
+
+      // Faction background video
+      const bgVideo = document.getElementById('result-video-bg');
+      let sourcesHTML = '';
+      if (f.videoWebm) sourcesHTML += `<source src="${f.videoWebm}" type="video/webm">`;
+      if (f.videoMp4) sourcesHTML += `<source src="${f.videoMp4}" type="video/mp4">`;
+      if (sourcesHTML) {
+        bgVideo.innerHTML = sourcesHTML;
+        bgVideo.load();
+        bgVideo.play().then(() => bgVideo.classList.add('playing')).catch(() => { });
+      }
+
+      const traitsHTML = f.traits.map(t => `
+        <div class="trait-row">
+          <span class="trait-label">${t.label}</span>
+          <div class="trait-track"><div class="trait-fill" data-value="${t.value}" style="width:0%"></div></div>
+        </div>
+      `).join('');
+
+      const c = giftData.creature;
+      const w = giftData.weapon;
+
+      resultEl.innerHTML = `
+        <p class="result-eyebrow" style="color:var(--accent-teal);">Assessment Complete</p>
+
+        <div class="result-card ${f.id} result-reveal">
+          <p class="result-faction-label">${f.label}</p>
+          <h2 class="result-faction-name">${f.name}</h2>
+          <p class="result-tagline">"${f.tagline}"</p>
+          <p class="result-description">${f.description}</p>
+          <div class="result-trait-bar">${traitsHTML}</div>
+        </div>
+
+        <!-- GIFT REVEAL -->
+        <div class="gift-reveal-section">
+          <div class="gift-reveal-divider"><span>✦ Fate Has Spoken ✦</span></div>
+          <h3 class="gift-reveal-title">Bound by Fate</h3>
+          <p class="gift-reveal-subtitle">Based on your soul's resonance, Fate has bound these to you.</p>
+
+          <div class="gift-items-row">
+            <div class="gift-item">
+              <span class="gift-item-tag">Guardian</span>
+              <div class="gift-sprite-box creature">
+                <img src="${c.file}" alt="${c.name}">
+              </div>
+              <span class="gift-item-name">${c.name}</span>
+              <span class="gift-item-lore">${c.lore}</span>
+            </div>
+
+            <div class="gift-separator"></div>
+
+            <div class="gift-item">
+              <span class="gift-item-tag">Holy Item</span>
+              <div class="gift-sprite-box weapon">
+                <img src="${w.file}" alt="${w.name}">
+              </div>
+              <span class="gift-item-name">${w.name}</span>
+              <span class="gift-item-lore">${w.lore}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-actions" style="margin-top:2.5rem;">
+          <a href="${f.codexLink}" class="btn-primary btn-codex">Read the Codex Entry →</a>
+          <button class="btn-primary btn-retry" onclick="retakeQuiz()">Retake Assessment</button>
+        </div>
+
+        <a href="https://discord.gg/x5mZqWFZn7" target="_blank" rel="noopener" class="discord-banner">
+          <svg class="discord-icon" viewBox="0 0 71 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60.1045 4.8978C55.5792 2.8214 50.7265 1.2916 45.6527 0.41542C45.5603 0.39851 45.468 0.440769 45.4204 0.525289C44.7963 1.6353 44.105 3.0834 43.6209 4.2216C38.1637 3.4046 32.7345 3.4046 27.3892 4.2216C26.905 3.0581 26.1886 1.6353 25.5617 0.525289C25.5141 0.443589 25.4218 0.401329 25.3294 0.41542C20.2584 1.2888 15.4057 2.8186 10.8776 4.8978C10.8384 4.9147 10.8048 4.9429 10.7825 4.9795C1.57795 18.7309 -0.943561 32.1443 0.293408 45.3914C0.299005 45.4562 0.335386 45.5182 0.385761 45.5576C6.45866 50.0174 12.3413 52.7249 18.1147 54.5195C18.2071 54.5477 18.305 54.5139 18.3638 54.4378C19.7295 52.5728 20.9469 50.6063 21.9907 48.5383C22.0523 48.4172 21.9935 48.2735 21.8676 48.2256C19.9366 47.4931 18.0979 46.6 16.3292 45.5858C16.1893 45.5041 16.1781 45.304 16.3068 45.2082C16.679 44.9293 17.0513 44.6391 17.4067 44.3461C17.471 44.2926 17.5606 44.2813 17.6362 44.3151C29.2558 49.6202 41.8354 49.6202 53.3179 44.3151C53.3935 44.2785 53.4831 44.2898 53.5502 44.3433C53.9057 44.6363 54.2779 44.9293 54.6529 45.2082C54.7816 45.304 54.7732 45.5041 54.6333 45.5858C52.8646 46.6197 51.0259 47.4931 49.0921 48.2228C48.9662 48.2707 48.9102 48.4172 48.9718 48.5383C50.038 50.6034 51.2554 52.5699 52.5959 54.435C52.6519 54.5139 52.7526 54.5477 52.845 54.5195C58.6464 52.7249 64.529 50.0174 70.6019 45.5576C70.6551 45.5182 70.6887 45.459 70.6943 45.3942C72.1747 30.0791 68.2147 16.7757 60.1968 4.9823C60.1772 4.9429 60.1437 4.9147 60.1045 4.8978Z" fill="#5865F2"/>
+          </svg>
+          <div class="discord-text">
+            <h3>Join the Silver Clouds Community</h3>
+            <p>Discuss factions, lore, theories — find your people.</p>
+          </div>
+          <span class="discord-arrow">→</span>
+        </a>
+      `;
+
+      // Animate trait bars after render
+      setTimeout(() => {
+        document.querySelectorAll('.trait-fill').forEach(bar => {
+          bar.style.width = bar.dataset.value + '%';
+        });
+      }, 300);
+
+      // Populate shrine panel from localStorage
+      shrineInit();
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // RETAKE
+    // ══════════════════════════════════════════════════════════════
+    function retakeQuiz() {
+      scores = { D: 0, O: 0, C: 0, M: 0, R: 0 };
+      creatureScores = { CUTE: 0, CREEPY: 0, HOLY: 0, BADASS: 0 };
+      weaponScores = { CUTE: 0, CREEPY: 0, HOLY: 0, BADASS: 0 };
+      currentQ = 0;
+      currentAnswers = [];
+      answered = false;
+
+      const bgVideo = document.getElementById('result-video-bg');
+      bgVideo.classList.remove('playing');
+      setTimeout(() => { bgVideo.pause(); bgVideo.innerHTML = ''; }, 1500);
+
+      // Reset cinematic overlay state
+      const overlay = document.getElementById('fate-cinematic');
+      overlay.classList.remove('active');
+      const fateVideoEl = document.getElementById('fate-video');
+      fateVideoEl.pause();
+      fateVideoEl.innerHTML = '';
+      document.getElementById('fate-text-overlay').classList.remove('visible');
+      document.getElementById('fate-cinematic-fade').classList.remove('active');
+
+      // Hide shrine panel
+      const panel = document.getElementById('gift-panel');
+      if (panel) { panel.classList.remove('visible', 'open', 'reveal'); }
+
+      document.getElementById('result-screen').style.display = 'none';
+      document.getElementById('result-screen').innerHTML = '';
+      document.getElementById('quiz-screen').style.display = 'block';
+      document.getElementById('progress-fill').style.width = '0%';
+      renderQuestion();
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // SHRINE PANEL — reads localStorage, for embedding on other pages
+    // ══════════════════════════════════════════════════════════════
+    const FACTIONS_META = {
+      D: { name: "Demon's Legion", color: '#e74c3c', rune: '⚔' },
+      O: { name: 'The Order', color: '#9b59b6', rune: '📜' },
+      C: { name: 'The Church', color: '#f1c40f', rune: '✦' },
+      M: { name: 'MI6', color: '#2ecc71', rune: '◈' },
+      R: { name: 'Ragnorir', color: '#6fa3d0', rune: 'ᚢ' }
+    };
+
+    function shrineInit() {
+      const stored = localStorage.getItem('fateGift');
+      if (!stored) return;
+      const gift = JSON.parse(stored);
+      shrineRender(gift);
+      shrineShow(true);
+    }
+
+    function shrineRender(gift) {
+      const creatureImg = document.getElementById('gc-creature');
+      const weaponImg = document.getElementById('gc-weapon');
+      if (!creatureImg) return;
+      creatureImg.src = gift.creature.file;
+      creatureImg.alt = gift.creature.name;
+      weaponImg.src = gift.weapon.file;
+      weaponImg.alt = gift.weapon.name;
+      document.getElementById('gc-creature-name').textContent = gift.creature.name;
+      document.getElementById('gc-weapon-name').textContent = gift.weapon.name;
+      document.getElementById('gc-creature-lore').textContent = gift.creature.lore;
+      document.getElementById('gc-weapon-lore').textContent = gift.weapon.lore;
+      const fEl = document.getElementById('gc-faction');
+      if (gift.faction && FACTIONS_META[gift.faction]) {
+        const fm = FACTIONS_META[gift.faction];
+        fEl.textContent = fm.rune + '  ' + fm.name + '  ' + fm.rune;
+        fEl.style.color = fm.color;
+      }
+      initGuardianRename(gift);
+    }
+
+    function initGuardianRename(gift) {
+      const btn = document.getElementById('gc-rename-btn');
+      const form = document.getElementById('gc-rename-form');
+      const input = document.getElementById('gc-rename-input');
+      const confirm = document.getElementById('gc-rename-confirm');
+      const nameEl = document.getElementById('gc-creature-name');
+      if (!btn) return;
+
+      // Already renamed — hide the button permanently
+      if (gift.guardianRenamed) {
+        btn.style.display = 'none';
+        return;
+      }
+
+      // Guard: only attach listeners once per DOM lifecycle
+      if (btn.dataset.renameInit) return;
+      btn.dataset.renameInit = '1';
+
+      btn.addEventListener('click', () => {
+        input.value = nameEl.textContent;
+        form.style.display = 'flex';
+        btn.style.display = 'none';
+        input.focus();
+        input.select();
+      });
+
+      function commitRename() {
+        const newName = input.value.trim();
+        if (!newName) return;
+        nameEl.textContent = newName;
+        form.style.display = 'none';
+        // Persist — mark as renamed so the option never reappears
+        const stored = localStorage.getItem('fateGift');
+        if (stored) {
+          const saved = JSON.parse(stored);
+          saved.creature.name = newName;
+          saved.guardianRenamed = true;
+          localStorage.setItem('fateGift', JSON.stringify(saved));
+        }
+      }
+
+      confirm.addEventListener('click', commitRename);
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') commitRename();
+        if (e.key === 'Escape') { form.style.display = 'none'; btn.style.display = 'inline-block'; }
+      });
+    }
+
+    function shrineShow(animate) {
+      const panel = document.getElementById('gift-panel');
+      panel.classList.add('visible');
+      if (animate) {
+        panel.classList.add('reveal');
+        panel.addEventListener('animationend', () => panel.classList.remove('reveal'), { once: true });
+      }
+      setTimeout(() => panel.classList.add('open'), animate ? 500 : 100);
+    }
+
+    window.giftToggle = () => document.getElementById('gift-panel').classList.toggle('open');
+
+
+
+  </script>
+</body>
+
+</html>

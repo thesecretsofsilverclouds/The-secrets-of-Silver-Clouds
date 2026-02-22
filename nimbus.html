@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <link rel="canonical" href="https://thesecretsofsilverclouds.com/nimbus" />
+    <link rel="canonical" href="https://thesecretsofsilverclouds.com/nimbus" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nimbus - The Cloud Rat | The Secrets of Silver Clouds</title>
-    <meta name="description" content="A mutated lintel transformed by Holy Item Radiation into an adorable yet catastrophically powerful apex anomaly">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap" rel="stylesheet">
+    <meta name="description"
+        content="A mutated lintel transformed by Holy Item Radiation into an adorable yet catastrophically powerful apex anomaly">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap"
+        rel="stylesheet">
     <style>
-
         :root {
             --primary-dark: #1a1a2e;
             --secondary-dark: #16213e;
@@ -18,7 +21,11 @@
             --text-dark: #2c2c2c;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Lato', sans-serif;
@@ -47,7 +54,8 @@
             flex-wrap: wrap;
         }
 
-        .back-btn, .nav-btn {
+        .back-btn,
+        .nav-btn {
             padding: 0.75rem 1.5rem;
             background: var(--accent-blue);
             color: white;
@@ -58,13 +66,17 @@
             transition: all 0.3s ease;
         }
 
-        .back-btn:hover, .nav-btn:hover {
+        .back-btn:hover,
+        .nav-btn:hover {
             background: var(--accent-teal);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(50, 130, 184, 0.3);
         }
 
-        .nav-buttons { display: flex; gap: 1rem; }
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
 
         .lore-container {
             max-width: 1000px;
@@ -106,7 +118,12 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .lore-tags { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+        .lore-tags {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
 
         .lore-tag {
             background: rgba(255, 255, 255, 0.25);
@@ -150,7 +167,8 @@
         }
 
         /* Grids */
-        .abilities-list, .members-list {
+        .abilities-list,
+        .members-list {
             list-style: none;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -158,7 +176,8 @@
             margin-top: 1rem;
         }
 
-        .abilities-list li, .members-list li {
+        .abilities-list li,
+        .members-list li {
             background: rgba(50, 130, 184, 0.15);
             padding: 1.2rem;
             border-radius: 10px;
@@ -241,7 +260,9 @@
             padding: 2rem;
         }
 
-        .lightbox.active { display: flex; }
+        .lightbox.active {
+            display: flex;
+        }
 
         .lightbox-content {
             max-width: 1200px;
@@ -251,13 +272,13 @@
             justify-content: center;
         }
 
-        .lightbox-content img { 
-            max-width: 100%; 
+        .lightbox-content img {
+            max-width: 100%;
             max-height: 90vh;
-            width: auto; 
-            height: auto; 
-            object-fit: contain; 
-            display: block; 
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
         }
 
         .lightbox-close {
@@ -278,15 +299,36 @@
         }
 
         @media (max-width: 768px) {
-            .lore-header { padding: 1rem; }
-            .lore-nav { flex-direction: column; gap: 0.75rem; }
-            .nav-buttons { width: 100%; justify-content: space-between; }
-            .lore-container { padding: 1.5rem 1rem; }
-            .lore-title h1 { font-size: 2rem; }
-            .lore-section { padding: 1.5rem; }
-            .image-gallery { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-        }
+            .lore-header {
+                padding: 1rem;
+            }
 
+            .lore-nav {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .nav-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .lore-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .lore-title h1 {
+                font-size: 2rem;
+            }
+
+            .lore-section {
+                padding: 1.5rem;
+            }
+
+            .image-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
     </style>
 
     <script type="application/ld+json">
@@ -313,6 +355,7 @@
 }
     </script>
 </head>
+
 <body>
 
     <header class="lore-header">
@@ -333,65 +376,76 @@
             </div>
         </section>
 
-        
+
         <section class="lore-section">
             <h2>Summary</h2>
-            <p>A mutated lintel transformed by Holy Item Radiation into an adorable yet catastrophically powerful apex anomaly</p>
+            <p>A mutated lintel transformed by Holy Item Radiation into an adorable yet catastrophically powerful apex
+                anomaly</p>
         </section>
-    
+
         <section class="lore-section">
             <h2>Description</h2>
-            <p>Nimbus resembles a four-legged lintel whose body mutated under prolonged exposure to Holy Item Radiation. Its fur swirls like living stormclouds, threaded with leafy tufts and tiny blossoms that bloom with each breath. Wide, halo-bright eyes and a plumed tail give it the appearance of a child's toy brought to life—yet this illusion masks an apex anomaly that is equal parts pet, pest, and weapon.</p>
+            <p>Nimbus resembles a four-legged lintel whose body mutated under prolonged exposure to Holy Item Radiation.
+                Its fur swirls like living stormclouds, threaded with leafy tufts and tiny blossoms that bloom with each
+                breath. Wide, halo-bright eyes and a plumed tail give it the appearance of a child's toy brought to
+                life—yet this illusion masks an apex anomaly that is equal parts pet, pest, and weapon.</p>
 
             <h3>Appearance</h3>
 
-            <p>Civilians whisper the nickname 'Cloud Rat' after spotting it darting across London's chimneys, leaving trails of mist in its wake. Syndicates place absurd bounties on live capture. MI6's file marks it simply: Classified Hazardous Entity. Nimbus devours spells like candy, burping them back magnified by holy radiation.</p>
+            <p>Civilians whisper the nickname 'Cloud Rat' after spotting it darting across London's chimneys, leaving
+                trails of mist in its wake. Syndicates place absurd bounties on live capture. MI6's file marks it
+                simply: Classified Hazardous Entity. Nimbus devours spells like candy, burping them back magnified by
+                holy radiation.</p>
 
             <h3>Behaviour</h3>
 
-            <p>It disperses into storm vapour to slip through cracks, engulfs foes in fog, or inflates into a titanic storm-beast silhouette. When overfed on magic, it leaks weather phenomena—sparks from its tail, sudden rain showers, tornadoes from sneezes. In critical overload, it triggers miniature Holy Item Radiation Storms. It purrs like distant thunder, loves shiny objects and crumbs, and hides in coats.</p>
+            <p>It disperses into storm vapour to slip through cracks, engulfs foes in fog, or inflates into a titanic
+                storm-beast silhouette. When overfed on magic, it leaks weather phenomena—sparks from its tail, sudden
+                rain showers, tornadoes from sneezes. In critical overload, it triggers miniature Holy Item Radiation
+                Storms. It purrs like distant thunder, loves shiny objects and crumbs, and hides in coats.</p>
 
             <h3>Abilities</h3>
 
-            <p>In battle, it acts without malice—but its 'play' can level buildings. Nimbus embodies the chaos of the post-Holy Tragedy world: adorable, coveted, impossibly dangerous.</p>
+            <p>In battle, it acts without malice—but its 'play' can level buildings. Nimbus embodies the chaos of the
+                post-Holy Tragedy world: adorable, coveted, impossibly dangerous.</p>
         </section>
-    
+
         <section class="lore-section">
             <h2>Abilities</h2>
             <ul class="abilities-list">
-<li>Spell Swallowing &amp; Reflection (Kirby Effect)</li>
-<li>Cloud Morphing (Storm Vapor Form)</li>
-<li>Atmospheric Overcharge (Weather Phenomena)</li>
-<li>Presence Puff (Aura Shockwave)</li>
-<li>Arcane Absorption</li>
-<li>Pocket-Dimension Stomach</li>
-<li>Digestive Nap (Post-Spell Sleep)</li>
-<li>Snack Bribery Vulnerability</li>
-</ul>
+                <li>Spell Swallowing &amp; Reflection (Kirby Effect)</li>
+                <li>Cloud Morphing (Storm Vapor Form)</li>
+                <li>Atmospheric Overcharge (Weather Phenomena)</li>
+                <li>Presence Puff (Aura Shockwave)</li>
+                <li>Arcane Absorption</li>
+                <li>Pocket-Dimension Stomach</li>
+                <li>Digestive Nap (Post-Spell Sleep)</li>
+                <li>Snack Bribery Vulnerability</li>
+            </ul>
         </section>
-        
+
         <section class="lore-section">
             <h2>Gallery</h2>
             <div class="image-gallery">
                 <div class="gallery-item" onclick="openLightbox('images/nimbus.png')">
                     <img src="images/nimbus.png" alt="Nimbus - The Cloud Rat">
                 </div>
-                <div class="gallery-item" onclick="openLightbox('images/nimbus2.png')">
-                    <img src="images/nimbus2.png" alt="Nimbus - The Cloud Rat">
+                <div class="gallery-item" onclick="openLightbox('images/nimbus2.webp')">
+                    <img src="images/nimbus2.webp" alt="Nimbus - The Cloud Rat" loading="lazy">
                 </div>
                 <!-- Add more images here -->
         </section>
-    
+
         <section class="lore-section">
             <h2>Related Entries</h2>
             <div class="related-entries">
                 <a href="/lintels" class="related-link">→ Lintels</a>
-<a href="/holy-item-radiation" class="related-link">→ Holy Item Radiation</a>
-<a href="/celestial-shattering" class="related-link">→ The Celestial Shattering</a>
-<a href="/mi6" class="related-link">→ MI6</a>
+                <a href="/holy-item-radiation" class="related-link">→ Holy Item Radiation</a>
+                <a href="/celestial-shattering" class="related-link">→ The Celestial Shattering</a>
+                <a href="/mi6" class="related-link">→ MI6</a>
             </div>
         </section>
-        
+
     </main>
 
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
@@ -411,12 +465,15 @@
             document.getElementById('lightbox').classList.remove('active');
         }
 
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 closeLightbox();
             }
         });
     </script>
 
+    <!-- Shrine JS Injector -->
+    <script src="global-shrine.js"></script>
 </body>
+
 </html>
