@@ -7,6 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Order | The Secrets of Silver Clouds</title>
     <meta name="description" content="Ancient magical society preserving arcane knowledge and enforcing mystical law">
+    <meta property="og:title" content="The Order | The Secrets of Silver Clouds">
+    <meta property="og:description" content="Ancient magical society preserving arcane knowledge and enforcing mystical law">
+    <meta property="og:image" content="https://thesecretsofsilverclouds.com/images/the-order.png">
+    <meta property="og:url" content="https://thesecretsofsilverclouds.com/the-order">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="The Secrets of Silver Clouds">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The Order | The Secrets of Silver Clouds">
+    <meta name="twitter:description" content="Ancient magical society preserving arcane knowledge and enforcing mystical law">
+    <meta name="twitter:image" content="https://thesecretsofsilverclouds.com/images/the-order.png">
     <link
         href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap"
         rel="stylesheet">
@@ -295,6 +305,22 @@
   "description": "Ancient magical society preserving arcane knowledge and enforcing mystical law"
 }
     </script>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "The Order",
+  "description": "An ancient magical society preserving arcane knowledge and enforcing mystical law across London.",
+  "url": "https://thesecretsofsilverclouds.com/the-order",
+  "isPartOf": {
+    "@type": "Book",
+    "name": "The Secrets of Silver Clouds",
+    "author": { "@type": "Person", "name": "Silent Silver" },
+    "genre": "Animantasy"
+  }
+}
+    </script>
 </head>
 
 <body>
@@ -354,6 +380,16 @@
                 methods they find distasteful.</p>
         </section>
         <section class="lore-section">
+            <h2>Notable Members</h2>
+            <ul style="list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                <li style="background: rgba(50, 130, 184, 0.15); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--accent-blue); font-size: 1.05rem; font-weight: 500; text-align: center;"><a href="/shonen-kartia" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Shonen Kartia</a> (The Singularity)</li>
+                <li style="background: rgba(50, 130, 184, 0.15); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--accent-blue); font-size: 1.05rem; font-weight: 500; text-align: center;"><a href="/head-captain" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Head Captain</a></li>
+                <li style="background: rgba(50, 130, 184, 0.15); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--accent-blue); font-size: 1.05rem; font-weight: 500; text-align: center;"><a href="/emily-grimm" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Emily Grimm</a></li>
+                <li style="background: rgba(50, 130, 184, 0.15); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--accent-blue); font-size: 1.05rem; font-weight: 500; text-align: center;"><a href="/captain-ash" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Captain Ash</a></li>
+                <li style="background: rgba(50, 130, 184, 0.15); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--accent-blue); font-size: 1.05rem; font-weight: 500; text-align: center;"><a href="/gunta" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Gunta</a></li>
+            </ul>
+        </section>
+        <section class="lore-section">
             <h2>Gallery</h2>
             <div class="image-gallery">
                 <div class="gallery-item" onclick="openLightbox('images/the-order.png')">
@@ -390,6 +426,7 @@
         function openLightbox(src) {
             document.getElementById('lightbox').classList.add('active');
             document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox-img').alt = src.split('/').pop().replace(/\.\w+$/, '').replace(/[-_]/g, ' ');
         }
 
         function closeLightbox() {

@@ -8,6 +8,16 @@
     <title>Ragnorir | The Secrets of Silver Clouds</title>
     <meta name="description"
         content="A fierce Viking-descended faction where storm and steel are one—warriors who command tempests and forge legends in blades and blood">
+    <meta property="og:title" content="Ragnorir | The Secrets of Silver Clouds">
+    <meta property="og:description" content="A fierce Viking-descended faction where storm and steel are one—warriors who command tempests and forge legends in blades and blood">
+    <meta property="og:image" content="https://thesecretsofsilverclouds.com/images/ragnorir.png">
+    <meta property="og:url" content="https://thesecretsofsilverclouds.com/ragnorir">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="The Secrets of Silver Clouds">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ragnorir | The Secrets of Silver Clouds">
+    <meta name="twitter:description" content="A fierce Viking-descended faction where storm and steel are one—warriors who command tempests and forge legends in blades and blood">
+    <meta name="twitter:image" content="https://thesecretsofsilverclouds.com/images/ragnorir.png">
     <link
         href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@700&family=Lato:wght@300;400;700&display=swap"
         rel="stylesheet">
@@ -406,6 +416,22 @@
   "description": "A fierce Viking-descended faction where storm and steel are one—warriors who command tempests and forge legends in blades and blood"
 }
     </script>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Ragnorir",
+  "description": "A fierce Viking-descended faction where storm and steel are one — warriors who command tempests and forge legends in blades and blood.",
+  "url": "https://thesecretsofsilverclouds.com/ragnorir",
+  "isPartOf": {
+    "@type": "Book",
+    "name": "The Secrets of Silver Clouds",
+    "author": { "@type": "Person", "name": "Silent Silver" },
+    "genre": "Animantasy"
+  }
+}
+    </script>
 </head>
 
 <body>
@@ -535,6 +561,7 @@
         function openLightbox(src) {
             document.getElementById('lightbox').classList.add('active');
             document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox-img').alt = src.split('/').pop().replace(/\.\w+$/, '').replace(/[-_]/g, ' ');
         }
 
         function closeLightbox() {

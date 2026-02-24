@@ -8,6 +8,16 @@
     <title>The Church | The Secrets of Silver Clouds</title>
     <meta name="description"
         content="Religious organization dedicated to combating supernatural threats through divine authority">
+    <meta property="og:title" content="The Church | The Secrets of Silver Clouds">
+    <meta property="og:description" content="Religious organization dedicated to combating supernatural threats through divine authority">
+    <meta property="og:image" content="https://thesecretsofsilverclouds.com/images/church.png">
+    <meta property="og:url" content="https://thesecretsofsilverclouds.com/the-church">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="The Secrets of Silver Clouds">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The Church | The Secrets of Silver Clouds">
+    <meta name="twitter:description" content="Religious organization dedicated to combating supernatural threats through divine authority">
+    <meta name="twitter:image" content="https://thesecretsofsilverclouds.com/images/church.png">
     <link
         href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap"
         rel="stylesheet">
@@ -296,6 +306,22 @@
   "description": "Religious organization dedicated to combating supernatural threats through divine authority"
 }
     </script>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "The Church",
+  "description": "A religious organization dedicated to combating supernatural threats through divine authority and unwavering conviction.",
+  "url": "https://thesecretsofsilverclouds.com/the-church",
+  "isPartOf": {
+    "@type": "Book",
+    "name": "The Secrets of Silver Clouds",
+    "author": { "@type": "Person", "name": "Silent Silver" },
+    "genre": "Animantasy"
+  }
+}
+    </script>
 </head>
 
 <body>
@@ -356,6 +382,16 @@
                 historically opposed, while traditionalists view such suggestions as dangerous compromise.</p>
         </section>
         <section class="lore-section">
+            <h2>Key Divisions</h2>
+            <ul style="list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                <li style="background: rgba(50, 130, 184, 0.15); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--accent-blue); font-size: 1.05rem; font-weight: 500; text-align: center;">High Cardinal (Leader)</li>
+                <li style="background: rgba(50, 130, 184, 0.15); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--accent-blue); font-size: 1.05rem; font-weight: 500; text-align: center;">Paladins</li>
+                <li style="background: rgba(50, 130, 184, 0.15); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--accent-blue); font-size: 1.05rem; font-weight: 500; text-align: center;">Exorcists</li>
+                <li style="background: rgba(50, 130, 184, 0.15); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--accent-blue); font-size: 1.05rem; font-weight: 500; text-align: center;">Inquisitors</li>
+                <li style="background: rgba(50, 130, 184, 0.15); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--accent-blue); font-size: 1.05rem; font-weight: 500; text-align: center;"><a href="/sanctuary-in-the-sky" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Sanctuary in the Sky</a></li>
+            </ul>
+        </section>
+        <section class="lore-section">
             <h2>Gallery</h2>
             <div class="image-gallery">
                 <div class="gallery-item" onclick="openLightbox('images/church.png')">
@@ -398,6 +434,7 @@
         function openLightbox(src) {
             document.getElementById('lightbox').classList.add('active');
             document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox-img').alt = src.split('/').pop().replace(/\.\w+$/, '').replace(/[-_]/g, ' ');
         }
 
         function closeLightbox() {

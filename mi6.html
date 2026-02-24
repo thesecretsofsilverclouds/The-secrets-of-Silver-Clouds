@@ -7,6 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MI6 | The Secrets of Silver Clouds</title>
     <meta name="description" content="Britain's covert supernatural defense organization">
+    <meta property="og:title" content="MI6 | The Secrets of Silver Clouds">
+    <meta property="og:description" content="Britain's covert supernatural defense organization">
+    <meta property="og:image" content="https://thesecretsofsilverclouds.com/images/mi6.png">
+    <meta property="og:url" content="https://thesecretsofsilverclouds.com/mi6">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="The Secrets of Silver Clouds">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MI6 | The Secrets of Silver Clouds">
+    <meta name="twitter:description" content="Britain's covert supernatural defense organization">
+    <meta name="twitter:image" content="https://thesecretsofsilverclouds.com/images/mi6.png">
     <link
         href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap"
         rel="stylesheet">
@@ -310,7 +320,23 @@
       "name": "Silent Silver"
     }
   },
-  "description": "Britain"
+  "description": "Britain's covert supernatural defense organization"
+}
+    </script>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "MI6",
+  "description": "Britain's covert supernatural defense organization operating through clearance levels, back channels, and the quiet architecture of influence.",
+  "url": "https://thesecretsofsilverclouds.com/mi6",
+  "isPartOf": {
+    "@type": "Book",
+    "name": "The Secrets of Silver Clouds",
+    "author": { "@type": "Person", "name": "Silent Silver" },
+    "genre": "Animantasy"
+  }
 }
     </script>
 </head>
@@ -369,9 +395,13 @@
         <section class="lore-section">
             <h2>Notable Members</h2>
             <ul class="members-list">
-                <li>Goaden Reeves (Liaison)</li>
-                <li>Ashai Bennet (Asset)</li>
-                <li>Classified Operatives</li>
+                <li><a href="/cliff-henderson" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Cliff Henderson</a> (General)</li>
+                <li><a href="/goaden-reeves" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Goaden Reeves</a> (Liaison)</li>
+                <li><a href="/ashai-bennet" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Ashai Bennet</a> (Asset)</li>
+                <li><a href="/kartel-hammond" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Kartel Hammond</a></li>
+                <li><a href="/whisper" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Whisper</a></li>
+                <li><a href="/isolde-thorn" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Isolde Thorn</a> (Consultant)</li>
+                <li><a href="/yukon" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Yukon</a> (Onari Liaison)</li>
             </ul>
         </section>
         <section class="lore-section">
@@ -420,6 +450,7 @@
         function openLightbox(src) {
             document.getElementById('lightbox').classList.add('active');
             document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox-img').alt = src.split('/').pop().replace(/\.\w+$/, '').replace(/[-_]/g, ' ');
         }
 
         function closeLightbox() {

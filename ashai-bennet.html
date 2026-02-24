@@ -7,6 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ashai Bennet | The Secrets of Silver Clouds</title>
     <meta name="description" content="Gifted with celestial powers, Ashai is central to the battle for London's fate">
+    <meta property="og:title" content="Ashai Bennet | The Secrets of Silver Clouds">
+    <meta property="og:description" content="Gifted with celestial powers, Ashai is central to the battle for London's fate">
+    <meta property="og:image" content="https://thesecretsofsilverclouds.com/images/ashai-bennet.png">
+    <meta property="og:url" content="https://thesecretsofsilverclouds.com/ashai-bennet">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="The Secrets of Silver Clouds">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ashai Bennet | The Secrets of Silver Clouds">
+    <meta name="twitter:description" content="Gifted with celestial powers, Ashai is central to the battle for London's fate">
+    <meta name="twitter:image" content="https://thesecretsofsilverclouds.com/images/ashai-bennet.png">
 
     <!-- Fonts -->
     <link
@@ -353,7 +363,7 @@
 
         <section class="lore-section">
             <h2>Summary</h2>
-            <p>Gifted with celestial powers, Ashai is central to the battle for London's fate</p>
+            <p>Gifted with celestial powers and serving as an asset of <a href="/mi6" class="codex-link">MI6</a>, Ashai is central to the battle for London's fate</p>
         </section>
 
         <section class="lore-section">
@@ -437,6 +447,11 @@
             </div>
         </section>
 
+    
+        <section class="lore-section" style="text-align: center; border-top: 1px solid rgba(15, 76, 117, 0.3); padding-top: 2rem;">
+            <p style="color: #8ab4d4; font-size: 0.95rem; margin-bottom: 1rem;">Discover where your allegiance lies in the world of Silver Clouds.</p>
+            <a href="/faction-quiz" style="display: inline-block; padding: 0.8rem 2rem; background: rgba(15, 76, 117, 0.15); border: 1px solid rgba(50, 130, 184, 0.3); color: #3282b8; font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; border-radius: 6px; transition: all 0.3s ease;">Take the Faction Assessment</a>
+        </section>
     </main>
 
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
@@ -450,6 +465,7 @@
         function openLightbox(src) {
             document.getElementById('lightbox').classList.add('active');
             document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox-img').alt = src.split('/').pop().replace(/\.\w+$/, '').replace(/[-_]/g, ' ');
         }
 
         function closeLightbox() {

@@ -7,6 +7,16 @@
   <title>Which Faction Claims You? | The Secrets of Silver Clouds</title>
   <meta name="description"
     content="London is divided. The Order, The Church, MI6, the Demon's Legion, and Ragnorir each hold a claim on this city — and on you. Find out where you truly belong.">
+  <meta property="og:title" content="Which Faction Claims You? | The Secrets of Silver Clouds">
+  <meta property="og:description" content="London is divided. The Order, The Church, MI6, the Demon's Legion, and Ragnorir each hold a claim on this city — and on you. Find out where you truly belong.">
+  <meta property="og:image" content="https://thesecretsofsilverclouds.com/images/updatedbookcover.png">
+  <meta property="og:url" content="https://thesecretsofsilverclouds.com/faction-quiz">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="The Secrets of Silver Clouds">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Which Faction Claims You? | The Secrets of Silver Clouds">
+  <meta name="twitter:description" content="London is divided. The Order, The Church, MI6, the Demon's Legion, and Ragnorir each hold a claim on this city — and on you. Find out where you truly belong.">
+  <meta name="twitter:image" content="https://thesecretsofsilverclouds.com/images/updatedbookcover.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lato:wght@300;400;700&family=Cinzel+Decorative:wght@700&display=swap"
@@ -595,6 +605,18 @@
     .btn-retry:hover {
       background: rgba(50, 130, 184, 0.1);
       border-color: var(--accent-teal);
+      transform: translateY(-1px);
+    }
+
+    .btn-share-result {
+      background: rgba(200, 160, 48, 0.12);
+      border: 1px solid rgba(200, 160, 48, 0.4);
+      color: #e8c040;
+    }
+
+    .btn-share-result:hover {
+      background: rgba(200, 160, 48, 0.2);
+      border-color: #e8c040;
       transform: translateY(-1px);
     }
 
@@ -1239,6 +1261,25 @@
       }
     }
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Quiz",
+    "name": "Which Faction Claims You?",
+    "description": "Take the Faction Assessment to discover which of the five factions from The Secrets of Silver Clouds claims your allegiance — and receive your unique Holy Gift.",
+    "url": "https://thesecretsofsilverclouds.com/faction-quiz",
+    "about": {
+      "@type": "Book",
+      "name": "The Secrets of Silver Clouds",
+      "author": { "@type": "Person", "name": "Silent Silver" }
+    },
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "The Secrets of Silver Clouds",
+      "url": "https://thesecretsofsilverclouds.com/"
+    }
+  }
+  </script>
 </head>
 
 <body>
@@ -1515,35 +1556,35 @@
         tagline: "You were never in it for glory. You were in it for the people standing behind you.",
         description: "The Legion didn't find you. You were always heading toward them. Born from the streets, forged in sacrifice, the Demon's Legion fights for the ones the other factions have already written off. Loyalty isn't a value to you — it's the only thing that's ever felt real. You don't need a hierarchy to tell you who to protect. You already know.",
         traits: [{ label: "Loyalty", value: 95 }, { label: "Courage", value: 88 }, { label: "Instinct", value: 80 }],
-        codexLink: "demons-legion.html", videoMp4: "videos/demons-legion-bandana.mp4", videoWebm: null
+        codexLink: "demons-legion.html", resultPage: "result-demons-legion", videoMp4: "videos/demons-legion-bandana.mp4", videoWebm: null
       },
       O: {
         id: 'order', name: "The Order", label: "You belong to",
         tagline: "Power unchecked is power wasted. You understood that long before anyone told you.",
         description: "Ancient as the city's oldest stones, The Order has kept watch over knowledge that lesser minds would misuse. Your mind moves slower than impulse — and that's exactly what makes you dangerous. While others react, you document. While others rush, you understand. The Order doesn't recruit the reckless. They wait for the ones who already know that patience is its own form of strength.",
         traits: [{ label: "Wisdom", value: 95 }, { label: "Discipline", value: 90 }, { label: "Restraint", value: 85 }],
-        codexLink: "the-order.html", videoMp4: "videos/the-order.mp4", videoWebm: "videos/the-order.webm"
+        codexLink: "the-order.html", resultPage: "result-the-order", videoMp4: "videos/the-order.mp4", videoWebm: "videos/the-order.webm"
       },
       C: {
         id: 'church', name: "The Church", label: "You serve",
         tagline: "Faith isn't blind. It's the clearest thing you have — and you've never doubted it.",
         description: "When the darkness closes in, most people look for somewhere to run. You look for somewhere to stand. The Church doesn't promise safety — it demands conviction. And you have it in full measure. Your faith isn't a comfort. It's a weapon, and a shield, and a reason to walk into rooms that would break anyone who wasn't absolutely certain of what they believe.",
         traits: [{ label: "Conviction", value: 95 }, { label: "Courage", value: 87 }, { label: "Purpose", value: 90 }],
-        codexLink: "the-church.html", videoMp4: "videos/the-church.mp4", videoWebm: null
+        codexLink: "the-church.html", resultPage: "result-the-church", videoMp4: "videos/the-church.mp4", videoWebm: null
       },
       M: {
         id: 'mi6', name: "MI6", label: "You operate within",
         tagline: "The loudest move is rarely the right one. You learned that before anyone had to teach you.",
         description: "Britain's covert supernatural division doesn't advertise. It doesn't need to. MI6 operates in the spaces other factions never think to look — in clearance levels, in back channels, in the quiet architecture of influence. You think before you act, plan before you commit, and know that the best outcome is usually one no one else saw happening. The Vault has been waiting for someone like you.",
         traits: [{ label: "Strategy", value: 94 }, { label: "Patience", value: 90 }, { label: "Control", value: 88 }],
-        codexLink: "mi6.html", videoMp4: "videos/mi6.mp4", videoWebm: "videos/mi6.webm"
+        codexLink: "mi6.html", resultPage: "result-mi6", videoMp4: "videos/mi6.mp4", videoWebm: "videos/mi6.webm"
       },
       R: {
         id: 'ragnorir', name: "Ragnorir", label: "You ride with",
         tagline: "You were never meant for walls and treaties. You were forged for the storm.",
         description: "Ragnorir didn't recruit you. The storm chose you. Descended from Viking blood and tempered by elemental fury, Ragnorir are not conquerors — they are a force of nature that has simply decided where it stands. You don't need alliances, don't need approval, and don't need anyone to explain what honour means. Strength is earned through trial. Glory is what you leave behind. And the legends that follow your name are only just beginning.",
         traits: [{ label: "Strength", value: 96 }, { label: "Honour", value: 91 }, { label: "Resilience", value: 89 }],
-        codexLink: "ragnorir.html", videoMp4: "videos/ragnorir.mp4", videoWebm: "videos/ragnorir.webm"
+        codexLink: "ragnorir.html", resultPage: "result-ragnorir", videoMp4: "videos/ragnorir.mp4", videoWebm: "videos/ragnorir.webm"
       }
     };
 
@@ -1900,6 +1941,7 @@
 
         <div class="result-actions" style="margin-top:2.5rem;">
           <a href="${f.codexLink}" class="btn-primary btn-codex">Read the Codex Entry →</a>
+          <button class="btn-primary btn-share-result" onclick="shareResult('${f.resultPage}', '${f.name}')">✦ Share Your Allegiance ✦</button>
           <button class="btn-primary btn-retry" onclick="retakeQuiz()">Retake Assessment</button>
         </div>
 
@@ -1924,6 +1966,36 @@
 
       // Populate shrine panel from localStorage
       shrineInit();
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // SHARE RESULT
+    // ══════════════════════════════════════════════════════════════
+    function shareResult(resultPage, factionName) {
+      const shareUrl = 'https://thesecretsofsilverclouds.com/' + resultPage;
+      const shareText = 'I joined ' + factionName + '! Take the Faction Assessment to discover where your allegiance lies.';
+
+      // Try Web Share API first (mobile)
+      if (navigator.share) {
+        navigator.share({
+          title: 'I Joined ' + factionName + ' — The Secrets of Silver Clouds',
+          text: shareText,
+          url: shareUrl
+        }).catch(() => {});
+      } else {
+        // Desktop fallback: copy to clipboard
+        navigator.clipboard.writeText(shareText + '\n' + shareUrl).then(() => {
+          const btn = document.querySelector('.btn-share-result');
+          if (btn) {
+            const orig = btn.textContent;
+            btn.textContent = '✓ Link Copied!';
+            setTimeout(() => { btn.textContent = orig; }, 2000);
+          }
+        }).catch(() => {
+          // Last resort: open in new tab
+          window.open(shareUrl, '_blank');
+        });
+      }
     }
 
     // ══════════════════════════════════════════════════════════════

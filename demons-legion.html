@@ -7,6 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demon's Legion | The Secrets of Silver Clouds</title>
     <meta name="description" content="Elite supernatural force protecting London from otherworldly threats">
+    <meta property="og:title" content="Demon's Legion | The Secrets of Silver Clouds">
+    <meta property="og:description" content="Elite supernatural force protecting London from otherworldly threats">
+    <meta property="og:image" content="https://thesecretsofsilverclouds.com/images/demons-legion.png">
+    <meta property="og:url" content="https://thesecretsofsilverclouds.com/demons-legion">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="The Secrets of Silver Clouds">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Demon's Legion | The Secrets of Silver Clouds">
+    <meta name="twitter:description" content="Elite supernatural force protecting London from otherworldly threats">
+    <meta name="twitter:image" content="https://thesecretsofsilverclouds.com/images/demons-legion.png">
     <link
         href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap"
         rel="stylesheet">
@@ -294,6 +304,22 @@
   "description": "Elite supernatural force protecting London from otherworldly threats"
 }
     </script>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Demon's Legion",
+  "description": "An elite supernatural force protecting London from otherworldly threats, born from the streets and forged in sacrifice.",
+  "url": "https://thesecretsofsilverclouds.com/demons-legion",
+  "isPartOf": {
+    "@type": "Book",
+    "name": "The Secrets of Silver Clouds",
+    "author": { "@type": "Person", "name": "Silent Silver" },
+    "genre": "Animantasy"
+  }
+}
+    </script>
 </head>
 
 <body>
@@ -340,9 +366,12 @@
         <section class="lore-section">
             <h2>Notable Members</h2>
             <ul class="members-list">
-                <li>Goaden Reeves (Former Leader)</li>
-                <li>Rose</li>
-                <li>Truth Hughes</li>
+                <li><a href="/goaden-reeves" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Goaden Reeves</a> (Former Leader)</li>
+                <li><a href="/rose" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Rose</a></li>
+                <li><a href="/truth-hughes" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Truth Hughes</a></li>
+                <li><a href="/gabriel" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Gabriel — The Blood Angel</a></li>
+                <li><a href="/dread-twins" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">The Dread Twins</a></li>
+                <li><a href="/anarchy-balthazar" style="color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent-teal);">Anarchy & Balthazar</a></li>
             </ul>
         </section>
         <section class="lore-section">
@@ -383,6 +412,7 @@
         function openLightbox(src) {
             document.getElementById('lightbox').classList.add('active');
             document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox-img').alt = src.split('/').pop().replace(/\.\w+$/, '').replace(/[-_]/g, ' ');
         }
 
         function closeLightbox() {

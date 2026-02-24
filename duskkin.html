@@ -6,6 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Duskkin | The Secrets of Silver Clouds</title>
     <meta name="description" content="Cybernetic vampires blending ancient bloodlust with modern technology">
+    <meta property="og:title" content="Duskkin | The Secrets of Silver Clouds">
+    <meta property="og:description" content="Cybernetic vampires blending ancient bloodlust with modern technology">
+    <meta property="og:image" content="https://thesecretsofsilverclouds.com/images/duskkin.png">
+    <meta property="og:url" content="https://thesecretsofsilverclouds.com/duskkin">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="The Secrets of Silver Clouds">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Duskkin | The Secrets of Silver Clouds">
+    <meta name="twitter:description" content="Cybernetic vampires blending ancient bloodlust with modern technology">
+    <meta name="twitter:image" content="https://thesecretsofsilverclouds.com/images/duskkin.png">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Lato:wght@300;400;700&amp;display=swap" rel="stylesheet">
     <style>
         :root { --primary-dark: #1a1a2e; --accent-blue: #0f4c75; --accent-teal: #3282b8; --accent-gold: #bbe1fa; --text-dark: #2c2c2c; }
@@ -185,6 +195,11 @@
                 </div>
             </div>
         </section>
+    
+        <section class="lore-section" style="text-align: center; border-top: 1px solid rgba(15, 76, 117, 0.3); padding-top: 2rem;">
+            <p style="color: #8ab4d4; font-size: 0.95rem; margin-bottom: 1rem;">Discover where your allegiance lies in the world of Silver Clouds.</p>
+            <a href="/faction-quiz" style="display: inline-block; padding: 0.8rem 2rem; background: rgba(15, 76, 117, 0.15); border: 1px solid rgba(50, 130, 184, 0.3); color: #3282b8; font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; border-radius: 6px; transition: all 0.3s ease;">Take the Faction Assessment</a>
+        </section>
     </main>
 
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
@@ -198,6 +213,7 @@
         function openLightbox(src) {
             document.getElementById('lightbox').classList.add('active');
             document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox-img').alt = src.split('/').pop().replace(/\.\w+$/, '').replace(/[-_]/g, ' ');
         }
 
         function closeLightbox() {

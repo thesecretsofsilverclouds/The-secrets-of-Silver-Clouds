@@ -46,7 +46,7 @@
       padding: 0 24px; display: flex; flex-direction: column; align-items: center; gap: 0;
     }
     #gift-panel.open #gift-body { max-height: 50vh; padding: 16px 24px 20px; overflow-y: auto; overflow-x: hidden; }
-
+    
     /* Scrollbar for the Shrine */
     #gift-body::-webkit-scrollbar { width: 6px; }
     #gift-body::-webkit-scrollbar-track { background: rgba(0,0,0,0.4); border-radius: 4px; }
