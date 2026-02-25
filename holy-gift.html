@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,35 +19,83 @@
     /* ─────────────────────────────────────────────
        DEMO PAGE STYLES  (delete when embedding)
     ───────────────────────────────────────────── */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       min-height: 200vh;
       background: radial-gradient(ellipse at top, #0e0b1f 0%, #04030a 60%);
       font-family: 'Georgia', serif;
       color: #d4c4a0;
     }
+
     .demo-content {
       max-width: 640px;
       margin: 0 auto;
       padding: 60px 30px 200px;
     }
-    .demo-content h1 { color: #e8c84a; font-size: 28px; margin-bottom: 16px; font-family: Georgia, serif; }
-    .demo-content h2 { color: #a07828; font-size: 16px; margin: 28px 0 10px; letter-spacing: 2px; text-transform: uppercase; }
-    .demo-content p  { color: #7a6a50; line-height: 1.8; margin-bottom: 10px; font-size: 15px; }
+
+    .demo-content h1 {
+      color: #e8c84a;
+      font-size: 28px;
+      margin-bottom: 16px;
+      font-family: Georgia, serif;
+    }
+
+    .demo-content h2 {
+      color: #a07828;
+      font-size: 16px;
+      margin: 28px 0 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .demo-content p {
+      color: #7a6a50;
+      line-height: 1.8;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+
     .demo-content code {
-      background: #1a1408; border: 1px solid #3a2e10;
-      padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #c8a030;
+      background: #1a1408;
+      border: 1px solid #3a2e10;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #c8a030;
     }
+
     .demo-btn {
-      display: inline-block; margin-top: 10px; margin-right: 8px;
-      padding: 10px 20px; background: #1a1408; border: 1px solid #c8960a;
-      border-radius: 6px; color: #c8960a; cursor: pointer; font-size: 13px; letter-spacing: 1px;
+      display: inline-block;
+      margin-top: 10px;
+      margin-right: 8px;
+      padding: 10px 20px;
+      background: #1a1408;
+      border: 1px solid #c8960a;
+      border-radius: 6px;
+      color: #c8960a;
+      cursor: pointer;
+      font-size: 13px;
+      letter-spacing: 1px;
     }
-    .demo-btn:hover { background: #2a2010; }
+
+    .demo-btn:hover {
+      background: #2a2010;
+    }
+
     .status-box {
-      margin-top: 20px; padding: 14px 18px;
-      background: rgba(200,150,10,0.06); border: 1px solid rgba(200,150,10,0.2);
-      border-radius: 8px; font-size: 13px; color: #a07828; line-height: 1.7;
+      margin-top: 20px;
+      padding: 14px 18px;
+      background: rgba(200, 150, 10, 0.06);
+      border: 1px solid rgba(200, 150, 10, 0.2);
+      border-radius: 8px;
+      font-size: 13px;
+      color: #a07828;
+      line-height: 1.7;
     }
 
     /* ─────────────────────────────────────────────
@@ -55,91 +104,301 @@
     ───────────────────────────────────────────── */
 
     #gift-shimmer {
-      position: fixed; inset: 0; pointer-events: none; z-index: 9000; opacity: 0;
-      background: radial-gradient(ellipse at center,rgba(255,220,80,0.18) 0%,rgba(255,180,20,0.06) 50%,transparent 70%);
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9000;
+      opacity: 0;
+      background: radial-gradient(ellipse at center, rgba(255, 220, 80, 0.18) 0%, rgba(255, 180, 20, 0.06) 50%, transparent 70%);
     }
-    #gift-shimmer.active { animation: giftShimmerFade 2.4s ease-out forwards; }
-    @keyframes giftShimmerFade { 0% { opacity: 1; } 100% { opacity: 0; } }
+
+    #gift-shimmer.active {
+      animation: giftShimmerFade 2.4s ease-out forwards;
+    }
+
+    @keyframes giftShimmerFade {
+      0% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
 
     #gift-panel {
-      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-      width: min(660px, 96vw); z-index: 9001; display: none;
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(660px, 96vw);
+      z-index: 9001;
+      display: none;
     }
-    #gift-panel.visible { display: block; }
+
+    #gift-panel.visible {
+      display: block;
+    }
+
     @keyframes giftPanelReveal {
-      from { opacity: 0; transform: translateX(-50%) translateY(40px); }
-      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
     }
-    #gift-panel.reveal { animation: giftPanelReveal 0.7s cubic-bezier(0.22,1,0.36,1) forwards; }
+
+    #gift-panel.reveal {
+      animation: giftPanelReveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
 
     #gift-header {
-      background: linear-gradient(135deg,#120e04 0%,#2e2208 50%,#120e04 100%);
-      border: 1px solid #a07010; border-bottom: none; border-radius: 14px 14px 0 0;
-      padding: 11px 22px; cursor: pointer; display: flex; align-items: center;
-      justify-content: center; gap: 12px; user-select: none; transition: background 0.25s;
+      background: linear-gradient(135deg, #120e04 0%, #2e2208 50%, #120e04 100%);
+      border: 1px solid #a07010;
+      border-bottom: none;
+      border-radius: 14px 14px 0 0;
+      padding: 11px 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      user-select: none;
+      transition: background 0.25s;
     }
-    #gift-header:hover { background: linear-gradient(135deg,#1e1808 0%,#443210 50%,#1e1808 100%); }
-    .gh-rune  { color: #c8a030; font-size: 14px; }
-    .gh-label { color: #e8c040; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; }
-    .gh-chevron { color: #a07010; font-size: 10px; transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
-    #gift-panel.open .gh-chevron { transform: rotate(180deg); }
+
+    #gift-header:hover {
+      background: linear-gradient(135deg, #1e1808 0%, #443210 50%, #1e1808 100%);
+    }
+
+    .gh-rune {
+      color: #c8a030;
+      font-size: 14px;
+    }
+
+    .gh-label {
+      color: #e8c040;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .gh-chevron {
+      color: #a07010;
+      font-size: 10px;
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #gift-panel.open .gh-chevron {
+      transform: rotate(180deg);
+    }
 
     #gift-body {
-      background: linear-gradient(180deg,#0e0c06 0%,#161008 100%);
-      border: 1px solid #a07010; border-top: none; border-radius: 0 0 4px 4px;
-      overflow: hidden; max-height: 0;
-      transition: max-height 0.42s cubic-bezier(0.4,0,0.2,1), padding 0.42s ease;
-      padding: 0 24px; display: flex; flex-direction: column; align-items: center; gap: 0;
+      background: linear-gradient(180deg, #0e0c06 0%, #161008 100%);
+      border: 1px solid #a07010;
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.42s cubic-bezier(0.4, 0, 0.2, 1), padding 0.42s ease;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
     }
-    #gift-panel.open #gift-body { max-height: 420px; padding: 16px 24px 20px; }
+
+    #gift-panel.open #gift-body {
+      max-height: 420px;
+      padding: 16px 24px 20px;
+    }
 
     #gc-faction {
-      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-      color: #7a6820; text-align: center; width: 100%; margin-bottom: 6px; transition: color 0.5s;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #7a6820;
+      text-align: center;
+      width: 100%;
+      margin-bottom: 6px;
+      transition: color 0.5s;
     }
 
-    #gift-row { display: flex; align-items: center; justify-content: center; width: 100%; gap: 0; }
+    #gift-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      gap: 0;
+    }
 
-    .gc { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-    .gc-tag  { font-size: 10px; letter-spacing: 3px; color: #8a6820; text-transform: uppercase; }
-    .gc-name { font-size: 13px; color: #e0d0a8; text-align: center; max-width: 180px; line-height: 1.4; }
-    .gc-name-wrap { display: flex; align-items: center; justify-content: center; gap: 5px; max-width: 190px; }
-    .gc-rename-btn { background: none; border: none; color: rgba(138,104,32,0.5); cursor: pointer; font-size: 11px; padding: 1px 3px; line-height: 1; transition: color 0.2s; flex-shrink: 0; }
-    .gc-rename-btn:hover { color: #e0d0a8; }
-    .gc-rename-form { display: none; align-items: center; gap: 5px; margin-top: 3px; }
-    .gc-rename-form input { background: rgba(255,255,255,0.05); border: 1px solid rgba(138,104,32,0.4); color: #e0d0a8; padding: 3px 8px; border-radius: 3px; font-family: inherit; font-size: 12px; width: 130px; text-align: center; }
-    .gc-rename-form input:focus { outline: none; border-color: rgba(224,208,168,0.6); }
-    .gc-rename-form button { background: rgba(138,104,32,0.2); border: 1px solid rgba(138,104,32,0.4); color: #e0d0a8; cursor: pointer; border-radius: 3px; padding: 3px 7px; font-size: 11px; }
-    .gc-rename-form button:hover { background: rgba(138,104,32,0.4); }
-    .gc-lore { font-size: 10.5px; color: #6a5a3a; text-align: center; max-width: 190px; line-height: 1.55; font-style: italic; }
+    .gc {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
 
-    .sprite-box { position: relative; flex-shrink: 0; overflow: hidden; }
-    .sprite-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .gc-tag {
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: #8a6820;
+      text-transform: uppercase;
+    }
+
+    .gc-name {
+      font-size: 13px;
+      color: #e0d0a8;
+      text-align: center;
+      max-width: 180px;
+      line-height: 1.4;
+    }
+
+    .gc-name-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      max-width: 190px;
+    }
+
+    .gc-rename-btn {
+      background: none;
+      border: none;
+      color: rgba(138, 104, 32, 0.5);
+      cursor: pointer;
+      font-size: 11px;
+      padding: 1px 3px;
+      line-height: 1;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .gc-rename-btn:hover {
+      color: #e0d0a8;
+    }
+
+    .gc-rename-form {
+      display: none;
+      align-items: center;
+      gap: 5px;
+      margin-top: 3px;
+    }
+
+    .gc-rename-form input {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(138, 104, 32, 0.4);
+      color: #e0d0a8;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-family: inherit;
+      font-size: 12px;
+      width: 130px;
+      text-align: center;
+    }
+
+    .gc-rename-form input:focus {
+      outline: none;
+      border-color: rgba(224, 208, 168, 0.6);
+    }
+
+    .gc-rename-form button {
+      background: rgba(138, 104, 32, 0.2);
+      border: 1px solid rgba(138, 104, 32, 0.4);
+      color: #e0d0a8;
+      cursor: pointer;
+      border-radius: 3px;
+      padding: 3px 7px;
+      font-size: 11px;
+    }
+
+    .gc-rename-form button:hover {
+      background: rgba(138, 104, 32, 0.4);
+    }
+
+    .gc-lore {
+      font-size: 10.5px;
+      color: #6a5a3a;
+      text-align: center;
+      max-width: 190px;
+      line-height: 1.55;
+      font-style: italic;
+    }
+
+    .sprite-box {
+      position: relative;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .sprite-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
     .sprite-box.creature {
-      width: 148px; height: 148px; border-radius: 50%;
-      border: 2px solid rgba(200,160,20,0.55);
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.7), 0 0 14px rgba(200,160,20,0.2);
+      width: 148px;
+      height: 148px;
+      border-radius: 50%;
+      border: 2px solid rgba(200, 160, 20, 0.55);
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7), 0 0 14px rgba(200, 160, 20, 0.2);
       animation: giftBob 3.2s ease-in-out infinite;
     }
-    .sprite-box.weapon { width: 148px; height: 148px; border-radius: 14px; border: 1px solid rgba(200,160,20,0.3); }
-    .sprite-box.weapon img { animation: giftGlow 3s ease-in-out infinite; }
+
+    .sprite-box.weapon {
+      width: 148px;
+      height: 148px;
+      border-radius: 14px;
+      border: 1px solid rgba(200, 160, 20, 0.3);
+    }
+
+    .sprite-box.weapon img {
+      animation: giftGlow 3s ease-in-out infinite;
+    }
 
     @keyframes giftBob {
-      0%,100% { transform: translateY(0px) scale(1); }
-      50%      { transform: translateY(-7px) scale(1.02); }
+
+      0%,
+      100% {
+        transform: translateY(0px) scale(1);
+      }
+
+      50% {
+        transform: translateY(-7px) scale(1.02);
+      }
     }
+
     @keyframes giftGlow {
-      0%,100% { filter: brightness(1) drop-shadow(0 0 4px rgba(220,180,40,0.3)); }
-      50%      { filter: brightness(1.08) drop-shadow(0 0 14px rgba(220,180,40,0.8)); }
+
+      0%,
+      100% {
+        filter: brightness(1) drop-shadow(0 0 4px rgba(220, 180, 40, 0.3));
+      }
+
+      50% {
+        filter: brightness(1.08) drop-shadow(0 0 14px rgba(220, 180, 40, 0.8));
+      }
     }
 
     .gift-sep {
-      width: 1px; height: 180px; margin: 0 10px; flex-shrink: 0;
-      background: linear-gradient(to bottom, transparent 0%, rgba(180,130,20,0.5) 30%, rgba(180,130,20,0.5) 70%, transparent 100%);
+      width: 1px;
+      height: 180px;
+      margin: 0 10px;
+      flex-shrink: 0;
+      background: linear-gradient(to bottom, transparent 0%, rgba(180, 130, 20, 0.5) 30%, rgba(180, 130, 20, 0.5) 70%, transparent 100%);
     }
+
     /* ─── END of embeddable CSS ─── */
   </style>
 </head>
+
 <body>
 
   <div class="demo-content">
@@ -224,192 +483,195 @@
        e.g. '/assets/gifts/' or '../images/'
   ══════════════════════════════════════════════ -->
   <script>
-  (function () {
+    (function () {
 
-    const IMAGE_BASE = '';  // e.g. '/assets/gifts/'
+      const IMAGE_BASE = '';  // e.g. '/assets/gifts/'
 
-    const FACTIONS_META = {
-      D: { name: "Demon's Legion", color: '#e74c3c', rune: '⚔' },
-      O: { name: 'The Order',      color: '#9b59b6', rune: '📜' },
-      C: { name: 'The Church',     color: '#f1c40f', rune: '✦'  },
-      M: { name: 'MI6',            color: '#2ecc71', rune: '◈'  }
-    };
+      const FACTIONS_META = {
+        D: { name: "Demon's Legion", color: '#e74c3c', rune: '⚔' },
+        O: { name: 'The Order', color: '#9b59b6', rune: '📜' },
+        C: { name: 'The Church', color: '#f1c40f', rune: '✦' },
+        M: { name: 'MI6', color: '#2ecc71', rune: '◈' }
+      };
 
-    const panel   = document.getElementById('gift-panel');
-    const shimmer = document.getElementById('gift-shimmer');
+      const panel = document.getElementById('gift-panel');
+      const shimmer = document.getElementById('gift-shimmer');
 
-    function setImage(imgEl, filename) {
-      const base = IMAGE_BASE ? IMAGE_BASE.replace(/\/$/, '') + '/' : '';
-      imgEl.src = base + filename;
-    }
-
-    function render(gift) {
-      const creatureImg = document.getElementById('gc-creature');
-      const weaponImg   = document.getElementById('gc-weapon');
-      if (!creatureImg) return;
-      setImage(creatureImg, gift.creature.file);
-      creatureImg.alt = gift.creature.name;
-      setImage(weaponImg, gift.weapon.file);
-      weaponImg.alt = gift.weapon.name;
-      document.getElementById('gc-creature-name').textContent = gift.creature.name;
-      document.getElementById('gc-weapon-name').textContent   = gift.weapon.name;
-      document.getElementById('gc-creature-lore').textContent = gift.creature.lore;
-      document.getElementById('gc-weapon-lore').textContent   = gift.weapon.lore;
-      const fEl = document.getElementById('gc-faction');
-      if (gift.faction && FACTIONS_META[gift.faction]) {
-        const fm = FACTIONS_META[gift.faction];
-        fEl.textContent = fm.rune + '  ' + fm.name + '  ' + fm.rune;
-        fEl.style.color = fm.color;
-      } else {
-        fEl.textContent = '';
-      }
-      initGuardianRename(gift);
-    }
-
-    function initGuardianRename(gift) {
-      const btn     = document.getElementById('gc-rename-btn');
-      const form    = document.getElementById('gc-rename-form');
-      const input   = document.getElementById('gc-rename-input');
-      const confirm = document.getElementById('gc-rename-confirm');
-      const nameEl  = document.getElementById('gc-creature-name');
-      if (!btn) return;
-
-      if (gift.guardianRenamed) {
-        btn.style.display = 'none';
-        return;
+      function setImage(imgEl, filename) {
+        const base = IMAGE_BASE ? IMAGE_BASE.replace(/\/$/, '') + '/' : '';
+        // Prefer WebP (backward compat: old localStorage may store .png names)
+        const webpName = filename.replace(/\.png$/i, '.webp');
+        imgEl.src = base + webpName;
       }
 
-      // Guard: only attach listeners once per DOM lifecycle
-      if (btn.dataset.renameInit) return;
-      btn.dataset.renameInit = '1';
+      function render(gift) {
+        const creatureImg = document.getElementById('gc-creature');
+        const weaponImg = document.getElementById('gc-weapon');
+        if (!creatureImg) return;
+        setImage(creatureImg, gift.creature.file);
+        creatureImg.alt = gift.creature.name;
+        setImage(weaponImg, gift.weapon.file);
+        weaponImg.alt = gift.weapon.name;
+        document.getElementById('gc-creature-name').textContent = gift.creature.name;
+        document.getElementById('gc-weapon-name').textContent = gift.weapon.name;
+        document.getElementById('gc-creature-lore').textContent = gift.creature.lore;
+        document.getElementById('gc-weapon-lore').textContent = gift.weapon.lore;
+        const fEl = document.getElementById('gc-faction');
+        if (gift.faction && FACTIONS_META[gift.faction]) {
+          const fm = FACTIONS_META[gift.faction];
+          fEl.textContent = fm.rune + '  ' + fm.name + '  ' + fm.rune;
+          fEl.style.color = fm.color;
+        } else {
+          fEl.textContent = '';
+        }
+        initGuardianRename(gift);
+      }
 
-      btn.addEventListener('click', () => {
-        input.value = nameEl.textContent;
-        form.style.display = 'flex';
-        btn.style.display  = 'none';
-        input.focus();
-        input.select();
-      });
+      function initGuardianRename(gift) {
+        const btn = document.getElementById('gc-rename-btn');
+        const form = document.getElementById('gc-rename-form');
+        const input = document.getElementById('gc-rename-input');
+        const confirm = document.getElementById('gc-rename-confirm');
+        const nameEl = document.getElementById('gc-creature-name');
+        if (!btn) return;
 
-      function commitRename() {
-        const newName = input.value.trim();
-        if (!newName) return;
-        nameEl.textContent = newName;
-        form.style.display = 'none';
+        if (gift.guardianRenamed) {
+          btn.style.display = 'none';
+          return;
+        }
+
+        // Guard: only attach listeners once per DOM lifecycle
+        if (btn.dataset.renameInit) return;
+        btn.dataset.renameInit = '1';
+
+        btn.addEventListener('click', () => {
+          input.value = nameEl.textContent;
+          form.style.display = 'flex';
+          btn.style.display = 'none';
+          input.focus();
+          input.select();
+        });
+
+        function commitRename() {
+          const newName = input.value.trim();
+          if (!newName) return;
+          nameEl.textContent = newName;
+          form.style.display = 'none';
+          const stored = localStorage.getItem('fateGift');
+          if (stored) {
+            const saved = JSON.parse(stored);
+            saved.creature.name = newName;
+            saved.guardianRenamed = true;
+            localStorage.setItem('fateGift', JSON.stringify(saved));
+          }
+        }
+
+        confirm.addEventListener('click', commitRename);
+        input.addEventListener('keydown', e => {
+          if (e.key === 'Enter') commitRename();
+          if (e.key === 'Escape') { form.style.display = 'none'; btn.style.display = 'inline-block'; }
+        });
+      }
+
+      function showPanel(animate) {
+        panel.classList.add('visible');
+        if (animate) {
+          panel.classList.add('reveal');
+          panel.addEventListener('animationend', () => panel.classList.remove('reveal'), { once: true });
+          shimmer.classList.add('active');
+          shimmer.addEventListener('animationend', () => shimmer.classList.remove('active'), { once: true });
+        }
+        setTimeout(() => panel.classList.add('open'), animate ? 500 : 100);
+      }
+
+      // ── PUBLIC API ────────────────────────────────
+      window.giftToggle = () => panel.classList.toggle('open');
+
+      // ── INIT ──────────────────────────────────────
+      // Reads fateGift from localStorage (set by faction-quiz.html)
+      function init() {
         const stored = localStorage.getItem('fateGift');
+        const statusBox = document.getElementById('status-box');
+
         if (stored) {
-          const saved = JSON.parse(stored);
-          saved.creature.name   = newName;
-          saved.guardianRenamed = true;
-          localStorage.setItem('fateGift', JSON.stringify(saved));
+          const gift = JSON.parse(stored);
+          render(gift);
+          showPanel(false);
+          if (statusBox) {
+            const fm = FACTIONS_META[gift.faction] || {};
+            statusBox.innerHTML =
+              '<strong style="color:#e8c040">Gift found in localStorage.</strong><br>' +
+              'Faction: ' + (fm.name || gift.faction) + ' &nbsp;|&nbsp; ' +
+              'Guardian: ' + gift.creature.name + ' &nbsp;|&nbsp; ' +
+              'Holy Item: ' + gift.weapon.name;
+          }
+        } else {
+          if (statusBox) {
+            statusBox.innerHTML =
+              'No gift found. Complete the <a href="faction-quiz" style="color:#c8a030">Faction Assessment</a> first, ' +
+              'or use a test button below to simulate a result.';
+          }
         }
       }
 
-      confirm.addEventListener('click', commitRename);
-      input.addEventListener('keydown', e => {
-        if (e.key === 'Enter')  commitRename();
-        if (e.key === 'Escape') { form.style.display = 'none'; btn.style.display = 'inline-block'; }
-      });
-    }
+      init();
 
-    function showPanel(animate) {
-      panel.classList.add('visible');
-      if (animate) {
-        panel.classList.add('reveal');
-        panel.addEventListener('animationend', () => panel.classList.remove('reveal'), { once: true });
-        shimmer.classList.add('active');
-        shimmer.addEventListener('animationend', () => shimmer.classList.remove('active'), { once: true });
-      }
-      setTimeout(() => panel.classList.add('open'), animate ? 500 : 100);
-    }
-
-    // ── PUBLIC API ────────────────────────────────
-    window.giftToggle = () => panel.classList.toggle('open');
-
-    // ── INIT ──────────────────────────────────────
-    // Reads fateGift from localStorage (set by faction-quiz.html)
-    function init() {
-      const stored = localStorage.getItem('fateGift');
-      const statusBox = document.getElementById('status-box');
-
-      if (stored) {
-        const gift = JSON.parse(stored);
-        render(gift);
-        showPanel(false);
-        if (statusBox) {
-          const fm = FACTIONS_META[gift.faction] || {};
-          statusBox.innerHTML =
-            '<strong style="color:#e8c040">Gift found in localStorage.</strong><br>' +
-            'Faction: ' + (fm.name || gift.faction) + ' &nbsp;|&nbsp; ' +
-            'Guardian: ' + gift.creature.name + ' &nbsp;|&nbsp; ' +
-            'Holy Item: ' + gift.weapon.name;
-        }
-      } else {
-        if (statusBox) {
-          statusBox.innerHTML =
-            'No gift found. Complete the <a href="faction-quiz" style="color:#c8a030">Faction Assessment</a> first, ' +
-            'or use a test button below to simulate a result.';
-        }
-      }
-    }
-
-    init();
-
-  })();
+    })();
   </script>
 
   <script>
-  // ── DEMO-ONLY helpers (remove when embedding) ──
-  // These let you test the shrine without completing the quiz
+    // ── DEMO-ONLY helpers (remove when embedding) ──
+    // These let you test the shrine without completing the quiz
 
-  // Sample data for each profile combo
-  const SAMPLE_DATA = {
-    'D_BADASS_CREEPY': {
-      faction: 'D', creatureProfiles: ['BADASS'], weaponProfiles: ['CREEPY'],
-      creature: { name: 'Pyrethis, the Eternal Pyre', file: 'gift-assets/Ethereal_Volcanic_Phoenix_Rise.png', lore: 'Every time it dies, it rises hotter. Every time it rises, the sky burns a little longer. It has died four thousand times. The sky has not fully recovered.' },
-      weapon:   { name: 'Soulrender', file: 'gift-assets/Celestial_Reaper_Scythe_Necropolis.png', lore: 'It does not reap grain. It reaps what remains after death — the memories, the love, the regrets. Those taken by it leave nothing behind. Not even grief.' }
-    },
-    'O_HOLY_BADASS': {
-      faction: 'O', creatureProfiles: ['HOLY'], weaponProfiles: ['BADASS'],
-      creature: { name: 'The Radiant Convergence', file: 'gift-assets/Radiant_Convergence.png', lore: 'It has no body — it is entirely wings, the pure act of arriving. Everything it passes through undergoes an irreversible transformation. It does not stay long enough to witness the result.' },
-      weapon:   { name: 'The Observatory', file: 'gift-assets/Cosmic_Arcane_Staff.png', lore: 'Its orb contains not a galaxy but the memory of one — a universe that ended. Those who stare into it begin to understand why.' }
-    },
-    'C_CUTE_CUTE': {
-      faction: 'C', creatureProfiles: ['CUTE'], weaponProfiles: ['CUTE'],
-      creature: { name: 'Mochi, the Ancient', file: 'gift-assets/Cute_Pastel_Dragon_Garden.png', lore: 'It seems harmless, sitting among the flowers. But it is older than the garden, older than the soil beneath it. It has simply chosen to wait.' },
-      weapon:   { name: 'Lumi, the Smiling Blade', file: 'gift-assets/Celestial_Kawaii_Rainbow_Sword_Garden.png', lore: 'It has a face because it wanted one. It smiles because it cannot feel fear the way living things do. The last warrior who wielded it won every battle and never slept again.' }
-    },
-    'M_CREEPY_CREEPY': {
-      faction: 'M', creatureProfiles: ['CREEPY'], weaponProfiles: ['CREEPY'],
-      creature: { name: "Xal'verath, the Watcher", file: 'gift-assets/Eldritch_Void_Entity_Realm.png', lore: 'It does not hunt. It watches with its many eyes until the watched can no longer sleep, eat, or think of anything but the void staring back.' },
-      weapon:   { name: 'The All-Seeing Root', file: 'gift-assets/Ocular_Necromantic_Staff_Bio_Horror.png', lore: 'The eye is still alive. It belonged to a necromancer who wanted to see death from the inside. The eye saw. The rest of the necromancer is still screaming somewhere in the wood.' }
+    // Sample data for each profile combo
+    const SAMPLE_DATA = {
+      'D_BADASS_CREEPY': {
+        faction: 'D', creatureProfiles: ['BADASS'], weaponProfiles: ['CREEPY'],
+        creature: { name: 'Pyrethis, the Eternal Pyre', file: 'gift-assets/Ethereal_Volcanic_Phoenix_Rise.webp', lore: 'Every time it dies, it rises hotter. Every time it rises, the sky burns a little longer. It has died four thousand times. The sky has not fully recovered.' },
+        weapon: { name: 'Soulrender', file: 'gift-assets/Celestial_Reaper_Scythe_Necropolis.webp', lore: 'It does not reap grain. It reaps what remains after death — the memories, the love, the regrets. Those taken by it leave nothing behind. Not even grief.' }
+      },
+      'O_HOLY_BADASS': {
+        faction: 'O', creatureProfiles: ['HOLY'], weaponProfiles: ['BADASS'],
+        creature: { name: 'The Radiant Convergence', file: 'gift-assets/Radiant_Convergence.webp', lore: 'It has no body — it is entirely wings, the pure act of arriving. Everything it passes through undergoes an irreversible transformation. It does not stay long enough to witness the result.' },
+        weapon: { name: 'The Observatory', file: 'gift-assets/Cosmic_Arcane_Staff.webp', lore: 'Its orb contains not a galaxy but the memory of one — a universe that ended. Those who stare into it begin to understand why.' }
+      },
+      'C_CUTE_CUTE': {
+        faction: 'C', creatureProfiles: ['CUTE'], weaponProfiles: ['CUTE'],
+        creature: { name: 'Mochi, the Ancient', file: 'gift-assets/Cute_Pastel_Dragon_Garden.webp', lore: 'It seems harmless, sitting among the flowers. But it is older than the garden, older than the soil beneath it. It has simply chosen to wait.' },
+        weapon: { name: 'Lumi, the Smiling Blade', file: 'gift-assets/Celestial_Kawaii_Rainbow_Sword_Garden.webp', lore: 'It has a face because it wanted one. It smiles because it cannot feel fear the way living things do. The last warrior who wielded it won every battle and never slept again.' }
+      },
+      'M_CREEPY_CREEPY': {
+        faction: 'M', creatureProfiles: ['CREEPY'], weaponProfiles: ['CREEPY'],
+        creature: { name: "Xal'verath, the Watcher", file: 'gift-assets/Eldritch_Void_Entity_Realm.webp', lore: 'It does not hunt. It watches with its many eyes until the watched can no longer sleep, eat, or think of anything but the void staring back.' },
+        weapon: { name: 'The All-Seeing Root', file: 'gift-assets/Ocular_Necromantic_Staff_Bio_Horror.webp', lore: 'The eye is still alive. It belonged to a necromancer who wanted to see death from the inside. The eye saw. The rest of the necromancer is still screaming somewhere in the wood.' }
+      }
+    };
+
+    function shrineTest(faction, cProfile, wProfile) {
+      const key = faction + '_' + cProfile + '_' + wProfile;
+      const data = SAMPLE_DATA[key];
+      if (!data) { alert('No sample data for that combo.'); return; }
+      localStorage.setItem('fateGift', JSON.stringify(data));
+      location.reload();
     }
-  };
 
-  function shrineTest(faction, cProfile, wProfile) {
-    const key = faction + '_' + cProfile + '_' + wProfile;
-    const data = SAMPLE_DATA[key];
-    if (!data) { alert('No sample data for that combo.'); return; }
-    localStorage.setItem('fateGift', JSON.stringify(data));
-    location.reload();
-  }
-
-  function shrineForceOpen() {
-    const panel = document.getElementById('gift-panel');
-    if (panel.classList.contains('visible')) {
-      panel.classList.add('open');
-    } else {
-      alert('No gift loaded. Use a test button first.');
+    function shrineForceOpen() {
+      const panel = document.getElementById('gift-panel');
+      if (panel.classList.contains('visible')) {
+        panel.classList.add('open');
+      } else {
+        alert('No gift loaded. Use a test button first.');
+      }
     }
-  }
 
-  function shrineReset() {
-    localStorage.removeItem('fateGift');
-    localStorage.removeItem('holyGiftFaction');
-    localStorage.removeItem('holyGift');
-    location.reload();
-  }
+    function shrineReset() {
+      localStorage.removeItem('fateGift');
+      localStorage.removeItem('holyGiftFaction');
+      localStorage.removeItem('holyGift');
+      location.reload();
+    }
   </script>
 
 </body>
+
 </html>

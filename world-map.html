@@ -400,6 +400,60 @@
             display: none !important;
         }
 
+        /* Rotate-your-phone nudge (iOS only) */
+        #rotate-nudge {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(6px);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+            color: var(--accent-gold);
+            font-family: 'Cinzel', serif;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        #rotate-nudge.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .nudge-phone {
+            font-size: 4rem;
+            animation: nudgeRotate 1.5s ease-in-out infinite;
+        }
+
+        @keyframes nudgeRotate {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            50% {
+                transform: rotate(90deg);
+            }
+        }
+
+        .nudge-text {
+            font-size: 1rem;
+            letter-spacing: 2px;
+            max-width: 260px;
+            line-height: 1.6;
+        }
+
+        .nudge-dismiss {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 10px;
+        }
+
         /* Mobile Landscape: Revert panel to desktop style (side panel) */
         /* Mobile Landscape: Revert panel to desktop style (side panel with vertical scroll) */
         @media (max-width: 1024px) and (orientation: landscape) {
@@ -533,6 +587,13 @@
     <!-- Fullscreen/Landscape Toggle -->
     <button id="fullscreen-btn" title="Enter Fullscreen Landscape">⛶</button>
 
+    <!-- Rotate Nudge (iOS) -->
+    <div id="rotate-nudge">
+        <div class="nudge-phone">📱</div>
+        <div class="nudge-text">Rotate your phone for the best map experience</div>
+        <div class="nudge-dismiss">tap anywhere to dismiss</div>
+    </div>
+
     <!-- Logic (Standard Script, No Module) -->
     <script>
         // Use Global Variables
@@ -553,7 +614,7 @@
                 color: 0x3282b8,
                 video: 'videos/map-icon-mi6hq.mp4',
                 icon: 'images/map-icon-mi6hq.png',
-                codexUrl: 'mi6.html'
+                codexUrl: 'mi6'
             },
             {
                 id: 'sanctuary',
@@ -567,7 +628,7 @@
                 color: 0xffd700,
                 video: 'videos/map-icon-sanctuary-in-the-sky.mp4',
                 icon: 'images/map-icon-sanctuary-in-the-sky.png',
-                codexUrl: 'sanctuary-in-the-sky.html'
+                codexUrl: 'sanctuary-in-the-sky'
             },
             {
                 id: 'bigben',
@@ -581,7 +642,7 @@
                 color: 0x708090, // SlateGray for visibility
                 video: 'videos/map-icon-new-big-ben.mp4',
                 icon: 'images/map-icon-new-big-ben.png',
-                codexUrl: 'new-big-ben.html'
+                codexUrl: 'new-big-ben'
             },
             {
                 id: 'streamliner',
@@ -595,7 +656,7 @@
                 color: 0x00ffff,
                 video: 'videos/map-icon-streamliner.mp4',
                 icon: 'images/map-icon-streamliner.png',
-                codexUrl: 'streamliner.html'
+                codexUrl: 'streamliner'
             },
             {
                 id: 'ragnorir',
@@ -609,7 +670,7 @@
                 color: 0x4a90d9,
                 video: 'videos/map-icon-ragnorir.mp4',
                 icon: 'images/map-icon-ragnorir.png',
-                codexUrl: 'ragnorir.html'
+                codexUrl: 'ragnorir'
             },
             {
                 id: 'alchemical',
@@ -623,7 +684,7 @@
                 color: 0x888888,
                 video: 'videos/map-icon-alchemical-society -ruins.mp4',
                 icon: 'images/map-icon-alchemical-society -ruins.png',
-                codexUrl: 'alchemical-society.html'
+                codexUrl: 'alchemical-society'
             },
             {
                 id: 'urbanjungle',
@@ -636,7 +697,7 @@
                 color: 0x9b59b6,
                 video: 'videos/map-icon-urban-jungle.mp4',
                 icon: 'images/map-icon-urban-jungle.png',
-                codexUrl: 'urban-jungle.html'
+                codexUrl: 'urban-jungle'
             },
             {
                 id: 'infinity',
@@ -649,7 +710,7 @@
                 color: 0x708090, // SlateGray for visibility
                 video: 'videos/map-icon-infinitys-Quill.mp4',
                 icon: 'images/map-icon-infinitys-Quill.png',
-                codexUrl: 'infinitys-quill.html'
+                codexUrl: 'infinitys-quill'
             },
             {
                 id: 'wooburn',
@@ -662,7 +723,7 @@
                 color: 0x2ecc71,
                 video: 'videos/map-icon-wooburn-forest.mp4',
                 icon: 'images/map-icon-wooburn-forest.png',
-                codexUrl: 'wooburn-forest.html'
+                codexUrl: 'wooburn-forest'
             },
             {
                 id: 'onari',
@@ -675,7 +736,7 @@
                 color: 0xffaa00,
                 video: 'videos/map-icon-onari-village.mp4',
                 icon: 'images/map-icon-onari-village.png',
-                codexUrl: 'onari.html'
+                codexUrl: 'onari'
             },
             {
                 id: 'ironglyph1',
@@ -687,7 +748,7 @@
                 video: 'videos/map-icon-Iron-glyph.mp4',
                 icon: 'images/map-icon-Iron-glyph.png',
                 spriteScale: 0.13,
-                codexUrl: 'iron-glyph.html'
+                codexUrl: 'iron-glyph'
             },
             {
                 id: 'ironglyph2',
@@ -699,7 +760,7 @@
                 video: 'videos/map-icon-Iron-glyph.mp4',
                 icon: 'images/map-icon-Iron-glyph.png',
                 spriteScale: 0.13,
-                codexUrl: 'iron-glyph.html'
+                codexUrl: 'iron-glyph'
             },
             {
                 id: 'enchantedink',
@@ -710,7 +771,7 @@
                 color: 0x6a0dad, // Deep Purple
                 video: 'videos/map-icon-enchanted-Ink.mp4',
                 icon: 'images/map-icon-enchanted-Ink.png',
-                codexUrl: 'enchanted-ink.html'
+                codexUrl: 'enchanted-ink'
             },
             {
                 id: 'demonportal',
@@ -721,7 +782,7 @@
                 color: 0xff2200, // Demon Red
                 video: 'videos/map-icon-demon-realm-portal.mp4',
                 icon: 'images/map-icon-demon-realm-portal.png',
-                codexUrl: 'demon-realm.html'
+                codexUrl: 'demon-realm'
             },
             {
                 id: 'fairyportal',
@@ -732,7 +793,7 @@
                 color: 0x00ff88, // Fairy Green
                 video: 'videos/map-icon-fairy-realm-portal.mp4',
                 icon: 'images/map-icon-fairy-realm-portal.png',
-                codexUrl: 'fairy-realm.html'
+                codexUrl: 'fairy-realm'
             },
             {
                 id: 'maxprison',
@@ -743,7 +804,7 @@
                 color: 0x555555, // Dark Gray
                 video: 'videos/map-icon-max-prison.mp4',
                 icon: 'images/map-icon-max-prison.png',
-                codexUrl: 'max-prison.html'
+                codexUrl: 'max-prison'
             }
         ];
 
@@ -1129,6 +1190,19 @@
         fsBtn.addEventListener('click', toggleFullscreen);
 
         async function toggleFullscreen() {
+            // iOS doesn't support Fullscreen API — show rotate nudge instead
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            if (isIOS) {
+                const nudge = document.getElementById('rotate-nudge');
+                nudge.classList.add('show');
+                // Force reflow for opacity transition
+                requestAnimationFrame(() => nudge.style.opacity = '1');
+                nudge.addEventListener('click', () => {
+                    nudge.style.opacity = '0';
+                    setTimeout(() => nudge.classList.remove('show'), 400);
+                }, { once: true });
+                return;
+            }
             try {
                 if (!document.fullscreenElement) {
                     await document.documentElement.requestFullscreen();
@@ -1136,7 +1210,7 @@
                         try {
                             await screen.orientation.lock('landscape');
                         } catch (err) {
-                            console.log('Orientation lock failed (likely iOS or unsupported):', err);
+                            console.log('Orientation lock failed:', err);
                         }
                     }
                     fsBtn.textContent = '✕'; // Exit icon
