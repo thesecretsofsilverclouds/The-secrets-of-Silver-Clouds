@@ -1137,7 +1137,7 @@
       margin: 28px auto 0;
     }
 
-    @media (max-width: 960px) {
+    @media (max-width: 960px) and (orientation: portrait) {
       .experience {
         min-height: var(--experience-height);
       }
@@ -1183,7 +1183,7 @@
       }
     }
 
-    @media (max-width: 620px) {
+    @media (max-width: 620px) and (orientation: portrait) {
       .reader-stage {
         min-height: 0;
         padding: 12px 10px 14px;
@@ -1292,6 +1292,143 @@
       }
     }
 
+    /* Landscape phones: keep the desktop-style side-by-side layout, tightened for short screens */
+    @media (max-height: 520px) and (orientation: landscape) {
+      .reader-stage {
+        min-height: 0;
+        padding: 8px 12px 10px;
+        gap: 8px;
+      }
+
+      .reader-topbar {
+        min-height: 0;
+      }
+
+      .brand span,
+      .site-link {
+        display: none;
+      }
+
+      .sound-toggle,
+      .mode-button {
+        min-height: 30px;
+        min-width: 0;
+        padding: 4px 9px;
+        font-size: 0.78rem;
+      }
+
+      .reader-grid {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+        gap: 10px;
+      }
+
+      .prose-scroll {
+        padding: 14px 18px;
+      }
+
+      .chapter-crest {
+        margin: 4px 0 0;
+      }
+
+      .chapter-crest img {
+        width: 38px;
+      }
+
+      .reader-title {
+        margin: 6px 0 5px;
+        font-size: clamp(1.25rem, 3.4vw, 1.8rem);
+      }
+
+      .subtitle {
+        margin-bottom: 8px;
+        font-size: 0.86rem;
+      }
+
+      .copy {
+        font-size: 0.86rem;
+      }
+
+      .copy p:first-child::first-letter {
+        font-size: 2.6rem;
+      }
+
+      .cinema-title .lintel-mark {
+        width: 36px;
+      }
+
+      .cinema-title strong {
+        font-size: clamp(1.05rem, 3vw, 1.5rem);
+      }
+
+      .cinema-copy {
+        min-height: min(38%, 130px);
+      }
+
+      .cinema-card {
+        width: min(30rem, 64%);
+        padding: 8px 12px;
+        font-size: 0.85rem;
+      }
+
+      .cinema-img {
+        height: min(var(--h, 80%), calc(100% - 38px));
+      }
+
+      .scene-button {
+        width: 32px;
+        height: 32px;
+      }
+
+      .panel-tag {
+        font-size: 0.6rem;
+        padding: 3px 6px;
+      }
+    }
+
+    .rotate-hint {
+      display: none;
+    }
+
+    @media (max-width: 620px) and (orientation: portrait) {
+      .cinema-mode .rotate-hint {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        position: absolute;
+        left: 50%;
+        top: 38%;
+        z-index: 11;
+        transform: translate(-50%, -50%);
+        padding: 8px 14px;
+        border: 1px solid rgba(220, 174, 99, 0.4);
+        border-radius: 999px;
+        background: rgba(2, 3, 5, 0.72);
+        color: rgba(255, 244, 220, 0.9);
+        font-size: 0.8rem;
+        pointer-events: none;
+        animation: rotate-hint-fade 7s ease forwards;
+      }
+    }
+
+    @keyframes rotate-hint-fade {
+      0% {
+        opacity: 0;
+      }
+
+      12% {
+        opacity: 1;
+      }
+
+      78% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *,
       *::before,
@@ -1348,6 +1485,7 @@
               <strong id="cinemaTitle">The Hidden Road Wakes</strong>
             </div>
             <div class="cinema-copy" id="cinemaCopy"></div>
+            <div class="rotate-hint" aria-hidden="true">&#10227; Rotate for widescreen</div>
           </div>
           <img class="turn-sprite" src="Webtoon shots and character canon/roadsprite single.png" alt="" aria-hidden="true">
         </aside>
@@ -1912,6 +2050,7 @@
     const pageChip = document.getElementById("pageChip");
     const chapterKicker = document.getElementById("chapterKicker");
     const proseScroll = document.querySelector(".prose-scroll");
+    const visualLeaf = document.querySelector(".visual-leaf");
     const pageFoot = document.getElementById("pageFoot");
     const pageCount = document.getElementById("pageCount");
     const cinemaKicker = document.getElementById("cinemaKicker");
@@ -2058,6 +2197,7 @@
       });
 
       proseScroll.scrollTop = 0;
+      visualLeaf.scrollTop = 0;
       clearTimeout(turnTimer);
       reader.classList.add("page-turn");
       turnTimer = window.setTimeout(() => reader.classList.remove("page-turn"), 520);
