@@ -1982,7 +1982,7 @@
         music: "goaden",
         beats: [
           "Twin darts struck the Guardian before Goaden could draw Vega again.",
-          "The Magical Enforcement Unit entered with electrified weapons still crackling.",
+          "The Magical Enforcement Unit entered with electrified weapons still crackling. The female officer aimed a device at Goaden — its readings made her tense.",
           {
             text: "\"Name's Goaden Reeves.\" The officers tensed at the mention of his name.",
             voice: assetBase + "names goaden reeves, goaden line.mp3"
@@ -2155,8 +2155,12 @@
       return { top, height, progress };
     }
 
+    function storyStepCounts() {
+      return stories.map((story) => (mode === "cinema" ? ((story.beats && story.beats.length) || 3) : 1));
+    }
+
     function setExperienceHeight() {
-      const stepCount = mode === "cinema" ? stories.length * 3 : stories.length;
+      const stepCount = storyStepCounts().reduce((total, count) => total + count, 0);
       const vhPerStep = mode === "cinema" ? 72 : 96;
       experience.style.setProperty("--experience-height", `${100 + (stepCount * vhPerStep)}vh`);
     }
@@ -2570,12 +2574,23 @@
     sceneButtons.forEach((button) => {
       button.addEventListener("click", () => {
         const direction = Number(button.dataset.step);
-        const stepsPerStory = mode === "cinema" ? 3 : 1;
-        const totalSteps = stories.length * stepsPerStory;
+        const counts = storyStepCounts();
+        const totalSteps = counts.reduce((total, count) => total + count, 0);
         const track = getScrollTrack();
-        const currentStep = Math.min(totalSteps - 1, Math.max(0, Math.floor(track.progress * totalSteps)));
+        const storyProgress = track.progress * stories.length;
+        const storyIndex = Math.min(stories.length - 1, Math.max(0, Math.floor(storyProgress)));
+        const localProgress = Math.min(0.9999, Math.max(0, storyProgress - storyIndex));
+        const stepsBefore = counts.slice(0, storyIndex).reduce((total, count) => total + count, 0);
+        const currentStep = stepsBefore + Math.floor(localProgress * counts[storyIndex]);
         const nextStep = clamp(currentStep + direction, 0, totalSteps - 1);
-        const nextProgress = (nextStep + 0.5) / totalSteps;
+        let targetStory = 0;
+        let consumed = 0;
+        while (targetStory < counts.length - 1 && consumed + counts[targetStory] <= nextStep) {
+          consumed += counts[targetStory];
+          targetStory += 1;
+        }
+        const withinStory = nextStep - consumed;
+        const nextProgress = (targetStory + ((withinStory + 0.5) / counts[targetStory])) / stories.length;
         window.scrollTo({ top: track.top + track.height * nextProgress, behavior: "smooth" });
       });
     });
