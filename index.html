@@ -286,6 +286,121 @@
             transform: scale(1.05);
         }
 
+        .hero-cta-row {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-button--outline {
+            background: transparent;
+            border: 2px solid var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .cta-button--outline:hover {
+            background: var(--accent-gold);
+            color: white;
+        }
+
+        .hero-tagline {
+            margin-top: 1.25rem;
+            font-style: italic;
+            font-size: 0.95rem !important;
+            color: rgba(240, 229, 216, 0.75) !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* Animantasy Webtoon Showcase */
+        .webtoon-showcase {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+            gap: 2.5rem;
+            align-items: center;
+            background: linear-gradient(135deg, #0d1b2a, #1b263b 55%, #223550);
+            color: var(--text-light);
+            overflow: hidden;
+            padding: 2.5rem;
+        }
+
+        .webtoon-showcase-panels {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .webtoon-showcase-panels img {
+            width: 33%;
+            aspect-ratio: 9 / 16;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid rgba(240, 229, 216, 0.25);
+            box-shadow: 0 18px 36px rgba(0, 0, 0, 0.45);
+        }
+
+        .webtoon-showcase-panels img:nth-child(1) {
+            transform: rotate(-6deg) translateY(10px);
+        }
+
+        .webtoon-showcase-panels img:nth-child(2) {
+            width: 38%;
+            margin: 0 -5%;
+            transform: translateY(-10px);
+            position: relative;
+            z-index: 2;
+        }
+
+        .webtoon-showcase-panels img:nth-child(3) {
+            transform: rotate(6deg) translateY(12px);
+        }
+
+        .webtoon-kicker {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent-teal);
+            margin-bottom: 0.75rem;
+        }
+
+        .webtoon-showcase h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            line-height: 1.15;
+        }
+
+        .webtoon-tagline {
+            font-size: 1.15rem;
+            font-style: italic;
+            margin-bottom: 0.75rem;
+        }
+
+        .webtoon-sub {
+            color: rgba(240, 229, 216, 0.75);
+            margin-bottom: 1.75rem;
+        }
+
+        .webtoon-showcase-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .webtoon-showcase {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 2rem 1.5rem;
+            }
+
+            .webtoon-showcase h3 {
+                font-size: 1.7rem;
+            }
+        }
+
         /* Main Content */
         section {
             max-width: 1000px;
@@ -943,6 +1058,7 @@
                     <li><a href="#home">Home</a></li>
                     <li><a href="#about">About Author</a></li>
                     <li><a href="#book">About Book</a></li>
+                    <li><a href="animantasy-webtoon-experience">Webtoon</a></li>
                     <li><a href="/animantasy" class="cta-button">What is Animantasy?</a></li>
                     <li><a href="https://thesecretsofsilverclouds.github.io/Lintelgotchi/" target="_blank">Game</a></li>
                     <li><a href="#codex">The Codex</a></li>
@@ -962,14 +1078,39 @@
             </video>
             <div class="hero-content">
                 <h2>The Secrets of Silver Clouds</h2>
-                <p>Where Urban Fantasy Meets Anime Action</p>
-                <a href="https://www.waterstones.com/book/the-secrets-of-silver-clouds/silent-silver/9781068727108"
-                    class="cta-button">Order Your Copy</a>
+                <p>Read the first episode free — as a cinematic story, webtoon, or novel.</p>
+                <div class="hero-cta-row">
+                    <a href="animantasy-webtoon-experience" class="cta-button">Read Episode One — Free</a>
+                    <a href="https://www.waterstones.com/book/the-secrets-of-silver-clouds/silent-silver/9781068727108"
+                        class="cta-button cta-button--outline">Order the Novel</a>
+                </div>
+                <p class="hero-tagline">Read it like a novel. Scroll it like a webtoon. See it through a cinematic
+                    lens.</p>
             </div>
         </div>
     </section>
 
-
+    <section class="webtoon-showcase" id="webtoon" aria-labelledby="webtoonShowcaseTitle">
+        <div class="webtoon-showcase-panels" aria-hidden="true">
+            <img src="Webtoon shots and character canon/Ashai and greah opening of animantasy.png" alt=""
+                loading="lazy">
+            <img src="Webtoon shots and character canon/ashai worry stone shot.png" alt="" loading="lazy">
+            <img src="Webtoon shots and character canon/goaden draws vega on streamliner.png" alt="" loading="lazy">
+        </div>
+        <div class="webtoon-showcase-copy">
+            <p class="webtoon-kicker">Animantasy · Episode One</p>
+            <h3 id="webtoonShowcaseTitle">Experience the First Episode</h3>
+            <p class="webtoon-tagline">Read it like a novel. Scroll it like a webtoon. See it through a cinematic
+                lens.</p>
+            <p class="webtoon-sub">The complete first episode of The Secrets of Silver Clouds, free in your browser —
+                with an optional soundtrack, voiced dialogue lines, and a floating cinematic mode.</p>
+            <div class="webtoon-showcase-actions">
+                <a href="animantasy-webtoon-experience" class="cta-button">Read Episode One — Free</a>
+                <a href="https://www.waterstones.com/book/the-secrets-of-silver-clouds/silent-silver/9781068727108"
+                    class="cta-button cta-button--outline">Order the Novel</a>
+            </div>
+        </div>
+    </section>
 
     <section id="about">
         <h2>About Silent Silver</h2>
