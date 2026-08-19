@@ -945,6 +945,65 @@
                 height: 400px;
             }
         }
+
+        /* --- Soul Sips entry in the games section ---------------------------
+           Deliberately a LINK, never an <iframe> like Lintelgotchi: the Soul Sip
+           payload is ~314 MB from the CDN, so embedding it here would start that
+           download for every visitor who merely scrolls past. */
+        .game-entry { margin-bottom: 3rem; }
+        /* The game's own badge — emotion shots with their spirits rising. Gives
+           the doorway a face instead of a bare button. */
+        .soulsip-badge {
+            width: 108px; height: 108px;
+            display: block; margin: 0 auto .9rem;
+            border-radius: 16px;
+            border: 2px solid rgba(212, 175, 55, .55);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .22), 0 0 26px rgba(212, 175, 55, .22);
+            animation: ssdBadgeGlow 5s ease-in-out infinite;
+        }
+        @keyframes ssdBadgeGlow {
+            0%, 100% { box-shadow: 0 6px 20px rgba(0,0,0,.22), 0 0 20px rgba(212,175,55,.16); }
+            50%      { box-shadow: 0 6px 20px rgba(0,0,0,.22), 0 0 34px rgba(212,175,55,.34); }
+        }
+        @media (prefers-reduced-motion: reduce) { .soulsip-badge { animation: none; } }
+
+        .soulsip-entry {
+            border: 2px solid rgba(212, 175, 55, .55);
+            border-radius: 12px;
+            padding: 1.75rem;
+            background: linear-gradient(180deg, rgba(255, 248, 226, .55), rgba(255, 255, 255, .9));
+            text-align: center;
+            max-width: 760px;
+            margin: 0 auto 3rem;
+        }
+        .soulsip-entry h3 { font-family: 'Cinzel', serif; margin-bottom: .5rem; }
+        .soulsip-entry p { margin-bottom: 1.25rem; }
+        .soulsip-clockin-btn {
+            display: inline-block;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            letter-spacing: .18em;
+            font-size: 1.05rem;
+            padding: .85rem 2.4rem;
+            color: #6b4a06;
+            text-decoration: none;
+            border: 2px solid rgba(212, 175, 55, .85);
+            border-radius: 8px;
+            background: linear-gradient(180deg, rgba(255,246,214,.95), rgba(240,214,142,.95));
+            box-shadow: 0 3px 14px rgba(212, 175, 55, .28);
+            transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+        }
+        .soulsip-clockin-btn:hover,
+        .soulsip-clockin-btn:focus {
+            transform: translateY(-2px);
+            background: linear-gradient(180deg, rgba(255,250,232,1), rgba(246,226,164,1));
+            box-shadow: 0 6px 22px rgba(212, 175, 55, .42);
+        }
+        .soulsip-clockin-btn:focus { outline: 3px solid var(--accent-gold, #d4af37); outline-offset: 3px; }
+        @media (prefers-reduced-motion: reduce) {
+            .soulsip-clockin-btn { transition: none; }
+            .soulsip-clockin-btn:hover, .soulsip-clockin-btn:focus { transform: none; }
+        }
     </style>
     <!-- Structured data -->
     <script type="application/ld+json">
@@ -1060,9 +1119,9 @@
                     <li><a href="#book">About Book</a></li>
                     <li><a href="/episode-one/">Webtoon</a></li>
                     <li><a href="/animantasy" class="cta-button">What is Animantasy?</a></li>
-                    <li><a href="https://thesecretsofsilverclouds.github.io/Lintelgotchi/" target="_blank">Game</a></li>
+                    <li><a href="#game">Game</a></li>
                     <li><a href="#codex">The Codex</a></li>
-                    <li><a href="history">History</a></li>
+                    <li><a href="/history">History</a></li>
                     <li><a href="#blog">Blog</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
@@ -1207,13 +1266,26 @@
     </section>
 
     <section id="game">
-        <h2>Play Lintelgotchi</h2>
-        <p>Take care of your own <a href="lintels" class="codex-link">Lintel</a> creature in this virtual pet game!
-        </p>
-        <iframe id="gameIframe" src="https://thesecretsofsilverclouds.github.io/Lintelgotchi/" allowfullscreen></iframe>
-        <div style="text-align: center;">
-            <button onclick="openGameFullscreen()">Open Fullscreen</button>
-            <button onclick="openGameNewTab()">Open in New Tab</button>
+        <h2>Play</h2>
+
+        <div class="soulsip-entry">
+            <img class="soulsip-badge" src="images/soul-sips-icon.png"
+                 alt="Soul Sips — shots of pure emotion" loading="lazy" decoding="async">
+            <h3>Soul Sips — a shift at the Sanctuary Bar</h3>
+            <p>Pull the taps at the <a href="/sanctuary-in-the-sky" class="codex-link">Sanctuary in the Sky</a>.
+                Read the room, mix what each soul actually needs, and survive the night shift.</p>
+            <a class="soulsip-clockin-btn" href="/soulsip/">CLOCK IN</a>
+        </div>
+
+        <div class="game-entry">
+            <h3 style="font-family:'Cinzel',serif;text-align:center;">Lintelgotchi</h3>
+            <p>Take care of your own <a href="lintels" class="codex-link">Lintel</a> creature in this virtual pet game!
+            </p>
+            <iframe id="gameIframe" src="https://thesecretsofsilverclouds.github.io/Lintelgotchi/" allowfullscreen></iframe>
+            <div style="text-align: center;">
+                <button onclick="openGameFullscreen()">Open Fullscreen</button>
+                <button onclick="openGameNewTab()">Open in New Tab</button>
+            </div>
         </div>
     </section>
 
@@ -1232,18 +1304,6 @@
         <div id="blogPosts"></div>
     </section>
 
-    <section id="reviews">
-        <h2>Reviews</h2>
-        <div class="review-card">
-            <p>"An enchanting and immersive read!"</p>
-            <p class="review-author">- Beta Reader</p>
-        </div>
-        <div class="review-card">
-            <p>"I couldn't put it down!"</p>
-            <p class="review-author">- Early Reviewer</p>
-        </div>
-    </section>
-
     <section id="contact">
         <h2>Contact</h2>
         <p style="text-align: center; margin-bottom: 2rem;">
@@ -1254,29 +1314,10 @@
         <p style="text-align: center; margin-bottom: 2rem; color: var(--accent-blue);">Or fill out the form below:
         </p>
         <div class="contact-form">
-            <!-- OPTION 1: Google Forms (Replace YOUR_GOOGLE_FORM_ID with your actual form ID) -->
             <iframe
                 src="https://docs.google.com/forms/d/e/1FAIpQLSfYUSxpdGWwZKXw5Bd9KxAKDlyUveBH6rCDCvzIQoMgPoWKWA/viewform?usp=dialog"
                 width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0"
                 style="border-radius: 10px;">Loading…</iframe>
-
-            <!-- OPTION 2: If you prefer a custom form with Formspree, uncomment this and comment out the iframe above
-            <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="message">Message</label>
-                    <textarea id="message" name="message" required></textarea>
-                </div>
-                <button type="submit" class="submit-btn">Send Message</button>
-            </form>
-            -->
         </div>
     </section>
 
@@ -1296,7 +1337,6 @@
                 <h3>Connect</h3>
                 <ul>
                     <li><a href="#blog">Blog</a></li>
-                    <li><a href="#reviews">Reviews</a></li>
                     <li><a href="#contact">Contact</a></li>
                     <li>Email</li>
                 </ul>
@@ -1511,6 +1551,17 @@
                 relatedEntries: []
             },
             {
+                id: 'soul-sips',
+                name: 'Soul Sips',
+                type: 'concept',
+                image: 'images/soul-sips.png',
+                summary: 'Magical shots that taste like pure emotions, served at the Sanctuary Bar',
+                description: 'Soul Sips are enchanted beverages crafted by the skilled mixologists of the Sanctuary in the Sky. Each shot embodies a raw emotion—joy, love, anger, sadness, fear, or euphoria—with colours and flavours that shift to match the feeling they contain. When consumed, the drinker experiences a brief but intense emotional rush, flooding their senses with the purest essence of that emotion. Some shots bring pleasant waves of bliss and warmth, while others plunge the drinker into depths of sorrow or fury. The experience is visceral, unforgettable, and dangerously addictive to those seeking to feel something—anything—in a world that often numbs.',
+                abilities: ['Instant Emotional Experience', 'Color-Shifting Liquid', 'Flavor Corresponds to Emotion', 'Brief But Intense Effect'],
+                examples: ['Joy (golden, tastes like sunshine)', 'Love (rose-pink, tastes like warmth)', 'Anger (crimson, tastes like fire)', 'Sadness (deep blue, tastes like rain)'],
+                relatedEntries: ['sanctuary-in-the-sky', 'the-church']
+            },
+            {
                 id: 'technomagic',
                 name: 'Technomagic',
                 type: 'concept',
@@ -1660,17 +1711,6 @@
                 abilities: ['Phasing Through Solid Matter', 'Space Expansion Enchantments', 'AI-Driven Navigation with Divination Magic', 'Regenerative Braking Energy Recovery', 'Protective Wards During Phasing'],
                 examples: ['Phases through buildings for direct routes', 'Spacious interiors despite compact exterior', 'Silent travel with noise cancellation charms'],
                 relatedEntries: ['technomagic', 'the-merging', 'mi6']
-            },
-            {
-                id: 'soul-sips',
-                name: 'Soul Sips',
-                type: 'concept',
-                image: 'images/soul-sips.png',
-                summary: 'Magical shots that taste like pure emotions, served at the Sanctuary Bar',
-                description: 'Soul Sips are enchanted beverages crafted by the skilled mixologists of the Sanctuary in the Sky. Each shot embodies a raw emotion—joy, love, anger, sadness, fear, or euphoria—with colours and flavours that shift to match the feeling they contain. When consumed, the drinker experiences a brief but intense emotional rush, flooding their senses with the purest essence of that emotion. Some shots bring pleasant waves of bliss and warmth, while others plunge the drinker into depths of sorrow or fury. The experience is visceral, unforgettable, and dangerously addictive to those seeking to feel something—anything—in a world that often numbs.',
-                abilities: ['Instant Emotional Experience', 'Color-Shifting Liquid', 'Flavor Corresponds to Emotion', 'Brief But Intense Effect'],
-                examples: ['Joy (golden, tastes like sunshine)', 'Love (rose-pink, tastes like warmth)', 'Anger (crimson, tastes like fire)', 'Sadness (deep blue, tastes like rain)'],
-                relatedEntries: ['sanctuary-in-the-sky', 'the-church']
             },
             {
                 id: 'road-sprites',
@@ -2745,6 +2785,7 @@
     </script>
     <!-- Shrine JS Injector -->
     <script src="global-shrine.js"></script>
+    <script src="soul-sip-lure.js" defer></script>
 </body>
 
 </html>

@@ -297,6 +297,99 @@
             .image-gallery { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
         }
 
+
+        /* --- Soul Sips: CLOCK IN -------------------------------------------
+           Plain CSS in the page, NOT injected by soul-sip-lure.js, so the
+           doorway survives JS being off, the lure failing, or reduced motion.
+           Sized like an invitation rather than a download button. */
+        .soulsip-clockin { text-align: center; }
+        /* The game's own badge — emotion shots with their spirits rising. Gives
+           the doorway a face instead of a bare button. */
+        .soulsip-badge {
+            width: 108px; height: 108px;
+            display: block; margin: 0 auto .9rem;
+            border-radius: 16px;
+            border: 2px solid rgba(212, 175, 55, .55);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .22), 0 0 26px rgba(212, 175, 55, .22);
+            animation: ssdBadgeGlow 5s ease-in-out infinite;
+        }
+        @keyframes ssdBadgeGlow {
+            0%, 100% { box-shadow: 0 6px 20px rgba(0,0,0,.22), 0 0 20px rgba(212,175,55,.16); }
+            50%      { box-shadow: 0 6px 20px rgba(0,0,0,.22), 0 0 34px rgba(212,175,55,.34); }
+        }
+        @media (prefers-reduced-motion: reduce) { .soulsip-badge { animation: none; } }
+
+        .soulsip-flavour {
+            font-family: 'Cinzel', serif;
+            color: var(--primary-dark, #1b3a57);
+            opacity: .85;
+            margin-bottom: .9rem;
+        }
+        .soulsip-clockin-btn {
+            display: inline-block;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            letter-spacing: .18em;
+            font-size: 1.05rem;
+            padding: .85rem 2.4rem;
+            color: #6b4a06;
+            text-decoration: none;
+            border: 2px solid rgba(212, 175, 55, .85);
+            border-radius: 8px;
+            background: linear-gradient(180deg, rgba(255,246,214,.95), rgba(240,214,142,.95));
+            box-shadow: 0 3px 14px rgba(212, 175, 55, .28);
+            transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+        }
+        .soulsip-clockin-btn:hover,
+        .soulsip-clockin-btn:focus {
+            transform: translateY(-2px);
+            background: linear-gradient(180deg, rgba(255,250,232,1), rgba(246,226,164,1));
+            box-shadow: 0 6px 22px rgba(212, 175, 55, .42);
+        }
+        .soulsip-clockin-btn:focus { outline: 3px solid var(--accent-gold, #d4af37); outline-offset: 3px; }
+        @media (prefers-reduced-motion: reduce) {
+            .soulsip-clockin-btn { transition: none; }
+            .soulsip-clockin-btn:hover, .soulsip-clockin-btn:focus { transform: none; }
+        }
+
+        /* --- Emotion Shot Accents: subtle flavor tint matching the drinks --- */
+        .emotion-shot {
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .emotion-shot:hover {
+            transform: translateY(-2px);
+        }
+        .emotion-joy {
+            border-left-color: #e5a93b !important;
+            background: linear-gradient(135deg, rgba(229, 169, 59, 0.12), rgba(50, 130, 184, 0.06));
+        }
+        .emotion-joy:hover {
+            box-shadow: 0 4px 16px rgba(229, 169, 59, 0.22);
+        }
+        .emotion-love {
+            border-left-color: #e06287 !important;
+            background: linear-gradient(135deg, rgba(224, 98, 135, 0.12), rgba(50, 130, 184, 0.06));
+        }
+        .emotion-love:hover {
+            box-shadow: 0 4px 16px rgba(224, 98, 135, 0.22);
+        }
+        .emotion-anger {
+            border-left-color: #d94138 !important;
+            background: linear-gradient(135deg, rgba(217, 65, 56, 0.12), rgba(50, 130, 184, 0.06));
+        }
+        .emotion-anger:hover {
+            box-shadow: 0 4px 16px rgba(217, 65, 56, 0.22);
+        }
+        .emotion-sadness {
+            border-left-color: #2b70c9 !important;
+            background: linear-gradient(135deg, rgba(43, 112, 201, 0.12), rgba(50, 130, 184, 0.06));
+        }
+        .emotion-sadness:hover {
+            box-shadow: 0 4px 16px rgba(43, 112, 201, 0.22);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .emotion-shot, .emotion-shot:hover { transform: none; }
+        }
     </style>
 
     <script type="application/ld+json">
@@ -348,6 +441,13 @@
             <h2>Summary</h2>
             <p>Magical shots that taste like pure emotions, served at the Sanctuary Bar</p>
         </section>
+
+        <section class="lore-section soulsip-clockin">
+            <img class="soulsip-badge" src="images/soul-sips-icon.png"
+                 alt="Soul Sips — shots of pure emotion" loading="lazy" decoding="async">
+            <p class="soulsip-flavour">Fancy seeing what a shift actually looks like?</p>
+            <a class="soulsip-clockin-btn" href="/soulsip/">CLOCK IN</a>
+        </section>
     
         <section class="lore-section">
             <h2>Description</h2>
@@ -367,11 +467,11 @@
         <section class="lore-section">
             <h2>Examples</h2>
             <ul class="members-list">
-<li>Joy (golden, tastes like sunshine)</li>
-<li>Love (rose-pink, tastes like warmth)</li>
-<li>Anger (crimson, tastes like fire)</li>
-<li>Sadness (deep blue, tastes like rain)</li>
-</ul>
+                <li class="emotion-shot emotion-joy"><strong>Joy</strong> (golden, tastes like sunshine)</li>
+                <li class="emotion-shot emotion-love"><strong>Love</strong> (rose-pink, tastes like warmth)</li>
+                <li class="emotion-shot emotion-anger"><strong>Anger</strong> (crimson, tastes like fire)</li>
+                <li class="emotion-shot emotion-sadness"><strong>Sadness</strong> (deep blue, tastes like rain)</li>
+            </ul>
         </section>
         
         <section class="lore-section">
@@ -444,5 +544,6 @@
 
     <!-- Shrine JS Injector -->
     <script src="global-shrine.js"></script>
+    <script src="soul-sip-lure.js" defer></script>
 </body>
 </html>
