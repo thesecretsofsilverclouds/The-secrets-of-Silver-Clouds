@@ -6,7 +6,7 @@
 /* Soul Sip production Web runtime: the MEMFS feature-pack fetch route.
    See tools/phone_test/inject_web_runtime.py. No diagnostics in this block. */
 (function(){
-  var configuredAssetBase = "https://cdn.thesecretsofsilverclouds.co.uk/soulsip/20260908";
+  var configuredAssetBase = "https://cdn.thesecretsofsilverclouds.co.uk/soulsip/20260909";
   window.__soulSipAssetBase = String(configuredAssetBase || "").trim().replace(/\/+$/, "");
   window.__soulSipResolveAsset = function(path){
     var value = String(path || "");
@@ -213,7 +213,7 @@ html, body, #canvas {
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":329473240,"index.wasm":37685705},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":329474464,"index.wasm":37685705},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 if (window.__soulSipAssetBase) {
 	GODOT_CONFIG.executable = window.__soulSipResolveAsset('index');
 	GODOT_CONFIG.mainPack = window.__soulSipResolveAsset('index.pck');
