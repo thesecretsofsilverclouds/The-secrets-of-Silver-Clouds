@@ -1,0 +1,20 @@
+name = "silver-clouds-worldstream"
+main = "src/worker.mjs"
+compatibility_date = "2025-02-01"
+compatibility_flags = ["nodejs_compat"]
+
+[durable_objects]
+bindings = [
+  { name = "WORLD_DO", class_name = "WorldDurableObject" }
+]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["WorldDurableObject"]
+
+[vars]
+ENVIRONMENT = "production"
+WORLD_ID = "silver-clouds-now"
+# 4323 is the integrated local dev site (worldstream-server/dev.mjs); 4317 and
+# 4322 remain for the workshop server, which can run at the same time.
+CORS_ORIGINS = "https://thesecretsofsilverclouds.com,https://www.thesecretsofsilverclouds.com,http://127.0.0.1:4317,http://127.0.0.1:4322,http://127.0.0.1:4323,http://localhost:4323,http://localhost:8787"

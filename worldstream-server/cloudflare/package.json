@@ -1,0 +1,13 @@
+{
+  "name": "silver-clouds-worldstream-cloudflare",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Cloudflare Worker and SQLite Durable Object for Worldstream",
+  "scripts": {
+    "dev": "wrangler dev",
+    "test": "node --test test/*.test.mjs",
+    "test:fidelity": "node --test test/cloudflare-fidelity.test.mjs",
+    "test:do": "node --test test/cloudflare-do.test.mjs",
+    "report:capacity": "node test/capacity-report.mjs"
+  }
+}

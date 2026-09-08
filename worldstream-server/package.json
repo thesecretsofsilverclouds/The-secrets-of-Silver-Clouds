@@ -1,0 +1,27 @@
+{
+  "name": "silver-clouds-worldstream",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "worldstream": "node start-worldstream.mjs",
+    "preview:cinematic": "node scripts/preview-cinematic.mjs",
+    "preview:final": "node scripts/start-final-preview.mjs",
+    "audience": "node scripts/audience.mjs",
+    "verify:final": "node scripts/verify-final-phases.mjs",
+    "test": "node --test test/*.test.mjs",
+    "verify": "node src/run-verification.mjs",
+    "vignettes": "node src/render-vignettes.mjs",
+    "dev": "node dev.mjs",
+    "test:lab": "node --test lab/harness/tests.mjs lab/harness/yukon.test.mjs lab/shadow/fixtures.test.mjs",
+    "test:cloudflare": "node --test cloudflare/test/*.test.mjs",
+    "test:all": "npm test && npm run test:lab && npm run test:cloudflare"
+  },
+  "devDependencies": {
+    "wrangler": "4.129.1"
+  }
+}

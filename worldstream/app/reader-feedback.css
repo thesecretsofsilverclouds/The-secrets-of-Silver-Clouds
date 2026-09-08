@@ -1,0 +1,18 @@
+.reader-footer { margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--line); }
+.reader-footer-links { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.reader-feedback { min-width: 0; flex: 1; }
+.reader-feedback > summary { cursor: pointer; font-size: .8rem; width: fit-content; padding: 7px 0; }
+.reader-feedback > summary:focus-visible { outline: 2px solid #78a8d0; outline-offset: 4px; }
+.reader-support { font-size: .78rem; color: var(--muted); text-underline-offset: 4px; padding: 7px 0; }
+.reader-feedback-body { max-width: 620px; padding: 12px 0; font-size: .85rem; }
+.reader-feedback-body label { display: block; margin: 14px 0; font-size: .84rem; color: var(--ink); }
+.reader-feedback-body select { display: block; box-sizing: border-box; width: 100%; max-width: 100%; margin-top: 7px; padding: 9px 10px;
+  border: 1px solid var(--edge); border-radius: 4px; background: var(--card); color: var(--ink); font: inherit; }
+.reader-feedback-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.reader-feedback-actions button { font-size: .77rem; }
+.reader-feedback-note { font-size: .74rem; line-height: 1.5; margin-top: 14px; }
+.reader-feedback-results { margin: 16px 0; }
+.reader-feedback-results h4 { margin: 14px 0 7px; font-size: .8rem; }
+.reader-feedback-results ul { padding-left: 18px; }
+.reader-feedback-results li { margin: 6px 0; }
+@media (max-width: 600px) { .reader-feedback[open] { flex-basis: 100%; } }

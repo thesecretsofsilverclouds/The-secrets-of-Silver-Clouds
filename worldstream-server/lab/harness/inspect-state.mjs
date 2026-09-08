@@ -1,0 +1,20 @@
+import { openWorld } from '../../src/world.mjs';
+import { atLondon } from '../../src/time.mjs';
+const START = atLondon('2026-03-02','00:00');
+const w = openWorld({dbPath:':memory:', startMs:START});
+let mark=START; const target=START+2*86_400_000;
+while(mark<target){const r=w.advance(Math.min(target,mark+6*3_600_000));mark=r.resolvedThrough;}
+const snap = w.semanticSnapshot();
+console.log('snapshot keys:', Object.keys(snap));
+const s = snap;
+console.log('state keys:', Object.keys(s));
+console.log('character keys:', Object.keys(s.characters.goaden));
+console.log('goaden:', JSON.stringify({...s.characters.goaden, knowledge:`<${s.characters.goaden.knowledge.length}>`},null,1).slice(0,700));
+console.log('relationships:', JSON.stringify(s.relationships));
+console.log('weather/factions:', JSON.stringify(s.weather), JSON.stringify(s.factions));
+console.log('facts count:', Object.keys(s.facts).length, 'sample:', JSON.stringify(Object.entries(s.facts).slice(0,2)));
+console.log('director:', JSON.stringify(s.director));
+console.log('pressure:', JSON.stringify(s.pressure));
+console.log('arcs keys:', Object.keys(s.arcs||{}));
+console.log('event shape:', JSON.stringify(Object.keys(snap.events[10])));
+w.close();

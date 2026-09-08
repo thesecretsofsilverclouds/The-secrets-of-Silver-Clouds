@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Worldstream · Atmosphere study</title><link rel="stylesheet" href="/style.css">
+<script type="module" src="/atmosphere-preview.js"></script></head>
+<body data-phase="day">
+  <div id="world-backdrop" aria-hidden="true"><div class="world-backdrop-layer is-visible"></div>
+    <div id="weather-layer"><canvas id="weather-canvas"></canvas><div class="fog-layer"></div><div class="flash-layer"></div></div>
+  </div>
+  <div id="road-sprite-layer" aria-hidden="true"></div>
+  <main>
+    <p class="eyebrow">WORLDSTREAM · PRESENTATION PREVIEW</p>
+    <h1>Atmosphere study</h1>
+    <p class="intro">Try the weather, light and road sprites. These controls leave the shared world untouched.</p>
+    <p style="margin:16px 0"><a href="/" style="color:var(--ink)">Return to the live world →</a></p>
+    <div class="atmosphere-options">
+      <label>Weather <select id="preview-weather"><option value="clear">Clear</option><option value="light_rain" selected>Light rain</option><option value="heavy_rain">Heavy rain</option><option value="storm">Storm</option><option value="fog">Fog</option><option value="cloudy">Overcast</option></select></label>
+      <label>Light <select id="preview-phase"><option value="dawn">Dawn</option><option value="day" selected>Day</option><option value="dusk">Dusk</option><option value="night">Night</option></select></label>
+      <label>Place <select id="preview-location"><option value="london">London streets</option><option value="mi6">MI6 interior</option><option value="streamliner">Streamliner interior</option><option value="sanctuary">Sanctuary interior</option></select></label>
+    </div>
+    <details class="atmosphere-controls" open style="margin-top:16px">
+      <summary>Atmosphere</summary><div class="atmosphere-options">
+        <label><input id="ambience-enabled" type="checkbox"> Sounds</label>
+        <label class="volume-control" for="ambience-volume">Sound volume <input id="ambience-volume" type="range" min="0" max="100" value="28"></label>
+        <label><input id="atmosphere-motion" type="checkbox" checked> Ambient motion</label>
+        <label><input id="atmosphere-creatures" type="checkbox" checked> Ambient creatures</label>
+        <label><input id="atmosphere-flashes" type="checkbox"> Gentle lightning</label>
+      </div><p id="ambience-status" class="secondary" role="status">Sound is off.</p>
+    </details>
+    <article class="continuity-entry" style="margin:28px 0;max-width:480px">
+      <h2 id="preview-title">London streets · Light rain</h2>
+      <p style="margin-top:10px">Weather changes blend slowly through the scenery, while the reading surface stays clear.</p>
+      <p id="preview-note" class="secondary">A road sprite may pass at the bottom. At night, they settle down to sleep.</p>
+    </article>
+  </main>
+</body></html>

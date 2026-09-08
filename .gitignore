@@ -1,0 +1,35 @@
+# The repository had no .gitignore before Worldstream was integrated. It does
+# now, because the workshop project carries a great deal that must never reach a
+# public website repo.
+
+# ---------------------------------------------------------------- secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+.dev.vars
+.wrangler/
+
+# ------------------------------------------------------------ dependencies
+node_modules/
+
+# ------------------------------------------------------- runtime world data
+# Local simulation databases. These are a *local* world, not the authoritative
+# one: the deployed world lives in a Cloudflare Durable Object. Committing them
+# would publish a second, competing history.
+worldstream-server/data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+
+# ------------------------------------------------- workshop output, not runtime
+# Shadow-run records, review packets and generated reports. Evidence for
+# decisions already taken; nothing at runtime reads them.
+worldstream-server/lab/runs/
+worldstream-server/artifacts/
+
+# ------------------------------------------------------------------ scratch
+*.log
+.DS_Store
+Thumbs.db

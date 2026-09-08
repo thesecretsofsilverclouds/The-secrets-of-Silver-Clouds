@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Worldstream · Silver Clouds — Now</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="reading-view.css">
+  <link rel="stylesheet" href="scene-reading.css">
+  <link rel="stylesheet" href="reader-feedback.css">
+    <!-- The Cloudflare backend. Empty means same-origin (a local proxy).
+       Local wrangler dev: http://127.0.0.1:8787
+       Deployed:           the .co.uk Worldstream worker -->
+  <meta name="worldstream-api" content="">
+  <!-- Must load before app.js: it decides which backend /api/* goes to. -->
+  <script type="module" src="api-base.js"></script>
+  <script type="module" src="app.js"></script>
+  <script type="module" src="reader-feedback.js"></script>
+</head>
+<body data-reading="true">
+  <div id="world-backdrop" aria-hidden="true">
+    <div class="world-backdrop-layer is-visible"></div>
+    <div class="world-backdrop-layer"></div>
+  <div id="weather-layer" aria-hidden="true">
+    <canvas id="weather-canvas"></canvas>
+    <div class="fog-layer"></div>
+    <div class="flash-layer"></div>
+  </div>
+  </div>
+  <div id="lintel-layer" aria-hidden="true"></div>
+  <div id="road-sprite-layer" aria-hidden="true"></div>
+
+  <div id="scene-layer" role="dialog" aria-modal="true" aria-labelledby="scene-title" aria-describedby="scene-instructions" hidden>
+    <div class="stage">
+      <div class="backdrop"></div>
+      <div class="scene-atmosphere" aria-hidden="true">
+        <canvas id="scene-weather-canvas"></canvas><div class="fog-layer"></div><div class="flash-layer"></div>
+      </div>
+      <p id="scene-title" class="scene-live-mark"><span aria-hidden="true"></span> LIVE FROM SILVER CLOUDS</p>
+      <img class="plate plate-left" alt="">
+      <img class="plate plate-right" alt="">
+      <div class="dialogue">
+        <details class="scene-setup-details" hidden>
+          <summary class="scene-setup-summary"></summary>
+          <p class="scene-setup-snippet"></p>
+        </details>
+        <p class="speaker">—</p>
+        <p class="line"></p>
+        <p id="scene-instructions" class="hint"></p>
+        <p class="scene-excerpt-note" hidden></p>
+        <div class="scene-controls" aria-label="Scene controls">
+          <button type="button" class="scene-pause" aria-pressed="false">Pause</button>
+          <button type="button" class="scene-next">Next</button>
+          <button type="button" class="scene-close">Skip scene</button>
+        </div>
+      </div>
+      <p class="scene-announcer visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+    </div>
+  </div>
+  <main>
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">WORLDSTREAM</p>
+        <h1>SILVER CLOUDS — NOW</h1>
+        <p class="intro">A living epic fantasy novel, unfolding now.</p>
+      </div>
+      <div class="reading-header-controls">
+        <button id="reading-view-toggle" type="button" aria-pressed="true" title="Switch to Cinematic mode">Cinematic mode</button>
+        <details id="world-tools" class="world-tools">
+          <summary>Explore &amp; settings</summary>
+          <div class="tools-panel">
+      <div class="header-actions">
+        <button id="dispatch-btn" type="button" class="header-btn dispatch-btn" title="The Morning Borough Dispatch">📰 Daily Dispatch</button>
+        <button id="clocks-btn" type="button" class="header-btn clocks-btn" title="London Plot Clocks">⏱️ Plot Clocks (<span id="clocks-count">5</span>)</button>
+        <button id="notif-toggle-btn" type="button" class="header-btn notif-btn" title="Enable Urgent Courier Pings">🔔 Alerts</button>
+        <button id="saved-moments-btn" type="button" class="header-btn" title="Saved Moments">🔖 Saved (<span id="saved-count">0</span>)</button>
+        <button id="cinematic-archive-btn" type="button" class="header-btn" title="Worldstream scene archive">🎞 Scenes</button>
+        <button id="profile-btn" type="button" class="header-btn profile-btn" title="Traveller Profile"><span id="header-avatar" class="avatar-badge">👤</span> <span id="header-profile-name" class="profile-name">Traveller</span></button>
+        <button id="memory-btn" type="button" class="header-btn" title="What they are carrying, and what the rooms still show">🕯 Memory</button>
+        <button id="music-btn" type="button" class="header-btn music-btn" aria-pressed="false" title="Score">♪ Score</button>
+        <button id="refresh" type="button">Refresh</button>
+      </div>
+          <details class="atmosphere-controls">
+      <summary>Atmosphere</summary>
+      <div class="atmosphere-options">
+        <label><input id="ambience-enabled" type="checkbox"> Sounds</label>
+        <label class="volume-control" for="ambience-volume">Sound volume <input id="ambience-volume" type="range" min="0" max="100" value="28"></label>
+        <label class="volume-control" for="score-volume">Score volume <input id="score-volume" type="range" min="0" max="100" value="34"></label>
+        <label><input id="atmosphere-motion" type="checkbox" checked> Ambient motion</label>
+        <label><input id="atmosphere-creatures" type="checkbox" checked> Ambient creatures</label>
+        <label><input id="atmosphere-flashes" type="checkbox"> Gentle lightning</label>
+      </div>
+      <p id="ambience-status" class="secondary" role="status">Sound is off.</p>
+    </details>
+          <fieldset class="reading-preferences">
+            <legend>Reading &amp; scenes</legend>
+            <label><input id="reading-auto-scenes" type="checkbox" checked> Play live scenes automatically</label>
+            <label><input id="reading-instant-text" type="checkbox"> Show scene text instantly</label>
+          </fieldset>
+          </div>
+        </details>
+      </div>
+    </header>
+
+  <section class="conditions" aria-label="Time, daylight and weather">
+      <div>
+        <h2>London time</h2>
+        <p id="clock" class="clock">—</p>
+        <p id="date" class="secondary">—</p>
+      </div>
+      <div>
+        <h2>Daylight</h2>
+        <p id="phase">—</p>
+        <p id="sun" class="secondary">—</p>
+      </div>
+      <div>
+        <h2>World weather <span class="tag">Simulated</span></h2>
+        <p id="weather">Waiting for the world…</p>
+        <p id="scene" class="secondary">—</p>
+      </div>
+    </section>
+
+    <section class="world-status" aria-labelledby="world-status-heading">
+      <h2 id="world-status-heading">Current world activity</h2>
+      <p id="world-status">Connecting to Silver Clouds…</p>
+    </section>
+    <div id="reading-pair" class="reading-pair" role="group" aria-label="Where Goaden and Ashai are now"></div>
+    <section id="reading-recap" class="reading-recap" aria-label="While you were away" hidden></section>
+    <button id="reading-new" class="reading-new" type="button" hidden></button>
+    <article id="latest-passage" class="latest-passage" data-reading-anchor="latest-passage" hidden></article>
+    <section id="stories-section" class="world-status" aria-labelledby="stories-heading" hidden>
+      <h2 id="stories-heading">A story in the city</h2>
+      <div id="stories"></div>
+    </section>
+    <section class="history" aria-labelledby="history-heading">
+      <h2 id="history-heading" class="section-heading">The world unfolds</h2>
+      <p id="last-visit" class="last-visit secondary" hidden></p>
+      <p id="empty-events" class="secondary">Waiting for recent history…</p>
+      <ol id="events" class="events"></ol>
+      <div id="older-history" hidden>
+        <h3 class="older-heading">Earlier in Silver Clouds</h3>
+        <ol id="older-events" class="events"></ol>
+      </div>
+      <div class="history-controls">
+        <button id="older-history-button" type="button" aria-controls="older-events" disabled>Read earlier activity</button>
+        <p id="history-status" class="secondary" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+    <details id="world-overview" class="world-overview">
+      <summary>Across Silver Clouds <span class="secondary">Places, people &amp; unfinished threads</span></summary>
+      <div class="overview-content">
+    <section id="continuity-section" class="world-status" aria-labelledby="continuity-heading" hidden>
+      <h2 id="continuity-heading">Threads in motion</h2>
+      <div id="continuity" class="continuity-list"></div>
+    </section>
+    <section class="veil" id="veil-row" aria-label="The Celestial Veil" hidden>
+      <h2>Celestial Veil</h2>
+      <p id="veil">—</p>
+    </section>
+    <section class="factions" aria-labelledby="factions-heading">
+      <h2 id="factions-heading" class="section-heading">Across London today</h2>
+      <ul id="factions" class="faction-list"></ul>
+    </section>
+    <section class="whereabouts" aria-labelledby="whereabouts-heading">
+      <h2 id="whereabouts-heading" class="section-heading">Where they are</h2>
+      <p id="transit" class="transit" hidden></p>
+      <ol id="places" class="places"></ol>
+    </section>
+    <section aria-labelledby="characters-heading">
+      <h2 id="characters-heading" class="section-heading">Goaden and Ashai</h2>
+      <div id="characters" class="characters">
+        <p class="secondary">Their current activities will appear here.</p>
+      </div>
+    </section>
+      </div>
+    </details>
+
+    <footer>
+      <p id="connection" role="status" aria-live="polite">Loading…</p>
+      <p class="secondary">One shared Silver Clouds world. Weather is fictional.</p>
+      <div class="reader-footer">
+        <div class="reader-footer-links">
+          <details id="reader-feedback" class="reader-feedback">
+            <summary>Help shape Worldstream</summary>
+            <div class="reader-feedback-body"></div>
+          </details>
+          <a class="reader-support" href="https://discord.gg/x5mZqWFZn7" target="_blank" rel="noopener noreferrer">Discuss Worldstream on Discord ↗</a>
+          <a class="reader-support" href="https://ko-fi.com/secretsofsilverclouds" target="_blank" rel="noopener noreferrer">Support Silver Clouds ↗</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Off-Canvas Discussion Drawer -->
+  <!-- Two elements so one track can fade out while the next fades in, the same
+       shape the world backdrop already uses for its own crossfade. -->
+  <!-- Not `loop`. A mood can last all night, and a looping element never fires
+       `ended`, so the score sat on one track until the world changed state
+       around it. The module advances through the mood's tracks itself. -->
+  <audio id="score-a" preload="none"></audio>
+  <audio id="score-b" preload="none"></audio>
+  <div id="now-playing" class="now-playing" aria-live="polite" hidden><span class="np-note">♪</span><span id="now-playing-title"></span></div>
+
+  <div id="drawer-backdrop" class="drawer-backdrop" hidden></div>
+  <aside id="discussion-drawer" class="offcanvas-drawer discussion-drawer" role="dialog" aria-label="Beat Discussion" hidden>
+    <div class="drawer-header">
+      <div class="drawer-header-text">
+        <span class="drawer-eyebrow">Communal Beat Discussion</span>
+        <h3 id="drawer-beat-title" class="drawer-title">—</h3>
+        <p id="drawer-beat-excerpt" class="drawer-excerpt"></p>
+        <div id="drawer-reactions-bar" class="drawer-reactions-bar"></div>
+        <div id="drawer-wager-container" class="drawer-wager-container" hidden></div>
+      </div>
+      <button type="button" id="drawer-close" class="drawer-close" aria-label="Close discussion">✕</button>
+    </div>
+    <div id="drawer-comments" class="drawer-comments" aria-live="polite">
+      <p class="empty-comments">Loading reactions and reflections…</p>
+    </div>
+    <div class="drawer-footer">
+      <div class="traveller-signature">
+        <span id="signature-avatar" class="sig-avatar">👤</span>
+        <div class="sig-details">
+          <span id="signature-info" class="sig-info">Posting as <strong>Traveller</strong></span>
+          <span id="signature-flair" class="sig-flair">Holy Item: — • Guardian: —</span>
+        </div>
+        <button type="button" id="signature-edit-btn" class="sig-edit-btn">Edit Identity</button>
+      </div>
+      <form id="comment-form" class="comment-form">
+        <textarea id="comment-text" maxlength="500" placeholder="Share your deduction, theory, or reaction..." required rows="2"></textarea>
+        <button type="submit" id="comment-submit-btn" class="comment-submit-btn">Send</button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- Saved Moments Drawer -->
+  <!-- Memory & Traces. The card carries one quiet line; anybody who wants the
+       working comes in here. -->
+  <aside id="memory-drawer" class="offcanvas-drawer memory-drawer" role="dialog" aria-label="Memory and Traces" hidden>
+    <div class="drawer-header">
+      <div class="drawer-header-text">
+        <span class="drawer-eyebrow">Continuity</span>
+        <h3 class="drawer-title">Memory &amp; Traces</h3>
+        <p id="memory-rapport" class="drawer-excerpt"></p>
+      </div>
+      <button type="button" id="memory-close" class="drawer-close" aria-label="Close memory">✕</button>
+    </div>
+    <div id="memory-body" class="drawer-comments"></div>
+  </aside>
+
+  <aside id="saved-drawer" class="offcanvas-drawer saved-drawer" role="dialog" aria-label="Saved Moments" hidden>
+    <div class="drawer-header">
+      <div class="drawer-header-text">
+        <span class="drawer-eyebrow">Bookmarks</span>
+        <h3 class="drawer-title">Saved Moments</h3>
+      </div>
+      <button type="button" id="saved-close" class="drawer-close" aria-label="Close saved moments">✕</button>
+    </div>
+    <div id="saved-list" class="saved-list">
+      <p id="saved-empty" class="empty-saved">No saved beats yet. Click 🔖 on any beat to bookmark it.</p>
+    </div>
+  </aside>
+
+  <aside id="cinematic-archive-drawer" class="offcanvas-drawer cinematic-archive-drawer" role="dialog" aria-labelledby="cinematic-archive-title" hidden>
+    <div class="drawer-header">
+      <div class="drawer-header-text">
+        <span class="drawer-eyebrow">WORLDSTREAM</span>
+        <h3 id="cinematic-archive-title" class="drawer-title">Scene Archive</h3>
+        <p class="drawer-excerpt">Accepted moments from the one shared Silver Clouds world.</p>
+      </div>
+      <button type="button" id="cinematic-archive-close" class="drawer-close" aria-label="Close scene archive">✕</button>
+    </div>
+    <div id="cinematic-archive-body" class="cinematic-archive-body">
+      <p class="empty-saved">Loading accepted scenes…</p>
+    </div>
+  </aside>
+
+  <!-- Daily Dispatch Broadsheet Drawer -->
+  <aside id="dispatch-drawer" class="offcanvas-drawer dispatch-drawer" role="dialog" aria-label="The London Borough Gazette" hidden>
+    <div class="drawer-header dispatch-drawer-header">
+      <div class="drawer-header-text">
+        <span class="drawer-eyebrow">Daily Broadsheet Ritual</span>
+        <h3 id="dispatch-gazette-title" class="drawer-title dispatch-title">The London Borough Gazette</h3>
+        <p id="dispatch-tagline" class="dispatch-tagline">MI6 Morning Intelligence &amp; Civic Broadsheet</p>
+      </div>
+      <button type="button" id="dispatch-close" class="drawer-close" aria-label="Close dispatch">✕</button>
+    </div>
+    <div id="dispatch-body" class="dispatch-body" aria-live="polite">
+      <p class="empty-dispatch">Consulting the morning presses…</p>
+    </div>
+    <div class="drawer-footer dispatch-footer">
+      <button type="button" id="dispatch-share-btn" class="primary-btn dispatch-share-btn">📋 Share Dispatch</button>
+      <button type="button" id="dispatch-dismiss-btn" class="secondary-btn">Close</button>
+    </div>
+  </aside>
+
+  <!-- Plot Clocks Drawer -->
+  <aside id="clocks-drawer" class="offcanvas-drawer clocks-drawer" role="dialog" aria-label="London Plot Clocks" hidden>
+    <div class="drawer-header clocks-drawer-header">
+      <div class="drawer-header-text">
+        <span class="drawer-eyebrow">Ticking Narrative Timelines</span>
+        <h3 class="drawer-title clocks-title">London Plot Clocks</h3>
+        <p class="clocks-tagline">Multi-day escalations, surveillance nets, and celestial alignments.</p>
+      </div>
+      <button type="button" id="clocks-close" class="drawer-close" aria-label="Close plot clocks">✕</button>
+    </div>
+    <div id="clocks-body" class="clocks-body" aria-live="polite">
+      <p class="empty-clocks">Consulting London horology…</p>
+    </div>
+    <div class="drawer-footer clocks-footer">
+      <button type="button" id="clocks-refresh-btn" class="secondary-btn">Check World Clocks</button>
+      <button type="button" id="clocks-dismiss-btn" class="secondary-btn">Close</button>
+    </div>
+  </aside>
+
+  <!-- Urgent Courier Notification Toast -->
+  <div id="urgent-toast" class="urgent-toast" role="alert" aria-live="assertive" hidden>
+    <div class="urgent-toast-icon">⚡</div>
+    <div class="urgent-toast-body">
+      <span class="urgent-toast-tag">HIGH-STAKES DISPATCH</span>
+      <p id="urgent-toast-text" class="urgent-toast-text"></p>
+    </div>
+    <button type="button" id="urgent-toast-action" class="urgent-toast-action">View Beat</button>
+    <button type="button" id="urgent-toast-dismiss" class="urgent-toast-dismiss" aria-label="Dismiss alert">✕</button>
+  </div>
+
+  <!-- Traveller Profile Modal -->
+  <div id="profile-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="profile-title" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="drawer-eyebrow">Spectator & Social Engine</span>
+          <h2 id="profile-title">Traveller Identity</h2>
+        </div>
+        <button type="button" class="drawer-close" id="profile-close" aria-label="Close profile">✕</button>
+      </div>
+      <p id="fate-sync-notice" class="fate-notice" hidden>✦ Attuned with Faction Quiz Fate Gift</p>
+      <form id="profile-form" class="profile-form">
+        <div class="form-row">
+          <label for="profile-name-input">Display Name</label>
+          <input type="text" id="profile-name-input" maxlength="40" placeholder="e.g. StarlightScout" required>
+        </div>
+        <div class="form-row">
+          <label>Avatar Preset</label>
+          <div id="avatar-picker" class="avatar-picker">
+            <button type="button" class="avatar-option" data-avatar="👤">👤</button>
+            <button type="button" class="avatar-option" data-avatar="🗡️">🗡️</button>
+            <button type="button" class="avatar-option" data-avatar="📜">📜</button>
+            <button type="button" class="avatar-option" data-avatar="🌙">🌙</button>
+            <button type="button" class="avatar-option" data-avatar="☕">☕</button>
+            <button type="button" class="avatar-option" data-avatar="⚡">⚡</button>
+            <button type="button" class="avatar-option" data-avatar="🍸">🍸</button>
+            <button type="button" class="avatar-option" data-avatar="✦">✦</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="profile-holy-input">Holy Item</label>
+          <input type="text" id="profile-holy-input" maxlength="80" placeholder="e.g. Astra, Pendant of Mist">
+        </div>
+        <div class="form-row">
+          <label for="profile-guardian-input">Guardian</label>
+          <input type="text" id="profile-guardian-input" maxlength="80" placeholder="e.g. The Silver Born, Nixie">
+        </div>
+        <div class="form-row">
+          <label for="profile-title-input">Affiliation / Title</label>
+          <input type="text" id="profile-title-input" maxlength="60" placeholder="e.g. MI6 Archivist, Sanctuary Regular">
+        </div>
+        <div class="form-row">
+          <label for="profile-bio-input">One-line Lore / Bio</label>
+          <input type="text" id="profile-bio-input" maxlength="120" placeholder="e.g. Watching London from the quiet fog.">
+        </div>
+        <div class="form-row accolades-section">
+          <label>Earned Accolades</label>
+          <div id="profile-accolades-list" class="profile-accolades-list">
+            <span class="no-accolades-hint">No accolades unlocked yet. Foresee beat outcomes with Prophecy Wagers to earn titles.</span>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="profile-cancel" class="secondary-btn">Cancel</button>
+          <button type="submit" class="primary-btn">Save Identity</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
