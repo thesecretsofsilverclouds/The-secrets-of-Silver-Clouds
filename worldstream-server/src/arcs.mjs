@@ -1,5 +1,10 @@
 import { createHash } from 'node:crypto';
 import { atLondon, londonDate, nextLondonDay, MINUTE_MS as MIN } from './time.mjs';
+import { supportingAvailability } from './faction-agendas.mjs';
+import { supportingStoryAvailability, supportingLeadAvailable } from './supporting-stories.mjs';
+import { offscreenAvailable } from './offscreen-lives.mjs';
+import { nightStoryAvailable } from './night-stories.mjs';
+import { outingRecoveryActorAvailable } from './outing-recovery.mjs';
 
 // Something that takes more than one day, and ends.
 //
@@ -50,6 +55,7 @@ export const ARC_RULES = Object.freeze({
   // It waits this many days and then gives up on that beat rather than
   // contradicting where the world says they are.
   presenceAttempts: 6,
+  maxOpenDays: 90,
   retainedActions: 64,
 });
 
@@ -62,7 +68,7 @@ export function initialArcs() {
   // deliberately separate from `instances`, which is trimmed to the most recent
   // few — a mystery that scrolled out of the retained window would otherwise
   // become eligible again and replay its whole ladder verbatim.
-  return { version: 1, activeId: null, issued: {}, instances: {}, exhausted: [], lastClosedDay: null };
+  return { version: 1, activeId: null, issued: {}, instances: {}, exhausted: [], lastClosedDay: null, session: null };
 }
 
 // The one arc, written end to end. Each stage is a day; the reader sees the
@@ -91,7 +97,7 @@ export const ARCS = Object.freeze({
     confrontation: {
       at: '21:20', area: 'corridors',
       prose: 'They caught him on the lower level with the fourth docket still in his hand.\n\n'
-        + 'He was not hiding. That was the thing Ashai could not get past afterwards — he had waited, in a dead corridor, under a light that had been out for a month, with the burned paper held out slightly as though he were returning something borrowed. The mask was weathered metal and cracked leather with a crude smile cut into the iron of it, and the smoke that came off the filters went upward in the still air, and did not disperse.\n\n'
+        + 'He was not hiding. That was the thing Ashai could not get past — he had waited, in a dead corridor, under a light that had been out for a month, with the burned paper held out slightly as though he were returning something borrowed. The mask was weathered metal and cracked leather with a crude smile cut into the iron of it, and the smoke that came off the filters went upward in the still air, and did not disperse.\n\n'
         + 'Goaden drew. Vega came out of the sheath with a sound the corridor made twice.\n\n'
         + 'What followed lasted about nine seconds. He gave up the docket in the first of them and the wall in the second, and after that it was Goaden going forward and the masked man going backward with an economy that was worse than speed — no wasted motion, no attempt to strike, only a man declining to be caught by a man who is very good at catching. Ashai came round the far side to close the corridor and he let her, which is how they both understood, too late, that he had already chosen the ending.\n\n'
         + 'At the shaft head he stopped. He raised one finger to where his lips would have been.\n\n'
@@ -104,7 +110,7 @@ export const ARCS = Object.freeze({
     },
     aftermath: {
       at: '08:20',
-      text: 'The lower level was sealed again by morning, properly this time, and the fourth docket went upstairs in a box. Nobody at breakfast asked either of them about it. Kai did not leave Goaden\'s shoulder all day, and Greah spent the morning on the corridor sill facing the wrong way, watching the door.',
+      text: 'The lower level was sealed again by morning, properly this time, and the fourth docket went upstairs in a box. Nobody at breakfast asked either of them about it. The duty officer left a lamp burning beside the sealed door. Nobody switched it off.',
     },
   },
   // Conflict with a face on it. The Holy Order are already a faction posture in
@@ -264,23 +270,23 @@ export const ARCS = Object.freeze({
     id: 'yukon_rematch', title: 'Yukon Wants a Rematch', tier: 'ordinary', once: true, location: 'mi6',
     stages: [
       { key: 'challenge', at: '19:20', area: 'gaming_room',
-        text: 'Yukon challenged Goaden to a rematch in front of eleven people, a decision he appeared to regret from about the fourth word onward. A date was set. Money was not involved, which everyone agreed made it worse.' },
+        text: 'Yukon challenged Goaden to a rematch in front of eleven people, a decision he appeared to regret from about the fourth word onward. The rematch was on. Money was not involved, which everyone agreed made it worse.' },
       { key: 'practice', at: '22:30', area: 'gaming_room',
-        text: 'The gaming room light was on at half ten with one person in it. It was on at half ten the following night as well. Nobody said anything, on the grounds that saying something would have been unbearable for everybody.' },
+        text: 'The gaming room light was on at half ten with one person in it. Yukon sat close to the screen, practising the same difficult section. Nobody said anything, on the grounds that saying something would have been unbearable for everybody.' },
       { key: 'caught', at: '21:45', area: 'gaming_room',
         text: 'Ashai came in for the good chair and found Yukon with four extra fingers on his left hand, mid-shift, absolutely rigid with guilt. He put them away. She let a very long silence happen. Then she said she would not tell Goaden, and he said that was worse, and she agreed that it was.' },
       { key: 'apology', at: '18:50', area: 'common_room',
-        text: 'Yukon apologised to Goaden at dinner for something Goaden had not known about, in detail, unprompted, at a table with six other people at it. Goaden listened to the whole thing with a face like a man watching a controlled demolition and then said the rematch was still on.' },
+        text: 'Yukon apologised to Goaden over the table for something Goaden had not known about, in detail, unprompted, at a table with six other people at it. Goaden listened to the whole thing with a face like a man watching a controlled demolition and then said the rematch was still on.' },
     ],
     confrontation: {
       at: '20:30', area: 'gaming_room',
       prose: 'Yukon won.\n\n'
         + 'He won with both hands the correct shape and eighteen people watching, on the section that had beaten him for a month, by four seconds and a margin nobody could dispute. The gaming room made a noise it has not made since the brass put the screen in for morale.\n\n'
-        + 'And then, in the silence afterwards, while Goaden was actually offering him a hand, Yukon said: "Three weeks. I have been practising for three weeks. Every night. I worked out your route on the second Tuesday."\n\n'
+        + 'And then, in the silence afterwards, while Goaden was actually offering him a hand, Yukon said: "I have been practising. Every chance I got. I worked out your route."\n\n'
         + 'There is a particular quality of silence available to a room of eighteen off-duty operatives when somebody explains their own victory into the ground, and the gaming room found all of it.\n\n'
         + '"I know," said Goaden.\n\n'
         + '"You know?"\n\n'
-        + '"The light was on. Every night. It is a window, bro."\n\n'
+        + '"The light was on. It is a window, bro."\n\n'
         + 'Yukon looked at his own hands for a while. Then he said, in a much smaller voice, that he would like it on the record that he had still won, and Ashai said that it was on the record, and that everybody was going to be putting it on the record for months.',
       factText: 'Yukon beat Goaden at the game, fairly, and then explained exactly how long he had practised, in front of eighteen people.',
     },
@@ -288,7 +294,7 @@ export const ARCS = Object.freeze({
       factText: 'The rematch never came off. The gaming room booking lapsed twice and then stopped being mentioned.',
       text: 'The rematch did not happen. It was moved for a callout, and moved again for a briefing, and after the third time nobody rebooked the screen. Yukon still practises. The light is still on at half ten some nights, and Goaden still walks past the window and does not knock.' },
     aftermath: { at: '08:40',
-      text: 'By breakfast it had reached the corridors, the operations room and, somehow, the Streamliner platform. Three separate people asked Yukon how the three weeks had gone. He has begun claiming it was two.' },
+      text: 'By breakfast it had reached the corridors, the operations room and, somehow, the Streamliner platform. A note had appeared beside the screen: FAIRLY, WITH THE CORRECT NUMBER OF FINGERS. Nobody had signed it.' },
   },
   // Objective: Ashai wants to know why Captain Hammond keeps putting the second
   // chair out. Ends in a deliberate refusal — she finds out, and keeps it.
@@ -298,32 +304,32 @@ export const ARCS = Object.freeze({
     id: 'second_chair', title: 'The Second Chair', tier: 'ordinary', once: true, location: 'mi6',
     stages: [
       { key: 'notice', at: '12:40', area: 'common_room',
-        text: 'Captain Hammond has a corner table and two chairs, and he has never once sat at it alone without moving the second chair out. Ashai has eaten in that hall for two years. She noticed it on a Tuesday, which is how noticing works.' },
+        text: 'Captain Hammond has a corner table and two chairs, and he has never once sat at it alone without moving the second chair out. Ashai had been looking at her own plate. She noticed it over her meal, which is how noticing works.' },
       { key: 'pattern', at: '13:10', area: 'common_room',
-        text: 'It is not an invitation to whoever is nearest. Ashai watched for a week. The chair comes out at the same hour whether anybody takes it or not, and goes back at the same hour, and on the days he does not come to the hall at all it does not happen.' },
+        text: 'It is not an invitation to whoever is nearest. Ashai watched him move it again. The chair comes out at the same hour whether anybody takes it or not, and goes back at the same hour, and on the days he does not come to the hall at all it does not happen.' },
       { key: 'davis', at: '17:50', area: 'corridors',
         text: 'Davis knew, and would not say, and was decent about not saying it — no arch look, no half-hint. Just: it is his, ask him. Ashai pointed out that he does not speak. Davis said that was rather the point and went back to her screens.' },
       { key: 'sitting', at: '12:55', area: 'common_room',
-        text: 'So Ashai took the chair. Four days running, for the length of a cold cup each time, saying nothing, because that is the only conversation on offer. On the fourth of them Hammond moved the salt so she could reach it, which after four days felt like being handed something.' },
+        text: 'So Ashai took the chair and said nothing, because that was the only conversation on offer. Hammond moved the salt so she could reach it, which felt like being handed something.' },
       { key: 'napkin', at: '13:05', area: 'common_room',
-        text: 'On the fifth day he wrote on a napkin, folded it once, and put it under her cup. He did not watch her read it. He finished his cold cup at his own speed, inclined his head, and went back to the corridors.' },
+        text: 'This time he wrote on a napkin, folded it once, and put it under her cup. He did not watch her read it. He finished his cold cup at his own speed, inclined his head, and went back to the corridors.' },
     ],
     confrontation: {
       at: '19:40', area: 'common_room',
       prose: 'It was a name and a year.\n\n'
         + 'That was all it was. One name Ashai did not recognise, and a year she did — the year the Alchemical society came apart and a great many people stopped being alchemists, and a smaller number stopped being anything.\n\n'
-        + 'She sat with it in the lunch hall until the evening crowd had come and gone.\n\n'
-        + 'Goaden found her there at twenty to eight and asked, in the way he asks, which is by sitting down and not asking. She had the napkin in her hand. He looked at her hand and then at her face and waited, because he is better at that than he lets on.\n\n'
+        + 'She sat with it in the lunch hall while the cups around her went cold.\n\n'
+        + 'Goaden sat down beside her and asked, in the way he asks, which is by sitting down and not asking. She had the napkin in her hand. He looked at her hand and then at her face and waited, because he is better at that than he lets on.\n\n'
         + '"It is his," she said.\n\n'
-        + 'And that was the end of it. Goaden nodded once and let the subject close and did not raise it again, then or later, and the two of them sat in the emptying hall while the lights went down a bank at a time.\n\n'
-        + 'Ashai put the napkin in her jacket. It is still there.',
+        + 'And that was the end of it. Goaden nodded once and let the subject close, and the two of them let the noise of the hall fill the space.\n\n'
+        + 'Ashai folded the napkin and put it carefully in her jacket.',
       factText: 'Captain Hammond wrote down why he keeps the second chair out. Ashai read it and did not repeat it.',
     },
     faded: {
       factText: 'Hammond never explained the second chair, and Ashai stopped asking.',
       text: 'He never wrote anything. Ashai took the chair for a fortnight and then the week got in the way, and then it had been a month, and the chair goes on coming out at the same hour for nobody in particular. She has stopped intending to find out. She has not stopped noticing.' },
     aftermath: { at: '12:45',
-      text: 'The second chair came out at the usual hour. Ashai took it, as she now does perhaps twice a week, and the two of them said nothing at each other over a cold cup for twenty minutes. Greah has taken to waiting on the back of it.' },
+      text: 'The second chair was out. Ashai took it without asking this time. Hammond moved his cup a little to make room, and Greah settled on the back of the chair.' },
   },
   // ── STRANGE AND FUNNY ─────────────────────────────────────────────────────
   // Objective: get the tattoo design to stop following Ashai. Living ink is
@@ -338,9 +344,9 @@ export const ARCS = Object.freeze({
       { key: 'follows', at: '14:30', area: 'venue', needs: 'ashai',
         text: 'The small drifting lintel design followed Ashai three shelves at Enchanted Ink, which she has decided to find flattering rather than the alternative.' },
       { key: 'window', at: '15:10', area: 'venue',
-        text: 'It was on the inside of the shop window when they walked past four days later, on a street the shop had not been on when they last saw it. It was, unmistakably, facing out.' },
+        text: 'It was on the inside of the shop window when they came through the door. It had turned itself around. It was, unmistakably, facing them.' },
       { key: 'gabriel', at: '18:35', area: 'venue',
-        text: 'Gabriel arrived at the Ink for wings and left with a small drifting lintel on his forearm that he had not asked for, had not paid for and could not get anybody to take responsibility for. He was, by his own later account, gracious about it. Nobody who was there supports this account.' },
+        text: 'Gabriel arrived at the Ink for wings and left with a small drifting lintel on his forearm that he had not asked for, had not paid for and could not get anybody to take responsibility for. He said he was being gracious about it. Nobody in the shop agreed.' },
       // This one happens at the Silver Spoon, not the Ink, so it carries its own
       // `location`: both the guard and the event's filing use it. Without that
       // the sign could put Ashai at a cafe table while she is elsewhere, and
@@ -352,20 +358,20 @@ export const ARCS = Object.freeze({
       at: '15:40', area: 'venue',
       prose: 'The shop, when they finally cornered it about the matter, was completely unembarrassed.\n\n'
         + 'The tattooist explained it the way you would explain a fault in a boiler. The wall keeps a count. It has always kept a count. Designs that get looked at move toward the looking, and the one that gets looked at most in a given month goes on tour — window, regulars, whoever is nearest — because that is how the wall advertises, and it has been doing it since the Shattering and nobody has ever thought to mention it because nobody has ever asked.\n\n'
-        + 'Ashai had topped the count three months running.\n\n'
+        + 'The tattooist pointed at Ashai. She had been looking at it more than she realised.\n\n'
         + '"So it is not following me," she said.\n\n'
         + '"It is going where the interest is," said the tattooist. "You are the interest."\n\n'
         + 'The remedy, delivered with the air of a man who has given it many times, was to stop looking at it.\n\n'
-        + 'This proved to be the hardest thing Ashai had attempted all month. She managed nine minutes on the shop floor with her eyes deliberately elsewhere while the design tried increasingly undignified manoeuvres in her peripheral vision, and Goaden — who was no help whatsoever and made no pretence of being help — timed it.\n\n'
+        + 'This proved considerably harder than Ashai had expected. She managed nine minutes on the shop floor with her eyes deliberately elsewhere while the design tried increasingly undignified manoeuvres in her peripheral vision, and Goaden — who was no help whatsoever and made no pretence of being help — timed it.\n\n'
         + 'On the tenth minute it gave up and went back to the wall.\n\n'
-        + 'It was on Gabriel again by Thursday. He has stopped complaining about it.',
-      factText: 'The drifting lintel design was following the shop\'s own attention count. Ashai had topped it three months running.',
+        + 'The tattooist turned back to his work as though that settled everything.',
+      factText: 'The drifting lintel design was following the shop\'s own attention count. Ashai had been looking at it more than she realised.',
     },
     faded: {
       factText: 'The drifting design stopped appearing. Nobody at the Ink was ever asked to account for it.',
       text: 'It stopped. No explanation, no apology, and the shop was on a different street by the time anybody got round to asking. Gabriel still has his. He has begun telling people it was commissioned.' },
     aftermath: { at: '13:20',
-      text: 'The Ink was two streets over by the weekend, between a locksmith and nothing at all. Ashai walked past on the other side of the road, on purpose, looking straight ahead. Goaden reported this to at least four people.' },
+      text: 'The drifting design was back in its place on the wall. The tattooist had put a small handwritten sign under it: PLEASE STOP ENCOURAGING IT.' },
   },
   // Objective: find out why New Big Ben is ringing early before the borough's
   // clocks all follow it. Ends in a success supplied by a child on a swing —
@@ -531,26 +537,26 @@ export const ARCS = Object.freeze({
     id: 'counter_stands', title: 'The Counter Does Not Move', tier: 'danger', once: true, location: 'cafe',
     stages: [
       { key: 'twice', at: '13:10', area: 'venue',
-        text: 'Two men came into the Silver Spoon at the busiest part of lunch, did not order, stood where the queue had to go round them, and left after four minutes. The owner served the whole queue without once looking at the door they went out of, which is how Ashai knew it was the second time.' },
+        text: 'Two men came into the Silver Spoon, did not order, stood where the queue had to go round them, and left without buying anything. The owner served the whole queue without once looking at the door they went out of, which is how Ashai knew it was the second time.' },
       { key: 'terms', at: '12:40', area: 'venue',
-        text: 'It was the third time that they said a number out loud. They said it at the counter, at ten past one, over the heads of nineteen people eating, because the point of saying it then is that everybody hears it and nobody knows where to look. The owner asked whether they wanted anything, in the voice she uses for people who have not decided about the soup.' },
+        text: 'It was the third time that they said a number out loud. They said it at the counter, over the heads of nineteen people eating, because the point of saying it then is that everybody hears it and nobody knows where to look. The owner asked whether they wanted anything, in the voice she uses for people who have not decided about the soup.' },
       { key: 'asking', at: '17:55', area: 'venue',
-        text: 'Goaden asked around, which took an afternoon and got him the same answer four times in slightly different words: they had done the fish shop, they had done the framers, and the framers had paid. Nobody would say it to a form. Everybody would say it to him on a doorstep with the door half shut.' },
+        text: 'Goaden asked the owner while his tea cooled. They had done the fish shop. They had done the framers, and the framers had paid. She said it all without looking away from the counter. Nobody would put it on a form.' },
       { key: 'offer', at: '18:30', area: 'venue',
-        text: 'He offered to be there at one. She said no. She said that if there is a man at the counter every lunchtime then it is his cafe, and that she had bought it with her own money in her own name and would keep it in both. Then she asked him whether he wanted the last table, since he was going to sit at it anyway.' },
+        text: 'He offered to wait at the counter. She said no. She said that if there is a man at the counter every lunchtime then it is his cafe, and that she had bought it with her own money in her own name and would keep it in both. Then she asked him whether he wanted the last table, since he was going to sit at it anyway.' },
       { key: 'friday', at: '12:20', area: 'venue',
-        text: 'On the Friday they came at one with a third man, and the third man was the reason: two can be refused, three is a decision being made in front of witnesses. The room understood before anyone moved. Half the tables were families. The owner put both hands flat on the counter and said no while the door was still swinging.' },
+        text: 'They came back with a third man, and the third man was the reason: two can be refused, three is a decision being made in front of witnesses. The room understood before anyone moved. Half the tables were families. The owner put both hands flat on the counter and said no while the door was still swinging.' },
     ],
     confrontation: {
       at: '13:05', area: 'venue',
       prose: 'The table went over onto a woman and her son.\n\n'
-        + 'That was the whole of the decision — not the number, not the third man, not any of the four minutes of standing about that had come before it. A table with two plates on it went over onto somebody\'s child at ten past one on a Friday, and after that there was nothing to negotiate about and the room stopped being a room full of people who did not want trouble.\n\n'
-        + 'Ashai got there before the second one landed. Not to the men — to the woman, and to the four people behind her, and she stayed there, which is the harder half of it and the half nobody afterwards described properly. Everything that came off that side of the cafe for the next forty seconds came off it into her back.\n\n'
+        + 'That was the whole of the decision — not the number, not the third man, not any of the standing about that had come before it. A table with two plates on it went over onto somebody\'s child in the Silver Spoon, and after that there was nothing to negotiate about and the room stopped being a room full of people who did not want trouble.\n\n'
+        + 'Ashai got there before the second one landed. Not to the men — to the woman, and to the four people behind her, and she stayed there, which is the harder half of it and the half easiest to overlook. Everything that came off that side of the cafe for the next forty seconds came off it into her back.\n\n'
         + 'Goaden came off the last table saying one thing, which about nine people heard and all nine reported the same: "Out. All three of you, out that fuckin\' door."\n\n'
         + 'They did not go. So he took them out of it.\n\n'
-        + 'It was not a fight and he would not later call it one. It was a man clearing a doorway of three people who had decided that a room full of families was a safe place to be frightening in, and it lasted about as long as that ought to. The third man went through the door frame shoulder first and got up on the pavement and did not come back in.\n\n'
+        + 'It was not much of a fight. It was a man clearing a doorway of three people who had decided that a room full of families was a safe place to be frightening in, and it lasted about as long as that ought to. The third man went through the door frame shoulder first and got up on the pavement and did not come back in.\n\n'
         + 'Inside, the owner had already got the boy out from under the table and was checking his arms, and was saying — to him, evenly, as if it were the ordinary next thing — that the soup was still on and he could have some.\n\n'
-        + 'The MEU took forty minutes to arrive. By then two of the nineteen had gone, and the other seventeen had put the tables back.',
+        + 'Somebody went to call the MEU. The owner righted a chair and asked for help with the tables.',
       factText: 'Collectors turned a table onto a customer at the Silver Spoon. Goaden put them out; Ashai kept the diners covered. The owner refused to close.',
       shakes: ['ashai'],
     },
@@ -559,7 +565,7 @@ export const ARCS = Object.freeze({
       text: 'They did not come back on the Friday, or the Friday after. The owner kept the number written on the inside of a receipt book in case anybody official ever asked her for it, and nobody ever did. She still does not sit with her back to the door.',
     },
     aftermath: { at: '19:40',
-      text: 'She would not close and she would not have anybody standing at the counter, so it settled into something else instead: for ten days the last table was never empty. Goaden one night, Zara two, a captain who ate very slowly and read a folder, the fish shop\'s son, and on the Thursday a girl nobody could place who stayed until the shutters came down and left the exact money on the table. The soup is unchanged. The door frame is a different colour to the rest of the frame and the owner has not painted it.' },
+      text: 'The owner had put the tables back in their old places. The soup was unchanged. The door frame was a different colour to the rest of the frame and she had not painted it.' },
   },
   // ---- Treatment: "Left Luggage, Still Warm" -------------------------------
   // A case on a platform getting warmer and no alarm going off for it.
@@ -617,7 +623,7 @@ export const ARCS = Object.freeze({
       { key: 'works', at: '15:20', area: 'venue',
         text: 'Inside the barriers was a road. Eleven inches of it, laid in chips of slate off the market skips, graded and tamped and rising very slightly to the left, and beside it a handwritten notice on a card the size of a stamp which nobody has yet been able to read.' },
       { key: 'displaced', at: '12:55', area: 'venue',
-        text: 'The plaza kept walking through it. Not maliciously — a full-sized person simply does not see a barrier eleven inches high, and each morning the signs were somewhere new and each morning they went back exactly where they had been. Ashai watched the sprite spend forty minutes on the position of one cone.' },
+        text: 'The plaza kept walking through it. Not maliciously — a full-sized person simply does not see a barrier eleven inches high, and each morning the signs were somewhere new and each morning they went back exactly where they had been. Ashai watched the sprite move the same cone, consider it, and move it back.' },
       { key: 'corner', at: '16:30', area: 'venue',
         text: 'The difficulty was the corner. It had been rebuilt four times, and the fourth version was worse than the second, and the sprite knew it. It sat on the kerbstone beside its own corner for most of an afternoon with its chin in its hands, and then took the whole thing up again.' },
       { key: 'offer', at: '10:15', area: 'venue',
@@ -625,11 +631,11 @@ export const ARCS = Object.freeze({
     ],
     confrontation: {
       at: '17:10', area: 'venue',
-      prose: 'The road opened on the Thursday.\n\n'
-        + 'It is eleven inches long, it runs along the wall by the plaza gardens, and it has a camber. It cost, as far as anybody can establish, one caretaker\'s goodwill, half a skip of slate and eleven days.\n\n'
+      prose: 'The road opened.\n\n'
+        + 'It is eleven inches long, it runs along the wall by the plaza gardens, and it has a camber. It cost, as far as anybody can establish, one caretaker\'s goodwill, half a skip of slate and a great deal of patience.\n\n'
         + 'There was bunting. Nobody knows where the bunting came from and the sprite would not be drawn on it.\n\n'
         + 'There were three test runs with the cart, because two would have been complacent, and between the second and the third there was a delay while a snail was removed from the carriageway with more ceremony than the snail can have wanted. Goaden was asked to hold one end of the bunting and did so for eleven minutes without saying anything clever, which Ashai has decided to remember.\n\n'
-        + 'At the third run the cart came down the whole length, took the corner — the corner, the one that had been built five times — without slowing, and stopped square at the far end.\n\n'
+        + 'At the third run the cart came down the whole length, took the corner — the corner, the one that had been built and taken up again — without slowing, and stopped square at the far end.\n\n'
         + 'Nine people had gathered by then, which for a plaza that ignores a street performer with a four-storey rabbit is a considerable crowd. They applauded. The sprite did not acknowledge it. It went and stood at the corner and looked at the corner.',
       factText: 'A road sprite finished an eleven-inch road along the plaza garden wall. It has a camber, and it opened with bunting.',
     },
@@ -638,7 +644,7 @@ export const ARCS = Object.freeze({
       text: 'The borough took the barriers away on a Tuesday along with the rest of the plaza\'s unlicensed clutter, and the eleven inches of slate went into the back of the same van. Ashai looked for the sprite twice and did not find it. The crack in the paving is still there and is now genuinely a trip hazard.',
     },
     aftermath: { at: '13:25',
-      text: 'The road is still there. Somebody from the gardens sweeps it, which nobody asked them to do. The card-sized notice has been moved to the near end where it can be read by anybody prepared to kneel, and Ashai has knelt, and reports that it is not writing at all but a very small and extremely detailed plan of the corner.' },
+      text: 'The road was still there. Somebody from the gardens had swept it, which nobody asked them to do. The card-sized notice was at the near end. Ashai knelt to read it. It was not writing at all but a very small and extremely detailed plan of the corner.' },
   },
   // ---- Treatment: "The Clockwork Derby" ------------------------------------
   // Yukon helps build the fastest-looking cart in the field. Its problem is
@@ -652,7 +658,7 @@ export const ARCS = Object.freeze({
       { key: 'build', at: '19:05', area: 'common_room',
         text: 'The cart he is helping with is magnificent. It has fins. It has a spoiler off a broken filing trolley and a painted flame down each side and it is, by common agreement in the courtyard, the most frightening object anybody there has ever built. Yukon has explained the fins to four separate people at MI6 and each explanation has been longer.' },
       { key: 'heats', at: '17:50', area: 'common_room',
-        text: 'It won its heat by a distance that made two other entrants retire on the spot. It also went into the wall on the exit of the last bend, and left a scrape, and everybody agreed the scrape was fine because it had won. The sprite that built it looked at the scrape for some time.' },
+        text: 'It won its heat by a distance that made two other entrants retire on the spot. It also went into the wall on the exit of the last bend, and left a scrape, and everybody agreed the scrape was fine because it had won. The sprite that built it kept looking at the scrape.' },
       { key: 'width', at: '20:10', area: 'gaming_room',
         text: 'Ashai, who came to one practice out of politeness and stayed for three, pointed out over dinner that the final course uses the tight bend by the gate and the cart is four inches wider than the heat course allows for. Yukon said the fins were structural. Ashai said the fins were four inches. Yukon said they were structural four inches and could she please stop being clever about it at dinner.' },
       { key: 'plain', at: '16:45', area: 'common_room',
@@ -686,11 +692,11 @@ export const ARCS = Object.freeze({
       { key: 'absent', at: '17:30', area: 'venue',
         text: 'The roof garden above the market has kept a notebook for two years, and the notebook has a lintel in it most weeks, and this month it has none. The woman who keeps the notebook mentioned it to Ashai in the way people mention a thing they have decided not to be upset about.' },
       { key: 'checking', at: '12:10', area: 'venue',
-        text: 'They checked the obvious first, because the obvious is usually right and is also the frightening one: nothing dead on the roof, nothing wrong with the beds, no works nearby, no new wards. The garden is in better condition than it was in the spring. That is what made it strange.' },
+        text: 'Ashai asked about the obvious first, because the obvious is usually right and is also the frightening one. The woman shook her head: nothing dead on the roof, nothing wrong with the beds, no works nearby, no new wards. The garden was in better condition than it had been in the spring. That was what made it strange.' },
       { key: 'notebook', at: '18:15', area: 'venue',
         text: 'The notebook is very good. It records the day, the weather and the plant it settled over, and it goes back far enough that the absence has a shape: not a sudden stop but a thinning across five weeks, one visit fewer, then two, the way attention goes rather than the way an accident does.' },
       { key: 'found', at: '15:45', area: 'venue',
-        text: 'It is four buildings east, on a roof that was gravel eighteen months ago and is now the best-fed square of ground for a quarter of a mile, and it is not alone up there. Ashai stood in the stairwell doorway and counted three, and did not go out onto the roof, and came back down.' },
+        text: 'It is four buildings east, on a roof that was gravel eighteen months ago and is now the best-fed square of ground for a quarter of a mile, and it is not alone up there. From the plaza Ashai counted three drifting shapes above it, and then counted again.' },
       { key: 'telling', at: '19:00', area: 'venue',
         text: 'Telling her was harder than finding it. She took it well for about four seconds and then said, of a cloud, that she had thought it liked the rosemary. Goaden said that it probably did, and that things go where the food is, and that this was not a compliment being withdrawn. She said she knew that. She wrote it in the notebook.' },
     ],
@@ -700,7 +706,7 @@ export const ARCS = Object.freeze({
         + 'The gravel roof belongs to a man who started growing things eighteen months ago because he had to do something with his hands. He had no idea there was a notebook. He had no idea there was a roof garden above the market at all, and said so, and then said that he had wondered why they were coming to him.\n\n'
         + 'They stood there for a while working out that they had been keeping separate records of the same animal.\n\n'
         + 'There was a bad ten minutes in the middle where it was very nearly a competition — two people establishing, politely, at length, whose beds were better — and then she asked what he was doing about the mint, because his mint was extraordinary, and after that it was fine.\n\n'
-        + 'It came back to the market roof eleven days later for one afternoon and then went east again. The notebook records this without comment, which took some doing.\n\n'
+        + 'The woman left a blank space in her notebook for the next sighting. Leaving it blank took some doing.\n\n'
         + 'They have not merged the notebooks. They have agreed that this would be sensible and have not done it, and instead each writes down what the other tells them, in their own hand, in their own book, which is twice the work and is obviously the point.',
       factText: 'The market roof\'s regular lintel had moved to a better-fed garden four buildings east. The two gardeners have started comparing notes.',
     },
@@ -709,7 +715,7 @@ export const ARCS = Object.freeze({
       text: 'It came back in the third week without anybody establishing where it had been, settled over the rosemary as though nothing had happened, and the notebook resumed. She has stopped saying she was worried. She has not stopped checking at four.',
     },
     aftermath: { at: '11:50',
-      text: 'There are now two notebooks four buildings apart, each containing the other roof\'s sightings in the wrong handwriting. The lintel divides its time unevenly and neither of them will say out loud which way. Ashai has been given a cutting of the extraordinary mint and has put it on the corridor windowsill at MI6, where it is doing better than anything else on that windowsill and is beginning to be a topic.' },
+      text: 'There are now two notebooks four buildings apart, each containing the other roof\'s sightings in the wrong handwriting. The lintel divides its time unevenly and neither of them will say out loud which way. The woman has a cutting of the extraordinary mint ready to give away. She is pretending it was her idea.' },
   },
   // ---- Treatment: "The Sketchbook Hostage" ---------------------------------
   // A thief with the wrong idea about what an apprentice can authorise. The
@@ -871,9 +877,182 @@ export const ARCS = Object.freeze({
 });
 const ARC_IDS = Object.keys(ARCS);
 
+// Authored prose is a proposal, not permission to move its cast. These are the
+// small stories whose complete choreography fits the existing rooms and visits.
+// Longer expeditions remain in the source bank until their journeys, deadlines
+// and lasting consequences can be committed rather than asserted in a paragraph.
+export const ARC_STAGING = Object.freeze({
+  burned_dockets: { named: ['goaden', 'ashai'], confrontation: ['goaden', 'ashai'] },
+  yukon_rematch: { challenge: ['goaden', 'yukon'], practice: ['yukon'], caught: ['ashai', 'yukon'],
+    apology: ['goaden', 'yukon'], confrontation: ['goaden', 'ashai', 'yukon'] },
+  second_chair: { notice: ['ashai', 'kartel'], pattern: ['ashai', 'kartel'], davis: ['ashai', 'davis'],
+    sitting: ['ashai', 'kartel'], napkin: ['ashai', 'kartel'], confrontation: ['goaden', 'ashai'],
+    closed: ['ashai', 'kartel'] },
+  ink_admirer: { follows: ['ashai'], window: ['goaden', 'ashai'], gabriel: ['gabriel'], stranger: ['ashai'],
+    confrontation: ['goaden', 'ashai'] },
+  counter_stands: { twice: ['ashai'], asking: ['goaden'], offer: ['goaden'],
+    confrontation: ['goaden', 'ashai'] },
+  smallest_roadworks: { barriers: ['goaden'], displaced: ['ashai'], confrontation: ['goaden', 'ashai'], closed: ['ashai'] },
+  familiar_one: { absent: ['ashai'], checking: ['ashai'], found: ['ashai'], telling: ['goaden'] },
+});
+export const ARC_STAGING_GATES = Object.freeze({
+  order_interest: 'Requires an owned embankment deployment and fight, outside the MI6 room model.',
+  wrong_platform: 'Requires a platform visit; a timed journey in a carriage is not standing on a platform.',
+  lintel_roost: 'Requires a bonded-store investigation and forty-minute repair away from MI6.',
+  third_carriage: 'Requires a maintenance inspection and a durable carriage withdrawal.',
+  chimes_early: 'Requires a clock fault, timed repair and downstream timetable consequences.',
+  ink_runs: 'Requires a rooftop pursuit, phase deadline and stolen-item custody.',
+  lintel_down: 'Requires a containment deadline, injury and sustained recovery.',
+  legion_job: 'Requires a journey to the Legion warehouse and an owned mission.',
+  left_luggage: 'Requires a platform investigation and creature-custody resolution.',
+  clockwork_derby: 'Requires attendance at the market race rather than simultaneous MI6 presence.',
+  sketchbook_hostage: 'Requires a rooftop pursuit, exchange deadline and persistent damage.',
+  lamp_tapping: 'Requires a midnight deployment, rescue and delayed interception.',
+  footsteps: 'Requires a street surveillance operation rather than an MI6 desk activity.',
+  after_the_shield: 'Requires an actual preceding rescue and durable injury/recovery state.',
+});
+
+const CAST_LEADS = ['goaden', 'ashai'];
+const ORDINARY = new Set(['unhurried_time', 'waiting', 'quiet_break', 'eating', 'gaming',
+  'watching_television', 'listening_to_music', 'at_the_silver_spoon', 'visiting_enchanted_ink', 'walking_the_city']);
+const ROUTINE_AREA = { MEAL_BEGIN: 'common_room', GAME_BEGIN: 'gaming_room', GAME_RESUME: 'gaming_room',
+  TV_BEGIN: 'gaming_room', MUSIC_LISTEN_BEGIN: 'common_room', QUIET_TIME_BEGIN: 'common_room',
+  WAIT_BEGIN: 'common_room', CROSS_PATHS: 'corridors', CITY_ACTIVITY_BEGIN: 'venue' };
+const CHANGES_ACTIVITY = new Set([...Object.keys(ROUTINE_AREA), 'PRACTICE_BEGIN', 'REST_BEGIN',
+  'PIANO_BEGIN', 'BRIEFING_BEGIN', 'STANDBY_BEGIN', 'COMMS_CHECK_BEGIN', 'TRAVEL_DEPART']);
+const castFor = (definition, key) => ARC_STAGING[definition.id]?.[key] ?? [];
+const placeFor = (definition, stage) => stage.location ?? definition.location;
+const areaFor = (definition, stage) => stage.area ?? (definition.location === 'mi6' ? 'common_room' : 'venue');
+const sceneDuration = definition => ({ yukon_rematch: 12, second_chair: 12, ink_admirer: 10,
+  smallest_roadworks: 12, familiar_one: 15 }[definition.id] ?? 2) * MIN;
+const elapsedFor = () => MIN;
+export function arcParticipantAvailable(state, who, atMs) {
+  const session = state.arcs?.session;
+  return !(session?.cast?.includes(who) && session.startAt <= atMs && atMs < session.until);
+}
+export function interruptArcSession(ctx, reason, actorId = null) {
+  const session = of(ctx.state).session;
+  if (!session || session.until <= ctx.now || actorId && !session.cast.includes(actorId)) return false;
+  const instance = of(ctx.state).instances[session.instanceId];
+  if (instance) touch(ctx, instance, { sceneOutcome: { status: 'interrupted', reason,
+    eventId: ctx.id, at: ctx.now, startEventId: session.startEventId },
+    sceneInterruptions: (instance.sceneInterruptions ?? 0) + 1 });
+  save(ctx, { session: null });
+  ctx.event.causedBy.push(session.startEventId);
+  return true;
+}
+export function guardArcAction(ctx) {
+  const a = ctx.action, session = of(ctx.state).session;
+  if (!session || session.until <= ctx.now || ARC_EVENT_TYPES.includes(a.type)) return true;
+  const actors = a.actors ?? (a.actor ? [a.actor] : a.type === 'END_ENCOUNTER' ? CAST_LEADS : []);
+  if (!actors.some(who => session.cast.includes(who))) return true;
+  if (/^(ARCANE_SURGE|INCIDENT|BRIEFING_BEGIN|COMMS_CHECK_BEGIN|STANDBY_BEGIN|NIGHT_)/.test(a.type)) {
+    interruptArcSession(ctx, a.type); return true;
+  }
+  // Existing owned story actions retain their signed shape. Their usual
+  // availability checks refuse a conflicting booking; an unforeseen physical
+  // replacement is caught by the activity choke point.
+  if (/^(SUPPORTING_|INTENT_|ABILITY_|OFFSCREEN_|AGENDA_|OUTING_RECOVERY_|INK_)/.test(a.type)) return true;
+  if (['ACTIVITY_COMPLETE', 'PRACTICE_END', 'END_ENCOUNTER'].includes(a.type)) {
+    const dueAt = session.until + 1;
+    ctx.followups.push({ ...a, id: `${a.id}/after-arc/${session.startEventId}`, dueAt, day: londonDate(dueAt) });
+  }
+  ctx.event.causedBy.push(session.startEventId);
+  ctx.ops.skip('The current arc scene retains its participants');
+  return false;
+}
+const sceneOpeners = {
+  burned_dockets: 'A movement at the far end of the corridor stopped Ashai. Goaden saw it too. Neither of them spoke.',
+  yukon_rematch: 'Yukon made room at the screen. Goaden took the other controller, and Ashai stayed to watch.',
+  second_chair: 'Ashai had the folded napkin in her hand. Goaden sat down beside her and waited.',
+  ink_admirer: 'Ashai stopped in front of the tattooist. The drifting design stopped with her. Goaden looked from one to the other.',
+  counter_stands: 'The three men came through the Silver Spoon door again. Goaden put his cup down. Ashai was watching the tables nearest them.',
+  smallest_roadworks: 'The sprite had put up bunting. It gave Goaden one end to hold, and Ashai stayed beside him for the first run.',
+  familiar_one: 'The two gardeners met to compare their notebooks. Both had brought a pencil. Neither knew quite how to begin.',
+};
+const unresolvedLines = {
+  burned_dockets: 'The burned dockets remained unanswered. Nobody had found out who was sending them.',
+  order_interest: 'The Order sightings remained unexplained. The card had produced no answer.',
+  wrong_platform: 'There was still no explanation for platform nine. The ordinary services went on.',
+  lintel_roost: 'Nobody had established what was drawing the Lintels to the bonded store.',
+  third_carriage: 'The question of the third carriage was still open. The service log held no answer.',
+  yukon_rematch: 'The rematch was still unplayed. Yukon had not withdrawn the challenge.',
+  second_chair: 'The second chair remained Hammond’s business. No explanation had been given.',
+  ink_admirer: 'Nobody had obtained an explanation from the Ink. The question of the drifting design remained open.',
+  chimes_early: 'The belfry had not supplied an explanation for the early Chimes.',
+  ink_runs: 'The missing plate had not been recovered. Nothing in the shop could take its place.',
+  lintel_down: 'The grounded Lintel’s fate remained uncertain. No rescue had been recorded.',
+  legion_job: 'The favour remained unfulfilled. Truth had not got his answer.',
+  counter_stands: 'The trouble at the Silver Spoon remained unsettled. The owner had given no ground.',
+  left_luggage: 'The questions about the luggage were still unanswered.',
+  smallest_roadworks: 'There had been no opening ceremony for the little road. The corner remained unfinished.',
+  clockwork_derby: 'The final remained unrun. The argument about the fins had not been settled.',
+  familiar_one: 'Nobody had yet explained the gap in the gardener’s notebook.',
+  sketchbook_hostage: 'The sketchbook had not been recovered. The apprentice was still waiting.',
+  lamp_tapping: 'The streetlamp’s tapping remained unexplained.',
+  footsteps: 'The Cross Lane reports remained unresolved. No watcher had been identified.',
+  after_the_shield: 'No further barrier session was recorded. The training log remained open.',
+};
+
+function castPresent(state, definition, stage, key, now) {
+  const location = placeFor(definition, stage), area = areaFor(definition, stage);
+  const until = key === 'confrontation' ? now + sceneDuration(definition) : now + 1;
+  return castFor(definition, key === 'confrontation_complete' ? 'confrontation' : key).every(who => {
+    const session = state.sceneBank?.session;
+    if (session?.cast?.includes(who) && session.startAt <= now && now < session.until) return false;
+    const actor = state.characters?.[who];
+    if (CAST_LEADS.includes(who)) return actor && actor.location === location && actor.area === area
+      && !actor.journey && ORDINARY.has(actor.activity)
+      && (!Number.isSafeInteger(actor.activitySince) || now - actor.activitySince >= elapsedFor(definition, key))
+      && (!Number.isSafeInteger(actor.activityUntil) || actor.activityUntil > now)
+      && !Object.values(state.intent?.instances ?? {}).some(item => item.party?.includes(who)
+        && ['reserved', 'started', 'interrupting'].includes(item.status) && item.startAt < until && item.endAt > now)
+      && !Object.values(state.arrangements ?? {}).some(item => item.party?.includes(who)
+        && ['accepted', 'started'].includes(item.status) && item.startAt < until && item.until > now
+        && !(item.status === 'started' && item.startedEventId === actor.activityId))
+      && nightStoryAvailable(state, who, { atMs: now })
+      && outingRecoveryActorAvailable(state, who, { atMs: now })
+      && supportingLeadAvailable(state, who, { atMs: now });
+    const duty = state.agendas?.supporting?.[who]?.commitment;
+    if (duty && duty.startAt < until && duty.until > now) return false;
+    if (Object.values(state.supportingStories?.instances ?? {}).some(item => item.guests?.includes(who)
+      && ['promised', 'met', 'interrupting'].includes(item.status) && item.openedAt < until && item.deadlineAt > now)) return false;
+    return supportingAvailability(state, who, { atMs: now, location, area })
+      && supportingStoryAvailability(state, who, { atMs: now })
+      && offscreenAvailable(state, who, { atMs: now, until, location });
+  });
+}
+
+// A schedule locates a possible observation inside an existing activity; the
+// reducer rechecks actual presence. No journey or new routine is manufactured.
+function plannedStageTime(definition, stage, key, day, now, scheduled) {
+  const fixed = atLondon(day, stage.at), leads = castFor(definition, key).filter(who => CAST_LEADS.includes(who));
+  if (!leads.length || !Array.isArray(scheduled)) return fixed;
+  const location = placeFor(definition, stage), area = areaFor(definition, stage), elapsed = elapsedFor(definition, key);
+  const duration = key === 'confrontation' ? sceneDuration(definition) : 0;
+  const windows = who => scheduled.filter(action => (action.actors ?? [action.actor]).includes(who)
+    && (action.location ?? 'mi6') === location && (action.area ?? ROUTINE_AREA[action.type]) === area
+    && Object.hasOwn(ROUTINE_AREA, action.type)).map(action => {
+      const arranged = action.arrangementKey && scheduled.find(item => item.type === 'OFFER_ACTIVITY'
+        && item.arrangementKey === action.arrangementKey);
+      const next = scheduled.filter(item => item.dueAt > action.dueAt && CHANGES_ACTIVITY.has(item.type)
+        && (item.actors ?? [item.actor]).includes(who)).reduce((at, item) => Math.min(at, item.dueAt), Infinity);
+      const end = Math.min(next, action.dueAt + (action.duration ?? arranged?.duration
+        ?? (action.type === 'CROSS_PATHS' ? 25 : 30)) * MIN);
+      return { start: action.dueAt + elapsed, end: end - duration - 1 };
+    });
+  let overlaps = windows(leads[0]);
+  for (const who of leads.slice(1)) overlaps = overlaps.flatMap(left => windows(who).map(right =>
+    ({ start: Math.max(left.start, right.start), end: Math.min(left.end, right.end) })).filter(row => row.start <= row.end));
+  const choices = overlaps.filter(row => row.end > now && row.start <= row.end)
+    .map(row => Math.max(now + 1, row.start, Math.min(fixed, row.end)))
+    .sort((a, b) => Math.abs(a - fixed) - Math.abs(b - fixed) || a - b);
+  return choices[0] ?? null;
+}
+
 const shape = action => ({ type: action.type, dueAt: action.dueAt, priority: action.priority,
   day: action.day, version: action.version, arcId: action.arcId ?? null,
-  stage: action.stage ?? null, token: action.token ?? null });
+  stage: action.stage ?? null, token: action.token ?? null, ...(action.phase ? { phase: action.phase } : {}) });
 const proposal = (id, at, type, extra = {}) => ({ id, type, dueAt: at,
   priority: 33, day: londonDate(at), version: 1, actors: [], ...extra });
 
@@ -911,24 +1090,37 @@ export function issueArcActions(ctx, proposals) {
  * from the pure day plan — the same route the pressure incidents take, because
  * an arc is a consequence of the world's condition rather than of its calendar.
  */
-export function arcDayActions({ state, day, now, seed, carried = 0 }) {
+export function arcDayActions({ state, day, now, seed, carried = 0, scheduled = null }) {
+  // A published plan is an opportunity, never proof of attendance. Schedule a
+  // location-bound sign inside the existing visit; resolution still checks the
+  // actual actor. This spends the same daily arc slot without adding a journey.
+  const stageTime = (definition, stage, key = stage.key) => plannedStageTime(definition, stage, key, day, now, scheduled);
   const current = of(state);
   const active = current.activeId ? current.instances[current.activeId] : null;
+  if (current.session?.until > now) return [];
   if (active && active.status === 'running') {
     const definition = ARCS[active.arcId];
+    if (now - active.openedAt >= ARC_RULES.maxOpenDays * 24 * 60 * MIN)
+      return [proposal(`${day}/arc/${active.id}/unresolved`, now + 1, 'ARC_CONFRONTATION',
+        { arcId: active.arcId, token: active.token, stage: 'unresolved' })];
     const stage = definition.stages[active.stageIndex];
     // The confrontation follows the last sign, on the next day.
     if (!stage) {
-      const at = atLondon(day, definition.confrontation.at);
+      const at = stageTime(definition, definition.confrontation, 'confrontation');
       return at > now ? [proposal(`${day}/arc/${active.id}/confrontation`, at, 'ARC_CONFRONTATION',
         { arcId: active.arcId, token: active.token, stage: 'confrontation' })] : [];
     }
-    const at = atLondon(day, stage.at);
+    // A day without a visit is not a failed appointment. Preserve the thread
+    // until a real opportunity exists; the separate age bound prevents a stuck
+    // arc from occupying the world forever.
+    const at = stageTime(definition, stage);
     return at > now ? [proposal(`${day}/arc/${active.id}/${stage.key}`, at, 'ARC_BEAT',
       { arcId: active.arcId, token: active.token, stage: stage.key })] : [];
   }
   if (active && active.status === 'confronted') {
-    const at = atLondon(day, ARCS[active.arcId].aftermath.at);
+    const definition = ARCS[active.arcId];
+    const at = active.faded ? atLondon(day, definition.aftermath.at)
+      : stageTime(definition, definition.aftermath, 'closed') ?? atLondon(day, definition.aftermath.at);
     return at > now ? [proposal(`${day}/arc/${active.id}/closed`, at, 'ARC_CLOSED',
       { arcId: active.arcId, token: active.token, stage: 'closed' })] : [];
   }
@@ -945,9 +1137,10 @@ export function arcDayActions({ state, day, now, seed, carried = 0 }) {
     ({ ...counts, [item.arcId]: (counts[item.arcId] ?? 0) + 1 }), {});
   const eligible = ARC_IDS.filter(id => {
     const definition = ARCS[id];
+    if (!ARC_STAGING[id]) return false;
     if (definition.once && ((runs[id] ?? 0) > 0 || (current.exhausted ?? []).includes(id))) return false;
     const gate = definition.tier === 'danger' ? ARC_RULES.opensAbove : ARC_RULES.opensAboveOrdinary;
-    return carried >= gate;
+    return carried >= gate && stageTime(definition, definition.stages[0]) > now;
   });
   if (!eligible.length) return [];
   // The gap after the last one scales with what the last one was, so a fight on
@@ -971,7 +1164,7 @@ export function arcDayActions({ state, day, now, seed, carried = 0 }) {
   const fewest = Math.min(...pool.map(id => runs[id] ?? 0));
   const unseen = pool.filter(id => (runs[id] ?? 0) === fewest);
   const arcId = unseen[number(`${seed}|arc|${day}`) % unseen.length];
-  const at = atLondon(day, ARCS[arcId].stages[0].at);
+  const at = stageTime(ARCS[arcId], ARCS[arcId].stages[0]);
   if (at <= now) return [];
   return [proposal(`${day}/arc/${arcId}/open`, at, 'ARC_BEAT',
     { arcId, token: hash(`${seed}|arc-token|${day}|${arcId}`), stage: ARCS[arcId].stages[0].key, opening: true })];
@@ -992,9 +1185,14 @@ export function resolveArcAction(ctx) {
 
   if (action.type === 'ARC_BEAT' && action.opening) {
     if (of(state).activeId) return refuse('An arc is already running');
+    if (!ARC_STAGING[definition.id]) return refuse(ARC_STAGING_GATES[definition.id] ?? 'Arc choreography is not staged');
+    const first = definition.stages[0];
+    const location = first.location ?? definition.location;
+    if (!castPresent(state, definition, first, first.key, now))
+      return refuse(`The cast is not available at ${location} for this opening`);
     const instance = { id: `arc:${hash(`${ctx.id}|${action.arcId}`)}`, arcId: action.arcId,
       token: action.token, status: 'running', stageIndex: 1, openedAt: now, openEventId: ctx.id,
-      seen: [definition.stages[0].key] };
+      lastEventId: ctx.id, seen: [definition.stages[0].key], witnessedStages: {} };
     save(ctx, { activeId: instance.id, instances: { ...of(state).instances, [instance.id]: instance } });
     publishBeat(ctx, definition, definition.stages[0], instance);
     return true;
@@ -1002,6 +1200,24 @@ export function resolveArcAction(ctx) {
 
   const instance = of(state).instances[of(state).activeId];
   if (!instance || instance.arcId !== action.arcId || instance.token !== action.token) return refuse('No matching arc');
+  const leaveUnresolved = reason => {
+    const resolutionText = unresolvedLines[definition.id];
+    touch(ctx, of(state).instances[instance.id], { status: 'confronted', faded: true, resolutionReason: reason, resolutionText,
+      confrontedAt: now, confrontationEventId: ctx.id });
+    save(ctx, { session: null });
+    ctx.event.location = definition.location;
+    ctx.event.area = definition.confrontation.area;
+    ctx.event.participants = [];
+    ctx.event.payload = { arcId: definition.id, arcTitle: definition.title, stage: 'faded',
+      arcInstanceId: instance.id, finale: true };
+    ctx.event.causedBy.push(instance.lastEventId ?? instance.openEventId, instance.openEventId);
+    ops.publish(resolutionText);
+    return true;
+  };
+  if (!ARC_STAGING[definition.id] && instance.status === 'running')
+    return leaveUnresolved(ARC_STAGING_GATES[definition.id] ?? 'Unstaged arc choreography');
+  if (action.stage === 'unresolved' && instance.status === 'running')
+    return leaveUnresolved('No complete opportunity arose within the bounded arc window');
 
   if (action.type === 'ARC_BEAT') {
     const stage = definition.stages.find(item => item.key === action.stage);
@@ -1010,21 +1226,22 @@ export function resolveArcAction(ctx) {
     // signs — the great majority — declare no `needs` and are unaffected: a
     // docket arriving or ink behaving oddly in an empty shop needs nobody.
     const stageLocation = stage.location ?? definition.location;
-    if (stage.needs && !actuallyAt(state, stage.needs, stageLocation, stage.area)) {
+    if (stage.key !== definition.stages[instance.stageIndex]?.key) return refuse('That is not the next arc sign');
+    if (!castPresent(state, definition, stage, stage.key, now)) {
       const waited = (instance.stageWaits?.[stage.key] ?? 0) + 1;
       const stageWaits = { ...(instance.stageWaits ?? {}), [stage.key]: waited };
       if (waited < ARC_RULES.presenceAttempts) {
         touch(ctx, instance, { stageWaits });
-        return refuse(`${stage.needs} is not at ${stageLocation} for this sign`);
+        return refuse(`The cast is not available at ${stageLocation} for this sign`);
       }
       // The visit never happened. Skip the beat rather than tell it anyway —
       // an untold sign is a gap; a told one is a contradiction.
-      touch(ctx, instance, { stageWaits,
-        stageIndex: instance.stageIndex + 1, seen: [...instance.seen, stage.key] });
-      return refuse(`${stage.needs} never came to ${stageLocation}; sign skipped`);
+      touch(ctx, instance, { stageWaits, missedStages: [...(instance.missedStages ?? []), stage.key] });
+      return leaveUnresolved(`The required ${stage.key} scene never became possible`);
     }
+    ctx.event.causedBy.push(instance.lastEventId ?? instance.openEventId);
     publishBeat(ctx, definition, stage, instance);
-    touch(ctx, instance, { stageIndex: instance.stageIndex + 1, seen: [...instance.seen, stage.key] });
+    touch(ctx, of(state).instances[instance.id], { stageIndex: instance.stageIndex + 1, seen: [...instance.seen, stage.key], lastEventId: ctx.id });
     return true;
   }
 
@@ -1033,101 +1250,125 @@ export function resolveArcAction(ctx) {
     // Both of them are in it, and both come away knowing. This is the one place
     // an arc touches memory, and it does so through the ordinary rail: they were
     // there, so they know.
-    const pair = ['goaden', 'ashai'].filter(who => onStation(state, who, definition.location));
-    if (pair.length < 2) {
+    const requiredStages = definition.stages.filter(stage => castFor(definition, stage.key).some(who => CAST_LEADS.includes(who)));
+    if ((instance.sceneInterruptions ?? 0) >= ARC_RULES.confrontationAttempts)
+      return leaveUnresolved('Repeated duty interruptions left the arc unresolved');
+    if (instance.missedStages?.length || requiredStages.some(stage => !instance.witnessedStages?.[stage.key]))
+      return leaveUnresolved('A required witnessed premise was never committed');
+    const pair = castFor(definition, 'confrontation').filter(who => CAST_LEADS.includes(who));
+    const session = of(state).session;
+    const completing = action.phase === 'complete';
+    if (completing && (!session || session.instanceId !== instance.id || session.until !== now
+      || session.completionActionId !== action.id)) return refuse('No owned arc scene to complete');
+    const duration = sceneDuration(definition);
+    const changed = completing && pair.some(who => state.characters[who]?.activityId !== session.leadActivityIds[who]);
+    const tooShort = !completing && pair.some(who => Number.isSafeInteger(state.characters[who]?.activityUntil)
+      && state.characters[who].activityUntil <= now + duration);
+    const actualState = completing ? { ...state, arcs: { ...of(state), session: null } } : state;
+    if (changed || tooShort || !castPresent(actualState, definition, definition.confrontation,
+      completing ? 'confrontation_complete' : 'confrontation', now)) {
+      if (completing) return leaveUnresolved('The reserved arc scene was interrupted before its outcome');
       // He came, and they were not both there to meet him. Try again tomorrow —
       // but not forever. After five nights the thing gives up on them, which is
       // an ending, and a colder one than the fight.
       const attempts = (instance.attempts ?? 0) + 1;
       if (attempts < ARC_RULES.confrontationAttempts) {
         touch(ctx, instance, { attempts });
-        return refuse('Not both of them on station tonight');
+        return refuse('The cast is committed elsewhere or absent from the scene');
       }
-      touch(ctx, instance, { attempts, status: 'confronted', faded: true, confrontedAt: now, confrontationEventId: ctx.id });
-      ctx.event.location = definition.location;
-      ctx.event.area = definition.confrontation.area;
-      ctx.event.participants = [];
-      ctx.event.payload = { arcId: definition.id, arcTitle: definition.title, stage: 'faded',
-        arcInstanceId: instance.id, finale: true };
-      ctx.event.causedBy.push(instance.openEventId);
-      ops.publish(definition.faded.factText);
+      touch(ctx, instance, { attempts });
+      return leaveUnresolved('No compatible time for the confrontation');
+    }
+    if (!completing) {
+      if (session) return refuse('Another arc scene is already reserved');
+      const completion = { ...action, id: `${action.id}/complete`, dueAt: now + duration,
+        day: londonDate(now + duration), priority: 18, phase: 'complete' };
+      const cast = castFor(definition, 'confrontation');
+      save(ctx, { session: { instanceId: instance.id, cast, startAt: now, until: completion.dueAt,
+        location: definition.location, area: definition.confrontation.area, startEventId: ctx.id,
+        completionActionId: completion.id,
+        leadActivityIds: Object.fromEntries(pair.map(who => [who, state.characters[who].activityId])) } });
+      ctx.followups.push(...issueArcActions(ctx, [completion]));
+      ctx.event.location = definition.location; ctx.event.area = definition.confrontation.area;
+      ctx.event.participants = cast;
+      ctx.event.payload = { arcId: definition.id, arcTitle: definition.title, stage: 'gathered',
+        arcInstanceId: instance.id, cast, until: completion.dueAt };
+      ctx.event.causedBy.push(instance.lastEventId ?? instance.openEventId);
+      ops.publish(sceneOpeners[definition.id]);
       return true;
     }
     ctx.event.location = definition.location;
     ctx.event.area = definition.confrontation.area;
-    ctx.event.participants = pair;
+    ctx.event.participants = castFor(definition, 'confrontation');
     ctx.event.payload = { arcId: definition.id, arcTitle: definition.title, stage: 'confrontation',
-      arcInstanceId: instance.id, finale: true };
+      arcInstanceId: instance.id, finale: true, cast: castFor(definition, 'confrontation') };
+    ctx.event.causedBy.push(session.startEventId);
     ctx.event.prose = definition.confrontation.prose;
     const fact = ops.createFact(`${instance.id}:result`, 'arc_result', 'both',
       { arcId: definition.id, presentationText: definition.confrontation.factText }, null);
     for (const who of pair) ops.learn(who, fact, 'participated');
     // A confrontation may leave one of them shaken until the day rolls over.
-    const shaken = definition.confrontation.shakes;
-    if (shaken && pair.includes(shaken)) {
-      ops.setActor(shaken, 'conditions', [...(state.characters[shaken].conditions ?? []),
-        { kind: 'shaken', since: now, until: atLondon(nextLondonDay(londonDate(now)), '00:00'), sourceEventId: ctx.id }]);
-    }
-    ctx.event.causedBy.push(instance.openEventId);
+    const shaken = [definition.confrontation.shakes ?? []].flat().filter(who => pair.includes(who));
+    for (const who of shaken) ops.setActor(who, 'conditions', [...(state.characters[who].conditions ?? []),
+      { kind: 'shaken', since: now, until: atLondon(nextLondonDay(londonDate(now)), '00:00'), sourceEventId: ctx.id }]);
+    ctx.event.causedBy.push(instance.lastEventId ?? instance.openEventId, instance.openEventId);
     ops.publish(definition.confrontation.factText);
     touch(ctx, instance, { status: 'confronted', confrontedAt: now, confrontationEventId: ctx.id });
+    save(ctx, { session: null });
     return true;
   }
 
   // ARC_CLOSED: the morning after, and the arc goes back in its box.
   if (instance.status !== 'confronted') return refuse('Nothing to close');
+  let closingOmitted = Boolean(instance.closingOmitted);
+  if (!instance.faded && ARC_STAGING[definition.id] && !castPresent(state, definition, definition.aftermath, 'closed', now)) {
+    const closingWaits = (instance.closingWaits ?? 0) + 1;
+    if (closingWaits < ARC_RULES.presenceAttempts) {
+      touch(ctx, instance, { closingWaits }); return refuse('The aftermath waits for its actual participants');
+    }
+    closingOmitted = true;
+    touch(ctx, instance, { closingWaits, closingOmitted });
+  }
   ctx.event.location = definition.location;
-  ctx.event.participants = [];
+  ctx.event.area = areaFor(definition, definition.aftermath);
+  ctx.event.participants = instance.faded || closingOmitted || !ARC_STAGING[definition.id]
+    ? [] : castFor(definition, 'closed');
   ctx.event.payload = { arcId: definition.id, arcTitle: definition.title, stage: 'closed',
     arcInstanceId: instance.id, faded: Boolean(instance.faded) };
   ctx.event.causedBy.push(instance.confrontationEventId);
-  const closing = instance.faded ? definition.faded.text : definition.aftermath.text;
+  const closing = instance.faded ? instance.resolutionText ?? definition.faded.factText
+    : closingOmitted || !ARC_STAGING[definition.id] ? 'Nothing more was recorded after that.' : definition.aftermath.text;
   ctx.event.prose = closing;
   ops.publish(closing);
   const instances = Object.fromEntries(Object.entries({ ...of(state).instances,
-    [instance.id]: { ...instance, status: 'closed', closedAt: now } })
+    [instance.id]: { ...of(state).instances[instance.id], status: 'closed', closedAt: now } })
     .sort((a, b) => (a[1].openedAt ?? 0) - (b[1].openedAt ?? 0)).slice(-ARC_RULES.retainedArcs));
   const exhausted = definition.once && !(of(state).exhausted ?? []).includes(definition.id)
     ? [...(of(state).exhausted ?? []), definition.id] : (of(state).exhausted ?? []);
-  save(ctx, { activeId: null, instances, exhausted, lastClosedDay: londonDate(now), lastArcId: instance.id });
+  save(ctx, { activeId: null, session: null, instances, exhausted, lastClosedDay: londonDate(now), lastArcId: instance.id });
   return true;
 }
-
-// Where the arc happens, not always the barracks. A payoff at the Streamliner
-// or the Ink was previously checking whether they were both at MI6, which is
-// the wrong question and only passed by luck.
-/**
- * Strictly where they are, for a stage that names them somewhere.
- *
- * Deliberately not `onStation`, whose `|| actor.location === 'mi6'` fallback
- * treats being at headquarters as being anywhere — fine for "are they around
- * tonight", useless for "is she in the shop".
- */
-const actuallyAt = (state, who, location, area = null) => {
-  const actor = state.characters?.[who];
-  if (!actor || actor.journey || actor.activity === 'sleeping') return false;
-  if (actor.location !== location) return false;
-  return area ? actor.area === area : true;
-};
-
-const onStation = (state, who, location = 'mi6') => {
-  const actor = state.characters?.[who];
-  if (!actor || actor.journey || actor.activity === 'sleeping') return false;
-  return actor.location === location || actor.location === 'mi6';
-};
 
 function publishBeat(ctx, definition, stage, instance) {
   // A stage may happen somewhere other than the arc's home — the ink follows
   // people out of the shop. File it where it happened, not where the arc lives.
   ctx.event.location = stage.location ?? definition.location;
   ctx.event.area = stage.area;
-  // Signs are the world's, not theirs. Nobody is a participant in a docket
-  // arriving, and nobody learns anything from one — which is what keeps the
-  // ladder from quietly becoming knowledge before the night it is earned.
-  ctx.event.participants = [];
+  // An unwitnessed docket is a world sign. Reading it is a witnessed action.
+  // Keeping those distinct prevents both teleportation and omniscient memory.
+  const cast = castFor(definition, stage.key);
+  ctx.event.participants = cast;
   ctx.event.payload = { arcId: definition.id, arcTitle: definition.title, stage: stage.key,
+    cast,
     arcInstanceId: instance.id, step: instance.seen.length + (stage.key === definition.stages[0].key ? 0 : 1),
     of: definition.stages.length };
+  if (cast.length) {
+    const fact = ctx.ops.createFact(`${instance.id}:sign:${stage.key}`, 'arc_sign', definition.id,
+      { arcId: definition.id, stage: stage.key, presentationText: stage.text }, null);
+    for (const who of cast.filter(id => CAST_LEADS.includes(id))) ctx.ops.learn(who, fact, 'witnessed_arc_sign');
+    touch(ctx, of(ctx.state).instances[instance.id], { witnessedStages: {
+      ...(of(ctx.state).instances[instance.id].witnessedStages ?? {}), [stage.key]: { eventId: ctx.id, at: ctx.now, cast } } });
+  }
   // One sentence, told once. `fixture.mjs` already states the rule for prose
   // generally — "if (written && written !== event.publicDescription)" — and
   // assigning both here bypassed it, so the reader met the same paragraph twice,
@@ -1157,5 +1398,11 @@ export function assertArcs(state) {
     if (instance.seen.length > ARCS[instance.arcId].stages.length) throw new Error('Arc ran past its own ladder');
   }
   if (current.activeId && !current.instances[current.activeId]) throw new Error('Arc ledger points at nothing');
+  const session = current.session;
+  if (session && (session.instanceId !== current.activeId || current.instances[session.instanceId]?.status !== 'running'
+    || !Number.isSafeInteger(session.startAt) || !Number.isSafeInteger(session.until) || session.until <= session.startAt
+    || !Array.isArray(session.cast) || new Set(session.cast).size !== session.cast.length
+    || current.issued[session.completionActionId]?.shape.phase !== 'complete'))
+    throw new Error('Invalid owned arc scene');
   for (const id of current.exhausted ?? []) if (!ARCS[id]?.once) throw new Error('Unknown or repeatable arc marked exhausted');
 }

@@ -135,6 +135,42 @@ test('weather, actual preparation and cooperation alter how the ground is resolv
   assert.equal(dry.state.abilities.trainingGround.work.method, 'cooperative_reset');
 });
 
+test('only unchanged wet deferrals are routine; an intervening reset attempt makes the next deferral consequential', () => {
+  const f = rig(); restrict(f); f.state.weather.code = 'storm';
+  const first = work(f);
+  assert.equal(first.payload.routineContinuation, undefined);
+  const nextDay = nextLondonDay(DAY);
+  const nextOpportunities = abilityDayActions({ day: nextDay }).filter(row => row.type === 'GROUND_WORK_OPPORTUNITY');
+  const repeated = f.commit(nextOpportunities[0]);
+  assert.equal(repeated.payload.routineContinuation, true);
+  assert.ok(repeated.causedBy.includes(first.id));
+  f.state.weather.code = 'cloudy';
+  const reset = f.commit(nextOpportunities[1]);
+  assert.equal(reset.payload.routineContinuation, undefined, 'actual physical work stays visible');
+  f.transition('goaden', 'on_call', nextOpportunities[1].dueAt + MIN, 10, 'ops_room');
+  f.through(nextOpportunities[1].dueAt + MIN + 1);
+  f.state.weather.code = 'storm';
+  const laterDay = nextLondonDay(nextDay);
+  const afterWork = f.commit(abilityDayActions({ day: laterDay }).find(row => row.type === 'GROUND_WORK_OPPORTUNITY'));
+  assert.equal(afterWork.payload.routineContinuation, undefined, 'changed circumstances require a new notice');
+});
+
+test('a reset retry names and links the interrupted work without pretending preparation is new', () => {
+  const f = rig(); restrict(f);
+  f.commit(scheduled('GROUND_PREPARATION')); f.through(atLondon(DAY, '10:00'));
+  const first = work(f);
+  assert.doesNotMatch(first.publicDescription, /preparations had already been done|expected it back in use today/);
+  f.transition('goaden', 'on_call', first.occurredAt + MIN, 10, 'ops_room');
+  f.through(first.occurredAt + MIN + 1);
+  const interruption = f.events.find(row => row.type === 'GROUND_WORK_INTERRUPTED');
+  f.transition('goaden', 'unhurried_time', first.occurredAt + 20 * MIN);
+  const retry = f.commit(abilityDayActions({ day: DAY }).filter(row => row.type === 'GROUND_WORK_OPPORTUNITY')[1]);
+  assert.equal(retry.payload.resumed, true);
+  assert.equal(retry.payload.routineContinuation, undefined);
+  assert.ok(retry.causedBy.includes(interruption.id));
+  assert.match(retry.publicDescription, /returned to the interrupted yard reset/);
+});
+
 test('the room stays restricted across time and restarts until an owned clearing event completes', () => {
   const f = rig(); const closure = restrict(f);
   assert.equal(canEnterAbilityArea(f.state, 'goaden', 'mi6', 'training', { activity: 'training' }), false);

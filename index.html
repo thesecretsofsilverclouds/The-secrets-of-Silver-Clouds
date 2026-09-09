@@ -398,9 +398,6 @@
             flex-wrap: wrap;
         }
 
-        /* The living world sits beside the webtoon and shares its layout. Its
-           art is one wide plate rather than a collage, so the picture leads on
-           a phone and the reading order stays copy-first on a desktop. */
         .worldstream-showcase {
             background: linear-gradient(135deg, #131024, #1c1836 55%, #241d44);
         }
@@ -1159,7 +1156,7 @@
                     <li><a href="#about">About Author</a></li>
                     <li><a href="#book">About Book</a></li>
                     <li><a href="/episode-one/">Webtoon</a></li>
-                    <li><a href="/worldstream/">WorldStream</a></li>
+                    <li><a href="/worldstream/app/">Worldstream</a></li>
                     <li><a href="/animantasy" class="cta-button">What is Animantasy?</a></li>
                     <li><a href="#game">Game</a></li>
                     <li><a href="#codex">The Codex</a></li>
@@ -1182,6 +1179,7 @@
                 <p>Read the first episode free — as a cinematic story, webtoon, or novel.</p>
                 <div class="hero-cta-row">
                     <a href="/episode-one/" class="cta-button">Read Episode One — Free</a>
+                    <a href="/worldstream/app/" class="cta-button">Worldstream</a>
                     <a href="https://www.waterstones.com/book/the-secrets-of-silver-clouds/silent-silver/9781068727108"
                         class="cta-button cta-button--outline">Order the Novel</a>
                 </div>
@@ -1215,22 +1213,20 @@
 
     <section class="webtoon-showcase worldstream-showcase" id="worldstream" aria-labelledby="worldstreamTitle">
         <div class="worldstream-showcase-art">
-            <a href="/worldstream/">
+            <a href="/worldstream/app/" aria-label="Open Worldstream">
                 <img src="images/worldstream-hero.jpg"
-                    alt="WorldStream Fiction — Experience the first living epic fantasy novel" loading="lazy"
-                    width="1600" height="850">
+                    alt="Worldstream Fiction — a magical London beneath a sky of silver clouds"
+                    loading="lazy" width="1600" height="850">
             </a>
         </div>
         <div class="webtoon-showcase-copy">
-            <p class="webtoon-kicker">Silver Clouds &middot; Now</p>
-            <h3 id="worldstreamTitle">WorldStream Fiction</h3>
-            <p class="webtoon-tagline">Experience the first living epic fantasy novel.</p>
-            <p class="webtoon-sub">Goaden and Ashai's London keeps its own clock. They wake, work, argue and get
-                pulled into things on London time — whether or not anybody is watching. It remembers what happened
-                last week, and it carries on when you close the tab.</p>
+            <p class="webtoon-kicker">Silver Clouds &middot; The Living Novel</p>
+            <h3 id="worldstreamTitle">Worldstream</h3>
+            <p class="webtoon-tagline">A book that never stopped living while it was closed.</p>
+            <p class="webtoon-sub">Step into Goaden and Ashai&rsquo;s London: magic, danger, sharp words and quiet
+                moments. A living epic fantasy novel, with new stories waiting beyond the page.</p>
             <div class="webtoon-showcase-actions">
-                <a href="/worldstream/" class="cta-button">See the living world</a>
-                <a href="/episode-one/" class="cta-button cta-button--outline">Read Episode One</a>
+                <a href="/worldstream/app/" class="cta-button">Enter Worldstream</a>
             </div>
         </div>
     </section>
@@ -2845,6 +2841,15 @@
             if (event.target === modal) {
                 closeModal();
             }
+        }
+    </script>
+    <script id="worldstream-entry-links">
+        // A file preview cannot serve the live app or its backend. Use the
+        // integrated local server; hosted pages keep their normal site route.
+        if (location.protocol === 'file:') {
+            document.querySelectorAll('a[href="/worldstream/app/"]').forEach(function (link) {
+                link.href = 'http://127.0.0.1:4323/worldstream/app/';
+            });
         }
     </script>
     <!-- Shrine JS Injector -->

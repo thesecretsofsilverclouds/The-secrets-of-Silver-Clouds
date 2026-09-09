@@ -1,5 +1,8 @@
-import { cinematicRecordForApi, setupBeatFor } from './cinematics.mjs';
+import { cinematicRecordForApi, setupBeatFor, deterministicFallbackScene } from './cinematics.mjs';
 import { correctEditorialText, editorialEvent, EDITORIAL_REVISION } from './editorial.mjs';
+import { selectVisualVocabulary } from './cinematic-assets.mjs';
+import { daypart } from './sky.mjs';
+import { correctLegacyWakeDialogue } from './dialogue.mjs';
 
 // Cinematic packets and accepted performances are immutable cache records. This
 // adapter runs only at the public read boundary; it never replaces a packet,
@@ -25,7 +28,8 @@ function publicSource(record, event) {
     participants: [...(source.participants ?? [])], payload: {},
     publicDescription: source.canonicalSummary,
     prose: source.canonicalProse ?? null,
-    lines: (source.canonicalLines ?? []).map(line => ({ ...line })),
+    lines: (source.canonicalLines ?? []).map(line => ({ who: line.speaker,
+      expression: line.expression, text: line.line })),
   };
 }
 
@@ -33,7 +37,7 @@ function publicSource(record, event) {
  * Pass the actual raw public event when available to retain outcome-specific
  * prose. Without it, editorialEvent receives only the packet's public facts.
  */
-export function editorialCinematicRecordForApi(record, { event, snapshot } = {}) {
+export function editorialCinematicRecordForApi(record, { event, snapshot, publicSourcesForEvent } = {}) {
   const api = cinematicRecordForApi(record);
   if (!api) return null;
   let setup = api.setup;
@@ -53,22 +57,43 @@ export function editorialCinematicRecordForApi(record, { event, snapshot } = {})
     }
   }
   if (!api.scene) return { ...api, setup, editorialRevision: EDITORIAL_REVISION };
-  const source = publicSource(record, event);
+  const rawSource = publicSource(record, event);
+  const source = rawSource ? correctLegacyWakeDialogue(rawSource, () => typeof publicSourcesForEvent === 'function'
+    ? publicSourcesForEvent(rawSource) : snapshot?.events ?? []) : null;
   const revised = source ? editorialEvent(source, { presentation: 'cinematic' }) : null;
   const authored = api.scene.source === 'canonical';
   const summary = revised?.publicDescription ?? api.scene.chronicleSummary;
+  // A canonical performance is a rendering of its public source, including
+  // dialogue and room. Updating only the narration left obsolete cache lines,
+  // speakers and backgrounds attached to a corrected passage. Recompose the
+  // public rendering without touching the accepted packet/cursor or invoking a
+  // provider. Model performances keep their separately accepted text below.
+  let canonical = null;
+  if (authored && revised) {
+    const lines = revised.lines ?? revised.payload?.lines ?? [];
+    const packet = { ...record.packet, event: { ...record.packet?.event,
+      canonicalSummary: revised.publicDescription, canonicalProse: revised.prose ?? null,
+      canonicalLines: lines.filter(line => typeof line?.who === 'string' && typeof line?.text === 'string')
+        .map(line => ({ speaker: line.who, expression: line.expression ?? null, line: line.text })),
+    }, visuals: selectVisualVocabulary({ event: revised, daypart: daypart(revised.occurredAt),
+      room: revised.room ?? revised.area ?? null }) };
+    canonical = cinematicRecordForApi({ ...record, scene: deterministicFallbackScene(packet) }).scene;
+  }
+  const performance = canonical ?? api.scene;
   const scene = {
-    ...api.scene,
+    ...performance,
     openingNarration: correctEditorialText(authored && revised
       ? revised.prose || revised.publicDescription || api.scene.openingNarration
-      : api.scene.openingNarration),
+      : performance.openingNarration),
     // Accepted model scenes already use the canonical event description for
     // their chronicle summary. Updating that metadata does not rewrite their
     // independent performance, which is retained apart from the known typo.
     chronicleSummary: correctEditorialText(summary),
-    closingNarration: correctEditorialText(api.scene.closingNarration),
-    beats: api.scene.beats.map(beat => ({ ...beat, line: correctEditorialText(beat.line) })),
+    closingNarration: correctEditorialText(performance.closingNarration),
+    beats: performance.beats.map(beat => ({ ...beat, line: correctEditorialText(beat.line) })),
   };
   return { ...api, setup, scene, chronicleSummary: scene.chronicleSummary,
+    ...(canonical && revised ? { atmosphere: { ...api.atmosphere,
+      location: revised.location ?? null, room: revised.room ?? revised.area ?? null } } : {}),
     editorialRevision: EDITORIAL_REVISION };
 }

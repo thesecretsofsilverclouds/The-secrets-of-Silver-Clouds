@@ -23,6 +23,7 @@ import { createHash } from 'node:crypto';
 // The register is a property of the event type, not a judgement made per event,
 // so a routine meal can never accidentally become a set piece.
 export const PROSE_TYPES = Object.freeze(new Set([
+  'SCENE_BANK_BEAT','SCENE_BANK_REJOIN',
   // Already written as prose and simply marked as such.
   'INCIDENT', 'UNEASE', 'AFTERMATH', 'VENUE_SCENE', 'CONVERSATION', 'LEGION_VISIT',
   // Story beats that were single flat lines and now are not.

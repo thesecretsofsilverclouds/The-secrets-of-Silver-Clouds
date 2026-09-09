@@ -37,6 +37,11 @@ function excerptDuration(lines, closeMs) {
 export function cinematicLines(record) {
   const performed = record?.scene ?? record;
   if (!performed || typeof performed !== 'object') return [];
+  if (Array.isArray(performed.sceneBeats)) return performed.sceneBeats
+    .filter(beat => typeof beat?.text === 'string' && beat.text.trim())
+    .map(beat => ({ text: beat.text, who: beat.who,
+      kind: beat.kind === 'prose' || beat.who === 'nimbus' ? 'narration' : 'dialogue',
+      expression: beat.nimbusPlate ?? beat.expression ?? 'idle' }));
   const result = [];
   if (typeof performed.openingNarration === 'string' && performed.openingNarration.trim()) {
     result.push({ kind: 'narration', text: performed.openingNarration.trim() });
@@ -50,6 +55,16 @@ export function cinematicLines(record) {
     result.push({ kind: 'narration', text: performed.closingNarration.trim() });
   }
   return result;
+}
+
+/** A playback view of an already committed scene, with no generation step. */
+export function authoredSceneRecord(event) {
+  if (event?.type !== 'SCENE_BANK_BEAT' || !event.id || !event.sceneBeats?.length) return null;
+  return { eventId: event.id, occurredAt: event.occurredAt,
+    atmosphere: { location: event.location, room: event.room, time: event.sceneTime },
+    scene: { sceneBeats: event.sceneBeats },
+    setup: event.contextBridge ? { originSnippet: event.contextBridge.snippet,
+      originTimeLabel: event.contextBridge.timeLabel } : null };
 }
 
 /**

@@ -1,8 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { ReadingFeedBuffer, reconcileReadingRows, captureReadingPosition, createReadingView } from '../../worldstream/app/reading-view.js';
+import { ReadingFeedBuffer, reconcileReadingRows, captureReadingPosition, createReadingView, earlierReadingRows,
+  atReadingLiveEdge, positionReadingNavigation } from '../../worldstream/app/reading-view.js';
 
 const event = (id, occurredAt, description = `Passage ${id}.`) => ({ id, occurredAt, description, prose: `Written ${id}.` });
+
+test('backfilled incoming passages stay out of earlier history until explicitly revealed', () => {
+  const shown = [event('current', 200), event('end', 300)];
+  const history = [event('earlier', 100), ...shown, event('buffered', 400), event('in-gap', 250)];
+  assert.deepEqual(earlierReadingRows(history, shown).map(row => row.id), ['earlier']);
+  assert.deepEqual(earlierReadingRows(history, shown, 150), []);
+});
 
 test('same-world polling preserves original passages and holds new scenes/revisions until reveal', () => {
   const buffer = new ReadingFeedBuffer(), first = event('a', 100), second = event('b', 200);
@@ -109,6 +117,112 @@ test('explicit reveal replaces only revised passage and inserts new rows without
   assert.deepEqual(h.container.children.map(row => row.dataset.eventId), ['c', 'b', 'a']);
   assert.strictEqual(h.container.children[1], originalB); assert.notStrictEqual(h.container.children[2], originalA);
   assert.equal(h.doc.counters.replaced, 1); assert.equal(originalB.isConnected, true);
+});
+
+test('newly available story ownership is held as an explicit reading revision', () => {
+  const buffer = new ReadingFeedBuffer(), original = event('return', 100);
+  buffer.update('one', [original]);
+  const enriched = { ...original, storyRef: { type: 'story', id: 'night:owned' }, earlierEventIds: ['work'] };
+  const waiting = buffer.update('one', [enriched]);
+  assert.equal(waiting.added, 0); assert.equal(waiting.revised, true); assert.equal(waiting.pending, true);
+  assert.strictEqual(waiting.events[0], original);
+  const accepted = buffer.reveal();
+  assert.strictEqual(accepted.events[0], enriched); assert.equal(accepted.pending, false);
+});
+
+test('live-end append adds arrivals without replacing the sentence already on the page', () => {
+  const buffer = new ReadingFeedBuffer(), original = event('first', 100);
+  buffer.update('one', [original]);
+  const revised = { ...original, prose: 'A revised sentence.' }, arrival = event('next', 200);
+  buffer.update('one', [revised, arrival]);
+  const appended = buffer.reveal({ includeRevisions: false });
+  assert.deepEqual(appended.events.map(row => row.id), ['next', 'first']);
+  assert.strictEqual(appended.events[1], original);
+  assert.equal(appended.added, 0); assert.equal(appended.revised, true);
+  assert.strictEqual(buffer.reveal().events[1], revised, 'an explicit read-on accepts the revision');
+});
+
+test('a disconnected live page remains marked as a gap across repeated polls until explicit continuation', () => {
+  const buffer = new ReadingFeedBuffer(); buffer.update('one', [event('before-away', 100)]);
+  assert.equal(buffer.update('one', [event('after-away', 900)]).gap, true);
+  assert.equal(buffer.update('one', [event('after-away', 900), event('newest', 1000)]).gap, true);
+  assert.equal(buffer.reveal().gap, false);
+  assert.equal(buffer.update('other-world', [event('different-world', 10)]).gap, false);
+});
+
+test('a long held page requests history when bounded incoming storage would evict an unseen arrival', () => {
+  const buffer = new ReadingFeedBuffer(); let previous = event('first', 0);
+  buffer.update('one', [previous]);
+  for (let index = 1; index <= 205; index++) {
+    const next = event(`arrival:${index}`, index);
+    buffer.update('one', [previous, next]); previous = next;
+  }
+  assert.equal(buffer.incoming.length, 200);
+  assert.equal(buffer.state().gap, true, 'overlapping live polls cannot hide evicted unread pages');
+  assert.equal(buffer.shown[0].id, 'first');
+});
+
+test('live append follows only the visible end of the reading book, with no active selection, control or scene', () => {
+  let box = { top: 700, bottom: 780 }, selected = false, scene = false, focused = false;
+  const end = { hidden: false, getBoundingClientRect: () => box };
+  const doc = { hidden: false, body: { dataset: { reading: 'true' }, classList: { contains: () => scene } },
+    activeElement: { closest: () => focused ? {} : null }, getSelection: () => ({ isCollapsed: !selected }),
+    querySelector: () => end };
+  const win = { innerHeight: 800 };
+  assert.equal(atReadingLiveEdge(doc, win), true);
+  box = { top: 1200, bottom: 1280 }; assert.equal(atReadingLiveEdge(doc, win), false, 'mid-book reader stays put');
+  box = { top: -100, bottom: -20 }; assert.equal(atReadingLiveEdge(doc, win), false, 'exploration below the book is not its live edge');
+  box = { top: 700, bottom: 780 }; selected = true; assert.equal(atReadingLiveEdge(doc, win), false);
+  selected = false; scene = true; assert.equal(atReadingLiveEdge(doc, win), false);
+  scene = false; focused = true; assert.equal(atReadingLiveEdge(doc, win), false);
+  focused = false; doc.hidden = true; assert.equal(atReadingLiveEdge(doc, win), false);
+  doc.hidden = false; doc.body.dataset.reading = 'false'; assert.equal(atReadingLiveEdge(doc, win), false);
+});
+
+test('earlier navigation moves before the opening in reading mode and remains beside older history in cinematic mode', () => {
+  let order = ['opening', 'history', 'earlier'];
+  const entries = Object.fromEntries(order.map(id => [id, { id,
+    get nextElementSibling() { return entries[order[order.indexOf(id) + 1]]; },
+    before(other) { order = order.filter(value => value !== other.id); order.splice(order.indexOf(id), 0, other.id); },
+    after(other) { order = order.filter(value => value !== other.id); order.splice(order.indexOf(id) + 1, 0, other.id); },
+  }]));
+  const doc = { querySelector: selector => entries[{
+    '#reading-earlier-controls': 'earlier', '#latest-passage': 'opening', '#older-history': 'history',
+  }[selector]] };
+  positionReadingNavigation(doc, true); assert.deepEqual(order, ['earlier', 'opening', 'history']);
+  positionReadingNavigation(doc, true); assert.deepEqual(order, ['earlier', 'opening', 'history']);
+  positionReadingNavigation(doc, false); assert.deepEqual(order, ['opening', 'history', 'earlier']);
+});
+
+test('a buffered editorial revision cannot be mistaken for already-rendered text', () => {
+  const h = dom(), original = event('one', 100), revised = { ...original, description: 'A shorter factual passage.', readerWeight: 1 };
+  reconcileReadingRows(h.container, [original], h.render);
+  const row = h.container.children[0], renderedSignature = row.dataset.readingSignature;
+  reconcileReadingRows(h.container, [revised], h.render);
+  assert.equal(row.description, original.description);
+  assert.equal(row.dataset.readingSignature, renderedSignature);
+  reconcileReadingRows(h.container, [revised], h.render, { replaceChanged: true });
+  assert.equal(h.container.children[0].description, revised.description);
+});
+
+test('an appended paragraph extends scene geometry without replacing selected text, then explicit context changes repaint', () => {
+  const h = dom(), first = { ...event('one', 100), readerSceneId: 'scene', readerSceneEnd: true };
+  reconcileReadingRows(h.container, [first], h.render);
+  const original = h.container.children[0];
+  const selected = { parentElement: original.children[0] };
+  h.doc.selection = { isCollapsed: false, anchorNode: selected };
+  h.reset();
+  const extended = { ...first, readerSceneEnd: false };
+  const next = { ...event('two', 200), readerSceneId: 'scene', readerSceneEnd: true };
+  reconcileReadingRows(h.container, [extended, next], h.render);
+  assert.strictEqual(h.container.children[0], original);
+  assert.equal(original.dataset.readerSceneEnd, 'false');
+  assert.equal(h.container.children[1].dataset.readerSceneEnd, 'true');
+  assert.equal(h.doc.counters.replaced, 0);
+  assert.strictEqual(h.doc.selection.anchorNode, selected);
+  const revised = { ...extended, readerContextVisible: true, readerMemoryVisible: true, readerCombinedIds: ['one', 'two'] };
+  reconcileReadingRows(h.container, [revised, next], h.render, { replaceChanged: true });
+  assert.notStrictEqual(h.container.children[0], original);
 });
 
 test('selected reading anchor regains its exact viewport offset after an upstream block grows', () => {

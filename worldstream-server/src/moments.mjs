@@ -81,7 +81,7 @@ const LEADS = Object.freeze({
   arcane_surge: {
     default: {
       ashai: 'The pull went through the barracks and Ashai felt it in her teeth before she heard anybody shout about it. She was at the window in three steps. The corridor light was running the whole length of the river, and Greah had gone very still on her shoulder.',
-      goaden: 'Goaden was out of the lunch hall before the second tone. Whatever it is that answers a surge in him answered this one, and Kai came off his shoulder into the air over the corridor with his scales up.',
+      goaden: 'In the MI6 barracks, whatever it is that answers a surge in Goaden answered this one. Kai came off his shoulder with his scales up.',
     },
     sleeping: {
       ashai: 'It woke her. Ashai lay still in the dark with the light off the corridor coming through the blind, working out from the colour of it how bad this one was.',

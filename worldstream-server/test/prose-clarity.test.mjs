@@ -61,8 +61,14 @@ test('nothing the world publishes is grammatical and about nothing', t => {
 
   const offences = new Map();
   for (const event of published) {
+    // A spoken idiom such as "What's the matter?" is concrete in a physical
+    // scene. Audit the authored narration, retaining the full template guard
+    // for ordinary runtime summaries instead of rewriting the creator's speech.
+    const narration = event.type === 'SCENE_BANK_BEAT'
+      ? event.payload.narrativeParagraphs.filter(item => item.kind === 'prose').map(item => item.text).join('\n')
+      : event.publicDescription;
     for (const { pattern, why } of VAGUE) {
-      if (!pattern.test(event.publicDescription)) continue;
+      if (!pattern.test(narration)) continue;
       const key = `${event.type}: ${event.publicDescription}`;
       if (!offences.has(key)) offences.set(key, why);
     }

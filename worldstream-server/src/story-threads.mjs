@@ -5,17 +5,73 @@ import { publicIntentSummaries } from './intent.mjs';
 import { publicAgendaSummaries } from './faction-agendas.mjs';
 import { publicSupportingSummaries } from './supporting-stories.mjs';
 import { publicNightStories } from './night-stories.mjs';
-import { publicOffscreenSummaries } from './offscreen-lives.mjs';
+import { publicOffscreenSummaries, OFFSCREEN_CAST } from './offscreen-lives.mjs';
+import { PURSUIT_PURPOSES, PURPOSE_RULES } from './pursuit-purpose.mjs';
+import { SCENE_BANK_BY_ID } from './scene-bank-catalog.mjs';
+import { publicSceneBankPerformance } from './scene-bank-presentation.mjs';
 import { createHash } from 'node:crypto';
 import { editorialEvent, EDITORIAL_REVISION } from './editorial.mjs';
 
 export const STORY_THREAD_TYPES = Object.freeze(['story', 'intention', 'operation']);
 export const STORY_THREAD_LOOKUP_LIMIT = 32;
 const TITLES = { game: 'A short game', practice: 'Shared practice', quiet: 'A quiet break' };
-const terminal = status => ['resolved', 'deferred', 'failed', 'completed', 'declined', 'interrupted', 'kept', 'missed', 'cut_short', 'recovered', 'cancelled'].includes(status);
+const terminal = status => ['resolved', 'deferred', 'failed', 'completed', 'declined', 'interrupted', 'kept', 'missed', 'cut_short', 'recovered', 'cancelled', 'shared', 'shelved'].includes(status);
 const text = value => typeof value === 'string' && value.length > 0;
 const own = (object, id) => Object.hasOwn(object ?? {}, id) ? object[id] : null;
 const nowOf = snapshot => snapshot?.world?.resolvedThrough;
+const past = (at, now) => Number.isSafeInteger(at) && at >= 0 && at <= now;
+// Completion records own these IDs even after the source leaves the recent
+// snapshot. A present private, future or mismatched row cannot serve as proof.
+const recorded = (snapshot, id, at, now) => text(id) && past(at, now)
+  && !(snapshot.events ?? []).some(event => event.id === id
+    && (event.visibility !== 'public' || event.occurredAt !== at));
+
+function purposeDescriptors(snapshot, now) {
+  return Object.entries(snapshot.offscreenLives?.people ?? {}).flatMap(([guest, person]) => {
+    const p = person.purpose, bank = own(PURSUIT_PURPOSES, guest), source = p?.source;
+    const foundation = own(snapshot.facts, source?.factKey);
+    if (!p || !bank || p.kind !== bank.kind || !text(p.id)
+      || !recorded(snapshot, p.chosenEventId, p.chosenAt, now)
+      || !recorded(snapshot, source?.sourceEventId, source?.establishedAt, now)
+      || source.establishedAt >= p.chosenAt || foundation?.kind !== 'offscreen_result'
+      || foundation.sourceEventId !== source.sourceEventId || foundation.createdAt !== source.establishedAt
+      || foundation.value?.guest !== guest || foundation.value.outcome !== 'settled') return [];
+    // Two exact fact keys retain an interrupted first attempt after a retry.
+    // No memory text, arbitrary causal traversal or ledger scan is involved.
+    const results = Array.from({ length: PURPOSE_RULES.maxAttempts }, (_, i) => own(snapshot.facts, `${p.id}:result:${i + 1}`))
+      .filter(fact => fact?.kind === 'offscreen_purpose_result' && fact.value?.purposeId === p.id
+        && fact.value.guest === guest && fact.value.completedWorkEventId === source.sourceEventId
+        && recorded(snapshot, fact.sourceEventId, fact.createdAt, now));
+    const request = p.request && p.request.at > p.chosenAt
+      && recorded(snapshot, p.request.eventId, p.request.at, now) ? p.request : null;
+    const result = results.at(-1), status = result?.value.outcome === 'shared' ? 'shared'
+      : results.length === PURPOSE_RULES.maxAttempts && results.every(fact => fact.value.outcome === 'unheard') ? 'shelved'
+        : request && (!result || request.at > result.createdAt) ? 'performing' : 'seeking';
+    const record = { originEventId: source.sourceEventId,
+      causalEventIds: [p.chosenEventId, ...results.flatMap(fact => [fact.value.requestEventId, fact.sourceEventId]), request?.eventId] };
+    return [{ record, type: 'story', id: p.id, title: bank.choice, status,
+      location: OFFSCREEN_CAST[guest].location, openedAt: source.establishedAt,
+      eventId: result && (!request || result.createdAt >= request.at) ? result.sourceEventId : request?.eventId ?? p.chosenEventId }];
+  });
+}
+
+function sceneDescriptors(snapshot, now) {
+  const entries = Object.entries(snapshot.sceneBank?.completed ?? {}).flatMap(([id, completed]) => {
+    const scene = own(SCENE_BANK_BY_ID, id);
+    return scene && scene.status !== 'excluded' && recorded(snapshot, completed?.eventId, completed?.at, now)
+      ? [{ id, scene, eventId: completed.eventId, at: completed.at }] : [];
+  }).sort((a, b) => a.at - b.at || a.id.localeCompare(b.id));
+  const opening = entries.find(row => row.id === 'P1'), nimbus = entries.filter(row => row.id.startsWith('P') && row.at >= (opening?.at ?? Infinity));
+  const ordinary = entries.filter(row => !row.id.startsWith('P')).map(row => ({
+    record: { originEventId: row.eventId }, type: 'story', id: `scene-bank:${row.id}`, title: row.scene.title,
+    status: 'completed', location: row.scene.location, openedAt: row.at, eventId: row.eventId,
+  }));
+  if (opening) ordinary.push({ record: { originEventId: opening.eventId, causalEventIds: nimbus.map(row => row.eventId) },
+    type: 'story', id: `nimbus:${opening.eventId}`, title: opening.scene.title,
+    status: nimbus.some(row => row.id === 'P22') ? 'completed' : 'active', location: opening.scene.location,
+    openedAt: opening.at, eventId: nimbus.at(-1).eventId });
+  return ordinary;
+}
 
 function descriptors(snapshot) {
   const now = nowOf(snapshot);
@@ -44,7 +100,7 @@ function descriptors(snapshot) {
       return { record, type: 'operation', id: record.id, title: item.title, status: item.status,
         location: item.location, openedAt: record.startedAt, eventId: item.eventId ?? record.originEventId };
     });
-  return [...stories, ...depthStories, ...intentions, ...operations].filter(item => item.record && text(item.id)
+  return [...stories, ...depthStories, ...purposeDescriptors(snapshot, now), ...sceneDescriptors(snapshot, now), ...intentions, ...operations].filter(item => item.record && text(item.id)
     && Number.isSafeInteger(item.openedAt) && item.openedAt <= now);
 }
 
@@ -81,6 +137,7 @@ function publicEvent(event, requestedId, floor, ceiling) {
     location: typeof event.location === 'string' ? event.location : null,
     description: event.publicDescription, ...(text(event.prose) ? { prose: event.prose } : {}),
     ...(Array.isArray(event.lines) && event.lines.length ? { lines: event.lines } : {}),
+    ...publicSceneBankPerformance(event),
     ...(event.contextBridge ? { contextBridge: event.contextBridge } : {}) };
 }
 

@@ -1,5 +1,6 @@
 import { WorldStore } from '../experiment-l/src/world.mjs';
 import { publicEvents } from './fixture.mjs';
+import { readPublicHistory, readPublicEventContext, readPublicDialogueSources } from './public-history.mjs';
 
 const DAY = 86_400_000;
 const decode = rows => rows.map(row => JSON.parse(row.semantic_json));
@@ -60,20 +61,18 @@ export class ServiceWorldStore extends WorldStore {
     return row ? JSON.parse(row.semantic_json) : null;
   }
 
-  publicHistory({ beforeSeq = Number.MAX_SAFE_INTEGER, limit = 40 } = {}) {
-    if (!Number.isSafeInteger(beforeSeq) || beforeSeq < 1) throw new RangeError('Invalid history cursor');
-    limit = Math.min(100,Math.max(1,Math.trunc(limit) || 40));
-    const rows = decode(this.db.prepare(`SELECT semantic_json FROM events WHERE seq < ?
-      AND json_extract(semantic_json,'$.visibility')='public' ORDER BY seq DESC LIMIT ?`).all(beforeSeq,limit+1));
-    const more = rows.length > limit, page = rows.slice(0,limit).reverse();
-    return {events:publicEvents({events:page,eventById:id=>this.eventById(id)},Infinity),nextCursor:more?page[0].seq:null};
-  }
+  publicHistory(options) { return readPublicHistory(this, options); }
+
+  publicEventContext(id) { return readPublicEventContext(this, id); }
+
+  publicDialogueSources(event) { return readPublicDialogueSources(this, event); }
 
   publicEventsBetween(startMs,endMs) {
     if (!Number.isSafeInteger(startMs) || !Number.isSafeInteger(endMs) || endMs-startMs>3*DAY)
       throw new RangeError('History date reads must be scoped to at most three days');
     return publicEvents({events:decode(this.db.prepare(`SELECT semantic_json FROM events
-      WHERE occurred_at>=? AND occurred_at<? ORDER BY occurred_at,seq`).all(startMs,endMs)),eventById:id=>this.eventById(id)},Infinity);
+      WHERE occurred_at>=? AND occurred_at<? ORDER BY occurred_at,seq`).all(startMs,endMs)),eventById:id=>this.eventById(id),
+      publicSourcesForEvent:event=>this.publicDialogueSources(event)},Infinity);
   }
 
   operationalStats() {

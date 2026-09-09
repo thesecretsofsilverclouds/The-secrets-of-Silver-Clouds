@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { ScoreRotation } from '../../worldstream/app/score-rotation.js';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const slugify = name => name.replace(/\.mp3$/i, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -58,14 +59,6 @@ test('no mood can end up looping a short pool', () => {
     `MIN_TRACKS is ${minimum[1]}; a mood that can run for a whole day needs more than that`);
   assert.ok(/const NEIGHBOUR = \{/.test(source), 'a short mood has nowhere to borrow from');
   assert.ok(source.includes('if (next[name].length >= MIN_TRACKS) break;'), 'the top-up never runs');
-  // Rotation must be per mood. A single shared counter aliases against the pool
-  // sizes: alternating between two moods steps it by two each time a given mood
-  // comes round, so a two-track mood lands on the same index every visit and
-  // its second track never plays at all.
-  assert.ok(/const rotation = \{\};/.test(source), 'rotation is not per mood');
-  assert.ok(source.includes('rotation[name] = (rotation[name] ?? -1) + 1;'),
-    'rotation is not keyed by mood');
-  assert.ok(!/rotation\+\+/.test(source), 'a shared rotation counter is still in use');
   // Every mood declares at least one track of its own to build from.
   const block = source.slice(source.indexOf('const MOODS = {'), source.indexOf('const btn = document.querySelector'));
   for (const mood of ['night', 'play', 'pressure', 'ordinary']) {
@@ -76,6 +69,28 @@ test('no mood can end up looping a short pool', () => {
     // Every mood names its own two, so the runtime top-up is a safety net
     // rather than something the score relies on to sound varied.
     assert.ok(named.length >= 2, `${mood} declares only ${named.join(', ')}`);
+  }
+});
+
+test('alternating moods still plays every member of both pools', () => {
+  const rotation = new ScoreRotation({ random: () => 0.37 });
+  const pools = {
+    ordinary: ['a', 'b', 'c', 'd'],
+    pressure: ['e', 'f', 'g', 'h'],
+  };
+  const heard = { ordinary: [], pressure: [] };
+  for (let i = 0; i < 12; i++) {
+    for (const [mood, bank] of Object.entries(pools)) {
+      const slug = rotation.next(mood, bank);
+      rotation.played(mood, slug, bank);
+      heard[mood].push(slug);
+    }
+  }
+  for (const [mood, bank] of Object.entries(pools)) {
+    for (let offset = 0; offset < heard[mood].length; offset += bank.length) {
+      assert.deepEqual(heard[mood].slice(offset, offset + bank.length).sort(), [...bank].sort(),
+        `${mood} starved a track while another mood played between visits`);
+    }
   }
 });
 

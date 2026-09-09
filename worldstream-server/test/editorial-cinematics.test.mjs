@@ -76,6 +76,25 @@ test('foreign, private or incorrectly timed source events cannot replace a cache
   }
 });
 
+test('canonical cache recomposes corrected dialogue, expression and recorded room without modifying its acceptance', () => {
+  const original = source({ type: 'CONVERSATION', location: 'mi6', area: 'quarters',
+    payload: { lines: [{ who: 'goaden', expression: 'neutral', text: 'OBSOLETE_LINE_CANARY' }] },
+    publicDescription: 'They spoke in MI6.', prose: 'They began a conversation.' });
+  const record = cached(original), before = structuredClone(record);
+  const corrected = { ...original, area: 'lunch_hall',
+    payload: { lines: [{ who: 'ashai', expression: 'smile', text: 'The corrected authored line.' }] } };
+  const revised = editorialCinematicRecordForApi(freeze(record), { event: corrected });
+  const expected = deterministicFallbackScene(buildScenePacket(corrected, snapshot(corrected)));
+  assert.deepEqual(revised.scene.beats.map(({ speaker, line }) => ({ speaker, line })),
+    [{ speaker: 'ashai', line: 'The corrected authored line.' }]);
+  assert.equal(revised.scene.background, expected.background);
+  assert.deepEqual(revised.scene.assets, expected.assets);
+  assert.equal(revised.atmosphere.room, 'lunch_hall');
+  assert.doesNotMatch(JSON.stringify(revised), /OBSOLETE_LINE_CANARY/);
+  assert.equal(revised.acceptedAt, before.acceptedAt);
+  assert.deepEqual(record, before);
+});
+
 test('provider performance is preserved except for the exact known typo; canonical summary remains current', () => {
   const event = source(), record = cached(event);
   record.scene = { ...record.scene, source: 'model',
@@ -183,4 +202,3 @@ test('archive and event endpoints expose safe setup context affordance for quali
     assert.doesNotMatch(JSON.stringify(c.setup), /PRIVATE|knowledge|secret/);
   }
 });
-

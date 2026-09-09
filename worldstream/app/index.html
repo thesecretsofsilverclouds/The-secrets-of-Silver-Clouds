@@ -102,6 +102,10 @@
       </div>
     </header>
 
+    <details id="newcomer-orientation" class="newcomer-orientation">
+      <summary>New here?</summary>
+      <div class="newcomer-body"></div>
+    </details>
   <section class="conditions" aria-label="Time, daylight and weather">
       <div>
         <h2>London time</h2>
@@ -126,14 +130,23 @@
     </section>
     <div id="reading-pair" class="reading-pair" role="group" aria-label="Where Goaden and Ashai are now"></div>
     <section id="reading-recap" class="reading-recap" aria-label="While you were away" hidden></section>
-    <button id="reading-new" class="reading-new" type="button" hidden></button>
+    <section id="reading-context" class="reading-context" aria-label="Earlier in the story" hidden></section>
+    <div id="reading-earlier-controls" class="history-controls">
+      <button id="older-history-button" type="button" aria-controls="older-events" disabled>Read earlier passages</button>
+      <p id="history-status" class="secondary" role="status" aria-live="polite"></p>
+    </div>
     <article id="latest-passage" class="latest-passage" data-reading-anchor="latest-passage" hidden></article>
+    <details id="story-index" class="story-index">
+      <summary>Follow the story threads</summary>
     <section id="stories-section" class="world-status" aria-labelledby="stories-heading" hidden>
       <h2 id="stories-heading">A story in the city</h2>
       <div id="stories"></div>
     </section>
+    </details>
     <section class="history" aria-labelledby="history-heading">
       <h2 id="history-heading" class="section-heading">The world unfolds</h2>
+      <p class="reading-sequence-note">A day in Silver Clouds, read from beginning to end. The world carries on beyond your page.</p>
+      <label class="reading-routine-control"><input id="reading-routine-toggle" type="checkbox"> Include quiet activity records</label>
       <p id="last-visit" class="last-visit secondary" hidden></p>
       <p id="empty-events" class="secondary">Waiting for recent history…</p>
       <ol id="events" class="events"></ol>
@@ -141,9 +154,9 @@
         <h3 class="older-heading">Earlier in Silver Clouds</h3>
         <ol id="older-events" class="events"></ol>
       </div>
-      <div class="history-controls">
-        <button id="older-history-button" type="button" aria-controls="older-events" disabled>Read earlier activity</button>
-        <p id="history-status" class="secondary" role="status" aria-live="polite"></p>
+      <div id="reading-live" class="history-controls" aria-label="Continue the living story">
+        <button id="reading-new" class="reading-new" type="button" aria-controls="events" hidden>Read the next passages</button>
+        <p id="reading-live-status" class="secondary" role="status" aria-live="polite">Waiting for the living story…</p>
       </div>
     </section>
     <details id="world-overview" class="world-overview">

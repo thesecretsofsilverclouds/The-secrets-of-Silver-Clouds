@@ -15,6 +15,7 @@ import { openCinematicStore } from './src/cinematic-store.mjs';
 import { CinematicService, ViewerRegistry } from './src/cinematic-service.mjs';
 import { cinematicConfig, openAICinematicClient } from './src/cinematics.mjs';
 import { editorialCinematicRecordForApi } from './src/editorial-cinematics.mjs';
+import { historyOptions } from './src/public-history.mjs';
 import { AMBIENT_ASSETS, isAmbientAudioFile, publicAmbientSources } from './src/ambient-assets.mjs';
 import { TRACKS } from './cloudflare/src/media-manifest.mjs';
 import { buildStoryThread, listStoryThreads } from './src/story-threads.mjs';
@@ -132,6 +133,8 @@ export function createApp({ world, socialStore, feedbackStore, audienceStore, ci
   if (!world || typeof world.advance !== 'function' || typeof world.publicProjection !== 'function') {
     throw new TypeError('createApp requires a world store');
   }
+  const dialogueSourcesForEvent = event => world.publicDialogueSources?.(event)
+    ?? world.presentationSnapshot?.()?.events ?? [];
   const store = socialStore || openSocialStore({ dbPath: ':memory:' });
   const feedback = feedbackStore || openFeedbackStore({ dbPath: ':memory:', now });
   const ownsCinematicStore = !cinematicStore && !cinematicService;
@@ -174,7 +177,7 @@ export function createApp({ world, socialStore, feedbackStore, audienceStore, ci
       const backgroundUrl = BACKGROUND_BY_ID[visuals.backgrounds[0]]?.file;
       return { ...event, backgroundUrl,
         ...(row?.scene && ['performed', 'fallback'].includes(row.status) ? { cinematic: editorialCinematicRecordForApi(row,
-          { event: world.eventById?.(row.eventId), snapshot: snap }) } : {}) };
+          { event: world.eventById?.(row.eventId), snapshot: snap, publicSourcesForEvent: dialogueSourcesForEvent }) } : {}) };
     }) };
   }
 
@@ -193,8 +196,9 @@ export function createApp({ world, socialStore, feedbackStore, audienceStore, ci
     ['/cinematic-player.js', { type: 'text/javascript; charset=utf-8', bytes: readFileSync(join(appDirectory, 'cinematic-player.js')) }],
   ]);
   assets.set('/index.html', assets.get('/'));
-  for (const file of ['weather-layer.js', 'ambient-audio.js', 'road-sprites.js', 'atmosphere.js', 'score-mood.js', 'atmosphere-preview.js',
-    'reading-view.js', 'reading-recap.js', 'story-trails.js', 'reader-feedback.js']) {
+  for (const file of ['weather-layer.js', 'ambient-audio.js', 'road-sprites.js', 'atmosphere.js', 'score-mood.js', 'score-rotation.js', 'atmosphere-preview.js',
+    'api-base.js', 'reading-view.js', 'reading-recap.js', 'reading-history.js', 'reader-scene.js',
+    'reader-narrative.js', 'story-trails.js', 'reader-feedback.js']) {
     assets.set(`/${file}`, { type: 'text/javascript; charset=utf-8', bytes: readFileSync(join(appDirectory, file)) });
   }
   for (const file of ['reading-view.css', 'scene-reading.css', 'reader-feedback.css']) {
@@ -326,9 +330,22 @@ export function createApp({ world, socialStore, feedbackStore, audienceStore, ci
 
       if (pathname === '/api/history' && typeof world.publicHistory === 'function') {
         if(request.method!=='GET') {sendJson(response,405,{error:'Use GET for this endpoint.'});return;}
-        const beforeSeq=queryParams.has('before')?Number(queryParams.get('before')):Number.MAX_SAFE_INTEGER;
-        if(!Number.isSafeInteger(beforeSeq)||beforeSeq<1) {sendJson(response,400,{error:'Invalid history cursor.'});return;}
-        sendJson(response,200,world.publicHistory({beforeSeq}));return;
+        try { sendJson(response,200,world.publicHistory(historyOptions(queryParams))); }
+        catch (error) {
+          if (error instanceof RangeError) sendJson(response,400,{error:error.message});
+          else throw error;
+        }
+        return;
+      }
+
+      const contextMatch = pathname.match(/^\/api\/events\/([^/]+)\/context$/);
+      if (contextMatch && typeof world.publicEventContext === 'function') {
+        if(request.method!=='GET') {sendJson(response,405,{error:'Use GET for this endpoint.'});return;}
+        let eventId;
+        try { eventId = decodeURIComponent(contextMatch[1]); }
+        catch { sendJson(response,400,{error:'Invalid event reference.'});return; }
+        const context = world.publicEventContext(eventId);
+        sendJson(response,context ? 200 : 404,context ?? {error:'Public passage not found.'});return;
       }
 
       if (pathname === '/api/story-thread') {
@@ -421,13 +438,13 @@ export function createApp({ world, socialStore, feedbackStore, audienceStore, ci
           if (!row?.scene || !['performed', 'fallback'].includes(row.status)) { sendJson(response, 404, { error: 'Not found.' }); return; }
           const event = world.eventById?.(row.eventId) ?? snap?.events?.find(e => e.id === row.eventId) ?? null;
           sendJson(response, 200, { cinematic: editorialCinematicRecordForApi(row,
-            { event, snapshot: snap }), serverTime: now() });
+            { event, snapshot: snap, publicSourcesForEvent: dialogueSourcesForEvent }), serverTime: now() });
         } else {
           const rows = (cache?.list() ?? []).filter(row => row.scene && ['performed', 'fallback'].includes(row.status))
             .sort((a, b) => b.occurredAt - a.occurredAt).slice(0, 30);
           sendJson(response, 200, { cinematics: rows.map(row => {
             const event = world.eventById?.(row.eventId) ?? snap?.events?.find(e => e.id === row.eventId) ?? null;
-            return editorialCinematicRecordForApi(row, { event, snapshot: snap });
+            return editorialCinematicRecordForApi(row, { event, snapshot: snap, publicSourcesForEvent: dialogueSourcesForEvent });
           }), serverTime: now() });
         }
         return;
@@ -443,7 +460,7 @@ export function createApp({ world, socialStore, feedbackStore, audienceStore, ci
         const safeAfter = Number.isSafeInteger(after) && after >= 0 ? after : 0;
         sendJson(response, 200, {
           cinematic: cinematics.nextPresentation({ afterAcceptedAt: safeAfter, now: serverTime,
-            eventById: id => world.eventById?.(id) }),
+            eventById: id => world.eventById?.(id), publicSourcesForEvent: dialogueSourcesForEvent }),
           serverTime,
         });
         return;

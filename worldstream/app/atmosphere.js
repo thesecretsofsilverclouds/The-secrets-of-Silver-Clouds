@@ -18,8 +18,15 @@ export function createAtmosphere({ root = document, onVolume = () => {}, onCreat
   const save = () => { try { localStorage.setItem('worldstream-atmosphere', JSON.stringify(prefs)); } catch {} };
   const weather = createWeatherLayer({ canvas: query('#weather-canvas'), environment: query('#world-backdrop'),
     readingColumn: query('main'), flashesOff: !prefs.flashes });
+  // The scene layer gets no reading column, and that is not a relaxation of the
+  // legibility rule — it is the rule applied to the right shape. `readingWeight`
+  // protects a *vertical* strip, which is correct for a page whose prose runs
+  // down the middle. A scene's prose sits in one opaque box pinned to the
+  // bottom, so rain behind it is hidden by the box itself; masking by x instead
+  // blanked the full height of that strip, which is exactly where the artwork
+  // and the character plates are. Nothing legible is drawn over.
   const sceneWeather = createWeatherLayer({ canvas: query('#scene-weather-canvas'),
-    environment: query('#scene-layer .stage'), readingColumn: query('#scene-layer .dialogue'), flashesOff: !prefs.flashes });
+    environment: query('#scene-layer .stage'), flashesOff: !prefs.flashes });
   const sprites = createRoadSpriteLayer({ layer: query('#road-sprite-layer') });
   let world = null, scene = null, audio = null, destroyed = false;
 

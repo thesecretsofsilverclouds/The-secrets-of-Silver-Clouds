@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { purposeEditorial } from './pursuit-purpose.mjs';
 
 // Offscreen work is already committed when this module sees it. We perform a
 // scene; we cannot settle its subject, supply help, acquire a memory, or summon
@@ -19,20 +20,20 @@ const BANK = Object.freeze({
     nextSubject: 'another troublesome section of the game',
     next: 'A different section of the game had caught Yukon. He leaned towards it with all the determination the previous one had failed to cure.',
     started: [
-      'Yukon was at the game again. He leaned into the same troublesome section, pointed ears giving his concentration an unnecessarily combative silhouette. London could wait its turn.',
-      'The game wanted precision. Yukon approached it with conviction, which was not quite the same thing. He worked at the troublesome section alone, leaning towards it as though the missing answer might be closer to the screen.'
+      'Yukon hunched over the controller in the MI6 gaming room, his pointed ears sticking out beneath the gelled hair. The same section again. His thumbs went straight back to the movement that kept catching him.\n\nHe leaned closer, jaw clenched. Getting angry with the bloody thing was easy. Getting through it was the part he had come back to do.',
+      'Screen light washed over Yukon’s grey hands. He tightened his grip on the controller and started the section again, shoulders pitched forward before anything had happened.\n\nHe knew where it went wrong. His hands kept taking him there anyway. This time he watched the movement instead of letting frustration rush him through it.'
     ],
     resumed: [
-      'Yukon returned to the section he had left unfinished. His hands found the familiar sequence; his face suggested considerably less affection for it. The game had kept its place. So had he.',
-      'The troublesome section was waiting. Yukon settled in for another attempt, still recognisably offended by the need for one. Whatever else had happened since, this part of the game remained his problem.'
+      'Yukon settled back in front of the screen. He had left this section unfinished, and the first familiar movements brought the scowl straight back to his face.\n\nHis grip tightened. Then he eased it and tried again. For all the fury he brought to the controller, his hands still had to get the sequence right.',
+      'The controller fitted into Yukon’s hands as though he had never put it down. Back to the same section, with the same failure waiting if he hurried.\n\nHe drew his shoulders forward and fixed on the screen. The irritation had survived the break. So had his determination to get past it.'
     ],
     unfinished: [
-      'Yukon stopped. The section still had him. His hands fell still before the rest of him accepted it, and for a moment his expression did all the work. He left the attempt unfinished.',
-      'The section refused to come together. Yukon sat back, then leaned towards it again without beginning another attempt. Leaving something alone was apparently going to require an effort of its own.'
+      'Yukon’s thumbs stopped. He stared at the screen, breathing through his nose, then let the controller settle against his legs. He had reached the same problem and failed to get past it.\n\nHis fingers shifted towards another attempt. He pulled them back. The section would still be there when he returned; for now, he was leaving it unfinished.',
+      'The section beat him again. Yukon pushed himself back in the chair, the controller gripped hard between his grey hands.\n\nHe leaned forward once more, then stopped before starting. Anger was not getting him any further. He put the controller down and left the section unfinished.'
     ],
     settled: [
-      'The troublesome section finally came together. Yukon’s hands eased; the rest of him took a moment to follow. One piece of the game, sorted. He gave it a long look, as if it might still attempt to dispute the matter.',
-      'This time, the section held together. Yukon let his hands settle and sat back. The game was still the game, but the part that had kept drawing him back no longer stopped him in the same place.'
+      'Yukon got past it. His hands kept moving until the section was through, then stopped over the controller. For a moment he just stared.\n\nHis shoulders dropped. He set the controller down before another attempt could swallow the result. The part that had kept beating him was behind him now.',
+      'The sequence held. Yukon reached the end of the section and sat back hard, loosening his fingers from the controller one at a time.\n\nHe looked at the screen again. Still through. He let out a breath and left the controller where it was.'
     ],
     helpedResult: 'He had worked on the shorter section suggested to him, and that smaller piece gave the attempt somewhere to come together.',
     heard: n => `${n} heard what Yukon had been working at: a section of the game that still refused to settle. ${n === 'Goaden' ? 'The account drew a sideways look at its aggrieved teller. The expression alone explained why the subject had survived.' : 'She listened past the frustration to the part that kept catching him.'} Another piece of the day, finally reaching ${n === 'Goaden' ? 'him' : 'her'}.`,
@@ -47,20 +48,20 @@ const BANK = Object.freeze({
     nextSubject: 'the ending of a new verse',
     next: 'Gabriel had a new verse, with a new ending threatening to carry more words than its rhythm could hold. He began working at it. Another verse had evidently done nothing to make his ambitions smaller.',
     started: [
-      'Gabriel tried the last line again. Too much of it wanted to arrive at once. He paced the words against their own rhythm, giving the Sanctuary a performance whose most demanding audience, for now, was himself.',
-      'The verse had an overcrowded ending. Gabriel returned to it with the bearing of a man preparing to correct a minor misunderstanding between his intentions and everyone else’s sense of rhythm.'
+      'Gabriel reached the last line and ran out of room. The words crowded together while the beat carried on without waiting for him. He stopped in the Sanctuary and drew breath.\n\nHe tried the line again. There was too much in it; he could hear that. Cutting something out was proving harder than singing it badly.',
+      'Gabriel worked through the verse, keeping the rhythm until the last line forced him to hurry. He broke off, mouth still shaped around the words he had not fitted in.\n\nThe ending needed space. He went back over it, listening for what he could lose without cutting out the part he wanted to keep.'
     ],
     resumed: [
-      'Gabriel returned to the unfinished last line. It still wanted more room than the verse could give it. He went through it again, fully committed to the possibility that confidence might yet count as space.',
-      'The ending had stayed with Gabriel. Back at the verse, he tried the last line once more, measuring the turn of it against the words still crowding towards the end. This was the part he had not managed to leave behind.'
+      'Back in the Sanctuary, Gabriel took up the verse where he had stopped. The last line still dragged too many words behind it. He tried to get through without rushing and heard himself rush anyway.\n\nHe stopped. Went back. This was the line he had left unfinished, and he would have to cut it before the ending could land.',
+      'Gabriel began at the troublesome ending instead of singing the whole verse again. He knew the lead-in; it was the last line he had not managed to finish.\n\nHe worked through the words slowly, stripping away the performance until he could hear where the rhythm disappeared beneath them.'
     ],
     unfinished: [
-      'The last line still crowded its ending. Gabriel stopped there, his expression retaining the performance a moment after his voice had abandoned it. The verse would have to wait unfinished.',
-      'Gabriel reached the crowded ending and stopped. Conviction had carried the words a considerable distance. It had not made them fit. He left that part unresolved.'
+      'Gabriel stopped before the last line had finished spilling out. He had taken words away, but the ending still rushed past its beat.\n\nHe drew breath as if to start again, then let it go. The verse stayed unfinished. Whatever he cut next would have to make more room than this.',
+      'The final words came too quickly again. Gabriel’s mouth tightened. He could force them through, but he could hear exactly what that did to the verse.\n\nHe left the ending there. It was still crowded, still unfinished, and another performance would not make it fit.'
     ],
     settled: [
-      'The last line found its ending. Gabriel let the final beat fall, and for once nothing was trying to arrive after it. He stood with the finished shape of the verse before his face remembered to look as though that had always been inevitable.',
-      'Gabriel reached the end without crowding it. A clean finish; room for the last beat to be heard. He held the silence afterwards with rather more ceremony than the silence required.'
+      'Gabriel sang the shortened line and reached the end with room to spare. He did not have to swallow the last words. The beat fell cleanly after them.\n\nHe held still, listening to the gap he had finally made. Then his mouth curled. That was the ending he had been trying to get.',
+      'The last line landed on the beat. Gabriel drew breath, then stopped himself from filling the silence with another run.\n\nFewer words. A proper ending. He let the verse finish without dragging anything else after it.'
     ],
     helpedResult: 'The suggestion to shorten the final line had given the ending the space it needed.',
     heard: n => `${n} heard about Gabriel’s crowded last line. ${n === 'Goaden' ? 'The account brought an interested look to his face: a verse, it seemed, could have too much Gabriel in it.' : 'She listened for where the rhythm gave way beneath the words.'} The ending had travelled into conversation still unfinished.`,
@@ -75,20 +76,20 @@ const BANK = Object.freeze({
     nextSubject: 'a third verse that arrived too long',
     next: 'Rose started a different verse, the third, and this new verse arrived at six lines — a state of affairs she appeared to regard as temporary.',
     started: [
-      'Rose sat up on the drum kit with a pencil and the second verse. She read it, crossed out a line, and read it again. The pigeon on the rail watched all of this and contributed nothing.',
-      'Four lines, and Rose did not like three of them. She worked at the verse the way she talks: taking things out until what is left cannot be argued with.'
+      'Rose sat on the drum kit with the second verse across her knee. Four lines. She read through them, pressed the pencil to the page and struck one out.\n\nThe pigeon on the warehouse rail shifted its feet. Rose read the verse again. Three of those lines were doing nothing, and she had no intention of keeping them just because she had written them.',
+      'Rose bent over the verse, fiery hair falling beside the page. The pencil paused under one line, then moved through it.\n\nShe read what remained. Too much still. Up on the drum kit, with the warehouse stretching away around her, she went back over the words and looked for the next thing to cut.'
     ],
     resumed: [
-      'The verse was where she had left it, one line shorter than it had been that morning. Rose read it through and reached for the pencil again.',
-      'Rose came back to the second verse. It had not improved in her absence, which she seemed to have expected.'
+      'Rose laid the unfinished verse across her knee again. She read it without touching the pencil, then went back to the words she had failed to cut.\n\nThe page had kept all of them. She picked up the pencil and settled herself on the drum kit.',
+      'The second verse was still too long. Rose climbed back onto the drum kit, drew the page towards her and read from the beginning.\n\nHer pencil stopped over the same lines. Leaving them alone had not made them necessary.'
     ],
     unfinished: [
-      'Rose put the pencil down. Four lines, still. She had cut two and put one back, which is not progress, though it is not quite nothing. The pigeon left before she did.',
-      'The verse stayed at four lines. Rose read it once more, decided against saying anything about it, and left it there.'
+      'Rose lowered the pencil. Four lines remained. She read them once more, her eyes moving back to the three she still did not want.\n\nShe left the page on her knee. The verse was not finished, and she would not pretend it was just to put the pencil down.',
+      'Four lines. Rose stared at the page, then set the pencil beside her on the drum kit.\n\nShe had not got the verse down to what it needed. The words stayed where they were, waiting for her to make the cut she had not managed today.'
     ],
     settled: [
-      'Two lines. Rose read them, then read them again, and did not reach for the pencil. Whatever the other two had been doing, the pair that were left did it without them.',
-      'She cut it to two lines and stopped. Rose has never needed many words to finish a thing, and the verse had finally come round to her way of seeing it.'
+      'Rose read the two lines left on the page. Then she read them again, the pencil loose in her hand.\n\nShe did not put anything back. What she had wanted was there without the words she had cut, and she set the pencil down on the drum kit.',
+      'The verse was down to two lines. Rose ran her eyes across the page, stopping where the other lines had been.\n\nNothing needed filling in. She left the cuts visible and put the pencil aside.'
     ],
     helpedResult: 'The suggestion to say it out loud had shown her which lines were only ever there on the page.',
     heard: n => `${n} heard that Rose was cutting a verse down. ${n === 'Goaden' ? 'The whole account took her about nine words, which he found funnier than the verse.' : 'Four lines, three of them doing nothing — Ashai got the problem in one sentence, because Rose does not supply a second.'} It was still four lines long when the subject moved on.`,
@@ -110,20 +111,20 @@ const BANK = Object.freeze({
     nextSubject: 'the other swing, which is worse',
     next: 'Emily moved to a different swing, the one with the shorter chains, and started again from one. This one is worse, and she had clearly decided that was the point of it.',
     started: [
-      'Emily had the swing at the far end of the gardens, the one nobody uses because the frame ticks. She was working at a rule of her own: get the chains to go slack at the top of the arc, just for a moment, so that for that moment nothing is holding you. Bare feet. Grey bag on the grass. She counted the tries out loud.',
-      'The gardens had the after-school crowd in them and Emily had the end swing to herself, as she always seems to. She was going high, and higher, and watching the chains rather than the sky — waiting for the half-second of slack at the top that she has decided counts as flying.',
+      'Emily pushed off with her bare feet. The swing carried her above the grass, grey teddy-bear bag lying beneath it. At the top she looked at her hands. The chains were still tight.\n\nShe wanted them slack. Only for the instant before she fell back, when there would be nothing pulling against her fingers. She counted the try and kicked forward again.',
+      'The swing frame ticked as Emily passed beneath it. She leaned back, bare feet lifting, then watched the chains draw straight above her hands.\n\nStill holding her. She let the swing carry her down and pushed harder on the next pass. The rule was hers: get both chains to go slack at the top. She kept counting.'
     ],
     resumed: [
-      'Emily came back to the end swing. The count started again from one, which suggests the rule has terms.',
-      'The frame was still ticking and the chains were still taut at the top. Emily picked it up where she had left it, with no apparent feeling about the interval.',
+      'Emily put the grey bag on the grass and took the end swing again. Her hands closed around the chains. The count began at one.\n\nShe had not made them go slack last time. She pushed off, watching the links instead of the people passing through the plaza gardens.',
+      'The frame ticked. Emily leaned back into the swing and looked up at the chains she had left taut on her last attempt.\n\nShe had come back to finish her rule. At the top of the arc she watched her hands, then counted another try as the swing fell away beneath her.'
     ],
     unfinished: [
-      'The chains never went slack. Emily kept going until the gardens had emptied out around her and the light had gone amber, and then a while after that. When she stopped, she stopped all at once, the way a clock does.',
-      'Forty-one tries and the chains stayed tight every time. She said the number out loud to nobody, picked the grey bag up off the grass, and walked out barefoot across the cold flagstones.',
+      'Emily dragged her bare feet against the ground. The swing slowed beneath her, the chains pulling straight from her hands to the frame.\n\nThey had stayed tight at the top every time. She looked up at them once more and stopped counting. The rule was still unfinished.',
+      'The chains had not gone slack. Emily let the swing lose height until her feet reached the grass, then sat holding the links still.\n\nHer grey bag lay where she had put it. She looked from the chains to the bag and ended the attempt without changing the rule.'
     ],
     settled: [
-      'It went slack. Half a second at the top of the arc, both chains, and Emily made a sound that a passer-by would have said was a laugh. She did it again to be certain. Then she sat in the still swing for a long while with her feet not reaching the ground.',
-      'Twice. She got it twice, and stopped, because a rule you can meet twice is finished. Emily sat with the chains going quiet in her hands and looked at the tower for a while, and did not go home for some time.',
+      'Both chains loosened in Emily’s hands. The swing hung for an instant, then dropped and pulled them tight again.\n\nShe kicked through another arc and watched it happen a second time. Twice. She let the swing slow, her fingers closed around the links that had finally stopped holding her at the top.',
+      'At the top of the swing, the pull disappeared from Emily’s hands. The chains slackened, caught her again, and sent her back beneath the ticking frame.\n\nShe did it once more before she stopped. Two times. Emily sat very still, bare feet hanging above the grass, with both chains gathered in her hands.'
     ],
     helpedResult: 'The suggestion to stop counting had done it: the counting was keeping her honest and keeping her tight, and once the number went the arc got longer.',
     heard: n => `${n} heard about the girl on the swing at the plaza gardens, and about the rule. ${n === 'Goaden' ? 'Goaden asked how old she was, got an answer, and went quiet for a second longer than the question warranted.' : 'Ashai asked who she was there with. The answer was nobody, delivered as though the question was the strange part.'} The chains still had not gone slack.`,
@@ -138,20 +139,20 @@ const BANK = Object.freeze({
     nextSubject: 'the next unclear handover note',
     next: 'A different handover note needed Zara. She began working through its wording beneath the operations screens. Ordinary work had a way of producing another problem without asking what had become of the last.',
     started: [
-      'In operations, Zara returned to an ordinary handover note whose wording had made more work than it saved. Monitor light caught her face as she went through it. A small ambiguity, given enough time, could become everyone’s problem.',
-      'Zara had a handover note to make clear. Nothing secret, nothing dramatic; just a piece of ordinary work that would otherwise follow someone into the next shift. She bent over it beneath the steady glow of the screens.'
+      'Zara stopped at the same line in the handover. She read it again, lips pressed together. The next shift would have to work out what it meant, just as she was doing now.\n\nUnder the operations screens, she separated it from the notes she had already cleared. This entry needed rewriting before she could leave it for someone else.',
+      'The handover made sense until Zara reached one muddled entry. She went back over the wording, then over it again, her face lit by the screens above the desk.\n\nShe could leave it and make the next shift untangle it. Instead she kept the entry in front of her and began another pass.'
     ],
     resumed: [
-      'The handover note was still unclear. Zara returned to it in operations, her brisk manner narrowing to the stubborn detail. The wording had waited. So had the person who would eventually need to understand it.',
-      'Zara took up the unfinished handover note again. In the monitor glow, the same ambiguous wording remained as unhelpful as she had left it. She began another pass.'
+      'Zara found the entry she had marked unfinished. The rest of the handover was clear; this was the line that kept bringing her back to the desk.\n\nShe read it under the operations screens and started working through the wording again. Whoever took over after her would need a note they could understand.',
+      'Back in operations, Zara stopped at the flag she had left on the handover. She had cleared the other notes. This one still needed explaining.\n\nShe drew it out from the surrounding entries and began again, working through the wording she had left unfinished.'
     ],
     unfinished: [
-      'The handover note was still ambiguous when Zara stopped. She left it marked for more work. Beyond her, the operations screens kept their steady light; this small uncertainty had survived another attempt to tidy it away.',
-      'Zara reached the end of the second pass without making the handover note any clearer. Her gaze remained on it a moment longer, then lifted. The next handover would still need that piece explained.'
+      'Zara read the entry one last time and left it flagged. It was still unclear. She could not pass it on as finished, however clean the rest of the handover looked.\n\nShe moved back from the desk. The next shift would see the flag before reaching the line that still needed explaining.',
+      'The wording still would not give Zara a clear reading. She stopped working on it and marked the entry unfinished.\n\nThe other notes were ready. This one would have to be explained, and she left the flag where it could not be mistaken for a completed check.'
     ],
     settled: [
-      'The handover note was clear at last. Zara read it through once more, then let it go. Somewhere between one shift and the next, a question would no longer need to be asked. No screen in operations announced the difference.',
-      'Zara finished the note and read back wording that could stand on its own. Clear enough to hand over. Her shoulders eased by a fraction before she straightened them again.'
+      'Zara read the replacement entry from beginning to end. No doubled meaning. No need to go back and work out which reading had been intended.\n\nShe put it in place of the muddled note and checked it once more. The next shift could read this one without having to ask her what it meant.',
+      'The rewritten entry said what Zara needed it to say. She read it beside the other handover notes, checking that it still made sense there.\n\nThen she left it in place. One fewer explanation to drag into the next shift.'
     ],
     helpedResult: 'Separating the unclear entry from the rest of the handover, as suggested, had made it easier to leave a clear note in its place.',
     heard: n => `${n} heard about the handover note Zara had been trying to make clear. ${n === 'Goaden' ? 'Work finding its way into her conversation came as no great surprise; his expression gave that much away.' : 'The ordinary difficulty received a careful hearing. Ashai followed the wording that had caught her.'} It had occupied part of Zara’s day before reaching this conversation.`,
@@ -180,28 +181,41 @@ export function livesEditorial(event) {
   if (event?.visibility !== 'public' || !TYPES.has(event.type) || !nonempty(event.id)
     || !time(event.occurredAt) || !Array.isArray(event.participants) || !event.payload) return null;
   const p = event.payload;
+  if (p.purposeStage) return purposeEditorial(event);
   if (!Object.hasOwn(BANK, p.family)) return null;
   const item = BANK[p.family];
   if (p.guest !== item.guest || !Array.isArray(p.cast) || !p.cast.includes(item.guest)
     || !Number.isInteger(p.attempt) || p.attempt < 1 || p.attempt > 3
     || !Number.isInteger(p.projectNumber) || p.projectNumber < 1) return null;
+  // Continuation prose already records an established result and its later
+  // check. The old bank describes discovering the original solution; using it
+  // again would make a completed verse or mastered section become new trouble.
+  const continuing = nonempty(p.continuationSourceEventId) && time(p.continuationOccurredAt)
+    && p.continuationOccurredAt < event.occurredAt
+    && event.causedBy?.includes(p.continuationSourceEventId);
   if (event.type !== 'OFFSCREEN_ENCOUNTER') {
     if (event.participants.length || event.location !== item.location || event.area !== item.area) return null;
     if (event.type === 'OFFSCREEN_START') {
       if (!['started', 'resumed'].includes(p.stage) || p.outcome != null) return null;
       if (p.stage === 'resumed' && (p.previousOutcome !== 'unfinished' || !nonempty(p.previousResultEventId))) return null;
+      if (continuing) return { description: event.publicDescription, prose: null };
       const next = p.stage === 'started' && p.projectNumber > 1;
-      return { description: `${item.name} ${p.stage === 'resumed' ? 'returned to' : 'began working on'} ${next ? item.nextSubject : item.subject}.`,
+      return { description: p.guest === 'emily' ? `Emily ${p.stage === 'resumed' ? 'tried again to get' : 'tried to get'} the swing chains to go slack at the top.`
+        : `${item.name} ${p.stage === 'resumed' ? 'returned to' : 'began working on'} ${next ? item.nextSubject : item.subject}.`,
         prose: next ? item.next : choose(event, p.stage, item[p.stage]) };
     }
     if (p.stage !== 'result' || !OUTCOMES.has(p.outcome)) return null;
+    if (continuing) return { description: event.publicDescription, prose: null };
     const helped = p.outcome === 'settled' && nonempty(p.helpSourceEventId) && p.helpMethod === item.method;
-    return { description: `${item.name} ${p.outcome === 'settled' ? 'worked through' : 'left unfinished'} ${item.subject}.`,
+    return { description: p.guest === 'emily' ? p.outcome === 'settled'
+      ? 'Emily made the swing chains go slack, twice.' : 'Emily stopped trying; the swing chains had stayed tight.'
+      : `${item.name} ${p.outcome === 'settled' ? 'worked through' : 'left unfinished'} ${item.subject}.`,
       prose: `${choose(event, p.outcome, item[p.outcome])}${helped ? ` ${item.helpedResult}` : ''}` };
   }
   if (!['heard', 'helped', 'recalled'].includes(p.stage) || !Object.hasOwn(NAMES, p.lead)
     || event.participants.length !== 1 || event.participants[0] !== p.lead || !OUTCOMES.has(p.outcome)
     || !learnedEvidence(event)) return null;
+  if (continuing) return { description: event.publicDescription, prose: null };
   const n = NAMES[p.lead];
   if (p.stage === 'heard') return { description: `${n} learned how ${item.name} had been getting on with ${item.subject}.`,
     prose: p.outcome === 'settled' ? item.heardSettled(n) : item.heard(n) };

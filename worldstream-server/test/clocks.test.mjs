@@ -77,7 +77,7 @@ test('evaluatePlotClocks advances MI6 Net through catalyst thresholds', () => {
   // Stage 2: Briefings summoned
   const worldBriefing = {
     factions: { mi6: 'briefings', arcane: 'low', order: 'quiet' },
-    events: [{ id: 'ev-b', type: 'BRIEFING_BEGIN', location: 'mi6', description: 'Command called an inner circle briefing.' }],
+    events: [{ id: 'ev-b', occurredAt: NOW, type: 'BRIEFING_BEGIN', location: 'mi6', description: 'Command called an inner circle briefing.' }],
   };
   const clocks2 = evaluatePlotClocks(worldBriefing, NOW);
   const mi6_2 = clocks2.find((c) => c.id === 'mi6_net');
@@ -87,7 +87,7 @@ test('evaluatePlotClocks advances MI6 Net through catalyst thresholds', () => {
   // Stage 3: Standby footing (penultimate)
   const worldStandby = {
     factions: { mi6: 'elevated', arcane: 'low', order: 'quiet' },
-    events: [{ id: 'ev-s', type: 'STANDBY_BEGIN', location: 'mi6', description: 'Operatives placed on operational standby.' }],
+    events: [{ id: 'ev-s', occurredAt: NOW, type: 'STANDBY_BEGIN', location: 'mi6', description: 'Operatives placed on operational standby.' }],
   };
   const clocks3 = evaluatePlotClocks(worldStandby, NOW);
   const mi6_3 = clocks3.find((c) => c.id === 'mi6_net');
@@ -98,7 +98,7 @@ test('evaluatePlotClocks advances MI6 Net through catalyst thresholds', () => {
   // Stage 4: Climax (Operational recall / intercept)
   const worldRecall = {
     factions: { mi6: 'elevated', arcane: 'low', order: 'quiet' },
-    events: [{ id: 'ev-r', type: 'PLAN_BROKEN', location: 'mi6', description: 'Night patrol cancelled under operational recall.' }],
+    events: [{ id: 'ev-r', occurredAt: NOW, type: 'PLAN_BROKEN', location: 'mi6', description: 'Night patrol cancelled under operational recall.' }],
   };
   const clocks4 = evaluatePlotClocks(worldRecall, NOW);
   const mi6_4 = clocks4.find((c) => c.id === 'mi6_net');
@@ -167,6 +167,40 @@ test('detectPlotClockClimaxWager generates Climax Wagers for penultimate clocks'
   // Non-penultimate clock returns null
   const mi6Stage1 = { id: 'mi6_net', totalSegments: 4, currentSegment: 1, isPenultimate: false };
   assert.equal(detectPlotClockClimaxWager(mi6Stage1, null, NOW), null);
+});
+
+test('clock prose reports current conditions without manufacturing proclamations, patrols or private feelings', () => {
+  const world = { factions: { mi6: 'routine', arcane: 'moderate', order: 'active_in_city', church: 'quiet' },
+    veil: { phase: 'announced', daysAway: 45 }, sky: { lintels: 3 }, events: [] };
+  const clocks = evaluatePlotClocks(world, NOW), byId = Object.fromEntries(clocks.map(clock => [clock.id, clock]));
+  assert.match(byId.veil.currentDetail, /45 days away/);
+  assert.match(byId.arcane_resonance.currentDetail, /moderate/);
+  assert.match(byId.order_vigil.currentDetail, /active in the city/);
+  assert.equal(byId.inner_rapport.currentSegment, 1, 'world tension cannot supply a shared emotional event');
+  assert.doesNotMatch(JSON.stringify(clocks), /six in the morning|notices are up|good biscuits|every handheld|lift carriages|Ink moved|building noticing|Encirclement|formal prayers|bells ringing off-pitch/i);
+  assert.ok(clocks.every(clock => clock.lastAdvancedEventId === null));
+});
+
+test('clock source echoes require a dated public event and actual shared participation', () => {
+  const current = { id: 'shared', occurredAt: NOW - 1, type: 'CONVERSATION', participants: ['ashai', 'goaden'],
+    description: 'Ashai and Goaden talked over breakfast.' };
+  const noise = [
+    { ...current, id: 'private', visibility: 'private', occurredAt: NOW, description: 'PRIVATE PLAN' },
+    { ...current, id: 'future', occurredAt: NOW + 1, description: 'FUTURE PLAN' },
+    { ...current, id: 'undated', occurredAt: undefined, description: 'UNDATED PLAN' },
+    { id: 'old-surge', type: 'ARCANE_SURGE', occurredAt: NOW - 25 * 60 * 60_000, description: 'OLD SURGE' },
+    { id: 'coffee', occurredAt: NOW, type: 'MEAL_BEGIN', participants: ['ashai'], description: 'Ashai ordered coffee.' },
+  ];
+  const clocks = evaluatePlotClocks({ events: [current, ...noise], factions: { arcane: 'low', order: 'quiet' } }, NOW);
+  const rapport = clocks.find(clock => clock.id === 'inner_rapport');
+  assert.equal(rapport.currentDetail, current.description);
+  assert.equal(rapport.lastAdvancedEventId, current.id);
+  assert.equal(clocks.find(clock => clock.id === 'arcane_resonance').currentSegment, 1);
+  assert.equal(clocks.find(clock => clock.id === 'order_vigil').currentSegment, 1, 'ordered coffee is not Holy Order surveillance');
+  assert.doesNotMatch(JSON.stringify(clocks), /PRIVATE PLAN|FUTURE PLAN|UNDATED PLAN|OLD SURGE/);
+  const absent = evaluatePlotClocks({ events: [{ ...current, participants: ['ashai'] }] }, NOW)
+    .find(clock => clock.id === 'inner_rapport');
+  assert.equal(absent.currentSegment, 1, 'names in prose cannot replace actual shared attendance');
 });
 
 test('Morning Broadsheet includes The London Plot Clocks column', () => {

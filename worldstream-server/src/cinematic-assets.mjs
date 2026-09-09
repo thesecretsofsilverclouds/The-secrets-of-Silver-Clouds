@@ -21,6 +21,9 @@ const plate = (id, character, emotion, file, {
 });
 
 export const CHARACTER_PLATES = Object.freeze({
+  nimbus: Object.freeze(['angry','happy','showoff','smile','surprised','wink']
+    .map(emotion => plate(`nimbus_${emotion}`, 'nimbus', emotion, `/scene/nimbus-${emotion}.png`,
+      {suitableFor:['conversation','social','banter','anomaly','danger','wonder']}))),
   goaden: Object.freeze([
     plate('goaden_idle', 'goaden', 'guarded', '/scene/goaden-idle.png', { intensity: 1, energy: 'contained', facing: 'right' }),
     plate('goaden_smirk', 'goaden', 'amused', '/scene/goaden-smirk.png', { intensity: 2, energy: 'dry', suitableFor: ['banter', 'social', 'deflection'], facing: 'right' }),
@@ -107,7 +110,7 @@ export const BACKGROUND_BY_ID = Object.freeze(Object.fromEntries(CINEMATIC_BACKG
 export const PLATE_BY_ID = Object.freeze(Object.fromEntries(Object.values(CHARACTER_PLATES).flat().map((item) => [item.id, item])));
 
 const EXPRESSION_ALIASES = Object.freeze({
-  goaden: Object.freeze({ amused: 'goaden_smirk', deflect: 'goaden_idle', guarded: 'goaden_idle', concerned: 'goaden_idle', tired: 'goaden_idle' }),
+  goaden: Object.freeze({ smirk: 'goaden_smirk', amused: 'goaden_smirk', deflect: 'goaden_idle', guarded: 'goaden_idle', concerned: 'goaden_idle', tired: 'goaden_idle' }),
 });
 
 export function plateForExpression(character, expression) {

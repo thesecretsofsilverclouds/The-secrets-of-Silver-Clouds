@@ -17,133 +17,64 @@ function dispatchHash(str, salt = 0) {
  */
 const gazettePick = (bank, key, salt = 0) => bank[dispatchHash(String(key), salt) % bank.length];
 
-// The Gazette's own voice.
-//
-// The note this answers: "for things like the inner circle rapport and plot
-// clock and daily reports some need to have humour and entertainment in mind
-// much like book one. not boring but not all ridiculous."
-//
-// Two things were wrong with the paper. It had exactly one sentence per state,
-// so a hundred and eighty issues read identically; and every one of those
-// sentences was written in the same breathless wire-service register, which is
-// the least British thing a London local paper could possibly sound like.
-//
-// So the official status line stays official — that is the joke's straight man
-// — and the paper gets a second column underneath it where it says what it
-// actually thinks. The register is small-town broadsheet: procedural, faintly
-// aggrieved, and completely certain that the reader shares its priorities.
-//
-// The MEU line is Davis's, from the manuscript: she calls them "traffic wardens
-// with access to magic" [M87], and the Gazette has clearly read that quote too.
+// The status is a world fact; the note is the editor's opinion of that fact.
+// Humour must not invent patrols, exact times, readings or changes to access.
 const FACTION_NOTES = Object.freeze({
   mi6: {
-    calm: [
-      'Corridor lighting remains under review. It has been under review since March.',
-      'The lunch hall noticeboard has been moved again. No department admits to it.',
-      'Nothing to report from Whitehall, which the Gazette reports anyway.',
-    ],
-    briefings: [
-      'Assembly room booked all afternoon. The urn has been refilled twice, which is the real intelligence.',
-      'Inner circle sitting. Everyone else is doing paperwork loudly outside the door.',
-    ],
-    alert: [
-      'Sentries doubled. Rota doubled. Complaints about the rota, quadrupled.',
-      'Heightened footing declared at 06:00. The canteen found out at 06:40 and has not forgiven anyone.',
-    ],
+    calm: ['Routine. An underrated word, particularly by people who do not have to do the work.',
+      'The Gazette is willing to let an ordinary day remain ordinary. For once.'],
+    briefings: ['The Gazette wishes everyone a short meeting. A modest ambition, rarely achieved.',
+      'A briefing is quite enough occasion for one room.'],
+    alert: ['Heightened vigilance is not improved by heightened speculation.',
+      'The Gazette favours sensible caution over a heroic amount of guesswork.'],
   },
   order: {
-    calm: [
-      'No sightings this week. The Gazette notes that this is also what they would want.',
-      'Southwark quiet. The candles in the Blackfriars window are somebody else\'s business.',
-    ],
-    watchful: [
-      'Two robes near the viaduct on Tuesday. Both declined to comment, at considerable length.',
-      'Scouts reported at the rail arches. They are not doing anything. That is the unsettling part.',
-    ],
-    alert: [
-      'Residents are advised to be polite, and elsewhere.',
-      'Working the borough since dawn. The market packed up early and did not say why.',
-    ],
+    calm: ['Quiet does not require an exciting explanation.', 'The Gazette has no complaint about quiet. This may be a first.'],
+    watchful: ['Watching is not the same as acting. Readers are invited to preserve the distinction.',
+      'The Gazette would prefer a less ominous adjective. Alas.'],
+    alert: ['Residents may reasonably prefer a less eventful subject.',
+      'A little caution seems a sensible use of the day.'],
   },
   church: {
-    calm: [
-      'Incense at noon. The Gazette continues to receive letters about the incense.',
-      'Preparations proceeding. Nobody outside the Church knows for what, and asking has stopped being fashionable.',
-    ],
-    notice: [
-      'Chimes tuned for the cycle. The bell-ringers ask us to state they are not responsible for the dogs.',
-      'Veil cycle approaching. Expect the usual: queues, candles, and a run on batteries.',
-    ],
+    calm: ['Preparation is an occupation in its own right, especially when nobody agrees it is finished.',
+      'The Gazette respects a ceremony. It also respects a comfortable pair of shoes.'],
+    notice: ['The Veil gives London quite enough to anticipate without our inventing more.',
+      'Readers wishing to become solemn may begin at their convenience.'],
   },
   sanctuary: {
-    day: [
-      'Portal halls closed for morning inspection. Nothing is ever found, and the inspection continues.',
-      'Open to the public until four. The lift still makes the noise. Management call it character.',
-    ],
-    night: [
-      'Guest gateways operating. Door policy unchanged: they will know.',
-      'Halls open from eight. The Gazette has never been on the list and has stopped mentioning it.',
-    ],
+    day: ['Invitation only. Admiring it from below remains considerably easier.',
+      'An invitation is still an invitation. Enthusiasm is not a substitute.'],
+    night: ['An invitation is worth enjoying. The Gazette recommends against a victory speech.',
+      'Guest access is not public access, however persuasive one feels.'],
   },
   streamliner: {
-    calm: [
-      'On time across the Thames — a sentence this paper prints with no pleasure and less belief.',
-      'Running clean all week. Somebody will now write in about the third carriage.',
-    ],
-    notice: [
-      'Speed restrictions east. We are assured this is unrelated to the thing on the line last month.',
-      'Minor delays. The board says minor. The platform disagrees.',
-    ],
+    calm: ['An uneventful journey has much to recommend it.', 'The destination need not receive all the credit.'],
+    notice: ['Minor delays. A description easier to appreciate when one is already seated.',
+      'The Gazette recommends leaving a little room between ambition and arrival.'],
   },
   arcane: {
-    calm: [
-      'The MEU report a quiet week. The MEU mostly report a quiet week, and then paperwork about it.',
-      'Baseline harmonics. The scanners are on, the kettle is on, and that is the shift.',
-    ],
-    notice: [
-      'Above baseline. The MEU have issued a leaflet. It is not a good leaflet.',
-      'Readings up. Two vans out. One of them is definitely just parked.',
-    ],
-    alert: [
-      'Violet spike on the corridor. The MEU have stopped issuing leaflets and started issuing cones.',
-      'Corridor lit up at twenty to eight. Everything with a Presence in it felt the pull, including the dog at number nine.',
-    ],
+    calm: ['Low activity. Let us enjoy the adjective while it applies.',
+      'The Gazette approves of magic that leaves room for lunch.'],
+    notice: ['Above baseline is a reading, not an invitation to supply a monster.',
+      'Interesting, certainly. An explanation can wait for some evidence.'],
+    alert: ['High activity. The Gazette would prefer to admire it from a sensible distance.',
+      'There is enough magic in London without adding any to the account.'],
   },
 });
 
-// The notices column, which in any real local paper is the only bit anybody
-// reads. Nothing here is a fact the world knows — it is the borough talking
-// about itself, and it can never be used to learn anything.
-const GAZETTE_NOTICES = Object.freeze([
-  'LOST: one prowler design, last seen leaving its owner\'s shoulder in the direction of Blackfriars. Reward offered. Do not approach the shoulder.',
-  'Enchanted Ink has moved again. It is not where it was. It is also not where you think it has gone.',
-  'The Silver Spoon regrets to announce that the big scone is discontinued. Correspondence on this matter is now closed.',
-  'New Big Ben: forty-one seconds past the hour, as ever. Letters claiming otherwise will be counted, and ignored.',
-  'The Streamliner reminds passengers that the third carriage is not colder. It is differently warm.',
-  'Feeding the Lintels along the embankment is discouraged. They do not want your sandwich. They want the harmonics. They will take the sandwich.',
-  'WANTED: whoever moved the noticeboard in the barracks lunch hall. No action will be taken. We would simply like to know.',
-  'The Gazette apologises for last week\'s photograph of the Sanctuary, which was printed upside down. The Sanctuary was upside down.',
-  'Correction: Tuesday\'s item described the MEU as "traffic wardens with access to magic". The MEU have asked us to print that they also have a van.',
-  'A reader writes to ask whether a tattoo can be repossessed. It cannot. It can, however, leave.',
-  'The council wishes it known that the crack in the Silver Spoon window is both decorative and structural, in that order.',
-  'FOUND: one pigeon, with opinions. The owner may collect it. The owner is asked to collect it.',
-  'The Chimes will be silent for nine minutes on Thursday for tuning. Residents who enjoy the silence are asked not to write in about it afterwards.',
-  'A gentleman on the 14:20 has again been observed reading this newspaper over another passenger\'s shoulder. He is welcome to buy one.',
-]);
+const publishedText = event => event?.visibility === 'private' ? ''
+  : String(event?.description ?? event?.publicDescription ?? '').trim();
 
-/**
- * Two or three notices for the issue, seeded off the date so the same day
- * always prints the same column.
- */
-export function buildGazetteNotices(dateStr = '', count = 3) {
-  const chosen = [];
-  for (let pass = 0; chosen.length < count && pass < GAZETTE_NOTICES.length * 2; pass++) {
-    const notice = gazettePick(GAZETTE_NOTICES, `${dateStr}/notice`, pass + 1);
-    if (!chosen.includes(notice)) chosen.push(notice);
-  }
-  return chosen;
+// Only notices actually published in this issue's reporting window. A joke
+// about a closed cafe, moved shop or silent bell is still an invented event.
+export function buildGazetteNotices(dateStr = '', count = 3, events = []) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return [];
+  const notices = events.filter(event => ['INSTITUTION_NOTICE', 'FACTION_STATUS'].includes(event?.type)
+    && publishedText(event) && event.id && Number.isFinite(event.occurredAt)
+    && [dateStr, prevLondonDay(dateStr)].includes(londonDate(event.occurredAt)));
+  notices.sort((a, b) => b.occurredAt - a.occurredAt || a.id.localeCompare(b.id));
+  return [...new Set(notices.map(publishedText))].slice(0, Math.max(0, count));
 }
-
 /**
  * Human-readable location names for the broadsheet.
  */
@@ -192,7 +123,7 @@ export function formatLondonDateFull(dateStr) {
  * STANDBY_BEGIN, BRIEFING_BEGIN, rare Veil cycle milestones, or major ALERTs.
  */
 export function isHighStakesEvent(event) {
-  if (!event || typeof event !== 'object') return false;
+  if (!event || typeof event !== 'object' || event.visibility === 'private') return false;
   const type = event.type || '';
   const desc = (event.description || '').toLowerCase();
 
@@ -257,26 +188,8 @@ export function isHighStakesEvent(event) {
  * Format an in-world urgent dispatch memo for a high-stakes event.
  */
 export function formatHighStakesPing(event) {
-  if (!event) return null;
-  const type = event.type || '';
-  const desc = event.description || '';
-
-  if (type === 'ARCANE_SURGE' || /surge/i.test(desc)) {
-    return `⚡ URGENT DISPATCH: MEU corridor anomaly flagged along the Thames corridor. Goaden placed on standby.`;
-  }
-  if (type === 'PLAN_BROKEN') {
-    return `⚡ URGENT DISPATCH: Scheduled night movements broken by emergency duty recall.`;
-  }
-  if (type === 'OUTING_CUT_SHORT') {
-    return `⚡ URGENT DISPATCH: Evening borough excursion cut short under operational advisory.`;
-  }
-  if (type === 'STANDBY_BEGIN') {
-    return `⚡ URGENT DISPATCH: Heightened readiness order active across Southwark perimeter.`;
-  }
-  if (type === 'BRIEFING_BEGIN') {
-    return `⚡ URGENT DISPATCH: MI6 Inner Circle convened for classified situational briefing.`;
-  }
-  return `⚡ URGENT DISPATCH: ${desc || 'Operational anomaly flagged in London sector.'}`;
+  const text = publishedText(event);
+  return text ? `⚡ URGENT DISPATCH: ${text}` : null;
 }
 
 /**
@@ -349,8 +262,11 @@ export function scoreEventSalience(event) {
  * Inspects events from the target London calendar day (or past 24 hours),
  * selecting the 3–5 highest-salience events.
  */
-export function curateDailyEvents(events = [], targetDate = null) {
+export function curateDailyEvents(events = [], targetDate = null, through = Infinity) {
   if (!Array.isArray(events) || events.length === 0) return [];
+
+  events = events.filter(event => event && event.visibility !== 'private'
+    && Number.isFinite(event.occurredAt) && event.occurredAt <= through);
 
   // Filter events matching the target date if specified
   let candidates = events;
@@ -414,220 +330,81 @@ export function curateDailyEvents(events = [], targetDate = null) {
  */
 function createBriefHeadline(event) {
   const type = event.type || '';
-  const desc = (event.description || '').toLowerCase();
-  // Seeded off the event rather than the date, so two briefs of the same kind
-  // in one issue do not print the same head twice.
-  const head = bank => gazettePick(bank, `${event.id || desc}/brief`);
-
-  if (type === 'ARCANE_SURGE' || desc.includes('arcane surge')) {
-    return head(['Thames Anomaly Waveform Spike', 'Corridor Reading Off the Board', 'MEU Vans Out Before the Second Tone']);
-  }
-  if (type === 'PLAN_BROKEN' || desc.includes('plan broken')) {
-    return head(['Evening Schedule Interrupted', 'Arrangement Withdrawn at Short Notice', 'The Night Taken Whole']);
-  }
-  if (type === 'OUTING_CUT_SHORT' || desc.includes('cut short')) {
-    return head(['Borough Outing Curtailed Under Advisory', 'Afternoon Ends Mid-Sentence', 'Party of Two Recalled Early']);
-  }
-  if (type === 'STANDBY_BEGIN' || desc.includes('standby')) {
-    return head(['Operational Readiness Order Issued', 'Boots On, Doing Nothing, Intensely', 'Night Watch Held Over']);
-  }
-  if (type === 'BRIEFING_BEGIN' || desc.includes('briefing')) {
-    return head(['Inner Circle Classified Council', 'Assembly Room Door Shut Behind Them', 'A Meeting Nobody Will Describe']);
-  }
-  if (desc.includes('order scout')) {
-    return head(['Covert Watcher Noted Near Viaduct', 'Robes at the Arches, Again', 'Somebody Standing Very Still by the Rail']);
-  }
-  if (type === 'INCIDENT' || type === 'UNEASE' || type === 'AFTERMATH') {
-    return head(['Irregularity Logged in the Borough', 'A Thing Noticed and Not Explained', 'Filed Under: Look Into It']);
-  }
-  if (type === 'LEGION_VISIT') {
-    return head(['Visitors Received at the Barracks', 'Known Associates Observed on Site', 'A Great Deal of Noise From One Room']);
-  }
-  if (type === 'VENUE_SCENE') {
-    return head(['An Hour Spent Somewhere Pleasant', 'Borough Establishment Patronised', 'Two Agents Behaving Like Civilians']);
-  }
-  if (type === 'TRAVEL_DEPART' || type === 'TRAVEL_ARRIVE') {
-    return head(['Streamliner Cross-Borough Passage', 'Mag-Lev Transit Recorded', 'Departure Noted; Third Carriage Again']);
-  }
-  if (type === 'CONVERSATION' || (Array.isArray(event.lines) && event.lines.length > 0)) {
-    return head(['Confidential Embankment Discourse', 'Words Exchanged, Contents Unrecorded', 'A Conversation Held at Normal Volume']);
-  }
-  if (type === 'INVITATION_AVAILABLE' || type === 'INVITATION_ACCEPTED') {
-    return head(['Upper Skyport Credentials Extended', 'Guest Allocation Claimed Before It Lapsed', 'Somebody Got Lucky With the List']);
-  }
-  return head(['Borough Activity Recorded', 'Item of Minor Civic Interest', 'Logged, For Completeness']);
+  const head = bank => gazettePick(bank, `${event.id || publishedText(event)}/brief`);
+  if (type === 'ARCANE_SURGE') return head(['An Arcane Surge', 'Arcane Activity Breaks the Quiet']);
+  if (type === 'PLAN_BROKEN') return head(['An Arrangement Falls Through', 'Plans Do Not Always Keep']);
+  if (type === 'OUTING_CUT_SHORT') return head(['An Outing Cut Short', 'An Early End to the Outing']);
+  if (type === 'STANDBY_BEGIN') return head(['Called to Standby', 'A Time for Readiness']);
+  if (type === 'BRIEFING_BEGIN') return head(['A Briefing Begins', 'Time for the Briefing']);
+  if (['INCIDENT', 'UNEASE', 'AFTERMATH', 'ALERT'].includes(type)) return head(['Cause for Attention', 'An Unsettled Moment']);
+  if (type === 'LEGION_VISIT') return head(['The Legion Pays a Visit', 'Familiar Company']);
+  if (type === 'VENUE_SCENE') return head(['Time Spent Out', 'Room for an Ordinary Pleasure']);
+  if (type === 'TRAVEL_DEPART') return head(['A Journey Begins', 'On the Way']);
+  if (type === 'TRAVEL_ARRIVE') return head(['Journey Completed', 'An Arrival']);
+  if (type === 'CONVERSATION' || event.lines?.length) return head(['Words Exchanged', 'A Moment in Conversation']);
+  if (type === 'INVITATION_AVAILABLE') return 'An Invitation Offered';
+  if (type === 'INVITATION_ACCEPTED') return 'An Invitation Accepted';
+  return head(['From the Borough Chronicle', 'A Moment Worth Keeping']);
 }
 
-/**
- * Faction Status Roundup Builder for all 6 canonical factions.
- */
+/** Public posture stays at its actual resolution: a broad level is not a patrol report. */
 export function buildFactionRoundup(factions = {}, events = [], seedKey = '') {
-  const note = (faction, band) => gazettePick(FACTION_NOTES[faction][band], `${seedKey}/${faction}/${band}`);
-  const mi6Level = factions.mi6 || 'routine';
-  const orderLevel = factions.order || 'quiet';
-  const churchLevel = factions.church || 'preparations';
-  const sanctuaryLevel = factions.sanctuary || 'routine';
-  const streamlinerLevel = factions.streamliner || 'normal';
-  const arcaneLevel = factions.arcane || 'low';
-
-  const hasSurge = events.some((e) => e.type === 'ARCANE_SURGE' || /surge|anomaly/i.test(e.description || ''));
-  const hasOrderEvent = events.some((e) => /order scout|viaduct standoff/i.test(e.description || ''));
-
-  return {
-    mi6: {
-      name: 'MI6',
-      level: mi6Level,
-      status: mi6Level === 'elevated' || hasSurge
-        ? 'Heightened Vigilance • Sector Sentries Doubled'
-        : (mi6Level === 'briefings' ? 'Inner Circle Briefings In Session' : 'Whitehall Corridors Nominal'),
-      tone: mi6Level === 'elevated' || hasSurge ? 'alert' : 'calm',
-      note: note('mi6', mi6Level === 'elevated' || hasSurge ? 'alert' : (mi6Level === 'briefings' ? 'briefings' : 'calm')),
-    },
-    order: {
-      name: 'The Holy Order',
-      level: orderLevel,
-      status: orderLevel === 'active_in_city' || hasOrderEvent
-        ? 'Active In City • Surveillance Shadows Flagged'
-        : (orderLevel === 'watchful' ? 'Watchful • Scouts Near Rail Viaducts' : 'Shadows Dormant Across Southwark'),
-      tone: orderLevel === 'active_in_city' || hasOrderEvent ? 'alert' : (orderLevel === 'watchful' ? 'notice' : 'calm'),
-      note: note('order', orderLevel === 'active_in_city' || hasOrderEvent ? 'alert' : (orderLevel === 'watchful' ? 'watchful' : 'calm')),
-    },
-    church: {
-      name: 'The Church',
-      level: churchLevel,
-      status: churchLevel === 'veil_cycle'
-        ? 'Veil Cycle Approaching • Midnight Chimes Tuned'
-        : 'Celestial Preparations • Incense Rites at Noon',
-      tone: churchLevel === 'veil_cycle' ? 'notice' : 'calm',
-      note: note('church', churchLevel === 'veil_cycle' ? 'notice' : 'calm'),
-    },
-    sanctuary: {
-      name: 'Sanctuary in the Sky',
-      level: sanctuaryLevel,
-      status: sanctuaryLevel === 'nightlife' || sanctuaryLevel === 'invited_guests'
-        ? 'Sky Lounge Active • Guest Gateways Operating'
-        : 'Aether Portals Under Morning Inspection',
-      tone: 'calm',
-      note: note('sanctuary', sanctuaryLevel === 'nightlife' || sanctuaryLevel === 'invited_guests' ? 'night' : 'day'),
-    },
-    streamliner: {
-      name: 'The Streamliner',
-      level: streamlinerLevel,
-      status: streamlinerLevel === 'minor_delays'
-        ? 'Minor Speed Restrictions Across East Viaduct'
-        : 'Mag-Lev Express On Schedule Across Thames',
-      tone: streamlinerLevel === 'minor_delays' ? 'notice' : 'calm',
-      note: note('streamliner', streamlinerLevel === 'minor_delays' ? 'notice' : 'calm'),
-    },
-    arcane: {
-      name: 'Arcane Activity',
-      level: arcaneLevel,
-      status: hasSurge || arcaneLevel === 'high'
-        ? 'MEU Reading: 0.38 µV • Violet Waveform Spike'
-        : (arcaneLevel === 'moderate' ? 'MEU Reading: 0.19 µV • Above Baseline' : 'MEU Reading: 0.08 µV • Harmonic Calm'),
-      tone: hasSurge || arcaneLevel === 'high' ? 'alert' : 'calm',
-      note: note('arcane', hasSurge || arcaneLevel === 'high' ? 'alert' : (arcaneLevel === 'moderate' ? 'notice' : 'calm')),
-    },
+  const specs = {
+    mi6: ['MI6', 'routine', {
+      routine: ['Routine duties', 'calm'], briefings: ['Briefings in session', 'briefings'], elevated: ['Heightened vigilance', 'alert'],
+    }],
+    order: ['The Holy Order', 'quiet', {
+      quiet: ['Quiet', 'calm'], watchful: ['Watchful', 'watchful'], active_in_city: ['Active In City', 'alert'],
+    }],
+    church: ['The Church', 'preparations', {
+      quiet: ['Quiet', 'calm'], preparations: ['Preparations continuing', 'calm'], veil_cycle: ['Veil Cycle Approaching', 'notice'],
+    }],
+    sanctuary: ['Sanctuary in the Sky', 'routine', {
+      routine: ['Invitation-only access', 'day'], invited_guests: ['Invited guests • Sky Lounge', 'night'], nightlife: ['Sky Lounge active • Invited guests', 'night'],
+      private_event: ['Private event • Invitation-only access', 'night'],
+    }],
+    streamliner: ['The Streamliner', 'normal', {
+      normal: ['Normal service', 'calm'], minor_delays: ['Minor delays', 'notice'],
+    }],
+    arcane: ['Arcane Activity', 'low', {
+      low: ['Low arcane activity', 'calm'], moderate: ['Moderate arcane activity', 'notice'], high: ['High arcane activity', 'alert'],
+    }],
   };
+  return Object.fromEntries(Object.entries(specs).map(([key, [name, baseline, levels]]) => {
+    const level = Object.hasOwn(levels, factions[key]) ? factions[key] : baseline;
+    const [status, band] = levels[level];
+    return [key, { name, level, status,
+      tone: band === 'alert' ? 'alert' : ['notice', 'watchful', 'briefings'].includes(band) ? 'notice' : 'calm',
+      note: gazettePick(FACTION_NOTES[key][band], `${seedKey}/${key}/${band}`) }];
+  }));
 }
 
-/**
- * Lintel Flock Observation derived from Arcane MEU reading & Sky.
- */
+/** The sky supplies the count; an old surge cannot invent today's flock or instrument reading. */
 export function buildLintelFlock(sky = {}, weather = {}, events = []) {
-  const hasSurge = events.some((e) => e.type === 'ARCANE_SURGE' || /surge/i.test(e.description || ''));
-  const count = typeof sky.lintels === 'number' ? sky.lintels : (hasSurge ? 4 : 2);
-  let observation = 'Small flock drifting over the Thames embankment, feeding on ambient vapor and harmonic runoff.';
-
-  if (count >= 4 || hasSurge) {
-    observation = 'Flock gathered low in dense cloud formation along the river corridor, drawn by heightened arcane resonance.';
-  } else if (count <= 1) {
-    observation = 'Solitary Lintel drifting high above New Big Ben belfry in the quiet dawn mist.';
-  }
-
-  return {
-    count,
-    reading: hasSurge ? '0.38 µV' : '0.12 µV',
-    observation,
-  };
+  const count = Number.isFinite(sky.lintels) ? Math.max(0, Math.trunc(sky.lintels)) : 0;
+  return { count, reading: 'Over London', observation: count === 0
+    ? 'No Lintels are shown overhead.'
+    : count === 1 ? 'A solitary Lintel drifts overhead.'
+      : `${count} Lintels drift overhead, part of the strange ordinary life of London.` };
 }
 
-/**
- * Lead Headline synthesizer.
- */
+/** A headline adds emphasis, never a second event or an unsupported location. */
 export function synthesizeLeadHeadline(topEvent, dateStr) {
-  // The banner label is fixed per kind of day — a paper's standing head for
-  // "the river did something again" does not change week to week — and the
-  // clause after the colon is where the Gazette gets to have a view.
-  const lead = (label, subs) => `${label}: ${gazettePick(subs, `${dateStr}/lead/${label}`)}`;
-  if (!topEvent) {
-    return lead('BOROUGH CALM', [
-      'Civic Order Holds and the Chimes Keep Time',
-      'Nothing Whatever Occurs, at Length',
-      'A Quiet Day on the Embankment, Reported in Full',
-      'Steady Flagstones, Steady Bells, Steady Nerves',
-    ]);
-  }
+  if (!topEvent) return 'FROM THE BOROUGH: No new chronicle entries for this edition';
   const type = topEvent.type || '';
-  const desc = (topEvent.description || '').toLowerCase();
-
-  if (type === 'ARCANE_SURGE' || desc.includes('arcane surge')) {
-    return lead('THAMES HARMONIC SURGE', [
-      'MEU Perimeters on Heightened Standby',
-      'Corridor Lit End to End; Cones Deployed by Nine',
-      'Scanners Went at Twenty To and Did Not Settle',
-      'Everything With a Presence In It Felt the Pull',
-    ]);
-  }
-  if (type === 'ALERT') {
-    return lead('SECTOR SECURITY ALERT', [
-      'Embankment Patrols Doubled Across the Borough',
-      'Sentries Doubled; Rota Doubled; Complaints Quadrupled',
-      'Whitehall Awake Early and Saying Very Little',
-    ]);
-  }
-  if (type === 'PLAN_BROKEN' || type === 'OUTING_CUT_SHORT') {
-    return lead('BOROUGH RECALL', [
-      'Southwark Evening Movements Curtailed Under Advisory',
-      'Afternoon Ends in a Sentence and a Handheld',
-      'Plans Made Days Ago Unmade in Under a Minute',
-    ]);
-  }
-  if (type === 'STANDBY_BEGIN' || type === 'BRIEFING_BEGIN') {
-    return lead('INNER CIRCLE ADVISORY', [
-      'MI6 Operational Standby Initiated',
-      'Assembly Room Booked All Afternoon; Urn Refilled Twice',
-      'Door Shut at Ten. Still Shut at One.',
-    ]);
-  }
-  if (desc.includes('order scout') || desc.includes('viaduct')) {
-    return lead('SHADOWS ON THE VIADUCT', [
-      'Holy Order Watchers Spotted in the Fog',
-      'Two Robes at the Arches, Neither Doing Anything',
-      'Market Packs Up Early and Declines to Say Why',
-    ]);
-  }
-  if (type === 'TRAVEL_DEPART' || desc.includes('sanctuary')) {
-    return lead('CELESTIAL INVITATIONS', [
-      'Streamliner Night Transit to the Upper Skyport',
-      'Guest Gateways Operating; Door Policy Unchanged',
-      'London Falls Away in a Long Grey Curve',
-    ]);
-  }
-  if (type === 'CONVERSATION') {
-    return lead('WHISPERS AT THE CAFE', [
-      'Confidential Discourse Over the Window Table',
-      'Two Agents, One Pot of Tea, No Comment',
-      'Nothing Said Loudly Enough for This Paper to Print',
-    ]);
-  }
-  return lead('BOROUGH REPORT', [
-    'Calm Embankment and Regular Rail Transit',
-    'The River Behaved; the Trains Mostly Did',
-    'A Day of No Great Consequence, Recorded Anyway',
-  ]);
+  const desc = publishedText(topEvent);
+  if (type === 'ARCANE_SURGE') return /thames/i.test(desc)
+    ? 'THAMES HARMONIC SURGE: Arcane activity breaks the quiet'
+    : 'ARCANE SURGE: An unsettled moment in London';
+  if (type === 'ALERT') return 'AN ALERT IN LONDON: Cause for attention';
+  if (type === 'PLAN_BROKEN' || type === 'OUTING_CUT_SHORT') return 'PLANS INTERRUPTED: The day takes another turn';
+  if (type === 'STANDBY_BEGIN') return 'CALLED TO STANDBY: A time for readiness';
+  if (type === 'BRIEFING_BEGIN') return 'A BRIEFING BEGINS: Duty takes its place in the day';
+  if (type === 'TRAVEL_DEPART') return 'ON THE WAY: A journey begins';
+  if (type === 'TRAVEL_ARRIVE') return 'AN ARRIVAL: A journey completed';
+  if (type === 'CONVERSATION') return 'WORDS EXCHANGED: A moment in conversation';
+  return `BOROUGH CHRONICLE: ${createBriefHeadline(topEvent)}`;
 }
-
 /**
  * Format the entire broadsheet into a clean text/markdown summary for 1-click sharing.
  */
@@ -722,7 +499,9 @@ export function buildBroadsheet({
   }
 
   // Curate 3–5 highest-salience events
-  const curated = curateDailyEvents(events, targetDate);
+  const issueEvents = events.filter(event => event?.visibility !== 'private'
+    && Number.isFinite(event?.occurredAt) && event.occurredAt <= serverTime);
+  const curated = curateDailyEvents(issueEvents, targetDate, serverTime);
 
   let chronicleBriefs = [];
   if (curated.length > 0) {
@@ -735,7 +514,7 @@ export function buildBroadsheet({
         location: formatLocationName(ev.location),
         salienceTier: tier,
         headline: createBriefHeadline(ev),
-        text: ev.description || 'An unrecorded event stirred the London quiet.',
+        text: publishedText(ev) || (ev.lines ?? []).map(line => line.text).filter(Boolean).join(' '),
       };
     });
   } else {
@@ -743,11 +522,11 @@ export function buildBroadsheet({
     chronicleBriefs = [
       {
         eventId: 'civic-calm',
-        time: '07:00',
-        location: 'London Embankment',
+        time: formatLondonTime(serverTime),
+        location: 'London',
         salienceTier: 'civic',
-        headline: 'Quiet Skies Over London',
-        text: 'Civic patrols report quiet flagstones and steady morning chimes across all boroughs.',
+        headline: 'From the Borough Chronicle',
+        text: 'No new chronicle entries for this edition.',
       },
     ];
   }
@@ -756,6 +535,14 @@ export function buildBroadsheet({
   const factionRoundup = buildFactionRoundup(factionData, curated, targetDate);
   const lintelFlock = buildLintelFlock(skyData, weatherData, curated);
   const plotClocks = evaluatePlotClocks(world || { events, factions: factionData, sky: skyData, weather: weatherData, veil: { phase: 'distant', daysAway: 45 } }, serverTime);
+  // The article dates are historical; the supplied public projection is live.
+  // Say so instead of silently giving yesterday today's weather and posture.
+  if (targetDate !== londonDate(serverTime)) {
+    weatherData.description = `Current weather: ${weatherData.description}`;
+    for (const faction of Object.values(factionRoundup)) faction.status = `Current: ${faction.status}`;
+    lintelFlock.reading = 'Current sky';
+    for (const clock of plotClocks) clock.currentTitle = `Current: ${clock.currentTitle}`;
+  }
 
   const cleanDateHash = targetDate;
   const permalink = `${clientOrigin}/#dispatch-${cleanDateHash}`;
@@ -777,7 +564,7 @@ export function buildBroadsheet({
     chronicleBriefs,
     factionRoundup,
     lintelFlock,
-    notices: buildGazetteNotices(targetDate),
+    notices: buildGazetteNotices(targetDate, 3, issueEvents),
     plotClocks,
     permalink,
     plainTextSummary: '',

@@ -341,10 +341,10 @@ export const VENUE_SCENES = Object.freeze({
       mood: 'browsing', cast: ['goaden', 'ashai'],
       summary: 'An hour at the Silver Spoon, mostly spent on nothing.',
       lines: [
-        a('soft_smile', 'This is the first time we\'ve sat down in eleven days.'),
-        g('tired', 'Have you been counting? Course you have.'),
-        a('neutral', 'I\'ve been counting.'),
-        g('idle', 'Eleven days.'),
+        a('soft_smile', 'It\'s nice sitting somewhere that isn\'t the canteen.'),
+        g('tired', 'Careful. You\'ll want a menu next.'),
+        a('neutral', 'I might.'),
+        g('idle', 'Standards are slipping.'),
         a('thoughtful', 'The window seat has a crack in it shaped like the river.'),
         g('smirk', 'Course it has.'),
       ],
@@ -956,6 +956,8 @@ export const VENUE_SCENES = Object.freeze({
 export const venueCastOf = scene => [...new Set(scene.lines.map(line => line.who))];
 
 const hash = text => createHash('sha256').update(text).digest().readUInt32BE(0);
+export const venueSceneId = (venue, scene) => scene.id
+  ?? `${venue}_${createHash('sha256').update(JSON.stringify(scene.lines)).digest('hex').slice(0, 16)}`;
 
 /**
  * The scene for a visit. Seeded off the day, so the same outing always plays
@@ -965,7 +967,7 @@ const hash = text => createHash('sha256').update(text).digest().readUInt32BE(0);
  * Legion member the world is willing to have turn up. A scene needing somebody
  * who is not available is simply not eligible, exactly as the Legion visits work.
  */
-export function selectVenueScene({ venue, available = ['goaden', 'ashai'], seed = '', key = '', inkContext = {} }) {
+export function selectVenueScene({ venue, available = ['goaden', 'ashai'], seed = '', key = '', inkContext = {}, usage = {} }) {
   const bank = VENUE_SCENES[venue];
   if (!bank?.length) return null;
   const knownCompletedProwler = inkContext.completed === true
@@ -983,10 +985,13 @@ export function selectVenueScene({ venue, available = ['goaden', 'ashai'], seed 
   const guests = available.filter(who => who !== 'goaden' && who !== 'ashai');
   const featuring = guests.length
     ? pool.filter(scene => venueCastOf(scene).some(who => guests.includes(who))) : [];
-  if (featuring.length) {
-    const scene = featuring[hash(`${seed}|venue-guest-scene|${key}`) % featuring.length];
-    return { id: scene.id, mood: scene.mood, summary: scene.summary, lines: scene.lines.map(line => ({ ...line })), cast: venueCastOf(scene) };
-  }
-  const scene = pool[hash(`${seed}|venue|${key}`) % pool.length];
-  return { id: scene.id, mood: scene.mood, summary: scene.summary, lines: scene.lines.map(line => ({ ...line })), cast: venueCastOf(scene) };
+  const candidates = featuring.length ? featuring : pool;
+  // Remember performances, not dates: a new date used to select the same script
+  // while other equally truthful scenes had never reached the page. Stable IDs
+  // also give the older, unnamed scripts a usable archive identity.
+  const fewest = Math.min(...candidates.map(scene => usage[venueSceneId(venue, scene)] ?? 0));
+  const fresh = candidates.filter(scene => (usage[venueSceneId(venue, scene)] ?? 0) === fewest);
+  const scene = fresh[hash(`${seed}|${featuring.length ? 'venue-guest-scene' : 'venue'}|${key}`) % fresh.length];
+  return { id: venueSceneId(venue, scene), mood: scene.mood, summary: scene.summary,
+    lines: scene.lines.map(line => ({ ...line })), cast: venueCastOf(scene) };
 }

@@ -88,3 +88,13 @@ test('no public owner route or database download exists and rejected requests ne
   assert.equal(f.audience.summary(f.now()).activeSessions, 0);
   assert.equal(f.audience.summary(f.now()).today.sessionStarts, 0);
 });
+
+test('the cross-origin pagehide beacon retires presence using its simple JSON token body', async t => {
+  const f = await setup(t), viewer = await f.ping();
+  const response = await fetch(`${f.base}/api/presence/leave`, { method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+    body: JSON.stringify({ viewerToken: viewer.viewerToken }) });
+  assert.equal(response.status, 200);
+  assert.equal(f.viewers.snapshot(f.now()).count, 0);
+  assert.equal(f.audience.summary(f.now()).activeSessions, 0);
+});

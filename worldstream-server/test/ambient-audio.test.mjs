@@ -30,6 +30,7 @@ function harness({ preference, play, privateStorage = false } = {}) {
       const handlers = new Map();
       const audio = {
         src: '', volume: 1, paused: true, loop: false, playCalls: 0, loadCalls: 0,
+        currentTime: 0, duration: 20,
         play() { this.playCalls += 1; this.paused = false; return play ? play(this) : Promise.resolve(); },
         pause() { this.paused = true; },
         load() { this.loadCalls += 1; },
@@ -37,6 +38,7 @@ function harness({ preference, play, privateStorage = false } = {}) {
         addEventListener(name, fn) { handlers.set(name, fn); },
         removeEventListener(name, fn) { if (handlers.get(name) === fn) handlers.delete(name); },
         error() { handlers.get('error')?.(); },
+        timeupdate(seconds) { this.currentTime = seconds; handlers.get('timeupdate')?.(); },
       };
       players.push(audio); return audio;
     },
@@ -83,6 +85,7 @@ test('exact environmental asset manifest excludes SFX without swallowing the sco
 
 test('rain plan uses only supported beds; ambiguous rain recording remains out of automatic playback', () => {
   assert.equal(selectAmbientPlan(outdoorRain, sources).key, 'rain_heavy');
+  assert.equal(selectAmbientPlan({ ...outdoorRain, weatherCode: 'rain' }, sources).key, 'rain_heavy');
   assert.ok(selectAmbientPlan({ ...outdoorRain, weatherCode: 'storm', rain: 1 }, sources).gain
     > selectAmbientPlan({ ...outdoorRain, weatherCode: 'light_rain', rain: 0.3 }, sources).gain);
   const inside = selectAmbientPlan({ ...outdoorRain, exposure: 'sheltered' }, sources);
@@ -135,6 +138,71 @@ test('rain to city crossfades two players and releases the old recording', async
   h.tick(900);
   assert.equal(rain.paused, true); assert.equal(rain.src, '');
   assert.equal(h.channel.state().playing, 'city'); assert.equal(h.timers.size, 0);
+  h.channel.destroy();
+});
+
+test('outdoor scene weather stays audible without restarting its rain bed', async () => {
+  const h = harness(); h.channel.apply(outdoorRain); h.channel.setEnabled(true); await flush(); h.tick(1700);
+  const rain = h.players[0], initialGain = rain.volume;
+  h.channel.setDucked(true); h.tick(400);
+  assert.ok(Math.abs(rain.volume - initialGain * 0.6) < 1e-10);
+  for (let i = 0; i < 10; i++) h.channel.apply({ ...outdoorRain, source: 'scene' });
+  h.channel.setDucked(false); h.tick(400);
+  assert.equal(rain.playCalls, 1);
+  assert.ok(Math.abs(rain.volume - initialGain) < 1e-10);
+  h.channel.destroy();
+});
+
+test('rain loop overlaps for 400ms using only the existing two players', async () => {
+  const h = harness(); h.channel.apply(outdoorRain); h.channel.setEnabled(true); await flush(); h.tick(1700);
+  const first = h.players[0], gain = first.volume;
+  first.timeupdate(19.6); await flush();
+  const second = h.players[1];
+  assert.equal(h.players.length, 2);
+  for (let i = 0; i < 10; i++) { first.timeupdate(19.65); h.channel.apply(outdoorRain); }
+  h.tick(200);
+  assert.ok(first.volume > 0 && second.volume > 0);
+  assert.ok(Math.abs(first.volume + second.volume - gain) < 1e-10, 'overlap must not double the rain gain');
+  h.tick(240);
+  assert.ok(first.paused && !first.src);
+  assert.equal(second.playCalls, 1); assert.equal(h.timers.size, 0);
+  second.timeupdate(19.6); await flush(); h.tick(440);
+  assert.equal(h.players.length, 2, 'future boundaries reuse the released player');
+  assert.equal(h.players.filter(player => !player.paused).length, 1);
+  h.channel.destroy();
+});
+
+test('failed rain overlap leaves native loop playing and does not retry every media update', async () => {
+  let attempts = 0;
+  const h = harness({ play: () => ++attempts === 1 ? Promise.resolve() : Promise.reject(new Error('Not ready')) });
+  h.channel.apply(outdoorRain); h.channel.setEnabled(true); await flush(); h.tick(1700);
+  const first = h.players[0];
+  first.timeupdate(19.6); await flush(); h.tick(200);
+  for (let i = 0; i < 10; i++) first.timeupdate(19.8);
+  assert.equal(attempts, 2); assert.equal(first.paused, false);
+  assert.equal(h.channel.state().status, 'playing');
+  h.channel.destroy();
+});
+
+test('rain boundary handoff is cancelled cleanly by disable, hidden, destroy or weather change', async () => {
+  for (const stop of [h => h.channel.setEnabled(false), h => h.visibility(true), h => h.channel.destroy(),
+    h => h.channel.apply({ ...outdoorRain, weatherCode: 'clear', rain: 0 })]) {
+    const h = harness(); h.channel.apply(outdoorRain); h.channel.setEnabled(true); await flush(); h.tick(1700);
+    h.players[0].timeupdate(19.6); await flush(); h.tick(120);
+    stop(h); await flush(); h.tick(1700);
+    const remaining = h.players.filter(player => !player.paused);
+    assert.ok(remaining.every(player => player.src === sources.city.url));
+    assert.ok(remaining.length <= 1); assert.equal(h.timers.size, 0);
+    for (const player of h.players) player.timeupdate(19.8);
+    assert.equal(h.players.length, 2, 'released listeners must not create new playback');
+    h.channel.destroy();
+  }
+});
+
+test('city ambience keeps its native loop without rain-specific boundary handoffs', async () => {
+  const h = harness(); h.channel.apply({ weatherCode: 'clear', exposure: 'outdoor' });
+  h.channel.setEnabled(true); await flush(); h.tick(1700); h.players[0].timeupdate(19.6); await flush();
+  assert.equal(h.players.length, 1); assert.equal(h.players[0].loop, true);
   h.channel.destroy();
 });
 

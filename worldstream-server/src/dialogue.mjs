@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { londonDate, londonClock } from './time.mjs';
 
 // Authored ambient dialogue for Goaden and Ashai. Nothing here is generated at
 // runtime and no model is called: the world picks one of these written exchanges
@@ -48,9 +49,13 @@ export const EXCHANGES = Object.freeze({
     [a('neutral','The lights on the east corridor still flicker. Nobody has been near them in a week.'),
      g('smirk','Nah, that isn\'t broken. That\'s ambience.'),
      a('soft_smile','If you say so.')],
-    [g('idle','You\'ve been up since five.'),
+    // A clock claim needs an actual continuous-wake history. The current world
+    // can send them back to sleep after a night watch, so 'ordinary' alone is
+    // no evidence for this exchange. Keep it authored but unavailable without
+    // that explicit cause; the same conversation slot uses another script.
+    { requires: 'both_up_since_five', lines: [g('idle','You\'ve been up since five.'),
      a('guarded','So have you.'),
-     g('smirk','Yeah, but I carry it better.')],
+     g('smirk','Yeah, but I carry it better.')] },
     [a('soft_smile','We should eat somewhere that isn\'t a canteen at some point.'),
      g('amused','Bold. Naming the place is the hard part.'),
      a('neutral','I\'ll name one. You only have to turn up.')],
@@ -555,6 +560,44 @@ export function selectExchange(mood, seed, key, { present = [], causes = [] } = 
   if (!chosen.length) return linesOf(bank[0]).map(line => ({ ...line }));
   const index = createHash('sha256').update(`${seed}|dialogue|${mood}|${key}`).digest().readUInt32BE(0) % chosen.length;
   return linesOf(chosen[index]).map(line => ({ ...line }));
+}
+
+// One old three-line script asserted an unrecorded waking time. It can already
+// exist in saved worlds, so new selection gates alone cannot repair its public
+// performance. Revise only this exact script, and only from public, earlier
+// evidence that both speakers worked the night and subsequently slept late.
+export function correctLegacyWakeDialogue(event, publicSources = []) {
+  const expected = [
+    ['goaden', "You've been up since five."],
+    ['ashai', 'So have you.'],
+    ['goaden', 'Yeah, but I carry it better.'],
+  ];
+  const lines = event?.payload?.lines ?? event?.lines;
+  if (event?.visibility !== 'public' || event.type !== 'CONVERSATION'
+    || !Number.isSafeInteger(event.occurredAt) || !Array.isArray(lines) || lines.length !== expected.length
+    || !['goaden', 'ashai'].every(who => event.participants?.includes(who))
+    || !lines.every((line, index) => line.who === expected[index][0] && line.text === expected[index][1])) return event;
+  const day = londonDate(event.occurredAt);
+  const availableSources = typeof publicSources === 'function' ? publicSources(event) : publicSources;
+  const sources = (Array.isArray(availableSources) ? availableSources : []).filter(source => source?.visibility === 'public'
+    && typeof source.id === 'string' && source.id.length > 0
+    && typeof source.publicDescription === 'string' && source.publicDescription.length > 0
+    && Number.isSafeInteger(source.occurredAt) && source.occurredAt < event.occurredAt
+    && londonDate(source.occurredAt) === day);
+  const night = sources.find(source => source.type === 'NIGHT_WORK_END'
+    && londonClock(source.occurredAt).hour < 6
+    && ['goaden', 'ashai'].every(who => source.participants?.includes(who)
+      && sources.some(recovery => recovery.type === 'NIGHT_RECOVERED'
+        && recovery.participants?.includes(who) && recovery.occurredAt > source.occurredAt
+        && londonClock(recovery.occurredAt).hour >= 6 && recovery.causedBy?.includes(source.id))));
+  if (!night) return event;
+  const recovered = sources.filter(source => source.type === 'NIGHT_RECOVERED'
+    && source.occurredAt > night.occurredAt && londonClock(source.occurredAt).hour >= 6
+    && source.causedBy?.includes(night.id) && source.participants?.some(who => ['goaden', 'ashai'].includes(who)));
+  const revisedLines = lines.map((line, index) => index === 0
+    ? { ...line, text: "You've had a long night." } : { ...line });
+  return { ...event, causedBy: [...new Set([...(event.causedBy ?? []), night.id, ...recovered.map(source => source.id)])],
+    payload: { ...event.payload, lines: revisedLines }, ...(Array.isArray(event.lines) ? { lines: revisedLines } : {}) };
 }
 
 // One line of feed text for a scene the page may not be rendering in full.

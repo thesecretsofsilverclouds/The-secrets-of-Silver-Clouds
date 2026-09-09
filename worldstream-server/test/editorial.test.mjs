@@ -68,6 +68,37 @@ test('a summons never places an absent Ashai in the room or gives her knowledge 
   assert.doesNotMatch(editorialEvent(source).prose, /Ashai|she|her evening|they hate/);
 });
 
+test('conversation staging follows the actual payload dialogue and never narrates its answers first', () => {
+  const lines = [{ who: 'ashai', text: "That isn't a tear any more. That's a hole with opinions." },
+    { who: 'goaden', text: "It's fine, mate." }, { who: 'ashai', text: 'The lining is coming out of the cuff, Goaden.' }];
+  const source = make('CONVERSATION', { mood: 'ordinary', lines });
+  const staged = editorialEvent(source);
+  assert.match(staged.prose, /lining.*cuff/);
+  assert.doesNotMatch(staged.prose, /answer|replied|conversation kept|exchange took/);
+  assert.deepEqual(staged.payload.lines, lines);
+  assert.equal(source.prose, 'Original passage.');
+  const other = editorialEvent(make('CONVERSATION', { mood: 'ordinary', lines: [{ who: 'goaden', text: 'Long one.' }] }));
+  assert.doesNotMatch(other.prose, /lining|cuff|Ashai spoke/);
+});
+
+test('a gaming arrangement reads as a later plan rather than an immediate room change', () => {
+  const source = make('ANNOUNCE_ARRANGEMENT', {}, { prose: undefined,
+    publicDescription: "Goaden and Ashai took up Yukon's challenge in the MI6 gaming room." });
+  const revised = editorialEvent(source);
+  assert.match(revised.publicDescription, /agreed.*later/);
+  assert.equal(revised.location, source.location);
+  assert.deepEqual(revised.changes, source.changes);
+});
+
+test('resuming a game cannot narrate its duration or ending before it happens', () => {
+  const source = make('GAME_RESUME', {}, { prose: undefined,
+    publicDescription: 'A game went on between them for longer than either meant it to.' });
+  const revised = editorialEvent(source);
+  assert.match(revised.publicDescription, /returned to their unfinished game/);
+  assert.doesNotMatch(revised.publicDescription, /longer|finished their|won|lost/);
+  assert.equal(revised.register, source.register);
+});
+
 test('editorial reads are stable and retain all canonical effects, identity and original dialogue', () => {
   const source = make('INTENT_COMPLETE', { status: 'completed', activity: 'practice', lines: [{ who: 'goaden', text: 'Recorded words.' }] },
     { changes: [{ entity: 'character', id: 'ashai', field: 'knowledge', after: ['PRIVATE_KNOWLEDGE'] }], conditions: ['unchanged'] });
@@ -106,14 +137,19 @@ test('live-shaped history, feed and owned trails use the same edition without ch
   } finally { world.close(); }
 });
 
-test('GROUND_WORK_OPPORTUNITY generates natural prose carry-forward without system jargon', () => {
+test('yard work distinguishes completed preliminary checks from the work starting now', () => {
   const prepared = editorialEvent(make('GROUND_WORK_OPPORTUNITY', { prepared: true }));
-  assert.equal(prepared.prose, 'With the outdoor training yard still closed and the scheduled crew delayed, Goaden and Ashai switched plans rather than wait. They had already started preparing the yard themselves by the time the decision became official.');
-  assert.doesNotMatch(prepared.prose, /roster|the reset/i);
+  assert.match(prepared.prose, /preliminary checks were complete.*Goaden and Ashai began the remaining work/);
+  assert.doesNotMatch(prepared.prose, /already started|themselves|crew|roster|official/);
 
   const unprepared = editorialEvent(make('GROUND_WORK_OPPORTUNITY', { prepared: false }));
-  assert.equal(unprepared.prose, 'With the outdoor training yard still closed and the scheduled crew delayed, Goaden and Ashai switched plans rather than wait. They went out to prepare the yard themselves, though the gates stayed shut while they worked.');
-  assert.doesNotMatch(unprepared.prose, /roster|the reset/i);
+  assert.match(unprepared.prose, /checks and preparations still had to be done/);
+  assert.doesNotMatch(unprepared.prose, /reopened|complete\./);
+  const solo = editorialEvent(make('GROUND_WORK_OPPORTUNITY', { prepared: true, resumed: true }, { participants: ['ashai'] }));
+  assert.match(solo.prose, /^Ashai returned.*still closed/);
+  assert.doesNotMatch(solo.prose, /Goaden|they worked/);
+  const weather = make('GROUND_WORK_OPPORTUNITY', { outcome: 'weather_deferred' }, { participants: [] });
+  assert.equal(editorialEvent(weather).prose, weather.prose);
 });
 
 test('GROUND_WORK_COMPLETED carries forward the yard preparations rather than bare reset', () => {
@@ -122,3 +158,39 @@ test('GROUND_WORK_COMPLETED carries forward the yard preparations rather than ba
   assert.doesNotMatch(completed.prose, /with the reset finished/);
 });
 
+test('a cancelled outing reports the cancellation without inventing the later callout result', () => {
+  const source = make('PLAN_BROKEN', {}, { publicDescription: 'An MI6 callout broke the evening Goaden and Ashai had arranged at Sanctuary.' });
+  const revised = editorialEvent(source);
+  assert.match(revised.prose, /MI6 callout.*Sanctuary/);
+  assert.doesNotMatch(revised.prose, /hurt|injur|safe|by nine|returned/);
+  assert.equal(editorialEvent({ ...source, publicDescription: 'A different future plan broke.' }).prose, source.prose);
+});
+
+test('an invitation does not become a shared or completed visit before it is arranged', () => {
+  const source = make('INVITATION_ACCEPTED', {}, { participants: ['ashai'], publicDescription: 'Ashai received a Sanctuary guest invitation.' });
+  const revised = editorialEvent(source);
+  assert.match(revised.prose, /Ashai.*Sanctuary.*still had to be arranged/);
+  assert.doesNotMatch(revised.prose, /Goaden|evening|went|entered/);
+});
+
+test('the selected negotiation gives its own answer and an unstarted interruption stays unstarted', () => {
+  const lines = [{ who: 'goaden', text: 'Could we make it quiet? Just for a bit.' }, { who: 'ashai', text: 'That I can arrange.' }];
+  const source = make('INTENT_RENEGOTIATE', { status: 'reserved', activity: 'quiet', lines });
+  const revised = editorialEvent(source);
+  assert.doesNotMatch(revised.prose, /agreed|declined|no agreement|had yet to answer/);
+  assert.deepEqual(revised.payload.lines, lines);
+  const interrupted = editorialEvent(make('INTENT_INTERRUPTED', { status: 'interrupted', activity: 'game' }, { participants: [] }));
+  assert.doesNotMatch(interrupted.prose, /had to break off|controller|stood|sat|played/);
+  assert.match(interrupted.prose, /unfinished/);
+  const lapsed = editorialEvent(make('INTENT_RESPONSE', { status: 'declined' }, { participants: [],
+    publicDescription: 'The short MI6 offer lapsed before Goaden and Ashai could agree it.' }));
+  assert.match(lapsed.prose, /before they could agree/);
+  assert.doesNotMatch(lapsed.prose, /declined|refused|heard him out/);
+});
+
+test('a jacket continuation identifies the object before its pronouns and retains the recorded words', () => {
+  const lines = [{ who: 'goaden', text: "It's back, yeah." }, { who: 'goaden', text: 'She has left the burn on the shoulder.' }];
+  const source = make('CONVERSATION', { lines });
+  assert.match(editorialEvent(source).prose, /repaired jacket/);
+  assert.deepEqual(editorialEvent(source).payload.lines, source.payload.lines);
+});

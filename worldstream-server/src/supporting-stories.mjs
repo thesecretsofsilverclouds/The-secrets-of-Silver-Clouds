@@ -7,6 +7,7 @@ import { atLondon, londonDate, MINUTE_MS as MIN } from './time.mjs';
 import { supportingAvailability as agendaAvailable } from './faction-agendas.mjs';
 import { competingCommitments } from './intent.mjs';
 import { offscreenAvailable, offscreenEncounterInterest } from './offscreen-lives.mjs';
+import { supportingRelationshipChoice, recordRelationshipChoice, relationshipChoicePresentation } from './relationship-choices.mjs';
 
 // Authored ambient staging, not extra manuscript events. Cast/room permissions
 // remain those of cast.mjs and venues.mjs; PHASE0-CONTINUITY's named Legion/Zara
@@ -14,7 +15,7 @@ import { offscreenAvailable, offscreenEncounterInterest } from './offscreen-live
 // Guardians follow their owner; Anarchy/Balthazar reserve one physical presence.
 export const SUPPORTING_EVENT_TYPES = Object.freeze(['SUPPORTING_COMMITMENT', 'SUPPORTING_ENCOUNTER',
   'SUPPORTING_OUTCOME', 'SUPPORTING_DEADLINE', 'SUPPORTING_CALLBACK']);
-export const SUPPORTING_FACT_KINDS = Object.freeze(['supporting_promise', 'supporting_result']);
+export const SUPPORTING_FACT_KINDS = Object.freeze(['supporting_promise', 'supporting_result', 'supporting_response']);
 export const SUPPORTING_IDS = Object.freeze([...Object.keys(SIDE_CHARACTERS), ...Object.keys(LEGION_CAST), ...Object.keys(OUTSIDE_CAST)]);
 export const SUPPORTING_RULES = Object.freeze({ version: 1, dailyLimit: 2, interval: 6 * 60 * MIN,
   venueInterval: 60 * MIN,
@@ -36,10 +37,14 @@ const ordinary = new Set(['unhurried_time', 'gaming', 'eating', 'waiting', 'quie
   'watching_television', 'visiting_enchanted_ink', 'at_the_silver_spoon', 'walking_the_city']);
 const VISIT_ACTIVITY = { ink_visit: ['enchanted_ink', 'visiting_enchanted_ink'],
   cafe_outing: ['cafe', 'at_the_silver_spoon'], city_walk: ['big_ben_plaza', 'walking_the_city'] };
+const inSceneSession = (state, id, atMs) => {
+  return [state.sceneBank?.session, state.arcs?.session].some(session =>
+    session && session.startAt <= atMs && atMs < session.until && session.cast?.includes(id));
+};
 
 export function initialSupportingStories() {
   return { version: 1, instances: {}, issued: {}, counts: {}, nextEligibleAt: 0, lastCallbackAt: null,
-    appearances: {}, rapport: {}, people: Object.fromEntries(SUPPORTING_IDS.map(id => [id, { knowledge: [] }])) };
+    appearances: {}, rapport: {}, lastChoices: {}, people: Object.fromEntries(SUPPORTING_IDS.map(id => [id, { knowledge: [] }])) };
 }
 
 export function supportingStoryAvailability(state, id, { atMs } = {}) {
@@ -48,11 +53,12 @@ export function supportingStoryAvailability(state, id, { atMs } = {}) {
 }
 export function supportingLeadAvailable(state, actor, { atMs } = {}) {
   const id = typeof actor === 'string' ? actor : actor?.id;
-  return Number.isSafeInteger(atMs) && !Object.values(of(state).instances).some(story => story.lead === id
+  return Number.isSafeInteger(atMs) && !inSceneSession(state, id, atMs) && !Object.values(of(state).instances).some(story => story.lead === id
     && ACTIVE.has(story.status) && story.openedAt <= atMs && atMs < story.deadlineAt);
 }
 function availabilityExcept(state, id, atMs, ownId = null) {
-  return !Object.values(of(state).instances).some(story => story.id !== ownId && ACTIVE.has(story.status)
+  return !unit(id).some(member => inSceneSession(state, member, atMs))
+    && !Object.values(of(state).instances).some(story => story.id !== ownId && ACTIVE.has(story.status)
     && story.guests.some(guest => unit(id).includes(guest)) && story.openedAt <= atMs && atMs < story.deadlineAt);
 }
 
@@ -67,7 +73,7 @@ function hostEligible(state, lead, now, ownKey = null, canUseActor = () => true,
       && arrangement.status === 'started' && arrangement.startedEventId === actor.activityId
       && Number.isSafeInteger(actor.activityUntil) && actor.activityUntil >= until);
   }) : [];
-  return Boolean(actor && !actor.journey && ordinary.has(actor.activity) && room?.social
+  return Boolean(actor && !actor.journey && !inSceneSession(state, lead, now) && ordinary.has(actor.activity) && room?.social
     && room.dayparts.includes(daypart(now)) && daypart(now) !== 'small_hours'
     && canUseActor(lead, now) !== false
     && !(state.encounter?.until > now && actor.location === 'mi6' && actor.area === state.encounter.area)
@@ -335,7 +341,9 @@ function finish(ctx, story, outcome) {
     : outcome === 'cut_short' ? `${lead}’s time with ${guest} was cut short. They had met, but the small promise was left unfinished.`
       : `${lead}’s promised time with ${guest} did not come off. The short arrangement ended without the planned meeting.`;
   const key = `${story.id}:result`, fact = ctx.ops.createFact(key, 'supporting_result', story.lead,
-    { storyId: story.id, guest: story.guest, outcome, presentationText: description }, null);
+    { storyId: story.id, guest: story.guest, outcome, presentationText: description,
+      interruption: story.interruptionEventId ? { eventId: story.interruptionEventId,
+        at: story.interruptedAt, reason: story.interruptionReason } : null }, null);
   // The lead knows the fate of their own promise, including their interruption.
   // An unavailable supporting figure learns it only if told in a later meeting.
   ctx.ops.learn(story.lead, fact, 'participated');
@@ -343,7 +351,10 @@ function finish(ctx, story, outcome) {
   const rapportKey = `${unitKey(story.guest)}:${story.lead}`, prior = of(ctx.state).rapport[rapportKey]
     ?? { kept: 0, missed: 0, cutShort: 0, reliability: 0, familiarity: 0 };
   const rapport = { ...prior, [outcome === 'cut_short' ? 'cutShort' : outcome]: prior[outcome === 'cut_short' ? 'cutShort' : outcome] + 1,
-    reliability: Math.max(-3, Math.min(3, prior.reliability + (outcome === 'kept' ? 1 : -1))),
+    // This counts whether time was kept; an actual activity interruption is
+    // not evidence of deliberate neglect. Known outcomes drive choices below,
+    // never this aggregate (which can contain things a guest has not learned).
+    reliability: Math.max(-3, Math.min(3, prior.reliability + (outcome === 'kept' ? 1 : story.interruptionEventId ? 0 : -1))),
     familiarity: Math.min(9, prior.familiarity + (story.encounterEventId ? 1 : 0)), eventId: ctx.id, at: ctx.now };
   save(ctx, { rapport: { ...of(ctx.state).rapport, [rapportKey]: rapport } });
   const final = touch(ctx, story, { status: outcome, completedAt: ctx.now,
@@ -395,27 +406,51 @@ export function resolveSupportingAction(ctx) {
     const options = ['goaden', 'ashai'].flatMap(lead => eligibleSupportingGuests(state, lead, now,
       { canUseActor: ops.actorAvailable }).map(guest => ({ lead, guest })))
       .filter(({ guest }) => !Object.values(of(state).instances).some(row => unitKey(row.guest) === unitKey(guest)
-        && now - row.openedAt < SUPPORTING_RULES.individualCooldown));
+        && now - row.openedAt < SUPPORTING_RULES.individualCooldown)
+        && !(of(state).lastChoices?.[unitKey(guest)]?.at > now - SUPPORTING_RULES.individualCooldown))
+      .map(choice => ({ ...choice, relationship: supportingRelationshipChoice(state, choice.lead, choice.guest, now) }));
     const seen = guest => Math.max(...unit(guest).map(id => of(state).appearances[id]?.at ?? -1));
-    // A remembered unfinished pursuit gives an already possible meeting a
-    // reason to recur. At most the first daily slot gets this preference; room,
-    // work, cast and the 72-hour individual cooldown above still decide access.
+    // Several experienced reasons can favour an already possible meeting.
+    // The second daily slot keeps least-seen cast rotation. Hard room, work,
+    // cast and 72-hour spacing rules have already filtered these candidates.
     const interest=choice=>(of(state).counts[date]??0)===0
-      ? offscreenEncounterInterest(state,choice.lead,choice.guest,now) : 0;
+      ? offscreenEncounterInterest(state,choice.lead,choice.guest,now) + choice.relationship.score : 0;
     options.sort((a, b) => interest(b)-interest(a)||seen(a.guest) - seen(b.guest)
       || hash(`${ctx.seed}|support-v1|${action.id}|${a.guest}|${a.lead}`).localeCompare(hash(`${ctx.seed}|support-v1|${action.id}|${b.guest}|${b.lead}`)));
-    const choice = options[0]; if (!choice) return refuse('No eligible supporting character');
+    const selected = options[0]; if (!selected) return refuse('No eligible supporting character');
+    const { relationship, ...choice } = selected;
+    const decision = recordRelationshipChoice(ctx, relationship);
     const actor = state.characters[choice.lead], id = `support:${hash(`${ctx.id}|v1`)}`;
+    save(ctx, { counts: { ...Object.fromEntries(Object.entries(of(state).counts)
+      .filter(([day]) => day >= londonDate(now - 3 * 24 * 60 * MIN))),
+      [date]: (of(state).counts[date] ?? 0) + 1 }, nextEligibleAt: now + SUPPORTING_RULES.interval,
+      lastChoices: { ...of(state).lastChoices, [unitKey(choice.guest)]: { at: now, eventId: ctx.id,
+        response: decision.response } } });
+    if (decision.response === 'deferred') {
+      // They meet briefly and decline another appointment. No promise, room
+      // reservation or future encounter is manufactured by this no-action.
+      const moment = { id, ...choice, guests: unit(choice.guest), location: actor.location,
+        area: actor.area, family: FAMILIES[choice.guest].subject };
+      publication(ctx, moment, `${cast(choice.guest).name} left another meeting for now.`, null, true);
+      ctx.event.payload = { ...ctx.event.payload, outcome: 'deferred', relationshipChoice: decision };
+      const performance = relationshipChoicePresentation(ctx.event, { ...choice,
+        leadName: actorName(choice.lead), guestName: cast(choice.guest).name });
+      if (!performance) throw new Error('Deferred supporting choice lacks its known history');
+      ops.publish(performance.description); ctx.event.prose = performance.prose; ctx.event.lines = performance.lines;
+      const response = ops.createFact(`${id}:response`, 'supporting_response', choice.lead,
+        { guest: choice.guest, response: 'deferred', presentationText: performance.description }, null);
+      ops.learn(choice.lead, response, 'participated'); supportKnowledge(ctx, moment, response.key, ctx.id);
+      note(ctx, moment); return true;
+    }
     story = { id, version: 1, token: `${ctx.id}:support-v1`, ...choice, guests: unit(choice.guest),
+      relationshipChoice: decision,
       location: actor.location, area: actor.area, family: FAMILIES[choice.guest].subject, status: 'promised',
       openedAt: now, encounterAt: now + SUPPORTING_RULES.encounterDelay, outcomeAt: now + SUPPORTING_RULES.outcomeDelay,
       deadlineAt: now + SUPPORTING_RULES.deadlineDelay, originEventId: ctx.id, lastEventId: ctx.id,
       causalEventIds: [ctx.id], arrangementKey: `${id}:promise`, promiseFactKey: `${id}:promise`,
       encounterEventId: null, interruptionEventId: null, result: null, callbackEventId: null };
     const retained = Object.values(of(state).instances).sort((a, b) => b.openedAt - a.openedAt).slice(0, SUPPORTING_RULES.retainedStories - 1);
-    save(ctx, { instances: { ...Object.fromEntries(retained.map(row => [row.id, row])), [id]: story },
-      counts: { ...Object.fromEntries(Object.entries(of(state).counts).filter(([day]) => day >= londonDate(now - 3 * 24 * 60 * MIN))),
-        [date]: (of(state).counts[date] ?? 0) + 1 }, nextEligibleAt: now + SUPPORTING_RULES.interval });
+    save(ctx, { instances: { ...Object.fromEntries(retained.map(row => [row.id, row])), [id]: story } });
     const description = [FAMILIES[choice.guest].wants,
       familyText(choice.guest, 'agreed', actorName(choice.lead), placePhrase(story.location, story.area))].filter(Boolean).join(' ');
     const fact = ops.createFact(story.promiseFactKey, 'supporting_promise', choice.lead,
@@ -423,7 +458,7 @@ export function resolveSupportingAction(ctx) {
     ops.learn(choice.lead, fact, 'participated'); supportKnowledge(ctx, story, fact.key, ctx.id);
     ops.setArrangement(story.arrangementKey, { supportingStoryId: id, party: [story.lead], status: 'accepted', public: false,
       activity: 'supporting_interval', startAt: now, until: story.deadlineAt, sourceEventId: ctx.id, acceptanceEventId: ctx.id });
-    publication(ctx, story, description); note(ctx, story);
+    publication(ctx, story, description); ctx.event.payload.relationshipChoice = decision; note(ctx, story);
     follow(ctx, story, 'SUPPORTING_ENCOUNTER', 'encounter', story.encounterAt);
     follow(ctx, story, 'SUPPORTING_OUTCOME', 'outcome', story.outcomeAt);
     follow(ctx, story, 'SUPPORTING_DEADLINE', 'deadline', story.deadlineAt);
@@ -443,9 +478,11 @@ export function resolveSupportingAction(ctx) {
       || !ops.useMemory(story.lead, story.result.factKey)) return refuse('The earlier promise is not known at this encounter');
     supportKnowledge(ctx, story, story.result.factKey, story.result.sourceEventId);
     story = touch(ctx, story, { callbackEventId: ctx.id }); save(ctx, { lastCallbackAt: now });
-    publication(ctx, story, `${familyText(story.guest, 'again', actorName(story.lead), placePhrase(story.location, story.area))
-      ?? `${actorName(story.lead)} returned to the earlier ${story.family} with ${cast(story.guest).name}.`} ${story.result.outcome === 'kept'
-      ? 'The one they kept gave them somewhere to start from.' : 'Neither of them pretended the last one had gone any better than it had.'}`);
+    publication(ctx, story, story.result.outcome === 'kept'
+      ? familyText(story.guest, 'again', actorName(story.lead), placePhrase(story.location, story.area))
+        ?? `${actorName(story.lead)} returned to the earlier ${story.family} with ${cast(story.guest).name}.`
+      : `${actorName(story.lead)} and ${cast(story.guest).name} returned to the ${story.family} they had ${story.result.outcome === 'missed'
+        ? 'never managed to begin' : 'had to leave early'}. This time, neither assumed the other could stay.`);
     ctx.event.causedBy.push(story.result.sourceEventId); note(ctx, story);
   }
   return true;
@@ -482,6 +519,9 @@ export function assertSupportingStories(state) {
   }
   for (const [id, appearance] of Object.entries(current.appearances)) if (!IDS.has(id) || !appearance.eventId
     || !Number.isSafeInteger(appearance.at) || !Number.isInteger(appearance.count) || appearance.count < 1) throw new Error('Invalid cast appearance');
+  for (const [id, choice] of Object.entries(current.lastChoices ?? {})) if (!SUPPORTING_IDS.some(guest => unitKey(guest) === id)
+    || !Number.isSafeInteger(choice.at) || !choice.eventId || !['accepted', 'deferred'].includes(choice.response))
+    throw new Error('Invalid supporting choice cooldown');
   for (const person of Object.values(current.people)) for (const memory of person.knowledge) {
     const fact = state.facts[memory.factKey];
     if (!fact || memory.sourceEventId !== fact.sourceEventId || memory.learnedAt < fact.createdAt || !memory.acquisitionEventId)

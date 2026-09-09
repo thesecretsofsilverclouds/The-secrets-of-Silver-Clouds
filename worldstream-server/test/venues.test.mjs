@@ -7,13 +7,31 @@ import { fileURLToPath } from 'node:url';
 import { openWorld } from '../src/world.mjs';
 import { DEFAULT_SEED, CITY_LOCATIONS } from '../src/fixture.mjs';
 import { atLondon, nextLondonDay } from '../src/time.mjs';
-import { VENUE_SCENES, VENUE_MOODS, VENUE_FAUNA, selectVenueScene, venueCastOf } from '../src/venues.mjs';
+import { VENUE_SCENES, VENUE_MOODS, VENUE_FAUNA, selectVenueScene, venueCastOf, venueSceneId } from '../src/venues.mjs';
 import { LEGION_CAST, OUTSIDE_CAST, STREET_FAUNA } from '../src/cast.mjs';
 import { assertNoSpoiler } from '../src/spoilers.mjs';
 
 const scenePath = name => join(dirname(dirname(fileURLToPath(import.meta.url))), '..', 'worldstream', 'app', 'scene', name);
 const GOADEN_HAS = new Set(['idle', 'smirk', 'surprised', 'amused', 'deflect', 'guarded', 'concerned', 'tired']);
 const ASHAI_HAS = new Set(['neutral', 'soft_smile', 'amused', 'thoughtful', 'vulnerable', 'tired', 'surprised', 'guarded']);
+
+test('equally eligible venue scripts are all performed before any repeats, with stable archive identities', () => {
+  for (const [venue, bank] of Object.entries(VENUE_SCENES)) {
+    const available = ['goaden', 'ashai'];
+    const eligible = bank.filter(scene => !scene.requires && venueCastOf(scene)
+      .every(who => [...available, ...(VENUE_FAUNA[venue] ?? [])].includes(who)));
+    const usage = {}, performed = [];
+    for (let index = 0; index < eligible.length; index++) {
+      const args = { venue, available, seed: DEFAULT_SEED, key: 'same-draw', usage };
+      const scene = selectVenueScene(args);
+      assert.ok(scene.id);
+      assert.deepEqual(selectVenueScene(args), scene, 'reading the same history does not consume a script');
+      assert.ok(!performed.includes(scene.id));
+      performed.push(scene.id); usage[scene.id] = 1;
+    }
+    assert.deepEqual(new Set(performed), new Set(eligible.map(scene => venueSceneId(venue, scene))));
+  }
+});
 
 test('every venue the pair can visit has scenes written for it', () => {
   // The gap this closes: an hour at Enchanted Ink used to be "arrived" and
@@ -31,6 +49,26 @@ test('every venue the pair can visit has scenes written for it', () => {
       for (const line of scene.lines) assertNoSpoiler(line.text, `${venue}/${scene.mood}`);
     }
   }
+});
+
+test('default eligible cafe scenes do not claim unverified elapsed days', () => {
+  // Venue eligibility knows the present cast, not how many days have passed
+  // since they last sat together. A casual cafe visit must also fit a day when
+  // they have already shared breakfast or a game in the barracks.
+  const available = ['goaden', 'ashai'], present = [...available, ...VENUE_FAUNA.cafe];
+  const eligible = VENUE_SCENES.cafe.filter(scene => !scene.requires
+    && venueCastOf(scene).every(who => present.includes(who)));
+  const usage = {}, reached = [];
+  for (let index = 0; index < eligible.length; index++) {
+    const scene = selectVenueScene({ venue: 'cafe', available, seed: DEFAULT_SEED,
+      key: 'after-breakfast', usage });
+    assert.ok(scene);
+    reached.push(scene.id); usage[scene.id] = 1;
+    for (const line of scene.lines) assert.doesNotMatch(line.text,
+      /\b(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|twenty)\s+days?\b/i,
+      `${scene.id} asserts an elapsed-day history that was never supplied`);
+  }
+  assert.equal(new Set(reached).size, eligible.length);
 });
 
 test('no written line asks for a plate the world has not got', () => {

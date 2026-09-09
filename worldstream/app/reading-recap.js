@@ -9,6 +9,7 @@ const ENDINGS = new Set(['INK_APPOINTMENT_COMPLETED', 'INK_APPOINTMENT_INTERRUPT
 const CHANGES = new Set(['INCIDENT', 'ARCANE_SURGE', 'AFTERMATH', 'INVITATION_ACCEPTED', 'WEATHER_DISRUPTION',
   'INK_APPOINTMENT_BOOKED', 'THREAD_DELIVERY_OPEN', 'INTENT_RESPONSE', 'INTENT_RENEGOTIATE',
   'AGENDA_OPERATION_START', 'GROUND_RESTRICTION', 'SUPPORTING_COMMITMENT', 'NIGHT_CALL', 'NIGHT_WORK_BEGIN', 'OFFSCREEN_START']);
+const ARC_TURNS = new Set(['ARC_BEAT', 'ARC_CONFRONTATION', 'ARC_CLOSED']);
 const ACTIVE_INTENTS = new Set(['offered', 'renegotiating', 'reserved', 'started']);
 const time = value => Number.isSafeInteger(value) && value >= 0 ? value : null;
 const text = value => typeof value === 'string' ? value : '';
@@ -39,7 +40,10 @@ function publicRows(input, now) {
       || time(event.occurredAt) === null || now !== null && event.occurredAt > now) continue;
     if (!unique.has(event.id)) unique.set(event.id, { id: event.id, occurredAt: event.occurredAt,
       type: text(event.type), description: event.description, location: text(event.location), room: text(event.room),
-      register: event.register === 'prose' ? 'prose' : 'ticker' });
+      register: event.register === 'prose' ? 'prose' : 'ticker',
+      ...(text(event.storyRef?.id) ? { storyRef: { id: event.storyRef.id, type: text(event.storyRef.type) } } : {}),
+      ...(text(event.contextBridge?.originEventId) ? { originEventId: event.contextBridge.originEventId } : {}),
+      ...(text(event.memoryCallback?.originEventId) ? { originEventId: event.memoryCallback.originEventId } : {}) });
   }
   return [...unique.values()].sort(order);
 }
@@ -48,12 +52,15 @@ function afterBoundary(event, boundary) {
     && boundary.kind === 'read_start' && event.id !== boundary.eventId);
 }
 function significance(event) {
+  if (ARC_TURNS.has(event.type)) return 4;
   if (ENDINGS.has(event.type)) return 3;
   if (CHANGES.has(event.type)) return 2;
   if (['CONVERSATION', 'VENUE_SCENE', 'LEGION_VISIT'].includes(event.type)) return 1;
   return 0; // No guessing significance from dramatic-sounding words.
 }
 function family(event) {
+  if (event.storyRef?.id) return `${event.storyRef.type}:${event.storyRef.id}`;
+  if (event.originEventId) return `origin:${event.originEventId}`;
   return /^(INK|THREAD_DELIVERY|INTENT|AGENDA|GROUND|SUPPORTING|NIGHT|OFFSCREEN)_/.exec(event.type)?.[1] ?? event.type;
 }
 
@@ -106,7 +113,13 @@ export function buildReadingRecap(world = {}, events = world.events, stored = nu
     if (!previous || significance(event) >= significance(previous)) bestByFamily.set(family(event), event);
   }
   const selected = [...bestByFamily.values()].sort((a, b) => significance(b) - significance(a) || order(b, a))
-    .slice(0, 3).sort(order).map(event => ({ ...event, viewed: viewed.has(event.id) }));
+    .slice(0, 3).sort(order).map(event => {
+      const origin = rows.find(row => row.id === event.originEventId)
+        ?? (event.storyRef ? rows.find(row => row.id !== event.id && row.occurredAt <= event.occurredAt
+          && row.storyRef?.id === event.storyRef.id && row.storyRef?.type === event.storyRef.type) : null);
+      return { ...event, viewed: viewed.has(event.id), ...(origin ? {
+        earlier: { id: origin.id, occurredAt: origin.occurredAt, description: origin.description } } : {}) };
+    });
   const completeSince = !Array.isArray(events) ? time(events?.completeSince) : null;
   // A merged cache can contain old and new pages with an unread gap between.
   // Explicit object input carries the host's contiguous-coverage proof; an old
@@ -155,14 +168,32 @@ export function createReadingRecap({ container = null, storage, onContinue = () 
     if (!container || !model) return;
     const fingerprint = JSON.stringify(model);
     if (fingerprint === rendered) return;
-    rendered = fingerprint; container.hidden = !model.visible;
-    if (!model.visible) { container.replaceChildren(); return; }
+    rendered = fingerprint; container.hidden = !model.visible && !model.lastViewed;
+    const resume = model.lastViewed ? button('Return to your place', () => onContinue({ kind: 'event',
+      eventId: model.lastViewed.id, occurredAt: model.lastViewed.at }), 'recap-continue') : null;
+    if (!model.visible) { container.replaceChildren(...(resume ? [resume] : [])); return; }
+    if (!model.events.length && !model.gapPossible) {
+      const note = node('p', 'No major change since your bookmark. The current places and open threads are above.', 'recap-note');
+      const actions = resume ? [resume] : [];
+      if (model.unresolved) actions.push(button('Return to the open thread', () => onContinue({ kind: 'thread',
+        section: model.unresolved.section, type: model.unresolved.type, threadId: model.unresolved.threadId,
+        eventId: model.unresolved.eventId }), 'recap-link'));
+      actions.push(button('Mark caught up', () => markCaughtUp(), 'recap-mark'));
+      container.replaceChildren(note, ...actions); return;
+    }
     const children = [node('h3', 'While you were away…', 'recap-title'),
       node('p', `${model.boundaryKind === 'legacy_visit' ? 'Last recorded visit' : 'Reading from'} ${date(model.boundaryAt)}`, 'recap-note')];
     const list = node('ol', null, 'recap-events');
     for (const event of model.events) {
       const item = node('li', null, 'recap-event');
       const when = node('time', date(event.occurredAt)); when.dateTime = new Date(event.occurredAt).toISOString();
+      if (event.earlier) {
+        const earlier = node('details', null, 'recap-earlier');
+        earlier.append(node('summary', 'What led here'), node('p', event.earlier.description),
+          button('Read the beginning', () => onContinue({ kind: 'event', eventId: event.earlier.id,
+            occurredAt: event.earlier.occurredAt }), 'recap-link'));
+        item.append(earlier);
+      }
       item.append(when, node('p', event.description), button(event.viewed ? 'Read again' : 'Read this moment',
         () => onContinue({ kind: 'event', eventId: event.id, occurredAt: event.occurredAt }), 'recap-link'));
       list.append(item);
@@ -178,6 +209,7 @@ export function createReadingRecap({ container = null, storage, onContinue = () 
     }
     if (model.coverageNote) children.push(node('p', model.coverageNote, 'recap-note'));
     const actions = node('div', null, 'recap-actions');
+    if (resume) actions.append(resume);
     if (model.continueTarget) actions.append(button(model.gapPossible ? 'Load earlier activity' : 'Continue from here',
       () => onContinue(clone(model.continueTarget)), 'recap-continue'));
     actions.append(button('Mark caught up', () => markCaughtUp(), 'recap-mark'));
@@ -197,10 +229,10 @@ export function createReadingRecap({ container = null, storage, onContinue = () 
   function markViewed(event) {
     if (destroyed || !world) return false;
     const row = publicRows(input, time(world.resolvedThrough)).find(item => item.id === event?.id && item.occurredAt === event.occurredAt);
-    if (!row || bookmark.viewed.some(item => item.id === row.id)) return false;
+    if (!row || bookmark.lastViewed?.id === row.id) return false;
     if (!bookmark.boundary) bookmark.boundary = { at: row.occurredAt, eventId: row.id, kind: 'read_start' };
     const point = { id: row.id, at: row.occurredAt };
-    bookmark.viewed = [...bookmark.viewed, point].slice(-MAX_VIEWED); bookmark.lastViewed = point;
+    bookmark.viewed = [...bookmark.viewed.filter(item => item.id !== row.id), point].slice(-MAX_VIEWED); bookmark.lastViewed = point;
     persist(); refresh(); onMark({ kind: 'viewed', scope, eventId: row.id, at: row.occurredAt }); return true;
   }
   function markCaughtUp(value = world) {

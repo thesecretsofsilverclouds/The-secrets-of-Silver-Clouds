@@ -28,6 +28,14 @@ worldstream-server/data/
 # decisions already taken; nothing at runtime reads them.
 worldstream-server/lab/runs/
 worldstream-server/artifacts/
+# The same class, missed when the list above was written: 32MB of sprint
+# reports and raw test logs, the sprint handoff notes, the repetition-analysis
+# dump and the new-viewer audit. Nothing at runtime reads any of them, and a
+# public website repository is the wrong home for a workshop's working papers.
+worldstream-server/reports/
+worldstream-server/families.json
+handoff/
+NEW-VIEWER-STORY-EXPERIENCE.md
 
 # ------------------------------------------------------------------ scratch
 *.log

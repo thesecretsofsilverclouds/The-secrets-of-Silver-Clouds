@@ -63,6 +63,8 @@ export class ViewerRegistry {
 }
 
 function candidateFrom(event, snapshot, store, now) {
+  // The scene bank already contains the complete ordered performance.
+  if (event.type === 'SCENE_BANK_BEAT') return null;
   const score = scoreCinematicEvent(event, { priorEvents: snapshot.events });
   if (score.score < 30) return null;
   const packet = buildScenePacket(event, snapshot, { callbacks: store.callbacksBefore(event.occurredAt) });
@@ -294,12 +296,13 @@ export class CinematicService {
     return this.store.get(eventId);
   }
 
-  nextPresentation({ afterAcceptedAt = 0, now = this.now(), eventById = null } = {}) {
+  nextPresentation({ afterAcceptedAt = 0, now = this.now(), eventById = null, publicSourcesForEvent = null } = {}) {
     const record = this.store.nextPresentation({
       afterAcceptedAt, now, maxAgeMs: Math.max(this.config.liveWindowMs, 180_000),
     });
     return editorialCinematicRecordForApi(record, {
       event: record && typeof eventById === 'function' ? eventById(record.eventId) : null,
+      publicSourcesForEvent,
     });
   }
 

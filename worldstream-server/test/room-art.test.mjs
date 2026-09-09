@@ -5,6 +5,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { AREAS_BY_LOCATION, SEALED_AREAS } from '../src/places.mjs';
 import { LEGION_CAST, OUTSIDE_CAST, SIDE_CHARACTERS, STREET_FAUNA } from '../src/cast.mjs';
+import { SCENE_BANK_CATALOG } from '../src/scene-bank-catalog.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const app = readFileSync(join(root, '..', 'worldstream', 'app', 'app.js'), 'utf8');
@@ -31,7 +32,7 @@ test('every room with artwork is a room the simulation actually has', () => {
   // And the reverse, so a new area with art cannot be forgotten here: every
   // area either has artwork or is deliberately left on the general interior.
   const withoutArt = [...known].filter(name => !rooms.includes(name));
-  assert.deepEqual(withoutArt.sort(), ['the MI6 corridors', 'the quarters'],
+  assert.deepEqual(withoutArt.sort(), ['MI6 reception', 'the MI6 corridors', 'the MI6 rooftop', 'the quarters'],
     'an MI6 area gained or lost artwork without this test being updated');
 });
 
@@ -60,7 +61,8 @@ test('every plate the page declares has art, and every plated character is cast'
   const rosters = { ...LEGION_CAST, ...OUTSIDE_CAST, ...STREET_FAUNA, ...SIDE_CHARACTERS };
   for (const [, who, inline] of rows) {
     if (['goaden', 'ashai'].includes(who)) continue;
-    assert.ok(rosters[who], `${who} has plates on the page but is in no cast roster`);
+    assert.ok(rosters[who] || SCENE_BANK_CATALOG.some(entry => entry.status === 'enabled' && entry.cast.includes(who)),
+      `${who} has plates on the page but is in no cast roster or enabled authored scene`);
     for (const expression of (inline ?? '').split(',').map(part => part.trim().replace(/'/g, '')).filter(Boolean))
       assert.ok(existsSync(scene(`${who}-${expression}.png`)), `missing plate art: ${who}-${expression}.png`);
   }

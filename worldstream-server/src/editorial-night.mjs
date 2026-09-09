@@ -1,7 +1,8 @@
 import { createHash } from 'node:crypto';
 
 // Read-only presentation of committed night events. No writes, scheduling,
-// inference calls, character decisions, additional dialogue or new story facts.
+// inference calls, character decisions or new story facts. Bounded dialogue
+// performs the recorded pair's work; existing source dialogue always wins.
 // Setting anchors in canon/manuscript.pdf (checked against the saved PDF text):
 // physical pp.63–64: long barracks corridors, thick metal doors and bedrooms;
 // pp.70–71: Goaden's terse, reluctant response to being woken for an MI6 summons;
@@ -28,6 +29,24 @@ const APPROVED_DEBRIEF_LINES = Object.freeze([
   Object.freeze({ who: 'ashai', text: 'I was on the covered floor this morning. You’re the one who looks like you slept in your coat.' }),
   Object.freeze({ who: 'goaden', text: "Coat's comfortable." }),
 ]);
+const NIGHT_CHECK_LINES = Object.freeze([
+  { who: 'goaden', expression: 'tired', text: 'All this fuss over a row of bloody numbers.' },
+  { who: 'ashai', expression: 'guarded', text: 'Then read them.' },
+  { who: 'goaden', expression: 'idle', text: 'I am reading them.' },
+  { who: 'ashai', expression: 'thoughtful', text: 'Both sets, Goaden. We need them to agree.' },
+  { who: 'goaden', expression: 'deflect', text: 'Yeah. I got that part.' },
+]);
+const NIGHT_CLOSED_LINES = Object.freeze([
+  { who: 'ashai', expression: 'neutral', text: 'These match.' },
+  { who: 'goaden', expression: 'tired', text: 'All of it?' },
+  { who: 'ashai', expression: 'thoughtful', text: 'All of it. We can close the entry.' },
+  { who: 'goaden', expression: 'smirk', text: 'About fucking time.' },
+  { who: 'ashai', expression: 'amused', text: 'Now you can stop glaring at it.' },
+  { who: 'goaden', expression: 'idle', text: 'It knows what it did.' },
+]);
+const authoredLines = event => Array.isArray(event.lines) && event.lines.length
+  || Array.isArray(event.payload?.lines) && event.payload.lines.length;
+const performLines = (event, lines) => authoredLines(event) ? undefined : lines.map(line => ({ ...line }));
 const personal = who => who === 'goaden' ? { name: 'Goaden', his: 'his', him: 'him' }
   : { name: 'Ashai', his: 'her', him: 'her' };
 const sentence = (description, prose, lines) => ({
@@ -63,34 +82,34 @@ function weatherOpening(event, supplied) {
   return line ? `${line} ` : '';
 }
 
+function taskFor(entry) {
+  return entry === 'dispatch entry'
+    ? 'The service records still left a dispatch entry unresolved. The figures needed comparing before that entry could be closed.'
+    : 'An earlier watch report still needed checking. The job was to compare its figures and reconcile the entry in operations.';
+}
+
 function call(event, supplied, who) {
   const { name } = personal(who), entry = entryFor(event, supplied);
-  // A bool is optional. With no historical sleeping evidence we do not guess
-  // that a character was asleep, tired, dreaming or interrupted in private.
   const sleeping = supplied.wasSleeping === true;
   const description = sleeping ? `${name} woke to an MI6 request to check an unfinished ${entry}.`
     : `${name} received an MI6 request to check an unfinished ${entry}.`;
-  const opening = weatherOpening(event, supplied);
+  const task = taskFor(entry);
   const body = who === 'goaden'
     ? sleeping ? choose(event, 'wake-goaden', [
-      `Sleep held on to Goaden for another stubborn moment. Then the request was there, clear enough to be inconvenient: an unfinished ${entry}, waiting in operations. The thick metal door still separated his room from MI6's long corridor. Somehow, the distance to work seemed longer now.`,
-      `Goaden was awake. That was the first unwelcome development. The second was the ${entry} that had followed him out of sleep, still unfinished and requiring his attention. His room had the heavy quiet of somewhere meant for resting. Operations, evidently, had other ideas.`,
-      `The call caught Goaden before sleep had quite let go of him. An unfinished ${entry}. Operations. The words settled into place with irritating clarity. Around him, the quarters remained perfectly suited to going back to bed; nothing about the request had improved that comparison.`,
+      `Goaden dragged a hand down his face. MI6 had pulled him out of sleep to check bloody figures. ${task}\n\nHe sat with his jaw tight, staring towards the heavy door of his quarters. Beyond it lay the corridor to operations. He had the request now; getting back to bed would have to wait.`,
+      `The call hauled Goaden awake. He blinked into the room, then rubbed at his eyes as the request sank in. ${task}\n\nHis shoulders sagged. Of all the things to be wanted for at this hour. He looked towards the door, sleep still heavy in his face.`,
     ]) : choose(event, 'call-goaden', [
-      `The request reached Goaden in the quarters: an unfinished ${entry} needed another check. Operations lay beyond the familiar length of corridor, past the thick metal doors. Until a moment ago, none of that had required his attention. MI6 had a talent for changing the terms of a quiet night.`,
-      `An unfinished ${entry} had found its way into Goaden's night. The request was plain enough: another check in operations. Nothing in the quiet of the quarters had prepared a more interesting objection than the obvious one. Work had found him here as efficiently as anywhere else.`,
-      `Goaden received the request where the corridor gave way to the privacy of the quarters. Somewhere in operations, a ${entry} remained unfinished. The night had reached him with something specific to do, and very little interest in whether this was a convenient time.`,
+      `Goaden stopped in the quarters as the MI6 request reached him. ${task}\n\nHe ran a hand over the back of his neck. The door, the long corridor, then the screens in operations. He knew the route. He had rather less enthusiasm for the job at the far end of it.`,
+      `${task} The request reached Goaden in his quarters, where he could still look at the door without needing to go through it.\n\nHis mouth tightened. A report to check, line by line. He gave the request his attention, the easy slouch in his shoulders doing nothing to hide his irritation.`,
     ])
     : sleeping ? choose(event, 'wake-ashai', [
-      `Ashai woke to the room before the request made sense. Then the words fitted together: operations, an unfinished ${entry}, another check. She sat with them for a moment, sleep still heavy in the room around her. MI6 wanted an answer. She had yet to give one.`,
-      `Sleep loosened its hold on Ashai. An unfinished ${entry} needed checking in operations. She listened to the particulars before deciding what to do with the rest of her night.`,
-      `First the room. Then the hour. Then the unfinished ${entry} that had reached Ashai through both. She let the request become clear before she supplied anything in return.`,
+      `Ashai woke and held still while she took in the request. ${task}\n\nShe rubbed the sleep from her eyes. Operations wanted her help, but asking did not settle what she would do. She sat with the details, considering whether to give up the rest of her night.`,
+      `The call woke Ashai in her quarters. She listened until the work was clear: compare the figures in the unfinished ${entry}, then check whether it could be closed.\n\nShe looked towards the door. She had been asked to help. Her answer was still hers to give.`,
     ]) : choose(event, 'call-ashai', [
-      `The request reached Ashai in the quarters. An unfinished ${entry}, another check in operations. She took in the particulars. Beyond the heavy door, MI6 stretched away through its long corridors; for now, she remained on this side of it.`,
-      `Ashai received the details of the ${entry}. Operations wanted help. She let the quiet of her room return around the words while she considered her answer.`,
-      `An unfinished ${entry} had found Ashai in the quarters. She listened through the request, her expression settling as it became clear. Nothing had been agreed yet.`,
+      `Ashai listened to the request in her quarters. ${task}\n\nHer gaze settled on the heavy door. She understood what operations needed. That did not mean she had agreed to spend her night doing it.`,
+      `The unfinished ${entry} needed another check in operations. Ashai went over what was being asked of her: compare the figures, work through the difference, help finish the report.\n\nShe remained in her quarters while she considered it. Nothing had been agreed yet.`,
     ]);
-  return sentence(description, opening + body);
+  return sentence(description, weatherOpening(event, supplied) + body);
 }
 
 /**
@@ -116,8 +135,8 @@ export function nightEditorial(event, context = {}) {
   if (event.type === 'NIGHT_WINDOW') {
     if (participants.length) return null;
     return sentence(`An unfinished ${entry} brought a request from the MI6 night watch.`, choose(event, 'request', [
-      `The surveillance screens gave operations a light of its own. Beneath them, a ${entry} remained open after the earlier report, carried forward through hours that should have been enough to finish it. The night watch sent for another check.`,
-      `One ${entry} was still open. Around it, operations kept the subdued glow and electronic murmur of a room that did not go dark with the city. The night watch sent a request towards the quarters.`,
+      `The night watch stopped over an unfinished report beneath the operations screens. Its figures needed comparing before the ${entry} could be closed.\n\nA request went to the quarters. Somebody would have to come down and work through the check.`,
+      `The figures in an earlier report still needed checking. The night watch could not close the ${entry} without going through them.\n\nBeneath the surveillance screens, the request was sent to the quarters. The watch needed somebody on the check.`,
     ]));
   }
   if (event.type === 'NIGHT_CALL' || event.type === 'NIGHT_CONTACT_ASHAI') {
@@ -128,66 +147,63 @@ export function nightEditorial(event, context = {}) {
   if (event.type === 'NIGHT_ASHAI_CHOICE') {
     if (participants.length !== 1 || participants[0] !== 'ashai' || event.area !== 'quarters') return null;
     if (payload.choice === 'join') return sentence('Ashai agreed to join the night check.', choose(event, 'choice-join', [
-      'Ashai agreed to help. The answer was quiet and quite definite. Operations could have this part of her night; the rest of the room would have to wait behind her.',
-      'Ashai accepted the request. No flourish, no assurance that she was needed. She had heard what the check involved and chosen to join it.',
+      'Ashai agreed to help with the check. She straightened, giving the request a last moment of attention before turning towards the door. The report in operations would have a second pair of eyes.',
+      'Ashai accepted. She had heard what needed checking and decided to go. For now she remained in her quarters, but the answer had been given: she would join the work in operations.',
     ]));
     if (payload.choice === 'decline') return sentence('Ashai declined the optional night check and returned to rest.', choose(event, 'choice-decline', [
-      'Ashai’s answer was no. She returned to rest, letting the familiar room close around her again. Beyond the thick door, the night watch continued without her.',
-      'Ashai declined and returned to rest. The request could travel back along MI6’s corridors; it would not be taking her with it tonight.',
+      'Ashai declined. She had heard the request and understood the work; she was still allowed to say no. She returned to rest in her quarters while the night watch continued without her.',
+      'Ashai gave her answer and turned back to rest. She would not be joining the check in operations. The heavy door of her quarters stayed between her and the work she had declined.',
     ]));
     return null;
   }
   if (event.type === 'NIGHT_WORK_BEGIN') {
     if (!participants.includes('goaden') || event.area !== 'ops_room') return null;
     return sentence(`${subject} began checking the unfinished ${entry} in operations.`, choose(event, pair ? 'work-pair' : 'work-solo', pair ? [
-      `Monitor light caught Goaden and Ashai as they came into operations. The ${entry} waited. He bent towards the detail; she followed it from the beginning. Beneath the electronic murmur, their night narrowed to the same unfinished thing.`,
-      `Goaden and Ashai began the check under the surveillance screens. The ${entry} gave them particulars to compare, one after another. His usual ease went quiet as he worked; she kept her place beside him.`,
-      `The screens laid their light across Goaden and Ashai. Together, they began working through the ${entry}. The call had taken moments. Here was the slower business of answering it.`,
+      `Goaden and Ashai bent over the figures beneath the operations screens. He followed one set while she checked the other, working through the ${entry} from the beginning.\n\nGoaden slowed at a detail and Ashai went back over it. Neither could finish the report by assuming the figures agreed. Each line had to be checked.`,
+      `The screens lit Goaden and Ashai from above as the check began. Two sets of figures; one unfinished ${entry}. Goaden leaned in, his slouch straightening as he compared the entries.\n\nAshai kept pace beside him. When he stopped over a detail, she checked it too. The answer had to be in the report, not in how badly either wanted to leave operations.`,
     ] : [
-      `Goaden bent towards the ${entry}. Monitor light sharpened the angles of his face; the easy slouch remained, but his gaze had gone still. He began the check. Beyond the low electronic buzz, the corridor offered no useful objection.`,
-      `In operations, the ${entry} finally became more than a request. Goaden worked through its particulars, his mouth set in a line that gave the room none of his opinion of the hour.`,
-      `The surveillance screens lit Goaden’s face as he began the check. One unfinished ${entry}; one detail after another. The night had reduced itself to something he could work on.`,
-    ]));
+      `Goaden leaned over the ${entry}, his face washed pale by the operations screens. He began comparing the figures, line by line, keeping his place as he went.\n\nHis usual grin was gone. Skipping a detail would get the job finished faster, but it would leave the same unchecked report for someone else. He went back over the line in front of him.`,
+      `The unfinished ${entry} lay in front of Goaden beneath the monitor glow. He worked through its figures from the beginning, stopping to compare each entry before going on.\n\nHis jaw tightened when a detail made him read it again. No joke was going to settle this one. He stayed with the check.`,
+    ]), pair ? performLines(event, NIGHT_CHECK_LINES) : undefined);
   }
   if (event.type === 'NIGHT_WORK_END' || event.type === 'NIGHT_DEADLINE') {
     if (!OUTCOMES.has(payload.outcome) || event.area !== 'ops_room') return null;
     if (event.type === 'NIGHT_WORK_END' && !participants.includes('goaden')) return null;
     if (event.type === 'NIGHT_DEADLINE' && payload.outcome !== 'deferred') return null;
     const resolved = payload.outcome === 'resolved';
+    const closingLines = resolved && pair ? performLines(event, NIGHT_CLOSED_LINES) : undefined;
+    if (closingLines) return sentence(`${subject} finished the check. The ${entry} was closed.`, choose(event, 'closed-scene', [
+      'Goaden reached the last figures and stopped, one hand against his jaw. Ashai leaned forward beside him, comparing the two sets under the light of the operations screens.',
+      'The monitor glare caught Ashai’s face as she went through the last figures. Goaden waited beside her, his shoulders hunched over the report. She checked the final line, then looked up.',
+    ]), closingLines);
     if (resolved) return sentence(`${subject} finished the check. The ${entry} was closed.`, choose(event, 'closed', [
-      `The figures agreed. ${subject} closed the ${entry}. ${pair ? 'Ashai sat back first; Goaden followed a moment later.' : 'Goaden sat back, the monitor glow leaving his face by degrees.'} Around that small ending, operations went on watching London.`,
-      `The ${entry} could be closed at last. ${subject} had finished the check. ${pair ? 'Neither spoke for a moment. Then Goaden’s shoulders eased, and Ashai let her hands settle.' : 'Goaden looked at the completed work once more before turning from it.'} The screens kept their low light.`,
-      `${subject} reached the end of the ${entry}. This time, the figures matched. The check was finished; ${pair ? 'the pair could leave the question where it belonged, behind them.' : 'Goaden could leave the question where it belonged, behind him.'}`, 
+      `The figures matched. ${subject} reached the end of the ${entry} and closed it. ${pair ? 'Ashai sat back, easing her hands away from the work. Beside her, Goaden rubbed his face.' : 'Goaden sat back and rubbed his face, the pressure of his fingers briefly hiding the monitor glare.'}\n\nThere was no discrepancy left to pass on. The check was finished.`,
+      `${subject} checked the last figures. The two sets agreed; the ${entry} could finally be closed.\n\n${pair ? 'Goaden let his shoulders drop. Ashai looked over the completed work once more before she moved back beside him.' : 'Goaden let his shoulders drop. He looked over the completed work once more, then moved back from the screen.'} No more lines to go through tonight.`,
     ]));
     return sentence(`The ${entry} remained unreconciled and passed to the day watch.`, choose(event, 'deferred', [
-      `The ${entry} remained open. The discrepancy went to the day watch, named and still unresolved. Under the surveillance screens, the night’s work ended beside an answer it had not managed to find.`,
-      `One difference remained in the ${entry}. The day watch would have it next. Operations kept its low glow around the unfinished work; dawn would inherit this much of the dark.`,
-      `The check ended. The ${entry} did not. Its remaining discrepancy passed to the day watch, carrying the exact point at which the night had stopped.`,
+      `The figures still did not agree. The ${entry} could not be closed, so the remaining difference was marked for the day watch.\n\nAnother check would be needed. The night watch had reached the end of this attempt without settling the discrepancy.`,
+      `One difference remained in the ${entry}. It was left clearly marked, with the report still open for the day watch.\n\nThe check had stopped here. Calling it finished would only hide the part that still needed doing.`,
     ]));
   }
   if (event.type === 'NIGHT_RETURN' || event.type === 'NIGHT_RECOVERED') {
     if (participants.length !== 1 || event.area !== 'quarters' || !number(payload.lostSleepMinutes)) return null;
-    const { name, his, him } = personal(participants[0]), lostSleep = payload.lostSleepMinutes > 0;
+    const { name, him } = personal(participants[0]), lostSleep = payload.lostSleepMinutes > 0;
     const outcome = priorOutcome(event, supplied);
     const ending = outcome === 'resolved' ? `The ${entry} was closed.`
       : outcome === 'deferred' ? `The unfinished ${entry} had passed to the day watch.` : 'The night check was over.';
-    if (event.type === 'NIGHT_RETURN') return sentence(`${name} returned to the quarters to rest after the night check.`, choose(event, lostSleep ? 'return-sleep' : 'return-awake', lostSleep ? [
-      `${name} reached the quarters. ${ending} Without the monitor glow, the room felt darker than before, and sleep nearer. The morning would have to give back some of what the night had taken.`,
-      `The corridor delivered ${name} to the quarters at last. ${ending} ${name === 'Goaden' ? 'He had no remaining objection to the room’s original purpose.' : 'She let the room settle around her before returning to sleep.'} The early start would wait.`,
-      `${ending} ${name} returned to sleep in the quarters. The long check was behind ${him}; the sleep it had interrupted was not. That would reach into the morning.`,
+    if (event.type === 'NIGHT_RETURN') return sentence(`${name} returned to the quarters to rest after the night check.`, choose(event, lostSleep ? 'return-sleep' : 'return-awake', name === 'Goaden' ? [
+      `Goaden reached his quarters and lowered himself onto the bed. ${ending}\n\nHe rubbed at the back of his neck, then lay down. ${lostSleep ? 'The call had taken him out of sleep; he was going back to it now. His early morning start would have to wait.' : 'He had finished in operations. Now he could rest, with a later start to the morning.'}`,
+      `${ending} Back in his quarters, Goaden sat on the edge of the bed, shoulders sagging now there was no report in front of him.\n\nHe lay back. ${lostSleep ? 'He needed the sleep the call had cut short, and he would be getting up later because of it.' : 'The work was done for now. Rest came next, followed by a later start.'}`,
     ] : [
-      `${name} returned to the quarters. ${ending} The room offered somewhere to rest, free of monitor light and the next detail to compare. A later start would follow.`,
-      `${ending} ${name} left the operations room’s electronic murmur behind and returned to rest. For now, the quarters had no questions.`,
-      `Back in the quarters, ${name} turned from the night’s work to sleep. ${ending} The morning would begin later; this part belonged to rest.`,
+      `Ashai returned to her quarters. ${ending} She sat down on the bed and let her hands fall still in her lap.\n\n${lostSleep ? 'The call had broken her sleep. She lay down to finish it, knowing her early start would have to wait.' : 'She lay down to rest after the work in operations. Her morning would start later.'}`,
+      `${ending} Ashai reached the bed in her quarters and sat, blinking as her eyes adjusted from the operations screens.\n\n${lostSleep ? 'She had given the check part of the night she should have spent asleep. She lay down again; the morning routine would have to move.' : 'She had stayed with the night work. Now she lay down to rest, with a later start ahead of her.'}`,
     ]));
-    return sentence(`${name} got up later after resting from the night check.`, choose(event, lostSleep ? 'recovered-sleep' : 'recovered-awake', lostSleep ? [
-      `${name} got up later. Beyond the quarters, MI6 was already further into its day. ${ending} The night had moved this beginning by the sleep it took, and the rest that followed had finally paid it back.`,
-      `The extra rest ended. ${name} rose into a morning that had begun without ${him}, ${name === 'Goaden' ? 'his face still slow to adopt its usual indifference.' : 'letting the familiar room come into focus before moving on.'} ${ending} The interrupted night was behind ${him} now.`,
-      `${name} got up after the sleep lost to the call. ${ending} The later start still carried the shape of the interruption into a day already in progress.`,
+    return sentence(`${name} got up later after resting from the night check.`, choose(event, lostSleep ? 'recovered-sleep' : 'recovered-awake', name === 'Goaden' ? [
+      `Goaden got up and sat forward, rubbing both hands over his face. Outside his quarters, MI6 was already into its morning.\n\nHe had rested after the night check. Now he could get moving, starting later than the ordinary routine.`,
+      `The rest after the night check was over. Goaden rose from the bed and rolled his shoulders, taking a moment before he straightened.\n\nHe was getting up into a morning already under way. The hours in operations had pushed his start back.`,
     ] : [
-      `${name} got up after resting from the night work. ${ending} A later start, a familiar room, the sounds of MI6 already moving beyond it. The day could have ${his} company now.`,
-      `Rest was over. ${name} rose into the later start, leaving the quiet of the quarters for the day beyond. ${ending}`,
-      `${name} got up later, the hours in operations followed by enough rest to begin again. ${ending} Beyond the room, MI6 had already found its ordinary rhythm.`,
+      `Ashai got up and waited for the room to come into focus. Beyond the quarters, MI6 had begun its morning without her.\n\nShe had rested after the check in operations. Now she could start her day, later than planned.`,
+      `Ashai sat forward on the bed, then rose. She had finished resting from the night work; the early start had passed while she slept.\n\nThe morning was already under way outside her quarters. She was ready to join it now.`,
     ]));
   }
   if (event.type === 'NIGHT_DEBRIEF') {
@@ -209,14 +225,14 @@ export function nightEditorial(event, context = {}) {
     }
     return resolved
       ? sentence('Goaden and Ashai spoke about the night check and its closed entry.', choose(event, 'debrief-closed', [
-        `The night check came up between Goaden and Ashai. The ${entry} was closed. He made the account brief; she let him finish before answering, as though brevity had never been a particularly good disguise for the hours something took. Both knew its ending now.`,
-        `Goaden told the ending in fewer words than the check had deserved. Ashai listened: the ${entry} reconciled, the work done. His dry manner could make it sound small. It could not give the night its hours back.`,
-        `The ${entry} had closed. Goaden and Ashai returned to that ending in conversation, the long check reduced to something that could be said in passing. For a moment, the difference in scale was almost funny.`,
+        `Goaden told Ashai what had happened in operations. The figures had matched, and the ${entry} was closed.\n\nShe listened while he went through the result. No difference left for somebody else to find. He rubbed his face, giving her a tired look as he finished.`,
+        `The ${entry} came up between Goaden and Ashai. He kept the account short: the figures checked, the two sets agreed, the report closed.\n\nAshai stayed with him until he had finished explaining it. The job had taken a night check; at least it would not need another one.`,
+        `Ashai heard how the ${entry} had been settled. Goaden had checked the figures through to the end, and the two sets agreed.\n\nHe rolled his shoulders as he spoke. The report was closed. Ashai knew that now, along with what the work had involved.`,
       ]))
       : sentence('Goaden and Ashai spoke about the night entry handed to the day watch.', choose(event, 'debrief-open', [
-        `Ashai heard where the night had left the ${entry}: unreconciled, passed to the day watch. Goaden’s account was clipped, with none of the satisfaction of an ending. She stayed with the unresolved detail. It belonged to both their knowledge now.`,
-        `Goaden and Ashai spoke about the ${entry}. The day watch had it still unfinished. He gave that part plainly; she did not try to make it sound more complete than it was. The conversation ended with the question still elsewhere, waiting.`,
-        `The night’s loose end returned in Goaden and Ashai’s conversation. The ${entry} had gone to the day watch unreconciled. A brief account, but it left them looking at the same unfinished thing.`,
+        `Goaden told Ashai why the ${entry} was still open. The figures had not agreed. The difference was marked for the day watch to check.\n\nAshai listened to the account, her attention fixed on that remaining difference. Finishing a shift had not finished the work.`,
+        `The ${entry} had gone to the day watch. Goaden explained it to Ashai: the check had stopped with figures still unreconciled, and the report could not be closed.\n\nHe gave her the result without dressing it up. Someone still had to find why the two sets differed.`,
+        `Ashai heard about the figures the night check had failed to reconcile. Goaden went over the result with her, his mouth tight. The ${entry} remained open for the day watch.\n\nThe difference had been marked clearly. It still needed an answer.`,
       ]));
   }
   return null;

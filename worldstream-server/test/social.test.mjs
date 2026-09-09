@@ -224,7 +224,8 @@ test('socialStore handles traveller comments and sanitization', () => {
   assert.equal(list[1].id, fallbackComment.id);
 
   // Authored commentary remains visible, separately from reader activity.
-  const social = store.getSocial(eventId, { id: eventId, description: 'Quiet event' }, NOW);
+  const social = store.getSocial(eventId, { id: eventId, type: 'CONVERSATION', location: 'cafe',
+    description: 'Goaden and Ashai talked over breakfast.', occurredAt: NOW - 120_000 }, NOW);
   assert.equal(social.reactions.total, 0);
   assert.equal(social.totalComments, 2);
   assert.ok(social.comments.length > social.totalComments, 'fictional comments do not count as reader discussion');

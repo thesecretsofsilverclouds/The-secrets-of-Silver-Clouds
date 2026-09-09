@@ -125,15 +125,15 @@ test('isHighStakesEvent flags narrative catalysts and rare Veil milestones', () 
 test('formatHighStakesPing produces formatted in-world courier notices', () => {
   const pingSurge = formatHighStakesPing({ type: 'ARCANE_SURGE', description: 'Harmonic surge.' });
   assert.match(pingSurge, /⚡ URGENT DISPATCH/);
-  assert.match(pingSurge, /MEU corridor anomaly/i);
+  assert.equal(pingSurge, '⚡ URGENT DISPATCH: Harmonic surge.');
 
   const pingBroken = formatHighStakesPing({ type: 'PLAN_BROKEN', description: 'Callout.' });
   assert.match(pingBroken, /⚡ URGENT DISPATCH/);
-  assert.match(pingBroken, /emergency duty recall/i);
+  assert.equal(pingBroken, '⚡ URGENT DISPATCH: Callout.');
 
   const pingOuting = formatHighStakesPing({ type: 'OUTING_CUT_SHORT', description: 'Curtailed.' });
   assert.match(pingOuting, /⚡ URGENT DISPATCH/);
-  assert.match(pingOuting, /operational advisory/i);
+  assert.equal(pingOuting, '⚡ URGENT DISPATCH: Curtailed.');
 
   assert.equal(formatHighStakesPing(null), null);
 });
@@ -251,8 +251,8 @@ test('buildFactionRoundup includes all 6 canonical factions and reflects world s
 
   assert.match(roundup.church.status, /Veil Cycle/i);
   assert.match(roundup.sanctuary.status, /Sky Lounge/i);
-  assert.match(roundup.streamliner.status, /Speed Restrictions/i);
-  assert.match(roundup.arcane.status, /0\.38 µV/i);
+  assert.match(roundup.streamliner.status, /Minor delays/i);
+  assert.match(roundup.arcane.status, /High arcane activity/i);
 });
 
 test('buildLintelFlock derives flock observation from sky and arcane resonance', () => {
@@ -264,8 +264,8 @@ test('buildLintelFlock derives flock observation from sky and arcane resonance',
   // Arcane surge state
   const flockSurge = buildLintelFlock({ lintels: 4 }, {}, [{ type: 'ARCANE_SURGE' }]);
   assert.ok(flockSurge.count >= 4);
-  assert.match(flockSurge.observation, /dense cloud formation/i);
-  assert.match(flockSurge.reading, /0\.38/);
+  assert.match(flockSurge.observation, /4 Lintels/i);
+  assert.equal(flockSurge.reading, 'Over London');
 });
 
 test('buildBroadsheet formats complete Victorian gazette structure', () => {
@@ -310,7 +310,7 @@ test('buildBroadsheet formats complete Victorian gazette structure', () => {
   const broadsheet = buildBroadsheet({
     events,
     date: targetDate,
-    serverTime: atLondon(targetDate, '07:30'),
+    serverTime: atLondon(targetDate, '15:00'),
     world: worldMock,
     clientOrigin: 'http://127.0.0.1:4317',
   });
@@ -429,7 +429,7 @@ async function dispatchServerFixture(t) {
   };
 
   const socialStore = openSocialStore({ dbPath: ':memory:' });
-  let serverTime = atLondon(testDate, '08:00'); // Morning 08:00
+  let serverTime = atLondon(testDate, '13:00'); // The source events have occurred.
   const server = createApp({ world, socialStore, now: () => serverTime });
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
@@ -459,7 +459,7 @@ test('server endpoints serve GET /api/dispatch/latest and GET /api/dispatch/:dat
   const latestData = await resLatest.json();
   assert.equal(latestData.date, '2026-09-04');
   assert.equal(latestData.masthead.publication, 'The London Borough Gazette');
-  assert.match(latestData.leadHeadline, /THAMES HARMONIC SURGE/i);
+  assert.match(latestData.leadHeadline, /ARCANE SURGE/i);
   assert.ok(latestData.chronicleBriefs.length >= 3);
   assert.equal(Object.keys(latestData.factionRoundup).length, 6);
   assert.ok(latestData.plainTextSummary.length > 50);

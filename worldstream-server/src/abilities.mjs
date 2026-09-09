@@ -11,14 +11,14 @@ const groundHash = value => createHash('sha256').update(String(value)).digest().
 const groundLine = (bank, key) => bank[groundHash(key) % bank.length];
 const RESET_BEGUN = Object.freeze([
   'began preparing the outdoor training yard. The closure remained in place.',
-  'started on the yard itself. Nobody expected it back in use today and nobody was disappointed.',
+  'started on the yard itself. The outdoor ground stayed closed while they worked.',
   'went out to the closed ground and got on with preparing it. The cones stayed where they were.',
   'switched plans rather than wait for the delayed ground crew. The ground stayed shut regardless.',
 ]);
 const RESET_INTERRUPTED = Object.freeze([
   'The ground reset was interrupted. The outdoor training ground remained closed.',
   'The reset stopped halfway. Whatever was half-done out there stayed half-done, and the yard stayed shut.',
-  'Work on the yard was called off mid-afternoon. The ground is no more open than it was this morning.',
+  'Work on the yard was called off before the reset was finished. The outdoor ground stayed closed.',
   'The reset did not finish. Somebody will find the tools where they were left.',
 ]);
 const RESET_DONE = Object.freeze([
@@ -63,7 +63,7 @@ const awakeHere = (state, who, area) => {
 export function initialAbilities() {
   return { actors: Object.fromEntries(actors.map(who => [who, { fatigue: 0, track: null, fatigueEventId: null }])),
     trainingGround: { status: 'open', restriction: null, preparation: null, work: null,
-      lastClearEventId: null, weatherDeferredDay: null } };
+      lastClearEventId: null, weatherDeferredDay: null, weatherDeferredAt: null, weatherDeferredSourceEventId: null } };
 }
 
 export function fatigueAt(state, who, now) {
@@ -194,7 +194,8 @@ export function resolveAbilityAction(ctx) {
   if (a.type === 'GROUND_RESTRICTION') {
     if (ground.status !== 'open') return refuse('The training ground is already restricted');
     const factKey = `ground:restriction:${id}`;
-    saveGround(ctx, { ...ground, status: 'restricted', preparation: null, work: null, weatherDeferredDay: null,
+    saveGround(ctx, { ...ground, status: 'restricted', preparation: null, work: null,
+      weatherDeferredDay: null, weatherDeferredAt: null, weatherDeferredSourceEventId: null,
       restriction: { sourceEventId: id, since: now, factKey, reason: 'routine_safety_check_and_reset' } });
     ops.createFact(factKey, 'training_ground_restriction', 'world',
       { presentationText: 'The outdoor training ground is closed until its safety check and reset are complete.' }, null);
@@ -237,9 +238,16 @@ export function resolveAbilityAction(ctx) {
     if (ground.status !== 'restricted') return refuse('No outstanding ground reset');
     if (wet(state.weather?.code)) {
       if (ground.weatherDeferredDay === a.day) return refuse('Outdoor work remains weather-bound');
-      saveGround(ctx, { ...ground, weatherDeferredDay: a.day });
+      // The same closure waiting through another wet day has not become a new
+      // decision. Actual work in between makes the weather consequential again.
+      // Older saved worlds lack the timestamp: retain the first new notice
+      // rather than infer an unchanged history from its calendar date alone.
+      const unchanged = Number.isSafeInteger(ground.weatherDeferredAt)
+        && ground.weatherDeferredAt < now && (!ground.work || ground.work.startedAt <= ground.weatherDeferredAt);
+      saveGround(ctx, { ...ground, weatherDeferredDay: a.day, weatherDeferredAt: now, weatherDeferredSourceEventId: id });
       event.causedBy.push(ground.restriction.sourceEventId);
-      event.payload = { method: 'sheltered_wait', outcome: 'weather_deferred' };
+      if (unchanged && ground.weatherDeferredSourceEventId) event.causedBy.push(ground.weatherDeferredSourceEventId);
+      event.payload = { method: 'sheltered_wait', outcome: 'weather_deferred', ...(unchanged ? { routineContinuation: true } : {}) };
       ops.publish(groundLine(RESET_HELD, ctx.id));
       return true;
     }
@@ -249,6 +257,7 @@ export function resolveAbilityAction(ctx) {
     const fatigue = Math.max(...workers.map(who => fatigueAt(state, who, now)));
     const durationMinutes = (workers.length === 2 ? 22 : 35) - (prepared ? 5 : 0)
       + Math.ceil(fatigue * 4) + (state.weather?.code === 'light_rain' ? 8 : 0);
+    const interrupted = ground.work?.status === 'interrupted' ? ground.work : null;
     const work = { status: 'in_progress', workers, token: id, sourceEventId: id, startedAt: now,
       endsAt: now + durationMinutes * MIN, completionActionId: `${a.id}/complete`,
       method: workers.length === 2 ? 'cooperative_reset' : 'manual_reset', prepared,
@@ -260,9 +269,11 @@ export function resolveAbilityAction(ctx) {
     }
     event.participants = workers; event.causedBy.push(ground.restriction.sourceEventId);
     if (prepared) event.causedBy.push(ground.preparation.completionEventId);
-    event.payload = { method: work.method, prepared, durationMinutes };
-    ops.publish(`${workers.map(idName).join(' and ')} ${groundLine(RESET_BEGUN, ctx.id)}${
-      prepared ? ' The preparations had already been done.' : ''}`);
+    if (interrupted) event.causedBy.push(interrupted.announcementEventId ?? interrupted.interruptionEventId);
+    event.payload = { method: work.method, prepared, durationMinutes, ...(interrupted ? { resumed: true } : {}) };
+    ops.publish(`${workers.map(idName).join(' and ')} ${interrupted
+      ? 'returned to the interrupted yard reset. The outdoor ground stayed closed while they worked.'
+      : groundLine(RESET_BEGUN, ctx.id)}`);
     queue(ctx, 'GROUND_WORK_COMPLETED', work.completionActionId, work.endsAt, { workToken: id });
   } else if (a.type === 'GROUND_WORK_COMPLETED') {
     const work = ground.work;

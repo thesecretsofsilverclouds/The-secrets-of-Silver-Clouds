@@ -42,6 +42,14 @@ export const LEDGER_LIMITS = Object.freeze({
 
 const isPlainObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const isContainer = value => value !== null && typeof value === 'object';
+const changeKeys = (before, after) => {
+  const keys = [...new Set([...Object.keys(before), ...Object.keys(after)])];
+  // Applying a removed array index truncates its tail. Record a shrinking tail
+  // from the end so every next leaf still finds its own recorded before-value.
+  // Reverse replay then restores those positions in ascending order.
+  return Array.isArray(before) && Array.isArray(after) && after.length < before.length
+    ? keys.sort((a, b) => Number(b) - Number(a)) : keys;
+};
 
 /** Structural equality with early exit, so comparing does not allocate a copy. */
 export function sameValue(a, b) {
@@ -77,13 +85,13 @@ export function diffLeaves(before, after, limits = LEDGER_LIMITS) {
       leaves.push(leaf);
       return true;
     }
-    for (const key of new Set([...Object.keys(a), ...Object.keys(b)])) {
+    for (const key of changeKeys(a, b)) {
       if (sameValue(a[key], b[key])) continue;
       if (!walk(a[key], b[key], [...path, key], depth + 1)) return false;
     }
     return true;
   };
-  for (const key of new Set([...Object.keys(before), ...Object.keys(after)])) {
+  for (const key of changeKeys(before, after)) {
     if (sameValue(before[key], after[key])) continue;
     if (!walk(before[key], after[key], [key], 1)) return null;
   }

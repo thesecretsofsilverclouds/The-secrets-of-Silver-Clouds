@@ -51,6 +51,12 @@ export const MI6_SECTIONS = Object.freeze({
 // sofas, the headsets and Yukon — so it is somewhere to be without being
 // somewhere new.
 export const MI6_ZONES = Object.freeze({
+  // Creator-authorised scene-bank staging. These are ordinary accessible
+  // zones; the sealed basement remains the inaccessible eighth section.
+  reception:{name:'MI6 reception',indoors:true,social:true,within:'corridors',
+    permits:['unhurried_time','waiting'],dayparts:[...DAYPARTS]},
+  rooftop:{name:'the MI6 rooftop',indoors:false,social:true,within:'corridors',
+    permits:['unhurried_time','waiting','quiet_break'],dayparts:[...DAYPARTS]},
   gaming_room:{name:'the gaming area',page:64,indoors:true,social:true,within:'common_room',
     permits:['unhurried_time','gaming','watching_television','listening_to_music','quiet_break'],dayparts:[...DAYPARTS]},
   // The covered half of the training section. This world has published "the
@@ -93,7 +99,9 @@ export const AREAS_BY_LOCATION = Object.freeze({
   cafe:SINGLE('venue','a table',['unhurried_time','at_the_silver_spoon','eating']),
   // Open air, like the training ground — which matters, because it is the only
   // other place the weather can actually reach them.
-  big_ben_plaza:SINGLE('venue','the plaza',['unhurried_time','walking_the_city'],false),
+  big_ben_plaza:{...SINGLE('venue','the plaza',['unhurried_time','walking_the_city'],false),
+    gardens:{name:'the plaza gardens',indoors:false,social:false,
+      permits:['unhurried_time','walking_the_city'],dayparts:[...DAYPARTS]}},
 });
 export const areaNames = location => Object.keys(AREAS_BY_LOCATION[location] ?? {});
 // Where somebody stands when nothing has put them anywhere in particular. Until

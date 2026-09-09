@@ -27,6 +27,32 @@ function freeze(value) {
 }
 const allText = value => `${value.description} ${value.prose}`;
 
+test('night dialogue performs only the present pair and voices a result only after it is committed', () => {
+  const begin = freeze(event('NIGHT_WORK_BEGIN', { participants: ['goaden', 'ashai'] }));
+  const before = JSON.stringify(begin), opening = nightEditorial(begin);
+  assert.equal(opening.lines.length, 5);
+  assert.deepEqual(new Set(opening.lines.map(line => line.who)), new Set(['goaden', 'ashai']));
+  assert.doesNotMatch(opening.lines.map(line => line.text).join(' '), /These match|close the entry|finished|day watch/);
+  const end = event('NIGHT_WORK_END', { participants: ['goaden', 'ashai'], payload: { outcome: 'resolved' } });
+  const closed = nightEditorial(end);
+  assert.equal(closed.lines.length, 6);
+  assert.match(closed.lines.map(line => line.text).join(' '), /These match.*close the entry/);
+  assert.doesNotMatch(closed.prose, /figures matched|entry was closed|check was finished/i);
+  assert.equal(nightEditorial({ ...end, payload: { outcome: 'deferred' } }).lines, undefined);
+  assert.equal(nightEditorial({ ...begin, participants: ['goaden'] }).lines, undefined);
+  assert.equal(nightEditorial({ ...end, participants: ['goaden'] }).lines, undefined);
+  for (const source of [begin, end]) for (const storage of ['lines', 'payload']) {
+    const authored = [{ who: 'goaden', text: 'Existing authored exchange.' }];
+    const saved = storage === 'lines' ? { ...source, lines: authored }
+      : { ...source, payload: { ...source.payload, lines: authored } };
+    assert.equal(nightEditorial(saved).lines, undefined, 'The adapter must keep original dialogue.');
+    assert.deepEqual(storage === 'lines' ? saved.lines : saved.payload.lines, authored);
+  }
+  opening.lines[0].text = 'Changed by a caller';
+  assert.notEqual(nightEditorial(begin).lines[0].text, opening.lines[0].text);
+  assert.equal(JSON.stringify(begin), before);
+});
+
 test('all public night stages have distinct, deterministic editorial treatments without modifying the event', () => {
   const paragraphs = new Set();
   for (const example of examples) {

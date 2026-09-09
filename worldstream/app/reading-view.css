@@ -1,4 +1,37 @@
 /* A reading surface over the existing world, with its tools still close by. */
+.reader-chapter { font: 500 1.05rem Georgia, serif; margin: 22px 0 18px; color: var(--ink); }
+.reading-context { margin: 20px 0; padding: 20px; border: 1px solid var(--line); background: var(--card); border-radius: 7px; }
+.reading-context > button { font-size: .78rem; }
+.recap-earlier { font-size: .8rem; color: var(--muted); margin: 6px 0; }
+.recap-earlier summary { cursor: pointer; }
+body[data-reading="true"] .older-heading { display: none; }
+body[data-reading="true"] .event .recap-link { border: 0; padding: 2px 0; background: transparent;
+  color: var(--muted); font-size: .75rem; text-decoration: underline; text-underline-offset: 3px; }
+body[data-reading="true"] .event[data-opening-passage="true"] { display: none; }
+body[data-reading="true"] .event[data-reader-scene-start="false"] { margin-top: 0; padding-top: 6px; border-top: 0; }
+body[data-reading="true"] .event[data-reader-scene-start="false"] > time { visibility: hidden; }
+body[data-reading="true"] .event[data-reader-scene-start="false"] .event-location { display: none; }
+body[data-reading="true"] .event.is-prose[data-reader-scene-start="false"] { border-radius: 0 0 6px 6px; }
+.newcomer-orientation { max-width: 72ch; margin: 12px 0 20px; font-size: .82rem; line-height: 1.65; }
+.newcomer-orientation > summary { cursor: pointer; color: var(--ink); }
+.newcomer-body { padding: 8px 0 4px; }
+.newcomer-body p { margin: 7px 0; }
+.newcomer-body ul { padding-left: 18px; margin: 5px 0; }
+body[data-reading="true"] #newcomer-orientation[open] ~ #reading-pair,
+body[data-reading="true"] #newcomer-orientation[open] ~ .world-status:not(#stories-section) { display: none; }
+.newcomer-body button { border: 0; padding: 2px 0; text-align: left; background: transparent; color: var(--ink); font: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.reader-context { font: 600 .73rem system-ui, sans-serif; color: var(--muted); letter-spacing: .035em; margin: 0 0 12px; }
+.story-index { margin: 18px 0; font-size: .82rem; }
+.story-index > summary { cursor: pointer; }
+.reading-sequence-note, .reading-routine-control { color: var(--muted); font-size: .76rem; line-height: 1.5; }
+.reading-routine-control { display: block; margin: 10px 0 18px; }
+body[data-reading="false"] .reading-sequence-note, body[data-reading="false"] .reading-routine-control { display: none; }
+body[data-reading="true"]:not([data-quiet-records="true"]) .event[data-narrative-weight="0"] { display: none; }
+body[data-reading="true"] .event[data-narrative-weight="1"] { padding-top: 10px; padding-bottom: 10px; }
+body[data-reading="true"] .event[data-narrative-weight="1"] .event-meta { display: none; }
+body[data-reading="true"] .event[data-narrative-weight="3"] { margin-top: 24px; margin-bottom: 24px; }
+body[data-reading="true"] .event[data-reader-context="true"] > div > .event-location { display: none; }
+body[data-reading="true"] .story-trail-event.has-prose .story-trail-description { display: none; }
 main { overflow-anchor: none; padding-bottom: 115px; }
 .page-header { align-items: flex-start; gap: 16px; }
 .page-header .intro { max-width: 48ch; }
@@ -68,6 +101,14 @@ body[data-reading="true"] .history { margin-top: 24px; }
 body[data-reading="true"] .event { grid-template-columns: 88px minmax(0,1fr); gap: 16px; padding: 19px 0; }
 body[data-reading="true"] .event.is-prose { margin: 12px 0; padding: 23px 20px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); }
 body[data-reading="true"] .event.is-prose .event-prose { font-family: Georgia, 'Times New Roman', serif; font-size: 1.07rem; line-height: 1.8; }
+/* A scene continues across its source anchors without becoming another card
+   after every paragraph. The source controls remain reachable on focus/hover. */
+body[data-reading="true"] .event.is-prose[data-reader-scene-end="false"] { margin-bottom: 0; border-bottom: 0; border-radius: 6px 6px 0 0; padding-bottom: 6px; }
+body[data-reading="true"] .event.is-prose[data-reader-scene-start="false"] { margin-top: 0; border-top: 0; border-radius: 0; padding-top: 6px; }
+body[data-reading="true"] .event.is-prose[data-reader-scene-start="false"][data-reader-scene-end="true"] { border-radius: 0 0 6px 6px; }
+body[data-reading="true"] .event .event-prose + .event-prose { margin-top: .9em; }
+body[data-reading="true"] .event .reader-dialogue { padding: 0; border: 0; }
+body[data-reading="true"] .event[data-reader-scene-end="false"]:not(:hover):not(:focus-within) .event-meta { opacity: 0; pointer-events: none; }
 body[data-reading="true"] .event .event-meta { opacity: .75; gap: 8px; }
 body[data-reading="true"] .event .reaction-palette,
 body[data-reading="true"] .event .world-reaction-stat, body[data-reading="true"] .event .clock-advance-chip,
@@ -79,6 +120,8 @@ body[data-reading="true"] .event.is-prose .event-canonical { display: none !impo
 .world-overview > summary span { margin-left: 10px; font-size: .73rem; font-weight: 400; }
 .overview-content { padding: 20px 0 0; }
 body[data-reading="false"] .latest-passage, body[data-reading="false"] .reading-pair { display: none; }
+body[data-reading="false"] #reading-live { display: none; }
+#reading-live .reading-new { position: static; }
 .story-card { padding: 15px 18px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); margin-top: 10px; }
 .story-card h3 { font-size: .94rem; }
 .story-card .story-orientation { font-size: .8rem; color: var(--muted); margin: 2px 0 6px; font-style: italic; }

@@ -1,9 +1,9 @@
 import { tensionOf } from './director.mjs';
 
 /**
- * The 5 Canonical London Plot Clocks
- * Each clock represents an escalating narrative arc grounded in Book One canon
- * and the physical p.183 checkpoint.
+ * Five editorial views of current conditions and committed developments.
+ * A segment summarises its evidence; it never creates an incident, a physical
+ * instrument, or somebody's private thoughts merely to fill the clock.
  */
 export const PLOT_CLOCKS = Object.freeze({
   veil: {
@@ -14,14 +14,14 @@ export const PLOT_CLOCKS = Object.freeze({
     color: '#38bdf8', // sky cyan
     totalSegments: 6,
     accoladeTitle: 'Sanctuary Oracle',
-    description: 'An ancient brass astrolabe in the Church cloisters, tracking the approach of the Celestial Veil.',
+    description: 'The approach of the Celestial Veil.',
     segments: [
-      { index: 1, title: 'Distant Whispers', detail: 'A rumour on the autumn horizon. The Church has said nothing official, which from the Church is itself an announcement.' },
-      { index: 2, title: 'Church Proclamation', detail: 'The notices are up and the formal prayers have begun, at volume, from six in the morning.' },
-      { index: 3, title: 'Sanctuary Retrofit', detail: 'Carpenters and ward-weavers all over the Sanctuary. Nobody has ever hung a festival that far up before, and it shows.' },
-      { index: 4, title: 'Relic Attunement', detail: 'Censers and aether lenses out for calibration. You can smell the calibration from the ground.' },
-      { index: 5, title: 'Final Bell Imminence', detail: 'The final week. Every borough now has a firmly held opinion about the rigging.' },
-      { index: 6, title: 'The Celestial Veil Underway', detail: 'Open, above the Sanctuary, where it has never once been held. Half of London is looking up and the other half is pretending not to.' },
+      { index: 1, title: 'On the Distant Horizon', detail: 'There is still time before the Veil.' },
+      { index: 2, title: 'The Veil Draws Nearer', detail: 'The date is drawing closer.' },
+      { index: 3, title: 'The Approaching Veil', detail: 'The approach of the Veil gives the coming days their shape.' },
+      { index: 4, title: 'Within the Week', detail: 'The Veil is close now.' },
+      { index: 5, title: 'The Last Few Days', detail: 'The long approach is almost over.' },
+      { index: 6, title: 'The Celestial Veil Underway', detail: 'The Veil has begun.' },
     ],
   },
   mi6_net: {
@@ -32,12 +32,12 @@ export const PLOT_CLOCKS = Object.freeze({
     color: '#f59e0b', // amber gold
     totalSegments: 4,
     accoladeTitle: 'MI6 Intuitive',
-    description: 'The operational readiness indicator in General Henderson’s Whitehall communications chamber.',
+    description: 'MI6’s current footing and recent operational developments.',
     segments: [
-      { index: 1, title: 'Whitehall Nominal', detail: 'Corridors quiet. The rota is on the wall and nobody has touched it since Tuesday.' },
-      { index: 2, title: 'Inner Circle Briefing', detail: 'The General has called the inner circle in. Somebody has put the good biscuits out, which is never a good sign.' },
-      { index: 3, title: 'Barracks Standby Footing', detail: 'Operatives held in quarters with their boots on, doing nothing whatsoever at considerable intensity.' },
-      { index: 4, title: 'Thames Corridor Intercept', detail: 'Everyone who can be spared is on the river. So is everyone who cannot.' },
+      { index: 1, title: 'Routine Footing', detail: 'Ordinary duties still count as duties.' },
+      { index: 2, title: 'Briefings and Preparations', detail: 'Attention turns towards the work ahead.' },
+      { index: 3, title: 'Heightened Readiness', detail: 'Readiness leaves less room for an unhurried day.' },
+      { index: 4, title: 'Operational Pressure', detail: 'Operational demands weigh on the day.' },
     ],
   },
   arcane_resonance: {
@@ -48,12 +48,12 @@ export const PLOT_CLOCKS = Object.freeze({
     color: '#a855f7', // arcane purple
     totalSegments: 4,
     accoladeTitle: 'Chimewatcher',
-    description: 'A delicate mercury galvanometer monitoring micro-electric aether fluctuations over the Thames.',
+    description: 'The city’s current arcane conditions and recent disturbances.',
     segments: [
-      { index: 1, title: 'Harmonic Equilibrium', detail: 'Readings flat. The MEU are out doing what the MEU mostly do, which is paperwork about magic.' },
-      { index: 2, title: 'Vapor Runoff & Familiar Drift', detail: 'Lintels gathering along the Embankment, feeding on whatever is going. Nobody has ever successfully asked one to move along.' },
-      { index: 3, title: 'Thames Channel Spike', detail: 'Sharp oscillations on the corridor. Every handheld in the borough is making the noise they make.' },
-      { index: 4, title: 'Harmonic Arcane Surge', detail: 'Full surge. Church bells ringing off-pitch across three boroughs and not one official willing to say why.' },
+      { index: 1, title: 'Low Arcane Activity', detail: 'Low activity leaves room to notice the smaller strangenesses.' },
+      { index: 2, title: 'Familiar Drift', detail: 'There is more to the London sky than weather.' },
+      { index: 3, title: 'Unsettled Resonance', detail: 'The city’s arcane conditions bear watching.' },
+      { index: 4, title: 'High Arcane Activity', detail: 'Arcane pressure is high.' },
     ],
   },
   order_vigil: {
@@ -64,12 +64,12 @@ export const PLOT_CLOCKS = Object.freeze({
     color: '#ef4444', // crimson
     totalSegments: 4,
     accoladeTitle: 'Borough Sleuth',
-    description: 'Intelligence pin-board recording clandestine Holy Order movements across London boroughs.',
+    description: 'The Holy Order’s current posture and reported activity.',
     segments: [
-      { index: 1, title: 'Shadows Dormant in Southwark', detail: 'The Order are in their compounds being quiet about it. That is their normal and it is not restful.' },
-      { index: 2, title: 'Borough Surveillance Noticed', detail: 'Plainclothes at the tram stops. They are not hiding especially hard, which is the message.' },
-      { index: 3, title: 'Sanctuary Perimeter Encirclement', detail: 'Watchers on the lift carriages and outside the Ink. The Ink moved this week. They found it anyway.' },
-      { index: 4, title: 'Direct Midnight Confrontation', detail: 'Contact. Whatever the Order came for, they have stopped pretending otherwise.' },
+      { index: 1, title: 'A Quiet Posture', detail: 'Quiet is not the same thing as reassuring.' },
+      { index: 2, title: 'A Watchful Posture', detail: 'The Order’s attention is seldom a comfort.' },
+      { index: 3, title: 'Active in the City', detail: 'The Order remains a presence in London.' },
+      { index: 4, title: 'Heightened Order Pressure', detail: 'The Order’s activity bears closer attention.' },
     ],
   },
   inner_rapport: {
@@ -80,12 +80,12 @@ export const PLOT_CLOCKS = Object.freeze({
     color: '#10b981', // emerald
     totalSegments: 4,
     accoladeTitle: 'London Observer',
-    description: 'The unspoken psychological alignment and trust between Ashai and Goaden.',
+    description: 'The moments Ashai and Goaden have actually shared.',
     segments: [
-      { index: 1, title: 'Barracks Formal Distance', detail: 'Professional, correct, and about as warm as the corridor they are standing in.' },
-      { index: 2, title: 'Silver Spoon Tea & Unhurried Hours', detail: 'The corner table at the Spoon, again. Neither of them has admitted out loud that it is a habit.' },
-      { index: 3, title: 'Unspoken Mutual Caution', detail: 'Both of them have noticed the building noticing them. Neither has raised it.' },
-      { index: 4, title: 'Formed Operational Pact', detail: 'Whatever this is, they are going into it together, and nobody put it to a vote.' },
+      { index: 1, title: 'Their Separate Days', detail: 'A life has more in it than the moments two people share.' },
+      { index: 2, title: 'Time in Company', detail: 'Ordinary company belongs in their story too.' },
+      { index: 3, title: 'An Exchange Between Them', detail: 'Their own words carry the moment.' },
+      { index: 4, title: 'A Shared Demand', detail: 'The same demands can fall on both of them.' },
     ],
   },
 });
@@ -98,11 +98,14 @@ export function evaluatePlotClocks(world, serverTime = Date.now()) {
   if (!world) return [];
 
   const proj = typeof world.publicProjection === 'function' ? world.publicProjection() : world;
-  const events = Array.isArray(proj?.events) ? proj.events : [];
+  const events = (Array.isArray(proj?.events) ? proj.events : [])
+    .filter(event => event?.id && event.visibility !== 'private' && Number.isFinite(event.occurredAt)
+      && event.occurredAt <= serverTime && event.occurredAt >= serverTime - 24 * 60 * 60_000
+      && publishedText(event))
+    .map(event => ({ ...event, description: publishedText(event) }))
+    .sort((a, b) => a.occurredAt - b.occurredAt || a.id.localeCompare(b.id));
   const factions = proj?.factions || {};
-  const weather = proj?.weather || {};
   const sky = proj?.sky || {};
-  const characters = Array.isArray(proj?.characters) ? proj.characters : [];
   const veil = proj?.veil || {};
 
   const tension = tensionOf({ factions, relationships: [] });
@@ -121,9 +124,17 @@ export function evaluatePlotClocks(world, serverTime = Date.now()) {
   results.push(evaluateOrderClock(factions, events));
 
   // 5. Inner Circle Rapport (4 segments)
-  results.push(evaluateRapportClock(characters, events, tension));
+  results.push(evaluateRapportClock(events));
 
   return results;
+}
+
+function publishedText(event) {
+  return typeof event?.publicDescription === 'string' ? event.publicDescription
+    : typeof event?.description === 'string' ? event.description : '';
+}
+function withRecentEvent(current, event) {
+  return event ? `${current}\n\nRecently: ${publishedText(event)}` : current;
 }
 
 function evaluateVeilClock(veil, events) {
@@ -156,7 +167,9 @@ function evaluateVeilClock(veil, events) {
     isComplete: currentSegment >= cfg.totalSegments,
     status: currentSegment >= cfg.totalSegments ? 'climax' : (currentSegment === cfg.totalSegments - 1 ? 'imminent' : 'ticking'),
     currentTitle: segInfo.title,
-    currentDetail: segInfo.detail,
+    currentDetail: withRecentEvent(Number.isFinite(veil.daysAway)
+      ? `The Celestial Veil is ${veil.daysAway === 0 ? 'underway' : `${veil.daysAway} days away`}.`
+      : segInfo.detail, lastEvent),
     accoladeTitle: cfg.accoladeTitle,
     lastAdvancedEventId: lastEvent?.id || null,
     lastAdvancedAt: lastEvent?.occurredAt || null,
@@ -169,9 +182,10 @@ function evaluateMI6Clock(factions, events, tension) {
   const posture = factions.mi6 || 'routine';
 
   // Check recent catalyst events in last 24h
-  const hasRecall = events.slice(-30).some((e) => e.type === 'PLAN_BROKEN' || (e.description || '').toLowerCase().includes('recall'));
-  const hasStandby = events.slice(-30).some((e) => e.type === 'STANDBY_BEGIN' || (e.description || '').toLowerCase().includes('standby'));
-  const hasBriefing = events.slice(-30).some((e) => e.type === 'BRIEFING_BEGIN' || (e.description || '').toLowerCase().includes('briefing'));
+  const mi6Events = events.filter(event => event.location === 'mi6');
+  const hasRecall = mi6Events.slice(-30).some((e) => e.type === 'PLAN_BROKEN' && /\brecall\b/i.test(e.description));
+  const hasStandby = mi6Events.slice(-30).some((e) => e.type === 'STANDBY_BEGIN');
+  const hasBriefing = mi6Events.slice(-30).some((e) => e.type === 'BRIEFING_BEGIN');
 
   let currentSegment = 1;
   if (hasRecall || (posture === 'elevated' && tension >= 0.6)) {
@@ -202,7 +216,8 @@ function evaluateMI6Clock(factions, events, tension) {
     isComplete: currentSegment >= cfg.totalSegments,
     status: currentSegment >= cfg.totalSegments ? 'climax' : (currentSegment === cfg.totalSegments - 1 ? 'imminent' : 'ticking'),
     currentTitle: segInfo.title,
-    currentDetail: segInfo.detail,
+    currentDetail: withRecentEvent(({ routine: 'MI6 is on its routine footing.', briefings: 'MI6 is in a period of briefings.',
+      elevated: 'MI6 remains at heightened readiness.' })[posture] ?? 'MI6’s recent activity is recorded here.', lastEvent),
     accoladeTitle: cfg.accoladeTitle,
     lastAdvancedEventId: lastEvent?.id || null,
     lastAdvancedAt: lastEvent?.occurredAt || null,
@@ -219,7 +234,7 @@ function evaluateArcaneClock(factions, sky, events) {
   const hasAnomaly = events.slice(-30).some((e) => e.type === 'MINOR_ANOMALY' || (e.description || '').toLowerCase().includes('meu'));
 
   let currentSegment = 1;
-  if (hasSurge || posture === 'high') {
+  if (posture === 'high' || !Object.hasOwn(factions, 'arcane') && hasSurge) {
     currentSegment = 4;
   } else if (hasAnomaly || posture === 'moderate' || lintels >= 3) {
     currentSegment = 3;
@@ -246,7 +261,8 @@ function evaluateArcaneClock(factions, sky, events) {
     isComplete: currentSegment >= cfg.totalSegments,
     status: currentSegment >= cfg.totalSegments ? 'climax' : (currentSegment === cfg.totalSegments - 1 ? 'imminent' : 'ticking'),
     currentTitle: segInfo.title,
-    currentDetail: segInfo.detail,
+    currentDetail: withRecentEvent(({ low: 'Arcane activity is low.', moderate: 'Arcane activity is moderate.',
+      high: 'Arcane activity is high.' })[posture] ?? 'The recent arcane conditions are recorded here.', lastEvent),
     accoladeTitle: cfg.accoladeTitle,
     lastAdvancedEventId: lastEvent?.id || null,
     lastAdvancedAt: lastEvent?.occurredAt || null,
@@ -258,14 +274,15 @@ function evaluateOrderClock(factions, events) {
   const cfg = PLOT_CLOCKS.order_vigil;
   const posture = factions.order || 'quiet';
 
-  const hasConfrontation = events.slice(-30).some((e) => (e.description || '').toLowerCase().includes('confrontation') || (e.description || '').toLowerCase().includes('intercepted'));
-  const hasScoutPerimeter = events.slice(-30).some((e) =>
+  const orderEvent = e => /\b(?:holy order|the order|order scout)\b/i.test(e.description || '');
+  const hasConfrontation = events.slice(-30).some((e) => orderEvent(e)
+    && /\b(?:confrontation|intercepted)\b/i.test(e.description || ''));
+  const hasScoutPerimeter = events.slice(-30).some((e) => orderEvent(e) && (
     (e.description || '').toLowerCase().includes('order scout') ||
-    (e.description || '').toLowerCase().includes('watching the sanctuary')
+    (e.description || '').toLowerCase().includes('watching the sanctuary'))
   );
   const hasBoroughSurveillance = events.slice(-30).some((e) =>
-    (e.description || '').toLowerCase().includes('order') ||
-    (e.description || '').toLowerCase().includes('scout')
+    orderEvent(e)
   );
 
   let currentSegment = 1;
@@ -280,7 +297,7 @@ function evaluateOrderClock(factions, events) {
   }
 
   const segInfo = cfg.segments[currentSegment - 1];
-  const lastEvent = findLatestEvent(events, (e) => (e.description || '').toLowerCase().includes('order'));
+  const lastEvent = findLatestEvent(events, orderEvent);
 
   return {
     id: cfg.id,
@@ -294,7 +311,8 @@ function evaluateOrderClock(factions, events) {
     isComplete: currentSegment >= cfg.totalSegments,
     status: currentSegment >= cfg.totalSegments ? 'climax' : (currentSegment === cfg.totalSegments - 1 ? 'imminent' : 'ticking'),
     currentTitle: segInfo.title,
-    currentDetail: segInfo.detail,
+    currentDetail: withRecentEvent(({ quiet: 'The Holy Order’s posture is quiet.', watchful: 'The Holy Order remains watchful.',
+      active_in_city: 'The Holy Order is active in the city.' })[posture] ?? 'Recent Order activity is recorded here.', lastEvent),
     accoladeTitle: cfg.accoladeTitle,
     lastAdvancedEventId: lastEvent?.id || null,
     lastAdvancedAt: lastEvent?.occurredAt || null,
@@ -302,28 +320,25 @@ function evaluateOrderClock(factions, events) {
   };
 }
 
-function evaluateRapportClock(characters, events, tension) {
+function evaluateRapportClock(events) {
   const cfg = PLOT_CLOCKS.inner_rapport;
+  const shared = events.filter(event => ['ashai', 'goaden'].every(who =>
+    [...(event.participants ?? []), ...(event.payload?.cast ?? [])].includes(who)));
 
-  const hasPact = events.slice(-30).some((e) =>
-    (e.type === 'PLAN_BROKEN' || e.type === 'STANDBY_BEGIN') &&
-    (e.description || '').toLowerCase().includes('ashai') &&
-    (e.description || '').toLowerCase().includes('goaden')
+  const hasPact = shared.slice(-30).some((e) =>
+    (e.type === 'PLAN_BROKEN' || e.type === 'STANDBY_BEGIN')
   );
-  const hasDeepConvo = events.slice(-30).some((e) =>
-    e.type === 'CONVERSATION' &&
-    Array.isArray(e.lines) && e.lines.length >= 2 &&
-    (e.description || '').toLowerCase().includes('discussed')
+  const hasDeepConvo = shared.slice(-30).some((e) =>
+    e.type === 'CONVERSATION' || e.type === 'SCENE_BANK_BEAT'
   );
-  const hasTeaOrMeal = events.slice(-30).some((e) =>
-    (e.location === 'cafe' || e.type === 'MEAL_BEGIN' || (e.description || '').toLowerCase().includes('tea')) &&
-    (e.description || '').toLowerCase().includes('ashai')
+  const hasTeaOrMeal = shared.slice(-30).some((e) =>
+    (e.location === 'cafe' || e.type === 'MEAL_BEGIN' || /\btea\b/i.test(e.description || ''))
   );
 
   let currentSegment = 1;
   if (hasPact) {
     currentSegment = 4;
-  } else if (hasDeepConvo || tension >= 0.45) {
+  } else if (hasDeepConvo) {
     currentSegment = 3;
   } else if (hasTeaOrMeal) {
     currentSegment = 2;
@@ -332,10 +347,7 @@ function evaluateRapportClock(characters, events, tension) {
   }
 
   const segInfo = cfg.segments[currentSegment - 1];
-  const lastEvent = findLatestEvent(events, (e) =>
-    (e.description || '').toLowerCase().includes('ashai') &&
-    (e.description || '').toLowerCase().includes('goaden')
-  );
+  const lastEvent = shared.at(-1);
 
   return {
     id: cfg.id,
@@ -349,7 +361,7 @@ function evaluateRapportClock(characters, events, tension) {
     isComplete: currentSegment >= cfg.totalSegments,
     status: currentSegment >= cfg.totalSegments ? 'climax' : (currentSegment === cfg.totalSegments - 1 ? 'imminent' : 'ticking'),
     currentTitle: segInfo.title,
-    currentDetail: segInfo.detail,
+    currentDetail: lastEvent ? publishedText(lastEvent) : segInfo.detail,
     accoladeTitle: cfg.accoladeTitle,
     lastAdvancedEventId: lastEvent?.id || null,
     lastAdvancedAt: lastEvent?.occurredAt || null,

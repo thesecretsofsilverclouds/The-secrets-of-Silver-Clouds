@@ -1,5 +1,6 @@
 // Presentation only: one lazy GET per expanded story revision. Reattach the same
 // keyed <details> to a replacement card so normal world polling cannot close it.
+import { readingSceneParagraphs } from './reader-scene.js';
 const dateFormat = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London',
   day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 const validTypes = new Set(['story', 'intention', 'operation']);
@@ -41,9 +42,14 @@ export function createStoryTrail({ document = globalThis.document, fetcher = glo
         // longer in the main feed. Never send the reader to an absent row.
         source.href = `#${encodeURIComponent(item.id)}`;
         source.setAttribute('aria-label', `Source record, ${formatTime(event.occurredAt)}`);
-        item.append(when, element('span', locationLabel(event.location), 'event-location'),
-          element('p', event.description, 'story-trail-description'), source);
-        if (hasProse) item.append(element('p', event.prose, 'event-prose'));
+        item.append(when, element('span', locationLabel(event.location), 'event-location'));
+        if (event.type === 'SCENE_BANK_BEAT') {
+          for (const paragraph of readingSceneParagraphs(event)) item.append(element('p', paragraph.text, 'event-prose'));
+          item.append(source);
+        } else {
+          item.append(element('p', event.description, 'story-trail-description'), source);
+          if (hasProse) item.append(element('p', event.prose, 'event-prose'));
+        }
         list.append(item);
       }
       section.append(list);
@@ -100,10 +106,11 @@ export function createStoryTrail({ document = globalThis.document, fetcher = glo
       entry = { key, type, id, details, body, revision, loadedRevision: null, loaded: false, loading: false };
       entries.set(key, entry);
       details.addEventListener('toggle', () => { if (details.open) void load(entry); });
-      // Bound detached history. Currently visible public descriptors number <10.
+      // Bound detached history without evicting a mounted scene archive. An
+      // expanded source must survive polling even after the bank has grown.
       if (entries.size > 32) {
-        const oldest = entries.keys().next().value;
-        if (oldest !== key) entries.delete(oldest);
+        const oldest = [...entries].find(([id, value]) => id !== key && !value.details.isConnected)?.[0];
+        if (oldest) entries.delete(oldest);
       }
     }
     entry.revision = revision;

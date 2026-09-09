@@ -154,297 +154,176 @@ export function classifyEventTier(event) {
   return 'quiet';
 }
 
-/**
- * Deterministically select 1 to 3 watchers whose themes align with the event.
- */
-export function selectWatchersForEvent(event, maxCount = 3) {
-  const eventId = typeof event === 'string' ? event : event?.id || 'evt:default';
-  const desc = `${event?.description || ''} ${event?.location || ''} ${event?.room || ''}`.toLowerCase();
-  const hasLines = Array.isArray(event?.lines) && event.lines.length > 0;
-
-  // Score watchers by relevance
-  const scored = WATCHERS.map((watcher, index) => {
-    let score = 0;
-    for (const tag of watcher.focus) {
-      if (desc.includes(tag)) score += 3;
-    }
-    if (hasLines && (watcher.id === 'ember_vale' || watcher.id === 'pennyworth_pip')) {
-      score += 4;
-    }
-    if (desc.includes('ashai') && watcher.focus.includes('ashai')) score += 2;
-    if (desc.includes('goaden') && watcher.focus.includes('goaden')) score += 2;
-    // Add deterministic pseudo-random jitter so different events pick varied watchers
-    const jitter = (eventHash(eventId, index + 10) % 10) / 10;
-    return { watcher, score: score + jitter };
-  });
-
-  scored.sort((a, b) => b.score - a.score);
-
-  // Number of comments: 1 to 3
-  const count = 1 + (eventHash(eventId, 99) % maxCount);
-  return scored.slice(0, Math.min(count, maxCount)).map((s) => s.watcher);
-}
-
-/**
- * Watcher in-character commentary corpus tailored to live novel scenes.
- */
-const WATCHER_DIALOGUE_PATTERNS = {
-  ember_vale: [
-    'The way Ashai glanced back before stepping onto the platform... Goaden definitely noticed.',
-    'I swear these two communicate more through silence than half the borough does with words.',
-    'That tone in the parlour wasn’t protocol. Not even close.',
-    'Keeping track of every glance. The living novel is peaking tonight.',
-  ],
-  archivist_vane: [
-    'Section 4B of the Embankment Accords explicitly restricts passage after the fourth chime. Bold move.',
-    'Check the dates on that registry docket. That seal hasn’t been valid since the late ceasefire.',
-    'Filing this into the classified stacks under London anomaly logs.',
-    'Notice the shift in cadence. An official inquiry is brewing.',
-  ],
-  old_borough_dan: [
-    'Thames mist is thick as mutton broth tonight. You couldn’t spot an Order scout ten yards out on the cobbles.',
-    'Silver Spoon kettle’s been whistling since dawn. When the borough gets restless, the tea gets stronger.',
-    'I’ve seen thirty winters in Southwark, and that sound off the viaduct wasn’t the wind.',
-    'Mind your boots on the wet flagstones. Something stirred beneath the grates.',
-  ],
-  reeves_apprentice: [
-    'That frequency hum off the third carriage rail isn’t standard alchemical alloy. Someone re-tuned the copper.',
-    'The Lintels are flocking low toward the belfry again. Always happens right before an aether drop.',
-    'The harmonic waveform on the MEU scanner peaked right at 22:15. Pure celestial resonance.',
-    'If the steam pressure holds, the transit from Sanctuary will arrive right on the hour.',
-  ],
-  sanctuary_velvet: [
-    'The velvet lounge is packed to the arches tonight. If Ashai comes through the portal, good luck keeping it quiet.',
-    'Soul sips taste sharper when the river mist rises like this.',
-    'High altitude, low gossip, and someone just ordered the midnight vintage.',
-    'The chimes sound different from up here. Much clearer, much more dangerous.',
-  ],
-  operative_echo: [
-    'Perimeter sweep clear on Sector 2, but the shadows along the south viaduct are deeper than usual.',
-    'Goaden’s posture is guarded. He’s listening for footfalls, not just watching the street.',
-    'Order scout sightings confirmed near the outer slipway. Stay sharp.',
-    'Movement in the fog near the embankment stairs. Logging coordinates.',
-  ],
-  father_caelen: [
-    'The chimes ring for renewal, yet unrest lingers in the alleys. Let the faithful remain vigilant.',
-    'The Veil draws nearer with each setting sun. Are our spirits attuned?',
-    'A solemn hour. The sanctuary lanterns flicker with purpose.',
-    'May the Holy Items hold fast against whatever stirs in the dark.',
-  ],
-  pennyworth_pip: [
-    'He took two cups of black tea to the back corner again. Didn’t even touch the sugar biscuits.',
-    'Goaden dropped his brass counter on the saucer. Hand was cold from the rain, or something else on his mind.',
-    'Cook says anyone ordering hot cinnamon at midnight is either tracking someone or being followed.',
-    'Wiped down the corner table three times. That napkin had writing on it before he folded it away.',
-  ],
-  ragnor_skiff: [
-    'Tide’s running strange near Wapping. Something’s disturbing the underwater aether channels.',
-    'No boatman in his right mind rows the reach when the water glows violet like that.',
-    'The current picked up after the second bell. River spirits don’t lie.',
-    'Keep your lantern low along the pier. We aren’t the only ones watching the water.',
-  ],
-  night_shift_nurse: [
-    'The draughts from the hospital courtyard are cold tonight. I hope Tait’s hearth is kept stoked.',
-    'Rest is what heals a weary spirit, not wandering the damp embankment.',
-    'Amy was reading by the bedside until the third bell. Quiet devotion runs deep.',
-    'A peaceful breath between hospital shifts. Praying for gentle hours.',
-  ],
-  belfry_tuner: [
-    'Tuning the copper alloy before midnight. You can feel the vibration in your teeth.',
-    'The harmonic chimes soothe every wielder within three miles of the river.',
-    'Scaffolding held through the squall. New Big Ben stands firm.',
-    'Fourth bell struck a fraction flat. I’ll need the heavy brass wrench before dawn.',
-  ],
-  constable_holloway: [
-    'Lantern check complete on Southwark gate. Curfew is holding, but barely.',
-    'Keep moving on the bridge. No loitering while the mist rolls in.',
-    'Watch patrols are doubled along the rail viaduct tonight.',
-    'Orderly streets make for a quiet city. Let’s keep it that way.',
-  ],
-};
-
-/**
- * Generate in-character comments for an event from World Voices.
- */
-// What kind of moment a watcher is looking at.
-//
-// The fault this fixes: a watcher's lines were picked by hash from a fixed bank
-// of four, with no reference to the event they were attached to. EmberVale would
-// say "the way Ashai glanced back before stepping onto the platform" underneath
-// a passage about Rose cutting a verse in the Legion warehouse. The voices were
-// good and they were answering a different page.
-//
-// They are people who live here, so they get to react to the thing in front of
-// them. An unwritten combination falls back to the watcher's general bank rather
-// than inventing, so a new event type is never a blank comment.
+// World Voices respond to the published passage. They are not additional
+// witnesses: their commentary may express a view, never create an incident,
+// a private conversation, an exact reading or somebody else's knowledge.
 export function watcherEventKind(event) {
   const type = event?.type ?? '';
   const description = `${event?.description ?? event?.publicDescription ?? ''}`.toLowerCase();
   if (type === 'MOMENT_NOTICED' || type === 'OFFSCREEN_WITNESS' || description.includes('chimes of renewal')) return 'moment';
-  if (type === 'ARCANE_SURGE' || type === 'INCIDENT' || type === 'UNEASE' || type === 'AFTERMATH') return 'trouble';
-  // Type before text, always. Reading "legion" out of the description first
-  // classified Rose working alone in the Legion warehouse as a Legion visit,
-  // and the Sky Lounge hostess commented on a crowd that was not there.
+  if (['ARCANE_SURGE', 'INCIDENT', 'UNEASE', 'AFTERMATH', 'ALERT'].includes(type)) return 'trouble';
   if (type === 'LEGION_VISIT') return 'legion';
   if (type === 'VENUE_SCENE' || type === 'CITY_ACTIVITY_BEGIN') return 'outing';
   if (type.startsWith('OFFSCREEN_') || type.startsWith('SUPPORTING_')) return 'elsewhere';
-  if (!type && description.includes('legion')) return 'legion';
   if (type === 'CONVERSATION' || Array.isArray(event?.lines) && event.lines.length) return 'talk';
   if (type === 'TRAVEL_DEPART' || type === 'TRAVEL_ARRIVE') return 'transit';
   if (type === 'INSTITUTION_NOTICE' || type === 'FACTION_STATUS') return 'notice';
   return 'routine';
 }
 
-// Written per voice, per kind. Two apiece: enough that the same watcher on the
-// same kind of day does not repeat within a session, few enough that every one
-// can be worth reading.
+// Narrow subject eligibility first, seeded variety second. A familiar name or
+// random jitter cannot make a hospital matron witness a private MI6 scene.
+const SUBJECTS = Object.freeze({
+  ember_vale: /\bashai\b|\bgoaden\b/,
+  archivist_vane: /\bmi6\b|barracks|briefing|notice|report|record/,
+  old_borough_dan: /\bcafe\b|silver spoon|plaza|street|borough/,
+  reeves_apprentice: /streamliner|rail|carriage|scanner|arcane/,
+  sanctuary_velvet: /sanctuary/,
+  operative_echo: /\bmi6\b|barracks|order|perimeter|alert/,
+  father_caelen: /church|veil|chimes of renewal/,
+  pennyworth_pip: /\bcafe\b|silver spoon|\btea\b|breakfast|meal/,
+  ragnor_skiff: /river|thames|water|embankment/,
+  night_shift_nurse: /rest|sleep|tired|fatigue|hospital|healing/,
+  belfry_tuner: /big.ben|chimes of renewal|belfry|\bbells?\b/,
+  constable_holloway: /street|plaza|borough|patrol|watch|curfew/,
+});
 const BY_KIND = {
   ember_vale: {
-    moment: ['Everyone stopped at once. Half of London looked up and none of them said anything. I love this city.',
-      'The Chimes go and the whole borough holds still for eleven seconds. Nobody has ever explained why eleven.'],
-    talk: ['They said about four things and meant eleven. I have read whole novels with less in them.',
-      'Nobody raised their voice and something still shifted. That is the good stuff.'],
-    trouble: ['He went first. He always goes first. One of these days she is going to say something about it.',
-      'The scanners go and you can see exactly who in this city has somewhere to run to.'],
-    elsewhere: ['I like that the world keeps going when they are not in the room. Somebody is always working on something.',
-      'A whole little life happening two miles away that neither of them will ever hear about.'],
-    outing: ['An afternoon off, and they spent it near each other on purpose. Note it down.',
-      'The pair of them out in daylight like ordinary people. It never lasts and I take what I get.'],
+    talk: ['I could listen to these two all day. They would probably object.',
+      'I am trying very hard not to take sides. Not succeeding, obviously.'],
+    elsewhere: ['A little time for somebody else. I am very much in favour of that.',
+      'The small things deserve their space too.'],
+    outing: ['I am in favour of getting out. Especially for these two.',
+      'Whatever else London has planned, I hope they get to enjoy some of it.'],
+    moment: ['This is the sort of thing I would want to remember.',
+      'Let the small moments have a little room.'],
   },
   archivist_vane: {
-    notice: ['Filed. The wording is identical to the notice of the ninth, which tells you who wrote it.',
-      'Cross-referenced against the standing register. The date is the only new part.'],
-    moment: ['The Renewal peal is logged as a fixed interval. It has now run long four times this quarter.',
-      'Recording the hour. The Chimes are supposed to be regular; the record says otherwise.'],
-    trouble: ['Corridor readings of that order require a written report within the day. Somebody is up late.',
-      'This will appear in next week\'s summary as "a minor fluctuation". It was not.'],
-    elsewhere: ['Noted for completeness. The archive does not distinguish between important and small.',
-      'Everything gets a line eventually, including this.'],
+    notice: ['An official notice. I recommend reading the words before supplying the rumours.',
+      'For once, let us distinguish what it says from what we suspect it means.'],
+    trouble: ['I would rather have an incomplete account than an invented explanation.',
+      'Questions first. Conclusions can wait their turn.'],
+    elsewhere: ['Small work is still work. No special stamp required.',
+      'A useful reminder that importance and noise are different measurements.'],
+    talk: ['I shall resist drafting minutes. It would spoil the conversation.',
+      'Not every exchange requires a heading and three copies.'],
   },
   old_borough_dan: {
-    outing: ['Silver Spoon was heaving by two. Always is when the weather turns civil.',
-      'Saw them go past the arches. Neither of them was in a hurry, which round here is worth a mention.'],
-    moment: ['Felt it in the flagstones before I heard it. That is how you know it is a big one.',
-      'Whole market stopped. Pigeons went up off the roofs in one lot. Grand, that.'],
-    notice: ['They can post what they like. Borough will do what the borough does.',
-      'Third notice this fortnight. Somebody in an office is very busy indeed.'],
-    trouble: ['Cleared the street in under a minute. Fifty years and I still cannot tell you how word travels that fast.',
-      'Shutters came down along the row. Nobody said anything. Nobody had to.'],
+    outing: ['A bit of time in the borough does a person good. Usually.',
+      'London is easier to like when you are allowed to stop in it.'],
+    notice: ['They can post what they like. I still prefer to read it before worrying.',
+      'A notice is a notice. The extra three stories people attach are their own business.'],
+    trouble: ['I would give that a bit of room. Experience talking, for once.',
+      'Not keen on that. No, I do not need a longer word for it.'],
+    transit: ['A journey is a perfectly good excuse to sit down. Take it.',
+      'Getting somewhere is useful. Remembering why you went is the clever part.'],
   },
   reeves_apprentice: {
-    moment: ['The motes come off the peal at a fixed interval and nobody in the Guild can tell me why they are note-shaped.',
-      'Counted them going up. Same number as last time, which cannot be a coincidence and is.'],
-    transit: ['Third carriage was running warm again. I have written in about it twice.',
-      'Rail hum was half a tone flat the whole way across. Somebody has been at the copper.'],
-    trouble: ['Corridor readings like that put the Lintels on the roofs for a day afterwards. Watch for it.',
-      'That is not a spike, that is a standing wave. Different thing entirely and much more interesting.'],
+    transit: ['I remain unreasonably fond of rail travel. Yes, even with the noise.',
+      'Some of us enjoy the journey as much as the destination. I know. Terrible habit.'],
+    trouble: ['I would like a closer look. From considerably further away.',
+      'Interesting is not the same as harmless. I am working on remembering that.'],
+    notice: ['A reading deserves a question before it gets an explanation.',
+      'I would prefer a measurement to a rumour. Unfashionable of me.'],
   },
   sanctuary_velvet: {
-    legion: ['They were in earlier. Nothing broken this time, which I am choosing to call progress.',
-      'You always know the Legion have arrived before you see them. It comes up through the floor.'],
-    outing: ['If they had come up here instead I would have given them the good table. Their loss.',
-      'Half the room asked me who they were. I said nobody, which is what I always say.'],
-    moment: ['You get the Chimes up here about a second late. Best view of them in London and nobody looks.',
-      'Whole lounge went to the glass. First time all week the music was the second loudest thing.'],
+    outing: ['An invitation is worth enjoying. Preferably without making a speech about it.',
+      'I favour a little elegance. It need not be sensible to be worthwhile.'],
+    transit: ['The anticipation is part of an evening out. Try not to spend all of it fretting.',
+      'A good destination ought to make the journey feel worthwhile.'],
+    talk: ['I reserve the right to enjoy a conversation without explaining it.',
+      'Some company is worth making time for.'],
   },
   operative_echo: {
-    moment: ['Peal ran long. Everything on the perimeter board went amber for the duration and came back clean. Noted.',
-      'Chimes like that are useful cover, and everyone who works a perimeter knows it. Eyes up during, not after.'],
-    trouble: ['Corridor lit up and the blind spots along the Thames went dark for ninety seconds. That is the bit nobody reports.',
-      'A surge is the only time you can walk the perimeter unobserved. Somebody always does.'],
-    notice: ['If they are posting the advisory, the sighting is at least two days old. That is how advisories work.',
-      'Read the advisory. Then read where it does not mention.'],
-    outing: ['Two of ours out in the open in daylight. No cover, no comms, no complaints from me — that is a day off and they have earned it.',
-      'Watched them cross the plaza and nobody was watching them but me. Good.'],
+    trouble: ['I prefer caution to a very confident guess.',
+      'Watch what actually happened. Leave the extra shadows to somebody else.'],
+    notice: ['Read the advisory. Then resist improving it in the retelling.',
+      'I will take a plain account over an exciting rumour.'],
+    talk: ['Time to talk has its uses. Not everything improves with an order.',
+      'I am willing to leave a conversation as a conversation.'],
   },
   father_caelen: {
-    moment: ['The Renewal peal ran beyond its measure. The bells know things before the calendar does.',
-      'The motes rose and the faithful stopped where they stood, and so did everyone else, which is the point of a bell.'],
-    notice: ['The dates are set. Begin the fast when the lanterns go up, not when the notice says.',
-      'The Church has spoken and the boroughs will now spend a fortnight pretending to have listened.'],
-    trouble: ['The river was loud tonight in a way the river should not be. Light a candle and do not go down to look.',
-      'Something crossed the corridor and the chapel candles all leaned east. I have written it in the book.'],
-    elsewhere: ['Everyone is somewhere, and the Veil counts them all the same. A small evening is still an evening spent.',
-      'There is grace in an unremarkable hour. Most of them are.'],
+    moment: ['There are worse things to pause for.',
+      'A little wonder need not account for itself.'],
+    notice: ['Reading before interpreting would spare us a great deal of noise.',
+      'Certainty comes remarkably easily to people who have not finished the notice.'],
+    trouble: ['Courage need not mean rushing closer.',
+      'May good sense arrive before the explanations.'],
   },
   pennyworth_pip: {
-    outing: ['They had the window table for an hour and left the second pot untouched. That never happens.',
-      'Cook clocked them coming in and had the good cups out before they sat down. She would deny it.'],
-    talk: ['You hear everything over the toast rack and understand about a third of it. This was one of the good thirds.',
-      'They were talking quietly, which in here means they were talking about something.'],
-    moment: ['The cups went in the saucers all at once when the Chimes came. Same every time. Cook says it is the floor.',
-      'Whole café stopped mid-sentence. Then everyone said something about it, and then everyone carried on.'],
-    routine: ['Same order, same table, same hour. I could set the urn by them.',
-      'He came in early and sat with it going cold, which he only does when he is thinking.'],
+    talk: ['Conversation is easier to enjoy when nobody expects you to settle it.',
+      'I will take company over a grand occasion. Less washing up, in principle.'],
+    outing: ['A little time at a table is a respectable use of a day.',
+      'I approve of stopping. People forget they are allowed to.'],
+    routine: ['A meal need not justify itself by fixing the rest of the day.',
+      'You cannot run on determination alone. Annoying, but there it is.'],
   },
   ragnor_skiff: {
-    trouble: ['Water went wrong under the boat for about a minute. Not waves. Wrong.',
-      'The reach off Wapping glowed violet to the bottom and every fish in it left at once. I went home.'],
-    moment: ['Heard the peal off the water, which is the best place to hear it. The motes come down the river as well as up.',
-      'Chimes carry three miles downstream on a still night. Half the watermen stop rowing for it and none of them admit it.'],
-    notice: ['They can post what they like upstream. The river has its own arrangements.',
-      'Advisory says the boroughs. Nothing about the water, as usual.'],
-    transit: ['The rail bridge hums when the Streamliner crosses and the hum goes into the hull. You get used to it.',
-      'Saw the carriage go over about four. Half empty, going east.'],
+    moment: ['London does have a way of making you look twice.',
+      'I have no objection to wonder. I prefer it at a sensible distance.'],
+    trouble: ['I would keep a little distance from that.',
+      'A thing can be impressive without needing me any nearer to it.'],
+    transit: ['Time spent crossing is still part of the day.',
+      'I prefer journeys that leave room to look about.'],
   },
   night_shift_nurse: {
-    moment: ['The peal came through the ward and three of mine woke and one of them smiled. I will take that.',
-      'They can hear it in here, faintly. On the bad nights I open a window for it.'],
-    trouble: ['We felt it on the ward before the alarms went. Two beds started shaking and I have no explanation to offer anybody.',
-      'Every wielder in St Jude\'s sat up at once. That is how you know it was a real one.'],
-    routine: ['Somebody in that building is not sleeping enough. I can tell from here.',
-      'Rest is not a reward for finishing. I say this every week and nobody listens.'],
-    elsewhere: ['People keep going with small things while the city does big ones. That is most of nursing.',
-      'A quiet hour spent on something small is not a wasted hour. Write that down.'],
+    routine: ['Rest is not a reward for finishing. It is allowed before that.',
+      'A quiet hour is not a wasted hour. Write that down.'],
+    elsewhere: ['Small things matter. A person does not need to save the city to deserve some time.',
+      'I am in favour of a little breathing room.'],
+    trouble: ['I hope they get a chance to rest after this.',
+      'There is no shame in needing a little time afterwards.'],
   },
   belfry_tuner: {
-    moment: ['She ran nine seconds long. That is the third time this quarter and I have adjusted nothing.',
-      'The harmonic came off the second bell clean and the motes formed on the overtone, exactly as they should, which after last month is a relief.'],
-    notice: ['We tune to the Veil dates, so when the Church moves them, I move. Somebody might tell me first one day.',
-      'The notice affects the belfry more than it affects anybody reading it.'],
-    trouble: ['A corridor event puts the bells out by a fraction and nobody hears it but me. I hear it.',
-      'The whole frame rang sympathetically with something that was not me. I did not enjoy that.'],
-    outing: ['Somebody stood under her for a full hour today. Good. She is worth an hour.',
-      'People walk past a thousand-tonne instrument and never look up. Two of them looked up.'],
+    moment: ['I would happily stop for that. People can hurry around me.',
+      'One need not understand a thing completely to enjoy it. Fortunately for all of us.'],
+    notice: ['I prefer a notice that tells me something to one that sounds important.',
+      'Let us not add a new theory every time a bell gets mentioned.'],
+    outing: ['Looking up is a perfectly reasonable use of an afternoon.',
+      'There is a great deal to like about this city, if you give it a moment.'],
   },
   constable_holloway: {
-    notice: ['Advisory received, lantern gates checked, nothing to report on my stretch of the wall.',
-      'Third notice this month. I have stopped forwarding them and started just walking the wall.'],
-    trouble: ['Cleared the embankment inside two minutes. Nobody argued, which tells you they had felt it too.',
-      'Called it in, walked the stretch, found nothing. Found nothing rather loudly, if I am honest.'],
-    moment: ['Peal ran long and the whole borough stopped where it stood. Easiest two minutes of policing all week.',
-      'You can see the motes from the wall better than anywhere. Not that I am paid to look at them.'],
-    outing: ['Two out-of-borough faces on my stretch this afternoon, both known, both behaving. Logged and left alone.',
-      'Saw them by the arches. Nodded. Got a nod. That is the whole incident report.'],
+    notice: ['Read it properly. Saves having to hear six versions later.',
+      'A little less embroidery in the retelling would be welcome.'],
+    trouble: ['I am quite comfortable with caution. It is less paperwork than bravado.',
+      'Nobody needs to make this more exciting.'],
+    outing: ['People enjoying a bit of London. I am strongly in favour.',
+      'An ordinary outing has much to recommend it.'],
   },
 };
+
 export function watcherLineFor(watcherId, kind) {
   return BY_KIND[watcherId]?.[kind] ?? null;
 }
 export const ALL_WATCHER_KIND_LINES = Object.freeze(
   Object.values(BY_KIND).flatMap(byKind => Object.values(byKind).flat()));
 
+export function selectWatchersForEvent(event, maxCount = 3) {
+  if (!event || typeof event !== 'object' || !event.id || event.visibility === 'private') return [];
+  const description = event.description ?? event.publicDescription ?? '';
+  if (!description.trim()) return [];
+  const subject = `${description} ${event.location ?? ''} ${event.room ?? ''}`.toLowerCase();
+  const kind = watcherEventKind(event);
+  const limit = Number.isFinite(maxCount) ? Math.max(0, Math.min(3, Math.trunc(maxCount))) : 3;
+  if (!limit) return [];
+  const eligible = WATCHERS.filter(watcher => SUBJECTS[watcher.id].test(subject)
+    && watcherLineFor(watcher.id, kind));
+  eligible.sort((a, b) => eventHash(event.id, WATCHERS.indexOf(a) + 10)
+    - eventHash(event.id, WATCHERS.indexOf(b) + 10));
+  const count = Math.min(eligible.length, 1 + eventHash(event.id, 99) % limit);
+  return eligible.slice(0, count);
+}
+
 export function generateWatcherComments(event) {
-  const eventId = typeof event === 'string' ? event : event?.id || 'evt:default';
-  const rawOccurred = event?.occurredAt;
-  const baseTime = typeof rawOccurred === 'number' && Number.isFinite(rawOccurred)
-    ? rawOccurred
-    : (typeof rawOccurred === 'string' && !Number.isNaN(Date.parse(rawOccurred)) ? Date.parse(rawOccurred) : Date.now());
-  const watchers = selectWatchersForEvent(event, 3);
-
-  return watchers.map((watcher, idx) => {
-    const kind = watcherEventKind(event);
-    const patterns = watcherLineFor(watcher.id, kind)
-      ?? WATCHER_DIALOGUE_PATTERNS[watcher.id]
-      ?? ['Observing London from the shadows.'];
-    const textIndex = eventHash(eventId, idx + 50) % patterns.length;
-    const text = patterns[textIndex];
-    // Stagger comment timestamps slightly after the event
-    const delayMs = (idx + 1) * (30_000 + (eventHash(eventId, idx + 70) % 60_000));
-
+  const baseTime = typeof event?.occurredAt === 'number' ? event.occurredAt : Date.parse(event?.occurredAt);
+  if (!Number.isFinite(baseTime)) return [];
+  return selectWatchersForEvent(event).map((watcher, idx) => {
+    const patterns = watcherLineFor(watcher.id, watcherEventKind(event));
+    const text = patterns[eventHash(event.id, idx + 50) % patterns.length];
+    const delayMs = (idx + 1) * (30_000 + eventHash(event.id, idx + 70) % 60_000);
     return {
-      id: `comment-w-${createHash('sha256').update(`${eventId}:${watcher.id}`).digest('hex').slice(0, 16)}`,
-      eventId,
+      id: `comment-w-${createHash('sha256').update(`${event.id}:${watcher.id}`).digest('hex').slice(0, 16)}`,
+      eventId: event.id,
       authorName: watcher.name,
       authorHolyItem: watcher.holyItem,
       authorGuardian: watcher.guardian,

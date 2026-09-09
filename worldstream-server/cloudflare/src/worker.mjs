@@ -60,7 +60,19 @@ export default {
     }
 
     // Named singleton: exactly ONE authoritative shared world exists across the globe
-    const doId = env.WORLD_DO.idFromName('authoritative-world');
+    // Which world this Worker talks to. The name is the whole of a Durable
+    // Object's identity: two different names are two different objects with two
+    // different SQLite databases, so a staging world cannot see, alter or be
+    // altered by production. Nothing else separates them, and nothing else
+    // needs to.
+    //
+    // `WORLD_ID` was already configured and already meant "which world"; it was
+    // simply never used for the thing it names. The default preserves the
+    // existing local object so no development history is orphaned by this
+    // change — a new default would have silently started an empty world.
+    const worldId = typeof env.WORLD_ID === 'string' && env.WORLD_ID.trim()
+      ? env.WORLD_ID.trim() : 'authoritative-world';
+    const doId = env.WORLD_DO.idFromName(worldId);
     const worldStub = env.WORLD_DO.get(doId);
 
     // Forward request to the authoritative DO

@@ -1,11 +1,16 @@
 import { createAtmosphere } from './atmosphere.js';
+import { apiUrl } from './api-base.js';
 import { scoreMood } from './score-mood.js';
+import { ScoreRotation } from './score-rotation.js';
 import { deriveAtmosphere, artworkExposure } from './weather-layer.js';
-import { ReadingFeedBuffer, reconcileReadingRows, captureReadingPosition, createReadingView, createPassageEffects } from './reading-view.js';
+import { ReadingFeedBuffer, reconcileReadingRows, captureReadingPosition, createReadingView, createPassageEffects, earlierReadingRows, atReadingLiveEdge, positionReadingNavigation } from './reading-view.js';
 import { createReadingRecap } from './reading-recap.js';
+import { loadReadingWindow } from './reading-history.js';
 import { createStoryTrail } from './story-trails.js';
+import { createNewcomerOrientation, forwardReadingEvents, narrativeWeight, loadedDialogueScenes } from './reader-narrative.js';
+import { appendReadingScene } from './reader-scene.js';
 import {
-  AUTO_SCENE_MAX_MS, CinematicInbox, autoSceneExcerpt, cinematicLines,
+  AUTO_SCENE_MAX_MS, CinematicInbox, autoSceneExcerpt, cinematicLines, authoredSceneRecord,
   nextServerCursor, lineReadingHoldMs, SCENE_CLOSE_MS, PausableSceneTimer,
   SceneCloseLifecycle, SceneReadingPreferences,
 } from './cinematic-player.js';
@@ -490,7 +495,7 @@ function whereabouts(characters, world) {
       `${character.name}: ${activityNames[character.activity] || readable(character.activity)}`).join('; ');
     item.setAttribute('aria-label', occupants.length
       ? `${locationName(place)}. Here now: ${activitySummary}`
-      : `${locationName(place)}. Nobody here now.`);
+      : `${locationName(place)}. Neither Goaden nor Ashai is here now.`);
     item.title = occupants.length ? activitySummary : locationName(place);
     for (const character of occupants) {
       const marker = document.createElement('img');
@@ -774,7 +779,7 @@ const speakerNames = { goaden: 'Goaden', ashai: 'Ashai',
   truth: 'Truth', emily: 'Emily', zara: 'Zara',
   damien: 'Damien', davis: 'Agent Davis', henderson: 'General Henderson',
   sprite_orange: 'Orange', sprite_shades: 'Shades', sprite_purple: 'Purple', sprite_blue: 'Blue',
-  lintel: 'The lintel' };
+  lintel: 'The lintel', nimbus: 'Nimbus', yukon: 'Yukon', greah: 'Greah', kai: 'Kai' };
 
 function cinematicRecordForEvent(event) {
   const value = event?.cinematic;
@@ -874,6 +879,8 @@ const scene = (() => {
     sprite_purple:{ has:new Set(['idle']), fallback:'idle' },
     sprite_blue:{ has:new Set(['idle']), fallback:'idle' },
     lintel:{ has:new Set(['idle','curious','bright','content']), fallback:'idle' },
+    nimbus:{ has:new Set(['angry','happy','showoff','smile','surprised','wink']), fallback:'smile' },
+    yukon:{ has:new Set(['irritated']), fallback:'irritated' },
   };
   // Which room the scene is played in, from the location mode the world reports.
   const BACKDROPS = {
@@ -1010,13 +1017,8 @@ const scene = (() => {
     typing = null;
     textEl.scrollTop = 0;
     const narration = line.kind === 'narration';
-    if (narration) {
-      for (const node of Object.values(slotNodes)) node.style.filter = DIM;
-      nameEl.textContent = 'Worldstream';
-      nameEl.dataset.who = 'narrator';
-    } else {
-      const src = plateSrc(line.who, line.expression, line.plate);
-      if (!src) return advance();
+    const src = plateSrc(line.who, line.expression, line.plate);
+    if (src) {
       const side = slotFor(line.who);
       const plate = slotNodes[side];
       if (!plate) return advance();
@@ -1029,9 +1031,11 @@ const scene = (() => {
         node.style.zIndex = speaking ? '2' : '1';
         node.style.opacity = slotOccupant[where] ? '1' : '0';
       }
-      nameEl.textContent = speakerNames[line.who] || readable(line.who);
-      nameEl.dataset.who = line.who;
-    }
+    } else for (const node of Object.values(slotNodes)) node.style.filter = DIM;
+    // A silent visual action can display its plate without becoming speech.
+    // A voice without a portrait still keeps every word in the performance.
+    nameEl.textContent = narration ? 'Worldstream' : speakerNames[line.who] || readable(line.who);
+    nameEl.dataset.who = narration ? 'narrator' : line.who;
     // Assistive technology receives one complete utterance. The visible line may
     // type in, but its individual characters are deliberately not a live region.
     if (announcerEl) announcerEl.textContent = `${nameEl.textContent}: ${line.text}`;
@@ -1139,34 +1143,52 @@ const scene = (() => {
   }
 
   function play(event, { auto = false } = {}) {
-    if (!Array.isArray(event.lines) || !event.lines.length) return;
+    const authored = authoredSceneRecord(event);
+    const performance = authored ? cinematicLines(authored) : event.lines;
+    if (!Array.isArray(performance) || !performance.length) return;
     if (open) return false;
     closeLifecycle.reset();
     closing = false; drainOnClose = true; pausedForVisibility = false;
     root.classList.remove('is-closing', 'is-suspended');
     if (pauseButton) pauseButton.disabled = false;
     if (nextButton) nextButton.disabled = false;
-    lines = event.lines;
+    lines = performance;
     autoplay = auto;
     paused = false;
     excerpted = Boolean(event.excerpted);
     suppliedAssets = event.assets || null;
+    const eventPhase = event.sceneTime?.dayPhase || event.atmosphere?.time?.dayPhase || lastWorld?.time?.dayPhase || 'day';
+    const roomArt = event.location === 'mi6' ? mi6RoomArt(event.room, nightLike(eventPhase)) : null;
     suppliedBackground = event.backgroundUrl || event.assets?.background?.url
-      || placeArtwork(event.location, event.atmosphere?.time?.dayPhase || 'day', null);
+      || (roomArt ? WORLD_BACKDROPS[roomArt.key] : null)
+      || placeArtwork(event.location, eventPhase, null);
     open = true;
     previousFocus = document.activeElement;
     const label = root.querySelector('.scene-live-mark');
-    if (label) label.textContent = auto ? 'LIVE FROM SILVER CLOUDS' : 'FROM THE WORLDSTREAM ARCHIVE';
+    if (label) {
+      const place = event.location || event.atmosphere?.location;
+      const at = asTime(event.occurredAt);
+      label.textContent = [auto ? 'LIVE FROM SILVER CLOUDS' : 'FROM THE WORLDSTREAM ARCHIVE',
+        place ? locationName(place) : null, at === null ? null : timeLabel(at)].filter(Boolean).join(' · ');
+    }
     root.hidden = false;
     document.body.classList.add('scene-open');
-    sceneAtmosphere = { ...(event.atmosphere || { location: event.location, room: event.room, eventType: event.type }),
-      eventId: event.id, exposure: artworkExposure(suppliedBackground) };
+    // A scene playing live is happening in today's weather, so it carries it.
+    // Without this the atmosphere context has no weather at all, and
+    // `deriveAtmosphere` correctly applies its archive rule — "missing
+    // historical weather stays neutral" — to a scene that is not an archive.
+    // Everything downstream then saw `cloudy`: the scene's rain canvas never
+    // sized or drew, and the ambient bed dropped rain the moment a scene opened.
+    // A manual replay of an earlier beat still inherits nothing, which is what
+    // that rule is for.
+    sceneAtmosphere = { ...(event.atmosphere || { location: event.location, room: event.room, eventType: event.type, time: event.sceneTime }),
+      eventId: event.id, exposure: artworkExposure(suppliedBackground),
+      ...(auto && lastWorld?.weather ? { weather: lastWorld.weather } : {}) };
     atmosphere.setScene(sceneAtmosphere);
     music.update(lastWorld);
     const key = document.body.dataset.scene || '';
     // A scene played at MI6 uses the artwork for the room it happened in, which
     // the event already records. Everywhere else keeps the published key.
-    const roomArt = event.location === 'mi6' ? mi6RoomArt(event.room, nightLike(lastWorld?.time?.dayPhase)) : null;
     backdrop.style.backgroundImage = suppliedBackground
       ? `url("${suppliedBackground}")`
       : `url("/worldstream/app/scene/${roomArt ? roomArt.file : (BACKDROPS[key.replace(/_rain$/, '')] || 'mi6corridor')}.jpg")`;
@@ -1186,7 +1208,8 @@ const scene = (() => {
       const homeX = compact ? (where === 'left' ? 0 : Math.max(0, stage.clientWidth - compactWidth))
         : (where === 'left' ? LEFT_X : RIGHT_X);
       const first = who ? lines.find((line) => line.who === who) : null;
-      const src = who ? plateSrc(who, PLATE_SETS[who].fallback, first?.plate) : null;
+      const src = who ? plateSrc(who, first?.expression ?? PLATE_SETS[who].fallback, first?.plate) : null;
+      node.alt = who ? `${speakerNames[who] || readable(who)} expression` : '';
       if (src) node.src = src;
       node.style.transition = 'none';
       node.style.opacity = '0';
@@ -1206,10 +1229,13 @@ const scene = (() => {
     const setupSummary = root.querySelector('.scene-setup-summary');
     const setupSnippet = root.querySelector('.scene-setup-snippet');
     if (setupDetails && setupSummary && setupSnippet) {
-      if (event.setup?.originSnippet) {
-        const label = event.setup.originTimeLabel || 'Earlier';
+      const setup = event.setup || (!authored && event.prose ? { originSnippet: event.prose,
+        originTimeLabel: `${timeLabel(event.occurredAt)} · ${locationName(event.location)}` } : event.contextBridge
+          ? { originSnippet: event.contextBridge.snippet, originTimeLabel: event.contextBridge.timeLabel } : null);
+      if (setup?.originSnippet) {
+        const label = setup.originTimeLabel || 'Earlier';
         setupSummary.textContent = `↩ ${label}`;
-        setupSnippet.textContent = event.setup.originSnippet;
+        setupSnippet.textContent = setup.originSnippet;
         setupDetails.open = false;
         setupDetails.hidden = false;
       } else {
@@ -1235,7 +1261,9 @@ const scene = (() => {
     if (!performed) return false;
     const complete = cinematicLines(record);
     const prepared = auto ? autoSceneExcerpt(complete) : { lines: complete, excerpted: false };
-    return play({ id: record.eventId, lines: prepared.lines, excerpted: prepared.excerpted,
+    return play({ id: record.eventId, occurredAt: record.occurredAt, location: record.atmosphere?.location,
+      room: record.atmosphere?.room,
+      lines: prepared.lines, excerpted: prepared.excerpted,
       assets: performed.assets, backgroundUrl: performed.assets?.background?.url, atmosphere: record.atmosphere || {},
       setup: record.setup || record.packet?.event?.setup || null }, { auto });
   }
@@ -1364,12 +1392,14 @@ const music = (() => {
   if (!btn || !players[0] || !players[1]) return { update() {}, duck() {}, undim() {} };
 
   let titles = new Map();
-  // Rotation is per mood. One shared counter aliased against the pool sizes:
-  // alternating between two moods stepped it by two each time a given mood came
-  // round, so a two-track mood landed on the same index every visit and never
-  // played its second song at all.
-  let on = false, current = 0, playing = null, mood = null;
-  const rotation = {};
+  // Each mood has a remembered shuffle bag; reopening the book does not replay
+  // the same opening song. Only successful playback commits listening history.
+  let on = true, current = 0, playing = null, mood = null;
+  const rotation = new ScoreRotation({ storage: {
+    getItem: key => localStorage.getItem(key),
+    setItem: (key, value) => localStorage.setItem(key, value),
+  } });
+  let playSequence = 0, acceptedSequence = -1;
   let fadeTimer = null, chipTimer = null, ducked = false;
 
   // The server knows the real titles, because they are the filenames the author
@@ -1432,6 +1462,16 @@ const music = (() => {
     player.volume = 0;
   }
 
+  function startPlayer(player) {
+    const sequence = playSequence;
+    const started = player.play();
+    if (started && typeof started.then === 'function') started.then(() => {
+      if (sequence !== playSequence || player !== players[current] || !playing || acceptedSequence === sequence) return;
+      rotation.played(mood, playing, bankFor(mood));
+      acceptedSequence = sequence;
+    }).catch(() => {});
+  }
+
   // A linear crossfade on two elements. Two things it has to get right, both of
   // which the first cut got wrong: a fade interrupted by another mood change
   // must not leave the older track still playing underneath — with only two
@@ -1445,11 +1485,11 @@ const music = (() => {
     const next = players[current ^ 1], previous = players[current];
     next.src = `/worldstream/app/audio/${slug}.mp3`;
     next.volume = 0;
-    const started = next.play();
-    if (started && typeof started.catch === 'function') started.catch(() => {});
     const from = previous.volume, begun = performance.now();
     current ^= 1;
     playing = slug;
+    playSequence += 1;
+    startPlayer(next);
     fadeTimer = setInterval(() => {
       const ratio = Math.min(1, (performance.now() - begun) / FADE_MS);
       next.volume = volumeTarget() * ratio;
@@ -1484,17 +1524,18 @@ const music = (() => {
   // Step to the next track of whichever mood is running.
   function advance(name) {
     const bank = bankFor(name);
-    rotation[name] = (rotation[name] ?? -1) + 1;
-    fadeTo(bank[rotation[name] % bank.length]);
+    const slug = rotation.next(name, bank);
+    if (slug) fadeTo(slug);
   }
 
   // Called on every world render. Changes track only when the mood changes, so
   // a quiet afternoon is not a playlist.
   function update(world) {
     if (!on || document.hidden) return;
-    const wanted = moodFor(world);
+    const wanted = world ? moodFor(world) : rotation.lastMood() || moodFor(world);
     if (wanted === mood && playing) return;
     mood = wanted;
+    if (playing && bankFor(wanted).includes(playing)) { paint(); return; }
     advance(wanted);
     paint();
   }
@@ -1506,8 +1547,8 @@ const music = (() => {
   // everything and why nothing ever changed while the world stood still.
   for (const player of players) {
     player.addEventListener('ended', () => {
-      if (!on || !mood || player !== players[current]) return;
-      if (bankFor(mood).length < 2) { player.currentTime = 0; player.play().catch(() => {}); return; }
+      if (!on || document.hidden || !mood || player !== players[current]) return;
+      if (bankFor(mood).length < 2) { player.currentTime = 0; startPlayer(player); return; }
       advance(mood);
       paint();
     });
@@ -1533,19 +1574,35 @@ const music = (() => {
     paint();
   });
 
-  // Off unless it was on last time. Autoplay is blocked before a gesture in
-  // every current browser anyway, so the first play always waits for the click
-  // — remembering the preference only means the button starts in the right
-  // state and the score resumes at the first interaction.
-  try { on = localStorage.getItem(STORE_KEY) === 'on'; } catch {}
+  // Start with the score enabled; an intentional mute still survives reload.
+  // A rejected autoplay attempt already selected a track, so update() alone
+  // would return early. Retry that paused element inside the actual gesture.
+  try { on = localStorage.getItem(STORE_KEY) !== 'off'; } catch {}
   paint();
-  if (on) {
-    const resume = () => { update(lastWorld); document.removeEventListener('pointerdown', resume); };
-    document.addEventListener('pointerdown', resume, { once: true });
-  }
+  const resume = () => {
+    if (!on || document.hidden) return;
+    if (!playing) { update(lastWorld); return; }
+    const active = players[current];
+    if (active.paused) {
+      if (!fadeTimer) active.volume = volumeTarget();
+      startPlayer(active);
+    }
+  };
+  document.addEventListener('pointerdown', resume);
+  document.addEventListener('click', resume);
+  document.addEventListener('keydown', resume);
+  update(lastWorld);
 
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) stop(); else if (on) update(lastWorld);
+    if (document.hidden) {
+      clearInterval(fadeTimer); fadeTimer = null;
+      retire(players[current ^ 1]);
+      players[current].pause();
+    } else if (on) {
+      update(lastWorld);
+      if (playing && players[current].ended) advance(mood);
+      else resume();
+    }
   });
   return { update, duck: () => setDuck(true), undim: () => setDuck(false), state,
     setVolume(value) { chosenVolume = Math.max(0, Math.min(1, value)); setDuck(ducked); },
@@ -1953,7 +2010,7 @@ function cinematicArchiveCard(record) {
 
 async function loadCinematicArchive() {
   if (!elements.cinematicArchiveBody) return;
-  elements.cinematicArchiveBody.replaceChildren(node('p', 'Loading accepted scenes…', 'empty-saved'));
+  elements.cinematicArchiveBody.replaceChildren(node('p', 'Loading scenes…', 'empty-saved'));
   try {
     const response = await viewerFetch('/api/cinematics/archive', {
       cache: 'no-store', signal: AbortSignal.timeout(10_000),
@@ -1961,13 +2018,31 @@ async function loadCinematicArchive() {
     if (!response.ok) throw new Error('Archive unavailable');
     const body = await response.json();
     const records = Array.isArray(body?.cinematics) ? body.cinematics : [];
+    const dialogue = loadedDialogueScenes([...lastRenderedEvents, ...olderRows.values()], records);
     elements.cinematicArchiveBody.replaceChildren();
-    if (!records.length) {
-      elements.cinematicArchiveBody.append(node('p', 'No accepted scenes have entered the archive yet.', 'empty-saved'));
+    if (!records.length && !dialogue.length) {
+      elements.cinematicArchiveBody.append(node('p', 'No archived scenes or dialogue in the passages loaded here yet.', 'empty-saved'));
       return;
     }
     for (const record of records) if (record?.eventId && record?.scene) {
       elements.cinematicArchiveBody.append(cinematicArchiveCard(record));
+    }
+    if (dialogue.length) elements.cinematicArchiveBody.append(node('h4', 'Dialogue in your loaded passages'));
+    for (const event of dialogue) {
+      const card = node('article', undefined, 'cinematic-archive-card');
+      card.append(node('p', `${timeLabel(event.occurredAt)} · ${locationName(event.location)}`, 'cinematic-archive-meta'),
+        node('h4', event.type === 'SCENE_BANK_BEAT' ? event.sceneTitle || 'A scene from Silver Clouds' : event.description));
+      const transcript = node('details', undefined, 'cinematic-transcript-details');
+      transcript.append(node('summary', 'Read scene and setup'));
+      if (event.type === 'SCENE_BANK_BEAT') appendReadingScene(transcript, event,
+        { speakerLabel: who => speakerNames[who] || readable(who) });
+      else {
+        if (event.prose) appendProseParagraphs(transcript, event.prose, 'cinematic-narration');
+        transcript.append(exchange(event.lines));
+      }
+      const watch = node('button', 'Play dialogue scene', 'replay'); watch.type = 'button';
+      watch.addEventListener('click', () => { closeCinematicArchive(); scene.play(event); });
+      card.append(transcript, watch); elements.cinematicArchiveBody.append(card);
     }
   } catch {
     elements.cinematicArchiveBody.replaceChildren(node('p', 'The scene archive is temporarily unavailable.', 'empty-saved'));
@@ -2830,6 +2905,9 @@ async function updatePresence() {
         if (typeof data.viewerToken === 'string' && data.viewerToken) {
           viewerToken = data.viewerToken;
           try { sessionStorage.setItem(VIEWER_TOKEN_KEY, viewerToken); } catch {}
+          // A tab can leave while its first heartbeat is still in flight.
+          // Retire the newly issued token as well as any previous one.
+          if (document.visibilityState !== 'visible') leaveWatching();
         }
       }
     } catch {}
@@ -3022,7 +3100,7 @@ let currentHighlight = null;
 
 async function fetchTodayHighlight() {
   try {
-    const res = await fetch('/api/highlights/today', { cache: 'no-store' });
+    const res = await fetch('/api/highlights/today', { cache: 'no-store', signal: AbortSignal.timeout(10_000) });
     if (res.ok) {
       currentHighlight = await res.json();
     }
@@ -3199,6 +3277,13 @@ function eventRow(event) {
   if (timestamp !== null) when.dateTime = new Date(timestamp).toISOString();
 
   const detail = node('div');
+  row.dataset.narrativeWeight = String(event.readerWeight ?? narrativeWeight(event));
+  row.dataset.readerContext = String(Boolean(event.readerContext));
+  row.dataset.readerSceneStart = String(Boolean(event.readerSceneStart));
+  row.dataset.readerSceneEnd = String(event.readerSceneEnd !== false);
+  if (event.readerSceneId) row.dataset.readerScene = event.readerSceneId;
+  if (event.readerChapter) detail.append(node('h3', event.readerChapter.label, 'reader-chapter'));
+  if (event.readerContext) detail.append(node('p', event.readerContext, 'reader-context'));
   if (currentHighlight && currentHighlight.eventId === event.id) {
     detail.append(node('span', '🔥 Most discussed today', 'highlight-chip'));
   }
@@ -3225,37 +3310,12 @@ function eventRow(event) {
     }
   };
 
-  if (isReading) {
-    // In Reading View: present each beat as authentic fiction.
-    // Display actual scene prose (opening narration, dialogue exchange, closing narration)
-    // and multi-paragraph text, suppressing duplicate machine headlines and game chips.
-    if (performedScene) {
-      row.classList.add('is-prose', 'has-cinematic');
-      if (typeof performedScene.openingNarration === 'string' && performedScene.openingNarration.trim()) {
-        addProseParagraphs(detail, performedScene.openingNarration, 'event-prose');
-      }
-      if (Array.isArray(performedScene.beats) && performedScene.beats.length > 0) {
-        row.classList.add('has-exchange');
-        const lines = performedScene.beats.map(b => ({ who: b.speaker, text: b.line }));
-        detail.append(exchange(lines));
-      }
-      if (typeof performedScene.closingNarration === 'string' && performedScene.closingNarration.trim()) {
-        addProseParagraphs(detail, performedScene.closingNarration, 'event-prose');
-      }
-      if (!performedScene.openingNarration && (!performedScene.beats || !performedScene.beats.length) && !performedScene.closingNarration) {
-        addProseParagraphs(detail, event.prose || eventDisplayText(event), 'event-prose');
-      }
-    } else if (event.register === 'prose' && event.prose) {
-      row.classList.add('is-prose');
-      addProseParagraphs(detail, event.prose, 'event-prose');
-      if (Array.isArray(event.lines) && event.lines.length) {
-        row.classList.add('has-exchange');
-        detail.append(exchange(event.lines));
-      }
-    } else {
-      if (event.register === 'prose') row.classList.add('is-prose');
-      detail.append(node('p', event.description));
-    }
+  if (isReading || event.type === 'SCENE_BANK_BEAT') {
+    row.classList.add('is-prose');
+    if (performedScene) row.classList.add('has-cinematic');
+    if (performedScene?.beats?.length || event.lines?.length || event.sceneBeats?.length) row.classList.add('has-exchange');
+    appendReadingScene(detail, event, { scene: performedScene,
+      speakerLabel: who => speakerNames[who] || readable(who) });
   } else {
     // In default dashboard/overview mode: show summary card with game badge and machine record
     if (acceptedSummary) {
@@ -3281,16 +3341,28 @@ function eventRow(event) {
     }
   }
 
-  if (event.contextBridge) {
+  if (event.contextBridge && !(isReading && event.readerContextVisible)) {
     const bridge = event.contextBridge;
     const bridgeEl = node('details', undefined, 'context-bridge');
     const bridgeSummary = node('summary', bridge.timeLabel || `Earlier · ${bridge.time}`, 'context-bridge-summary');
     const bridgeSnippet = node('p', bridge.snippet, 'context-bridge-snippet');
     bridgeEl.append(bridgeSummary, bridgeSnippet);
+    if (bridge.originEventId) {
+      const origin = node('button', 'Read what led here', 'recap-link'); origin.type = 'button';
+      origin.addEventListener('click', () => void continueReading({ kind: 'event', eventId: bridge.originEventId,
+        occurredAt: bridge.originOccurredAt }));
+      bridgeEl.append(origin);
+    }
     detail.append(bridgeEl);
   }
 
-  if (event.memoryCallback) {
+  if (event.storyRef && !event.contextBridge && !event.memoryCallback) {
+    const earlier = node('button', 'Earlier in this story', 'recap-link'); earlier.type = 'button';
+    earlier.addEventListener('click', () => void continueReading({ kind: 'context', eventId: event.id }));
+    detail.append(earlier);
+  }
+
+  if (event.memoryCallback && !(isReading && event.readerMemoryVisible)) {
     const cb = event.memoryCallback;
     const cbEl = node('details', undefined, 'memory-callback');
     const cbSummary = node('summary', `↩ Earlier: “${cb.originLabel}”`, 'memory-callback-summary');
@@ -3309,14 +3381,7 @@ function eventRow(event) {
       jumpBtn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        const originClean = cleanEventId(cb.originEventId);
-        const targetEl = document.getElementById(`beat-${originClean}`) || document.querySelector(`[data-event-id="${cb.originEventId}"]`);
-        if (targetEl) {
-          targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          targetEl.classList.remove('beat-pulse');
-          void targetEl.offsetWidth;
-          targetEl.classList.add('beat-pulse');
-        }
+        void continueReading({ kind: 'event', eventId: cb.originEventId });
       });
       cbBody.append(jumpBtn);
     }
@@ -3352,6 +3417,11 @@ function eventRow(event) {
       if (acceptedCinematic.scene?.beats) playArchivedCinematic(acceptedCinematic);
       else replayCinematicEvent(event.id);
     });
+    detail.append(replay);
+  } else if (event.type === 'SCENE_BANK_BEAT' && event.sceneBeats?.length) {
+    const replay = node('button', 'Play the scene', 'replay');
+    replay.type = 'button';
+    replay.addEventListener('click', () => scene.play(event));
     detail.append(replay);
   } else if (!isReading && Array.isArray(event.lines) && event.lines.length) {
     row.classList.add('has-exchange');
@@ -3455,6 +3525,9 @@ const operationOutcomes = { cleared: 'The records matched and the review closed.
   unverified: 'The checking window ended without a complete review.' };
 
 const storyTrails = createStoryTrail({ locationLabel: locationName, preservePosition: captureReadingPosition });
+const newcomer = createNewcomerOrientation({ container: document.querySelector('#newcomer-orientation'),
+  locationLabel: locationName, activityLabel: activity => activityNames[activity] || readable(activity),
+  onThread: target => void continueReading(target) });
 const readingFeed = new ReadingFeedBuffer();
 const passageEffects = createPassageEffects();
 const readingRecap = createReadingRecap({ container: document.querySelector('#reading-recap'),
@@ -3465,7 +3538,22 @@ const readingView = createReadingView({ onViewed: event => {
   restore();
 } });
 const newReading = document.querySelector('#reading-new');
-let passageSignature = '', recapCompleteSince = null, recapAttempt = null, recapLoading = false;
+const readingLiveStatus = document.querySelector('#reading-live-status');
+const readingLiveTime = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London',
+  day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+let passageSignature = '', openingPassageId = null, recapCompleteSince = null, recapAttempt = null, recapLoading = false;
+let initialReadingWindow = null, recapWindowCursor = null, recapWindowThrough = null, recapWindowAfter = null;
+let displayedHistoryAfter = 0;
+let readingWindowWait = Promise.resolve();
+
+function readingHistoryRows() {
+  return [...new Map([...(olderRequested ? earlierReadingRows(olderRows.values(), readingFeed.shown, displayedHistoryAfter) : []), ...readingFeed.shown]
+    .map(event => [event.id, event])).values()];
+}
+
+function readingPlan(events = readingHistoryRows()) {
+  return forwardReadingEvents(events, locationName, { history: [...olderRows.values(), ...readingFeed.shown], visible: readingHistoryRows() });
+}
 
 function renderReadingPair(world) {
   const container = document.querySelector('#reading-pair');
@@ -3483,36 +3571,37 @@ function renderReadingPair(world) {
 
 function renderLatestPassage(events) {
   const container = document.querySelector('#latest-passage');
-  const event = events.find(item => item.prose || item.cinematic?.scene?.openingNarration);
-  const signature = event ? JSON.stringify([event.id, event.prose, event.cinematic]) : '';
+  // The opening must precede the next paragraph, even when the world has moved
+  // on. The old newest-first spotlight spoiled the end before the beginning.
+  const first = events.find(item => item.readerWeight > 0);
+  const event = first && first.readerWeight >= 2 && !first.lines?.length
+    && (first.readerProse || first.cinematic?.scene) ? first : null;
+  openingPassageId = event?.id ?? null;
+  const signature = event ? JSON.stringify([event.id, event.readerProse, event.cinematic, event.readerDay, event.readerSetting]) : '';
   if (signature === passageSignature) return;
   passageSignature = signature;
   container.hidden = !event;
   if (!event) { container.replaceChildren(); delete container.dataset.eventId; return; }
   container.dataset.eventId = event.id;
   const performed = event.cinematic?.scene;
-  const content = [node('p', 'Latest passage', 'passage-label'),
-    node('p', `${timeLabel(event.occurredAt)} · ${locationName(event.location)}`, 'passage-time')];
-  if (performed) {
-    if (performed.openingNarration) {
-      appendProseParagraphs({ append: (...nodes) => content.push(...nodes) }, performed.openingNarration, 'passage-prose');
-    }
-    for (const beat of performed.beats ?? []) {
-      const quote = node('blockquote', undefined, 'passage-utterance');
-      quote.append(node('p', beat.line), node('cite', speakerNames[beat.speaker] || readable(beat.speaker))); content.push(quote);
-    }
-    if (performed.closingNarration) {
-      appendProseParagraphs({ append: (...nodes) => content.push(...nodes) }, performed.closingNarration, 'passage-prose');
-    }
-    if (!performed.openingNarration && (!performed.beats || !performed.beats.length) && !performed.closingNarration && event.prose) {
-      appendProseParagraphs({ append: (...nodes) => content.push(...nodes) }, event.prose, 'passage-prose');
-    }
-  } else if (event.prose) {
-    appendProseParagraphs({ append: (...nodes) => content.push(...nodes) }, event.prose, 'passage-prose');
-  }
+  const content = [node('p', 'Begin here', 'passage-label'),
+    node('p', `${timeLabel(event.occurredAt)} · ${event.readerSetting || locationName(event.location)}`, 'passage-time')];
+  if (event.readerChapter?.label) content.splice(1, 0, node('h3', event.readerChapter.label, 'reader-chapter'));
+  const paragraphs = node('div', undefined, 'passage-text');
+  appendReadingScene(paragraphs, event, { scene: performed, className: 'passage-prose',
+    speakerLabel: who => speakerNames[who] || readable(who) });
+  content.push(paragraphs);
   const actions = node('div', undefined, 'passage-actions');
-  const source = node('button', 'Find this moment'); source.type = 'button';
-  source.addEventListener('click', () => void continueReading({ kind: 'event', eventId: event.id })); actions.append(source);
+  const source = node('button', 'Continue reading'); source.type = 'button';
+  source.addEventListener('click', () => {
+    const next = readingPlan().find(item => item.readerWeight > 0 && item.id !== event.id);
+    if (next) void continueReading({ kind: 'event', eventId: next.id });
+  }); actions.append(source);
+  if (event.contextBridge?.originEventId || event.memoryCallback?.originEventId) {
+    const context = node('button', 'Read what led here'); context.type = 'button';
+    context.addEventListener('click', () => void continueReading({ kind: 'event',
+      eventId: event.contextBridge?.originEventId || event.memoryCallback?.originEventId })); actions.append(context);
+  }
   if (event.cinematic?.scene) {
     const replay = node('button', 'Watch the scene'); replay.type = 'button';
     replay.addEventListener('click', () => scene.playCinematic(event.cinematic, { auto: false })); actions.append(replay);
@@ -3523,7 +3612,7 @@ function renderLatestPassage(events) {
 function isProtagonistStory(item) {
   if (!item) return false;
   const id = String(item.id || '');
-  if (id.startsWith('thread:') || id.startsWith('night:')) return true;
+  if (['thread:', 'night:', 'nimbus:', 'scene-bank:'].some(prefix => id.startsWith(prefix))) return true;
   if (id.startsWith('supporting:')) {
     return id.includes('goaden') || id.includes('ashai');
   }
@@ -3572,7 +3661,11 @@ function descriptorFor(world, type, item) {
 }
 
 function renderCityStories(world) {
-  const rawStories = Array.isArray(world.stories) ? world.stories : [];
+  const published = Array.isArray(world.stories) ? world.stories : [];
+  const rawStories = [...published, ...(world.storyThreads ?? []).filter(item => item.type === 'story'
+    && ['nimbus:', 'scene-bank:', 'purpose:'].some(prefix => item.id.startsWith(prefix))
+    && !published.some(story => story.id === item.id))];
+  document.querySelector('#story-index').hidden = rawStories.length === 0;
   elements.storiesSection.hidden = rawStories.length === 0;
   // Prioritize protagonist stories anchored on Goaden and Ashai for the primary hero slot
   const stories = [...rawStories].sort((a, b) => {
@@ -3584,51 +3677,180 @@ function renderCityStories(world) {
   renderSummaryCards(elements.stories, stories.map(item => ({ ...item, type: 'story',
     orientation: storyOrientation(item),
     revision: descriptorFor(world, 'story', item)?.revision,
-    status: `${locationName(item.location)} · ${['active','unfinished','promised','met','interrupting','requested','called','working','recovering'].includes(item.status) ? 'Unfolding' : 'Concluded'}`,
+    status: `${locationName(item.location)} · ${['active','unfinished','promised','met','interrupting','requested','called','working','recovering','seeking','performing'].includes(item.status) ? 'Unfolding' : 'Concluded'}`,
     at: item.completedAt ?? item.openedAt })), world.continuityId || world.worldId);
 }
 
 function paintReadingFeed({ replaceChanged = false } = {}) {
   const state = readingFeed.state();
   lastRenderedEvents = state.events;
-  reconcileReadingRows(elements.events, state.events, eventRow, { replaceChanged });
+  const reading = document.body.dataset.reading === 'true';
+  const plan = readingPlan();
+  renderLatestPassage(plan);
+  const rows = reading ? readingPlan(state.events) : state.events;
+  reconcileReadingRows(elements.events, rows, eventRow, { replaceChanged });
+  for (const row of elements.events.children) row.dataset.openingPassage = String(row.dataset.eventId === openingPassageId);
   newReading.hidden = !state.pending;
-  newReading.textContent = state.added ? `${state.added} new ${state.added === 1 ? 'moment' : 'moments'} · Read latest` : 'Updated passages · Read latest';
-  renderLatestPassage(state.events);
-  passageEffects.update(state.events.find(item => item.prose || item.cinematic?.scene?.openingNarration), lastWorld);
+  newReading.textContent = state.added ? 'The story continues · Read on' : 'Updated passages · Read on';
+  if (readingLiveStatus) {
+    const through = Number.isSafeInteger(lastWorld?.resolvedThrough) ? readingLiveTime.format(lastWorld.resolvedThrough) : null;
+    const newest = [...plan].reverse().find(event => event.readerWeight > 0);
+    readingLiveStatus.textContent = state.added ? 'New passages have arrived. Read on when you’re ready.'
+      : state.pending ? 'Updated passages are waiting. Read on to refresh the text on this page.'
+      : through ? `${newest ? `Latest passage · ${readingLiveTime.format(newest.occurredAt)}. ` : ''}You’re at the latest page. The world is current through ${through}.`
+      : 'Waiting for the living story…';
+  }
+  passageEffects.update(plan.find(item => item.id === openingPassageId), lastWorld);
   readingView.observe([...state.events, ...olderRows.values()]);
 }
 
-function revealLatestReading() {
-  readingFeed.reveal(); paintReadingFeed({ replaceChanged: true }); renderOlderHistory();
+function revealLatestReading({ includeRevisions = true } = {}) {
+  const previous = readingFeed.shown;
+  readingFeed.reveal({ includeRevisions });
+  const retained = new Set(readingFeed.shown.map(event => event.id));
+  for (const event of previous) if (!retained.has(event.id)) olderRows.set(event.id, event);
+  paintReadingFeed({ replaceChanged: includeRevisions }); renderOlderHistory();
   loadSocialForVisibleEvents(lastRenderedEvents);
 }
-newReading?.addEventListener('click', () => {
-  revealLatestReading();
-  const target = document.querySelector('#latest-passage:not([hidden])') || elements.events;
-  target.scrollIntoView({ behavior: 'instant', block: 'start' });
+newReading?.addEventListener('click', async () => {
+  if (newReading.disabled) return;
+  const scope = historyScope, generation = historyGeneration;
+  const shown = new Set(readingHistoryRows().map(event => event.id));
+  const last = readingFeed.shown[0];
+  newReading.disabled = true;
+  try {
+    if (readingFeed.state().gap && last) {
+      if (readingLiveStatus) readingLiveStatus.textContent = 'Loading the intervening passages…';
+      const complete = await backfillReadingRecap(last.occurredAt);
+      if (scope !== historyScope || generation !== historyGeneration) return;
+      if (!complete) {
+        if (readingLiveStatus) readingLiveStatus.textContent = 'Some intervening pages still need to load. Read on again to continue loading.';
+        return;
+      }
+      readingFeed.update(scope, [...olderRows.values()].filter(event => event.occurredAt >= last.occurredAt));
+    }
+    revealLatestReading();
+    const next = readingPlan().find(event => !shown.has(event.id) && event.readerWeight > 0
+      && (!last || event.occurredAt >= last.occurredAt));
+    if (next) void continueReading({ kind: 'event', eventId: next.id });
+  } finally { newReading.disabled = false; }
+});
+document.querySelector('#reading-routine-toggle')?.addEventListener('change', event => {
+  document.body.dataset.quietRecords = String(event.target.checked);
+});
+document.querySelector('#reading-view-toggle')?.addEventListener('click', () => {
+  // Mode-specific rows must repaint immediately, not wait for a future poll.
+  elements.events.replaceChildren(); elements.olderEvents?.replaceChildren();
+  paintReadingFeed(); renderOlderHistory();
 });
 
 async function continueReading(target) {
   if (target.kind === 'thread') {
     const card = [...document.querySelectorAll('[data-story-key]')].find(item => item.dataset.storyKey === `${target.type}:${target.threadId}`);
     if (card) {
+      const index = card.closest('#story-index'); if (index) index.open = true;
       const overview = card.closest('#world-overview'); if (overview) overview.open = true;
       const trail = card.querySelector('.story-trail'); if (trail) trail.open = true;
       card.scrollIntoView({ behavior: 'instant', block: 'start' }); return;
     }
   }
   if (target.kind === 'history') {
+    if (readingRecap.getState().historyGap && !recapLoading) {
+      await backfillReadingRecap(readingRecap.getState().boundaryAt);
+    }
+    olderRequested = true; renderOlderHistory();
     await loadOlderHistory(); elements.olderHistory?.scrollIntoView({ behavior: 'instant', block: 'start' }); return;
   }
   if (target.eventId) {
-    let element = document.getElementById(`beat-${cleanEventId(target.eventId)}`);
-    if (!element && readingFeed.incoming.some(event => event.id === target.eventId)) { revealLatestReading(); element = document.getElementById(`beat-${cleanEventId(target.eventId)}`); }
-    if (!element && olderRows.has(target.eventId)) { olderRequested = true; renderOlderHistory(); element = document.getElementById(`beat-${cleanEventId(target.eventId)}`); }
-    if (element) { element.scrollIntoView({ behavior: 'instant', block: 'center' }); return; }
+    if (target.kind !== 'context' && target.eventId === openingPassageId && document.body.dataset.reading === 'true') {
+      document.querySelector('#latest-passage').scrollIntoView({ behavior: 'instant', block: 'start' }); return;
+    }
+    let element = target.kind === 'context' ? null : document.getElementById(`beat-${cleanEventId(target.eventId)}`);
+    if (target.kind !== 'context' && !element && readingFeed.incoming.some(event => event.id === target.eventId)) { revealLatestReading(); element = document.getElementById(`beat-${cleanEventId(target.eventId)}`); }
+    if (target.kind !== 'context' && !element && olderRows.has(target.eventId)) {
+      olderRequested = true;
+      displayedHistoryAfter = Math.min(displayedHistoryAfter, olderRows.get(target.eventId).occurredAt);
+      paintReadingFeed({ replaceChanged: true }); renderOlderHistory();
+      element = document.getElementById(`beat-${cleanEventId(target.eventId)}`);
+      if (target.eventId === openingPassageId && document.body.dataset.reading === 'true') {
+        document.querySelector('#latest-passage').scrollIntoView({ behavior: 'instant', block: 'start' }); return;
+      }
+    }
+    if (!element) {
+      const scope = historyScope, generation = historyGeneration;
+      try {
+        elements.historyStatus.textContent = 'Finding your passage…';
+        const response = await fetch(`/api/events/${encodeURIComponent(target.eventId)}/context`,
+          { cache: 'no-store', signal: AbortSignal.timeout(10_000) });
+        if (!response.ok) throw new Error('Passage unavailable');
+        const result = await response.json();
+        if (scope !== historyScope || generation !== historyGeneration) return;
+        if (result.continuityId !== scope) throw new Error('The story continuity changed');
+        const source = result.event;
+        if (!source || source.id !== target.eventId || typeof source.description !== 'string'
+          || !Number.isSafeInteger(source.occurredAt) || source.occurredAt > lastWorld.resolvedThrough)
+          throw new Error('Invalid passage');
+        // A fetched origin is a separate excerpt. It is not proof that the
+        // intervening history has been loaded, and never fills a coverage gap.
+        showReadingContext(source, result.causes ?? result.events ?? []);
+        elements.historyStatus.textContent = '';
+        return;
+      } catch {
+        if (scope === historyScope && generation === historyGeneration)
+          elements.historyStatus.textContent = 'This passage could not be loaded. Your place is still saved; please try again.';
+        return;
+      }
+    }
+    if (element) {
+      if (element.dataset.narrativeWeight === '0') {
+        document.body.dataset.quietRecords = 'true';
+        document.querySelector('#reading-routine-toggle').checked = true;
+      }
+      element.scrollIntoView({ behavior: 'instant', block: 'center' }); return;
+    }
   }
   document.querySelector('#world-overview').open = true;
   document.querySelector('#world-overview').scrollIntoView({ behavior: 'instant', block: 'start' });
+}
+
+function showReadingContext(source, causes) {
+  const scope = historyScope, generation = historyGeneration;
+  const restoreBook = captureReadingPosition();
+  const container = document.querySelector('#reading-context');
+  const heading = node('h3', 'Earlier in the story', 'reader-chapter');
+  const close = node('button', 'Back to the book'); close.type = 'button';
+  close.addEventListener('click', () => { container.hidden = true; container.replaceChildren(); restoreBook(); });
+  const list = node('ol', undefined, 'events');
+  const rows = [...new Map([...(Array.isArray(causes) ? causes : []), source]
+    .filter(event => event && typeof event.id === 'string' && typeof event.description === 'string'
+      && event.visibility !== 'private' && Number.isSafeInteger(event.occurredAt) && event.occurredAt <= source.occurredAt)
+    .map(event => [event.id, event])).values()];
+  const plan = forwardReadingEvents(rows, locationName);
+  for (const event of plan) {
+    const row = eventRow({ ...event, readerWeight: Math.max(2, event.readerWeight), readerProse: event.prose,
+      readerSceneStart: true, readerContext: [locationName(event.location), event.room].filter(Boolean).join(' · '), readerChapter: null });
+    // Keep source navigation unique when this excerpt overlaps the book.
+    row.id = `context-${cleanEventId(event.id)}`;
+    list.append(row);
+  }
+  const resume = node('button', 'Continue from this passage'); resume.type = 'button';
+  const status = node('p', '', 'secondary'); status.setAttribute('role', 'status');
+  resume.addEventListener('click', async () => {
+    resume.disabled = true;
+    try {
+      status.textContent = 'Loading the story from here…';
+      const complete = await backfillReadingRecap(source.occurredAt);
+      if (scope !== historyScope || generation !== historyGeneration) return;
+      if (!complete) { status.textContent = 'The intervening pages are not all loaded yet. Try again to continue loading.'; return; }
+      olderRows.set(source.id, source); olderRequested = true;
+      displayedHistoryAfter = Math.min(displayedHistoryAfter, source.occurredAt);
+      container.hidden = true; container.replaceChildren();
+      paintReadingFeed({ replaceChanged: true }); renderOlderHistory();
+      void continueReading({ kind: 'event', eventId: source.id });
+    } finally { resume.disabled = false; }
+  });
+  container.replaceChildren(heading, close, list, resume, status); container.hidden = false;
+  container.scrollIntoView({ behavior: 'instant', block: 'start' });
 }
 
 function updateReadingRecap() {
@@ -3636,44 +3858,52 @@ function updateReadingRecap() {
   const retained = readingFeed.scope === historyScope ? [...readingFeed.shown, ...readingFeed.incoming] : [];
   const events = [...new Map([...olderRows.values(), ...retained, ...lastWorld.events].map(event => [event.id, event])).values()];
   const model = readingRecap.update(lastWorld, { events, completeSince: recapCompleteSince });
-  if (model?.historyGap && !recapLoading && recapAttempt !== historyScope) void backfillReadingRecap(model.boundaryAt);
+  if (initialReadingWindow !== historyScope && !recapLoading) {
+    initialReadingWindow = historyScope;
+    // Earlier PUBLIC passages inform repetition selection without placing a
+    // month's prose on the page. The opening itself remains the recent day.
+    void backfillReadingRecap(Math.max(0, Math.min(model?.boundaryAt ?? Infinity,
+      lastWorld.resolvedThrough - 30 * 24 * 60 * 60 * 1000)), true);
+  }
+  else if (model?.historyGap && !recapLoading && recapAttempt !== historyScope) void backfillReadingRecap(model.boundaryAt);
 }
 
-async function backfillReadingRecap(boundaryAt) {
-  const scope = historyScope, generation = historyGeneration, initialOlderCursor = olderCursor;
+async function backfillReadingRecap(boundaryAt, opening = false) {
+  const scope = historyScope, generation = historyGeneration;
+  while (recapLoading) {
+    await readingWindowWait;
+    if (scope !== historyScope || generation !== historyGeneration) return false;
+  }
+  let finishWaiting;
+  readingWindowWait = new Promise(resolve => { finishWaiting = resolve; });
   recapAttempt = scope; recapLoading = true;
-  let cursor = null, validatedPage = false;
+  if (recapWindowAfter !== boundaryAt) {
+    recapWindowAfter = boundaryAt; recapWindowCursor = null; recapWindowThrough = null;
+  }
+  const through = recapWindowThrough ?? lastWorld.resolvedThrough;
+  if (recapWindowThrough === null) recapWindowThrough = through;
+  let complete = false;
   try {
-    for (let page = 0; page < 6; page++) {
-      const url = cursor === null ? '/api/history' : `/api/history?before=${encodeURIComponent(cursor)}`;
-      const response = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(10_000) });
-      if (!response.ok) break;
-      const result = await response.json(); if (scope !== historyScope || generation !== historyGeneration) return;
-      if (!Array.isArray(result.events) || result.events.length > 40
-        || !(result.nextCursor === null || Number.isSafeInteger(result.nextCursor) && result.nextCursor > 0)) break;
-      for (const event of result.events) if (typeof event.id === 'string' && typeof event.description === 'string'
-        && asTime(event.occurredAt) !== null && event.occurredAt <= lastWorld.resolvedThrough) olderRows.set(event.id, event);
-      const earliest = Math.min(...result.events.map(event => asTime(event.occurredAt)).filter(at => at !== null));
-      if (Number.isFinite(earliest)) recapCompleteSince = Math.min(recapCompleteSince ?? earliest, earliest);
-      const next = result.nextCursor;
-      if (next !== null && next === cursor) break;
-      cursor = next; validatedPage = true;
-      if (result.events.some(event => event.occurredAt <= boundaryAt) || next === null) {
-        recapCompleteSince = boundaryAt; break;
-      }
-    }
+    const result = await loadReadingWindow({ after: boundaryAt, through, before: recapWindowCursor, continuityId: scope,
+      signal: AbortSignal.timeout(45_000), onPage: page => {
+        if (scope !== historyScope || generation !== historyGeneration) return;
+        for (const event of page.events) olderRows.set(event.id, event);
+        if (page.completeSince !== null) recapCompleteSince = Math.min(recapCompleteSince ?? Infinity, page.completeSince);
+        recapWindowCursor = page.nextCursor;
+      } });
+    complete = result.complete;
   } catch { /* The recap honestly retains its history-gap notice. */ }
   finally {
     if (scope === historyScope && generation === historyGeneration) {
       recapLoading = false;
-      // Continue beyond cached pages when the reader asks for older history.
-      // Never overwrite a cursor being advanced by an explicit history request.
-      if (validatedPage && !olderLoading && olderCursor === initialOlderCursor) {
-        olderCursor = cursor; olderHasMore = cursor !== null;
-      }
-      const restore = captureReadingPosition(); updateReadingRecap(); renderOlderHistory(); restore();
+      const restore = captureReadingPosition();
+      if (opening) olderRequested = true;
+      updateReadingRecap();
+      paintReadingFeed({ replaceChanged: opening }); renderOlderHistory(); restore();
     }
+    finishWaiting();
   }
+  return complete && scope === historyScope && generation === historyGeneration;
 }
 
 function renderContinuity(world) {
@@ -3707,12 +3937,16 @@ function syncReadingBookmark(world, recent) {
     historyScope = scope; previousViewEvents = [];
     olderCursor = null; olderHasMore = true; olderLoading = false; olderRequested = false;
     olderRows.clear(); recapCompleteSince = null; recapAttempt = null;
+    displayedHistoryAfter = Math.max(0, world.resolvedThrough - 24 * 60 * 60 * 1000);
+    initialReadingWindow = null; recapWindowCursor = null; recapWindowThrough = null; recapWindowAfter = null;
+    document.querySelector('#reading-context').hidden = true;
     if (elements.historyStatus) elements.historyStatus.textContent = '';
   }
   const newestIds = new Set(recent.map(event => event.id));
   if (previousViewEvents.length && recent.length && !previousViewEvents.some(event => newestIds.has(event.id))) {
     // A long absence can leave an unread interval between two cached pages.
     historyGeneration++; recapLoading = false; recapAttempt = null; recapCompleteSince = null;
+    recapWindowCursor = null; recapWindowThrough = null; recapWindowAfter = null;
     olderLoading = false; olderCursor = null; olderHasMore = true;
     elements.olderEvents?.setAttribute('aria-busy', 'false');
   }
@@ -3733,23 +3967,36 @@ function syncReadingBookmark(world, recent) {
 function renderOlderHistory() {
   if (!elements.olderEvents || !elements.olderHistory) return;
   const current = new Set(lastRenderedEvents.map(event => event.id));
-  const rows = [...olderRows.values()].filter(event => !current.has(event.id))
+  const rows = earlierReadingRows(olderRows.values(), lastRenderedEvents, displayedHistoryAfter)
     .sort((a, b) => asTime(b.occurredAt) - asTime(a.occurredAt) || b.id.localeCompare(a.id));
-  reconcileReadingRows(elements.olderEvents, olderRequested ? rows : [], eventRow);
+  const reading = document.body.dataset.reading === 'true';
+  if (reading) elements.events.before(elements.olderHistory);
+  else elements.events.after(elements.olderHistory);
+  positionReadingNavigation(document, reading);
+  reconcileReadingRows(elements.olderEvents, olderRequested ? (reading ? readingPlan(rows) : rows) : [], eventRow, { replaceChanged: true });
+  for (const row of elements.olderEvents.children) row.dataset.openingPassage = String(row.dataset.eventId === openingPassageId);
   elements.olderHistory.hidden = !olderRequested || rows.length === 0;
   readingView.observe([...lastRenderedEvents, ...olderRows.values()]);
   if (elements.olderHistoryButton) {
-    const cachedHidden = !olderRequested && rows.length > 0;
+    const cachedHidden = (!olderRequested && rows.length > 0)
+      || [...olderRows.values()].some(event => event.occurredAt < displayedHistoryAfter);
     elements.olderHistoryButton.disabled = olderLoading || !olderHasMore && !cachedHidden || !hasWorld;
-    elements.olderHistoryButton.textContent = olderLoading ? 'Loading earlier activity…'
-      : olderHasMore || cachedHidden ? 'Read earlier activity' : 'You’ve reached the beginning';
+    elements.olderHistoryButton.textContent = olderLoading ? 'Loading earlier passages…'
+      : olderHasMore || cachedHidden ? 'Read earlier passages' : 'You’ve reached the beginning';
   }
 }
 
 async function loadOlderHistory() {
   if (olderLoading || !hasWorld) return;
+  const cachedEarlier = [...olderRows.values()].filter(event => event.occurredAt < displayedHistoryAfter);
+  if (cachedEarlier.length) {
+    const restore = captureReadingPosition();
+    displayedHistoryAfter = Math.max(0, Math.min(displayedHistoryAfter - 24 * 60 * 60 * 1000,
+      Math.max(...cachedEarlier.map(event => event.occurredAt))));
+    olderRequested = true; paintReadingFeed({ replaceChanged: true }); renderOlderHistory(); restore(); return;
+  }
   if (!olderRequested && olderRows.size) {
-    olderRequested = true; renderOlderHistory(); return;
+    olderRequested = true; paintReadingFeed({ replaceChanged: true }); renderOlderHistory(); return;
   }
   if (!olderHasMore) return;
   const restoreReading = captureReadingPosition();
@@ -3767,6 +4014,7 @@ async function loadOlderHistory() {
       if (!response.ok) throw new Error('History unavailable');
       const data = await response.json();
       if (historyScope !== scope || historyGeneration !== generation) return;
+      if (data.continuityId !== scope) throw new Error('The story continuity changed');
       if (!Array.isArray(data.events) || data.events.length > 40
         || !(data.nextCursor === null || Number.isSafeInteger(data.nextCursor) && data.nextCursor > 0))
         throw new Error('Invalid history page');
@@ -3776,6 +4024,7 @@ async function loadOlderHistory() {
         && !current.has(event.id) && !olderRows.has(event.id)) {
         olderRows.set(event.id, event); additions.push(event);
       }
+      if (additions.length) displayedHistoryAfter = Math.min(displayedHistoryAfter, ...additions.map(event => event.occurredAt));
       olderCursor = data.nextCursor; olderHasMore = olderCursor !== null;
       const earliest = Math.min(...data.events.map(event => asTime(event.occurredAt)).filter(at => at !== null));
       if (Number.isFinite(earliest)) recapCompleteSince = Math.min(recapCompleteSince ?? earliest, earliest);
@@ -3793,6 +4042,7 @@ async function loadOlderHistory() {
     if (historyScope === scope && historyGeneration === generation) {
       olderLoading = false;
       elements.olderEvents?.setAttribute('aria-busy', 'false');
+      paintReadingFeed({ replaceChanged: true });
       renderOlderHistory();
       loadSocialForVisibleEvents(additions);
       updateReadingRecap();
@@ -3804,6 +4054,8 @@ async function loadOlderHistory() {
 elements.olderHistoryButton?.addEventListener('click', loadOlderHistory);
 
 function render(world) {
+  const followingLiveEnd = hasWorld && atReadingLiveEdge();
+  const previousWorldTime = asTime(lastWorld?.resolvedThrough);
   const restoreReading = captureReadingPosition();
   lastWorld = world;
   const serverTime = asTime(world.serverTime);
@@ -3840,6 +4092,7 @@ function render(world) {
     elements.veilRow.hidden = true;
   }
   elements.status.textContent = world.worldStatus || 'A quiet moment in Silver Clouds.';
+  newcomer.update(world);
   renderReadingPair(world);
   renderCityStories(world);
   renderContinuity(world);
@@ -3853,8 +4106,25 @@ function render(world) {
   updateLiveState();
   // The shared API returns chronological history. Show the most recent entries first.
   const recent = world.events.slice(-50).reverse();
+  for (const event of [...recent].reverse()) {
+    const authored = authoredSceneRecord(event);
+    if (!authored) continue;
+    cinematicInbox.enqueue(authored, { queue: hasWorld && scene.autoScenesEnabled()
+      && document.body.dataset.reading !== 'true' && previousWorldTime !== null
+      && event.occurredAt > previousWorldTime && event.occurredAt >= world.resolvedThrough - 180_000 });
+  }
+  persistCinematicState();
+  drainCinematicQueue();
   syncReadingBookmark(world, recent);
-  readingFeed.update(historyScope, recent);
+  const feedUpdate = readingFeed.update(historyScope, recent);
+  if (followingLiveEnd && feedUpdate.added && !feedUpdate.gap && !readingRecap.getState().historyGap) {
+    // Append forward arrivals at the live end; retain existing prose and the
+    // reader's viewport. An editorial revision still requires explicit reveal.
+    const previous = readingFeed.shown;
+    readingFeed.reveal({ includeRevisions: false });
+    const retained = new Set(readingFeed.shown.map(event => event.id));
+    for (const event of previous) if (!retained.has(event.id)) olderRows.set(event.id, event);
+  }
 
   // Check for newly arriving high-stakes narrative catalysts
   if (!hasWorld) {
@@ -3929,6 +4199,7 @@ async function refreshWorld() {
     let failure = null;
     for (let attempt = 0; attempt < attempts; attempt += 1) {
       if (attempt) await new Promise((resolve) => setTimeout(resolve, 600 * attempt));
+      if (document.visibilityState !== 'visible') return;
       try {
         response = await viewerFetch('/api/observe', {
           method: 'POST', cache: 'no-store', signal: AbortSignal.timeout(10_000),
@@ -3943,16 +4214,22 @@ async function refreshWorld() {
     if (!world || !Array.isArray(world.characters) || !Array.isArray(world.events)) {
       throw new Error('Invalid world response');
     }
-    await fetchTodayHighlight();
     render(world);
+    // A separate highlights request must never hold up successfully received
+    // world/story updates, even if that optional endpoint stops responding.
+    void fetchTodayHighlight();
     // The model runs after the canonical response has returned. A first poll
     // catches a fast scene; the short interval below catches a slower one.
     pollCinematic();
-  } catch {
+  } catch (error) {
+    console.error('Worldstream refresh failed', error);
     elements.connection.textContent = hasWorld
       ? 'Unable to refresh. Showing the last received world state.'
       : 'Unable to reach the local world. Try Refresh when the server is available.';
     elements.connection.dataset.state = 'error';
+    if (readingLiveStatus) readingLiveStatus.textContent = hasWorld
+      ? `Updates are paused. Your passage is still here; retrying shortly. Last world update · ${readingLiveTime.format(lastWorld.resolvedThrough)}.`
+      : 'The story could not be reached yet. Refresh to try again.';
   } finally {
     refreshing = false;
     elements.refresh.disabled = false;
@@ -4068,13 +4345,20 @@ setupCourierNotificationToggle();
 async function resumeWatching() {
   if (document.visibilityState !== 'visible') return;
   await updatePresence();
+  if (document.visibilityState !== 'visible') return;
   scene.resume();
   await refreshWorld();
 }
 function leaveWatching() {
   scene.suspend();
-  if (viewerToken) navigator.sendBeacon?.('/api/presence/leave',
-    new Blob([JSON.stringify({ viewerToken })], { type: 'application/json' }));
+  if (!viewerToken) return;
+  const url = apiUrl('/api/presence/leave');
+  // A simple body reaches a separate backend without an unload-time preflight.
+  // Both servers parse the token from JSON independently of the content type.
+  const body = JSON.stringify({ viewerToken });
+  try { if (navigator.sendBeacon?.(url, body)) return; } catch {}
+  fetch(url, { method: 'POST', body, keepalive: true, credentials: 'omit',
+    headers: { 'Content-Type': 'text/plain;charset=UTF-8' } }).catch(() => {});
 }
 elements.refresh.addEventListener('click', resumeWatching);
 document.addEventListener('visibilitychange', () => {

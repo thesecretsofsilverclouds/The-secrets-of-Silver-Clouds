@@ -30,6 +30,116 @@ function snapshot() {
 }
 const request = { type: 'story', id: 'thread:delivery' };
 
+function purposeSnapshot() {
+  const state = snapshot(); state.threads.instances = {};
+  const id = 'purpose:rose', source = { factKey: 'finished-lines', sourceEventId: 'finish', establishedAt: 100 };
+  state.offscreenLives = { projects: {}, people: { rose: { purpose: { id, kind: 'read_finished_lines',
+    source, chosenAt: 200, chosenEventId: 'choice', status: 'shared', attempts: 2,
+    request: { eventId: 'second-request', at: 450 }, result: { sourceEventId: 'heard', completedAt: 500 },
+    privateMotive: 'PRIVATE_INTENTION' } } } };
+  const result = (number, at, sourceEventId, outcome, requestEventId) => ({
+    key: `${id}:result:${number}`, kind: 'offscreen_purpose_result', sourceEventId, createdAt: at,
+    value: { purposeId: id, guest: 'rose', completedWorkEventId: 'finish', requestEventId, outcome,
+      secret: 'PRIVATE_FACT' },
+  });
+  state.facts = { 'finished-lines': { key: 'finished-lines', kind: 'offscreen_result', sourceEventId: 'finish', createdAt: 100,
+    value: { guest: 'rose', outcome: 'settled' } },
+    [`${id}:result:1`]: result(1, 350, 'interrupted', 'unheard', 'first-request'),
+    [`${id}:result:2`]: result(2, 500, 'heard', 'shared', 'second-request') };
+  state.events = [['finish', 100, 'OFFSCREEN_RESULT'], ['choice', 200, 'OFFSCREEN_START'],
+    ['first-request', 300, 'OFFSCREEN_ENCOUNTER'], ['interrupted', 350, 'OFFSCREEN_RESULT'],
+    ['second-request', 450, 'OFFSCREEN_ENCOUNTER'], ['heard', 500, 'OFFSCREEN_RESULT']]
+    .map(([id, at, type]) => event(id, at, type));
+  return state;
+}
+
+test('a next-purpose trail retains finished work, the actual choice and both owned attempts without reopening the work', () => {
+  const state = purposeSnapshot(), before = structuredClone(state);
+  const output = buildStoryThread(state, { type: 'story', id: 'purpose:rose' });
+  assert.deepEqual(output.events.map(row => row.id), ['finish', 'choice', 'first-request', 'interrupted', 'second-request', 'heard']);
+  assert.equal(output.status, 'shared'); assert.equal(output.concluded, true);
+  assert.deepEqual(output.stages[0].eventIds, ['finish']);
+  assert.deepEqual(output.stages[2].eventIds, ['heard']);
+  assert.doesNotMatch(JSON.stringify(output), /PRIVATE_|factKey|attempts|sourceEventId/);
+  assert.deepEqual(state, before);
+  const sources = new Map(state.events.map(row => [row.id, row])); state.events = [];
+  const reads = [];
+  assert.deepEqual(buildStoryThread(state, { type: 'story', id: 'purpose:rose' }, {
+    eventById(id) { reads.push(id); return sources.get(id); },
+  }).events, output.events);
+  assert.equal(reads.length, 6); assert.ok(reads.length <= STORY_THREAD_LOOKUP_LIMIT);
+  state.facts['purpose:rose:result:2'].value.outcome = 'unheard';
+  assert.equal(buildStoryThread(state, { type: 'story', id: 'purpose:rose' }).status, 'shelved');
+});
+
+test('purpose descriptors reveal no future choice, listener, outcome or private source', () => {
+  const state = purposeSnapshot(), wanted = { type: 'story', id: 'purpose:rose' };
+  state.world.resolvedThrough = 250;
+  const output = buildStoryThread(state, wanted);
+  assert.equal(output.status, 'seeking'); assert.equal(output.concluded, false);
+  assert.equal(output.eventId, 'choice');
+  assert.deepEqual(output.events.map(row => row.id), ['finish', 'choice']);
+  assert.doesNotMatch(JSON.stringify(output), /heard|interrupted|request/);
+  state.world.resolvedThrough = 150;
+  assert.equal(buildStoryThread(state, wanted), null);
+  state.world.resolvedThrough = 600;
+  state.events.find(row => row.id === 'choice').visibility = 'private';
+  assert.equal(buildStoryThread(state, wanted), null);
+  state.events.find(row => row.id === 'choice').visibility = 'public';
+  state.facts['finished-lines'].value.outcome = 'unfinished';
+  assert.equal(buildStoryThread(state, wanted), null);
+});
+
+function bankSnapshot() {
+  const state = snapshot(); state.threads.instances = {};
+  state.sceneBank = { completed: { P1: { eventId: 'nimbus-arrived', at: 100 }, P2: { eventId: 'nimbus-named', at: 300 },
+    P22: { eventId: 'future-ending', at: 700 }, N1: { eventId: 'ordinary-scene', at: 200 },
+    N2: { eventId: 'private-scene', at: 400 }, imaginary: { eventId: 'invented', at: 500 } },
+    pending: { sceneTitle: 'PRIVATE_FUTURE_SCENE' }, knowledge: { nimbus: 'PRIVATE_KNOWLEDGE' } };
+  state.events = [event('nimbus-arrived', 100, 'SCENE_BANK_BEAT', { payload: { sceneBankId: 'P1',
+    sceneEpisodeId: 'nimbus:nimbus-arrived', narrativeParagraphs: [
+      { kind: 'prose', text: 'A small face appeared inside the coat.', secret: 'PRIVATE_BEAT' },
+      { kind: 'dialogue', who: 'ashai', text: '“What is that?” Ashai asked.' }],
+    sceneBeats: [{ kind: 'prose', who: 'nimbus', text: 'The creature smiled.', nimbusPlate: 'smile', secret: 'PRIVATE_PLATE' }],
+  } }), event('nimbus-named', 300, 'SCENE_BANK_BEAT'), event('future-ending', 700, 'SCENE_BANK_BEAT'),
+  event('ordinary-scene', 200, 'SCENE_BANK_BEAT'), event('private-scene', 400, 'SCENE_BANK_BEAT', { visibility: 'private' })];
+  return state;
+}
+
+test('Nimbus and ordinary completed scenes resolve exact public episodes with ordered prose and silent plates', () => {
+  const state = bankSnapshot(), before = structuredClone(state), wanted = { type: 'story', id: 'nimbus:nimbus-arrived' };
+  const descriptors = listStoryThreads(state);
+  assert.deepEqual(descriptors.map(row => row.id).sort(), ['nimbus:nimbus-arrived', 'scene-bank:N1']);
+  const output = buildStoryThread(state, wanted);
+  assert.equal(output.status, 'active'); assert.equal(output.concluded, false);
+  assert.equal(output.eventId, 'nimbus-named');
+  assert.deepEqual(output.events.map(row => row.id), ['nimbus-arrived', 'nimbus-named']);
+  assert.deepEqual(output.events[0].narrativeParagraphs.map(row => row.kind), ['prose', 'dialogue']);
+  assert.equal(output.events[0].sceneBeats[0].nimbusPlate, 'smile');
+  assert.equal(output.events[0].sceneBeats[0].kind, 'prose');
+  assert.equal(buildStoryThread(state, { type: 'story', id: 'scene-bank:N1' }).concluded, true);
+  assert.doesNotMatch(JSON.stringify([descriptors, output]), /PRIVATE_|future-ending|private-scene|imaginary|invented/);
+  assert.deepEqual(state, before);
+  state.world.resolvedThrough = 800;
+  assert.equal(buildStoryThread(state, wanted).concluded, true);
+  state.world.resolvedThrough = 50;
+  assert.deepEqual(listStoryThreads(state), []);
+});
+
+test('archived scene episodes use bounded exact reads and reject private, future or differently identified returns', () => {
+  const state = bankSnapshot(), all = new Map(state.events.map(row => [row.id, row])), wanted = { type: 'story', id: 'nimbus:nimbus-arrived' };
+  state.events = []; let reads = [];
+  const output = buildStoryThread(state, wanted, { eventById(id) { reads.push(id); return all.get(id); } });
+  assert.deepEqual(reads, ['nimbus-arrived', 'nimbus-named']);
+  assert.equal(output.events[0].sceneBeats[0].nimbusPlate, 'smile');
+  assert.ok(reads.length <= STORY_THREAD_LOOKUP_LIMIT);
+  for (const patch of [{ id: 'wrong' }, { visibility: 'private' }, { occurredAt: 999 }]) {
+    const trail = buildStoryThread(state, wanted, { eventById(id) { return { ...all.get(id), ...patch }; } });
+    assert.deepEqual(trail.events, []);
+  }
+  assert.equal(buildStoryThread(state, { type: 'story', id: 'scene-bank:unknown' }), null);
+});
+
 test('trail is exact public ownership, chronological, and never inferred from nearby activity or private causes', () => {
   const state = snapshot(), before = structuredClone(state), result = buildStoryThread(state, request);
   assert.deepEqual(result.events.map(row => row.id), ['opening', 'checking', 'ending', 'callback']);

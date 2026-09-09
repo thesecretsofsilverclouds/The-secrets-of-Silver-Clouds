@@ -1,7 +1,9 @@
 import { createHash } from 'node:crypto';
+import { SCENE_BANK_EVENT_TYPES, SCENE_BANK_FACT_KINDS, SCENE_BANK_RULES, initialSceneBank, sceneBankAfterAction,
+  resolveSceneBankAction, assertSceneBank, sceneBankAvailable, guardSceneBankAction, interruptSceneBankSession } from './scene-bank.mjs';
 import { atLondon, londonDate, nextLondonDay, prevLondonDay, MINUTE_MS as MIN } from './time.mjs';
 import { DAYPARTS, daypart, dayPhase, daylightFraction, sunEvents } from './sky.mjs';
-import { moodFor, selectExchange, summarise } from './dialogue.mjs';
+import { moodFor, selectExchange, summarise, correctLegacyWakeDialogue } from './dialogue.mjs';
 import { nextVeil, phaseFor, VEIL_PRESSURE, VEIL_NOTICES } from './veil.mjs';
 import { AREAS_BY_LOCATION, areaOf, permitsArea, defaultArea, encounterEligibility,
   ENCOUNTER_REASONS, SEALED_AREAS, MI6_SECTIONS } from './places.mjs';
@@ -15,11 +17,14 @@ import { publicNarrativeBlock } from './narrative.mjs';
 import { selectVenueScene, VENUE_GUESTS } from './venues.mjs';
 import { proseFor, registerFor } from './prose.mjs';
 import { editorialEvent } from './editorial.mjs';
+import { publicSceneBankPerformance } from './scene-bank-presentation.mjs';
 import { resolveContextBridge } from './context-bridge.mjs';
+import { publicContinuity, isPublicStoryEvent } from './public-story-context.mjs';
 import { downtimeLine, encounterLine, trainingEndLine, homewardLine } from './downtime.mjs';
 import { leadMomentLine, MOMENT_SIGHTS } from './moments.mjs';
 import { ARC_EVENT_TYPES, ARC_FACT_KINDS, initialArcs, arcDayActions, issueArcActions,
-  resolveArcAction, assertArcs, activeArcSummary } from './arcs.mjs';
+  resolveArcAction, assertArcs, activeArcSummary, arcParticipantAvailable,
+  guardArcAction, interruptArcSession } from './arcs.mjs';
 import { INK_ACTIVITY, INK_EVENT_TYPES, INK_FACT_KINDS, initialStoryEffects,
   activeInkAppointment, inkVisitActions, resolveInkAction, interruptInkAppointment,
   assertStoryEffects } from './story-effects.mjs';
@@ -82,7 +87,7 @@ export const EVENT_TYPES = Object.freeze([
   // An hour at a venue used to be two lines and a gap. This is the hour.
   'VENUE_SCENE', ...INK_EVENT_TYPES, ...THREAD_EVENT_TYPES, ...INTENT_EVENT_TYPES,
   ...AGENDA_EVENT_TYPES, ...ABILITY_EVENT_TYPES, ...OUTING_RECOVERY_EVENT_TYPES,
-  ...SUPPORTING_EVENT_TYPES, ...NIGHT_EVENT_TYPES, ...OFFSCREEN_EVENT_TYPES, 'WORLD_DEPTH_ACTIVATE', 'WORLD_LIVES_ACTIVATE',
+  ...SUPPORTING_EVENT_TYPES, ...NIGHT_EVENT_TYPES, ...OFFSCREEN_EVENT_TYPES, ...SCENE_BANK_EVENT_TYPES, 'WORLD_DEPTH_ACTIVATE', 'WORLD_LIVES_ACTIVATE',
 ]);
 const TYPES = new Set(EVENT_TYPES);
 // City venues are a creator-approved v3 expansion. The cafe is manuscript canon (p.37);
@@ -113,7 +118,7 @@ const TOPICS = new Set(['break_preference','quiet_preference','finish_preference
   // what it was or what it meant — there is nothing to be explained.
   'incident', ...INK_FACT_KINDS, ...THREAD_FACT_KINDS, ...INTENT_FACT_KINDS,
   ...AGENDA_FACT_KINDS, ...ABILITY_FACT_KINDS, ...SUPPORTING_FACT_KINDS, ...NIGHT_FACT_KINDS, ...OFFSCREEN_FACT_KINDS,
-  ...ARC_FACT_KINDS]);
+  ...ARC_FACT_KINDS, ...SCENE_BANK_FACT_KINDS]);
 const ANCHORS = Object.freeze({ checkpoint: 'opening-pdf-p183-before-p184-disclosure',
   relationshipStage: 'friends', ashaiEye: 'existing_bionic_eye', abilities: 'already_taught_only', sanctuary: 'invite_only',
   // An explicit author decision, recorded here because it changes what the
@@ -564,7 +569,7 @@ function initialState(startMs) {
     threads:initialThreads(),
     intent:initialIntent(),agendas:initialAgendaState(),abilities:initialAbilities(),
     arcs:initialArcs(),outingRecovery:initialOutingRecovery(),supportingStories:initialSupportingStories(),nightStories:initialNightStories(),
-    offscreenLives:initialOffscreenLives(),
+    offscreenLives:initialOffscreenLives(),sceneBank:initialSceneBank(),
     // The director's whole memory. It is four numbers, a short list of families
     // and today's colour — deliberately the smallest thing that can pace a day
     // and still refuse to repeat itself. `lastNotableAt` starts at the epoch, so
@@ -944,7 +949,7 @@ export function assertCanonState(state) {
   assertStoryEffects(state);
   assertThreads(state);
   assertIntent(state);assertAgendas(state);assertAbilities(state);
-  assertOutingRecovery(state);assertSupportingStories(state);assertNightStories(state);assertOffscreenLives(state);assertArcs(state);
+  assertOutingRecovery(state);assertSupportingStories(state);assertNightStories(state);assertOffscreenLives(state);assertArcs(state);assertSceneBank(state);
 }
 
 function reduceAction(state,a,seed) {
@@ -1045,6 +1050,8 @@ function reduceAction(state,a,seed) {
     // merely never scheduled — and makes the sealed basement a wall.
     if(!permitsArea(who.location,area,label,now))
       throw new Error(`${label} is not possible in ${area} at ${who.location}`);
+    if(!ARC_EVENT_TYPES.includes(a.type)) interruptArcSession(storyContext(),a.type,who.id);
+    if(!SCENE_BANK_EVENT_TYPES.includes(a.type)) interruptSceneBankSession(storyContext(),a.type,who.id);
     if(who.id==='goaden'&&label!==INK_ACTIVITY&&activeInkAppointment(state))
       interruptInkAppointment(storyContext(),a.type);
     if(!INTENT_EVENT_TYPES.includes(a.type)) interruptIntent(storyContext(),who.id,a.type);
@@ -1060,7 +1067,7 @@ function reduceAction(state,a,seed) {
   const skip=reason=>{event.payload={outcome:'skipped',reason};};
   const agreement=()=>state.arrangements[a.arrangementKey];
   const validAgreement=()=>{const r=agreement();return r&&['accepted','started','completed'].includes(r.status)&&r.startAt<=now&&now<=r.until;};
-  const castAvailable=(who,where={})=>supportingAvailability(state,who,{...where,atMs:now})
+  const castAvailable=(who,where={})=>arcParticipantAvailable(state,who,now)&&sceneBankAvailable(state,who,now)&&supportingAvailability(state,who,{...where,atMs:now})
     &&supportingStoryAvailability(state,who,{atMs:now})&&offscreenAvailable(state,who,{...where,atMs:now});
   // The pair's side of a shared moment: one beat each, two minutes after the
   // thing itself, only for whoever has an authored line for what they are
@@ -1082,9 +1089,9 @@ function reduceAction(state,a,seed) {
     setAbilities:value=>setWorld('abilities',value),
     setOutingRecovery:value=>setStory('outingRecovery',value),
     setSupportingStories:value=>setStory('supportingStories',value),setNightStories:value=>setStory('nightStories',value),
-    setOffscreenLives:value=>setStory('offscreenLives',value),
+    setOffscreenLives:value=>setStory('offscreenLives',value),setSceneBank:value=>setStory('sceneBank',value),
     setArcs:value=>setStory('arcs',value),
-    actorAvailable:(who,atMs)=>nightStoryAvailable(state,who,{atMs})&&outingRecoveryActorAvailable(state,who,{atMs}),
+    actorAvailable:(who,atMs)=>arcParticipantAvailable(state,who,atMs)&&sceneBankAvailable(state,who,atMs)&&nightStoryAvailable(state,who,{atMs})&&outingRecoveryActorAvailable(state,who,{atMs}),
     outingRecoveryAllowed:(spec,atMs)=>['goaden','ashai'].every(who=>nightStoryAvailable(state,who,{atMs}))
       &&permitsActivity(spec.venue,locationMode(spec.venue,spec.departureAt+(spec.travelMinutes+5)*MIN),
         CITY_ACTIVITY[spec.kind]?.label)
@@ -1096,7 +1103,13 @@ function reduceAction(state,a,seed) {
     setArrangement:(key,value)=>update('arrangements',key,value),publish,skip,
   }});
 
-  if(!guardOutingRecoveryAction(storyContext())) {
+  if(!guardSceneBankAction(storyContext())) {
+    // An authored scene has retained its cast and recorded the deferred action.
+  } else if(!guardArcAction(storyContext())) {
+    // The existing arc reservation recorded its own delay or refusal.
+  } else if(SCENE_BANK_EVENT_TYPES.includes(a.type)) {
+    resolveSceneBankAction(storyContext());
+  } else if(!guardOutingRecoveryAction(storyContext())) {
     // Exact owned retry validation has already recorded the refusal.
   } else if(!NIGHT_EVENT_TYPES.includes(a.type)&&!SUPPORTING_EVENT_TYPES.includes(a.type)&&a.type!=='ABILITY_ACTIVITY_SETTLED'
     &&actors.some(who=>!nightStoryAvailable(state,who.id,{atMs:now}))) {
@@ -1180,7 +1193,7 @@ function reduceAction(state,a,seed) {
     // An arc is a consequence of the world's condition rather than its calendar,
     // so it is scheduled here beside the pressure incidents and reads the same
     // carried value they do.
-    followups.push(...issueArcActions(storyContext(),arcDayActions({state,day:date,now,seed,carried:value})));
+    followups.push(...issueArcActions(storyContext(),arcDayActions({state,day:date,now,seed,carried:value,scheduled})));
     const next=nextLondonDay(date);
     followups.push({id:`${next}/day`,dueAt:atLondon(next,'00:00')+1,priority:0,type:'WEATHER_CHANGE',day:next});
   } else if(a.type==='FACTION_STATUS') {
@@ -1645,12 +1658,15 @@ function reduceAction(state,a,seed) {
       const knownBy=result?['goaden','ashai'].filter(who=>knowsFact(state.characters[who],result.factKey,now)):[];
       const scene=selectVenueScene({venue,available:['goaden','ashai',...(a.guests??[]).filter(who=>
         castAvailable(who,{location:venue,area:'venue'}))],
-        seed,key:`${a.day}/${a.id}`,inkContext:{completed:Boolean(result&&result.completedAt<=now),knownBy}});
+        seed,key:`${a.day}/${a.id}`,inkContext:{completed:Boolean(result&&result.completedAt<=now),knownBy},
+        usage:state.director.venueScenes??{}});
       if(!scene) skip('Nothing written for this venue');
       else {
         event.location=venue;event.area='venue';
         event.participants=['goaden','ashai'];
         event.payload={mood:scene.mood,lines:scene.lines,venue,cast:scene.cast,sceneId:scene.id??null};
+        setDirector({venueScenes:{...(state.director.venueScenes??{}),
+          [scene.id]:(state.director.venueScenes?.[scene.id]??0)+1}});
         if(scene.id==='ink_emily_prowler'||scene.id==='ink_prowler_remembered') {
           for(const who of ['goaden','ashai']) useMemory(state.characters[who],result.factKey);
         }
@@ -1737,7 +1753,7 @@ function reduceAction(state,a,seed) {
   // after is the wrong one — it produced "Ashai finished training in the lunch
   // hall", which is where she went, not where she trained.
   const ENDS=a.type==='ACTIVITY_COMPLETE'||a.type==='PRACTICE_END';
-  if(!['UNEASE','INCIDENT',...THREAD_EVENT_TYPES,...INTENT_EVENT_TYPES,...AGENDA_EVENT_TYPES,...ABILITY_EVENT_TYPES,...SUPPORTING_EVENT_TYPES,...NIGHT_EVENT_TYPES,...OFFSCREEN_EVENT_TYPES].includes(a.type))
+  if(!['UNEASE','INCIDENT',...THREAD_EVENT_TYPES,...INTENT_EVENT_TYPES,...AGENDA_EVENT_TYPES,...ABILITY_EVENT_TYPES,...SUPPORTING_EVENT_TYPES,...NIGHT_EVENT_TYPES,...OFFSCREEN_EVENT_TYPES,...SCENE_BANK_EVENT_TYPES,...ARC_EVENT_TYPES].includes(a.type))
     event.area=(ENDS?areaBefore:state.characters[event.participants[0]]?.area)??areaBefore??null;
   const notable=event.visibility==='public'&&a.type!=='DIRECTOR_TICK'
     &&(event.participants.length>=2||NOTABLE_ALONE.has(a.type));
@@ -1763,13 +1779,15 @@ function reduceAction(state,a,seed) {
     followups.push(...issueSupportingActions(storyContext(),supportingEncounterActions({state,day:a.day,now,seed,parentActionId:a.id,parentEventId:id,canUseActor:storyContext().ops.actorAvailable})));
   if(event.visibility==='public'&&a.type==='CROSS_PATHS')
     followups.push(...issueNightActions(storyContext(),nightEncounterActions({state,day:a.day,now,seed,parentActionId:a.id,parentEventId:id})));
-  if(event.visibility==='public'&&['SUPPORTING_ENCOUNTER','SUPPORTING_OUTCOME','VENUE_SCENE','LEGION_VISIT'].includes(a.type))
+  if(event.visibility==='public'&&['SUPPORTING_ENCOUNTER','SUPPORTING_OUTCOME','VENUE_SCENE','LEGION_VISIT','SCENE_BANK_BEAT'].includes(a.type))
     followups.push(...issueOffscreenActions(storyContext(),offscreenEncounterActions({state,now,parentActionId:a.id,parentEventId:id,
       cast:[...(event.payload.cast??[]),...(event.payload.visitors??[]),...(event.payload.who?[event.payload.who]:[])],participants:event.participants,location:event.location,area:event.area,
-      sourceType:event.type,sourcePayload:event.payload})));
+      sourceType:event.type,sourcePayload:event.payload,
+      sourceDuration:a.type==='SCENE_BANK_BEAT'?SCENE_BANK_RULES.sceneDuration:undefined})));
   if(event.visibility==='public') noteSupportingAppearance(storyContext(),[...(event.payload.cast??[]),...(event.payload.visitors??[]),...(event.payload.who?[event.payload.who]:[])]);
   if(event.visibility==='public') noteOffscreenPresence(storyContext());
   recordNightCause(storyContext());
+  sceneBankAfterAction(storyContext());
   event.causedBy=[...new Set(event.causedBy)].filter(c=>typeof c==='string'&&c.length>0&&c!==id);
   assertCanonState(state);
   return {event,followups};
@@ -1917,14 +1935,22 @@ export function publicProjection(snapshot) {
 export function publicEvents(snapshot, limit = 40) {
   const eventMap = new Map((snapshot.events ?? []).map(e => [e.id, e]));
   const lookup = id => eventMap.get(id) ?? (typeof snapshot.eventById === 'function' ? snapshot.eventById(id) : null);
-  return snapshot.events.filter(e=>e.visibility==='public'&&e.publicDescription).slice(-limit).map(e=>editorialEvent(e)).map(e=>{
-    const bridge = resolveContextBridge(e, lookup);
+  return snapshot.events.filter(e=>e.visibility==='public'&&e.publicDescription).slice(-limit)
+    .map(e=>correctLegacyWakeDialogue(e, () => typeof snapshot.publicSourcesForEvent === 'function'
+      ? snapshot.publicSourcesForEvent(e) : snapshot.events))
+    .map(e=>editorialEvent(e)).map(e=>{
+    const bridge = resolveContextBridge(e, id => {
+      const source = lookup(id);
+      return isPublicStoryEvent(source) && source.occurredAt <= e.occurredAt ? source : null;
+    });
     return {id:e.id,occurredAt:e.occurredAt,type:e.type,
+      ...(Number.isSafeInteger(e.seq) ? { narrativeOrder: e.seq } : {}),
       location:e.location,participants:[...e.participants],description:e.publicDescription,
       // Two registers. `description` is the ticker line every event has; a
       // story beat additionally carries the paragraph it deserves.
       register:e.register??'ticker',...(e.prose?{prose:e.prose}:{}),
-      ...(bridge ? { contextBridge: bridge } : {}),
+      ...publicSceneBankPerformance(e),
+      ...publicContinuity(e, lookup, bridge),
       ...(e.memoryCallback ? { memoryCallback: e.memoryCallback } : {}),
       // The room as it was at the time, which is not the same fact as the room
       // somebody is standing in now. Reading a historical event through the

@@ -80,7 +80,7 @@ export function deriveAtmosphere(world = {}, sceneContext = null) {
 
 /**
  * createWeatherLayer({canvas, environment, readingColumn?, flashesOff=true,
- *   maxParticles=144, maxDpr=1.5, runtime?})
+ *   maxParticles=180, maxDpr=1.5, runtime?})
  * environment MUST be a scenery-only element, never the text/body surface.
  * It receives --atmosphere-daylight, --weather-wetness, --weather-fog and the
  * brief --weather-flash (<=.055), plus data-weather-code/exposure/motion.
@@ -90,7 +90,7 @@ export function deriveAtmosphere(world = {}, sceneContext = null) {
  * for a host or deterministic tests. No global browser access at import time.
  */
 export function createWeatherLayer({ canvas, environment, readingColumn = null, flashesOff = true,
-  maxParticles = 144, maxDpr = 1.5, runtime = {} } = {}) {
+  maxParticles = 180, maxDpr = 1.5, runtime = {} } = {}) {
   const win = runtime.window ?? globalThis.window;
   const doc = runtime.document ?? globalThis.document;
   const media = runtime.mediaQuery ?? win?.matchMedia?.('(prefers-reduced-motion: reduce)');
@@ -165,10 +165,21 @@ export function createWeatherLayer({ canvas, environment, readingColumn = null, 
     needsMeasure = true;
   }
 
+  // How much of a drop survives where the reader is reading. Weather is behind
+  // the text and must never compete with it, so it is dimmed over the column and
+  // full strength in the margins.
+  //
+  // The floors were .025 and .075 — half to two per cent of an already faint
+  // stroke. On a laptop, where the column is most of the window, that left the
+  // page with no visible weather at all in any conditions. These keep the ratio
+  // the tests fix as the legibility promise ("edge alpha exceeds centre alpha by
+  // more than five times"), at about 6.7.
+  const FLOOR = { near: .15, far: .16 };
   function readingWeight(x, near) {
     const outside = Math.max(column.left - x, x - column.right, 0);
     const edge = smooth(outside / Math.min(160, width * .15));
-    return (near ? .025 : .075) + (1 - (near ? .025 : .075)) * edge;
+    const floor = near ? FLOOR.near : FLOOR.far;
+    return floor + (1 - floor) * edge;
   }
 
   function drawRain(values) {
@@ -184,12 +195,23 @@ export function createWeatherLayer({ canvas, environment, readingColumn = null, 
       const depthCount = drop.near ? particles.length - Math.round(particles.length * .78) : Math.round(particles.length * .78);
       const strength = clamp(values.rain * depthCount - indexInDepth);
       if (strength === 0) continue;
-      const length = (drop.near ? 18 : 8) * (.8 + values.rain * .35);
+      // Streak length is what reads as falling rather than as specks. At 18px a
+      // near drop is a dash; the eye needs a stroke long enough to imply the
+      // motion between frames before it calls it rain.
+      const length = (drop.near ? 30 : 13) * (.8 + values.rain * .35);
       const x = mod(drop.x * (width + 60) - drop.speed * seconds * .095
         + Math.sin(seconds / 11 + drop.phase) * 7, width + 60) - 30;
       const y = mod(drop.y * (height + 48) + drop.speed * seconds, height + 48) - 24;
-      context.globalAlpha = strength * (drop.near ? .22 : .17) * readingWeight(x, drop.near);
-      context.lineWidth = drop.near ? 1.05 : .65;
+      // Per-drop opacity. `strength` is what makes a storm heavier than a
+      // shower — it admits 144 of the 144 particles where light rain admits 50 —
+      // so scaling the constant beside it keeps that difference intact and only
+      // changes how present the whole effect is. It was .22/.17, which reads as
+      // clean glass at arm's length on a laptop.
+      context.globalAlpha = strength * (drop.near ? .72 : .55) * readingWeight(x, drop.near);
+      // The far depth stays under a pixel and the near depth over it: that split
+      // is what gives the fall depth rather than a flat screen of lines, and the
+      // tests hold both sides of it.
+      context.lineWidth = drop.near ? 1.7 : .95;
       context.beginPath(); context.moveTo(x, y); context.lineTo(x - length * .13, y + length); context.stroke();
     }
     context.globalAlpha = 1;

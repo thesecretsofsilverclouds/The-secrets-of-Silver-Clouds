@@ -41,6 +41,8 @@ export function initialAgendaState() {
 // unavailable to cameos everywhere, including the correct address: a work
 // commitment is not permission to stage a second incompatible scene there.
 export function supportingAvailability(state, id, { atMs, location, area } = {}) {
+  if ([state.sceneBank?.session, state.arcs?.session].some(session =>
+    session?.cast?.includes(id) && session.startAt <= atMs && atMs < session.until)) return false;
   const record = of(state).supporting[id];
   if (!record?.commitment) return true;
   const commitment = record.commitment;

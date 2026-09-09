@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { atLondon, londonDate, MINUTE_MS as MIN } from './time.mjs';
 import { areaOf } from './places.mjs';
 import { daypart } from './sky.mjs';
+import { PURSUIT_PURPOSES, PURPOSE_RULES, purposePlace } from './pursuit-purpose.mjs';
 
 // Author-approved ambient staging, not additional Book One plot. Canon sources:
 // manuscript.pdf pp64–65: Yukon's gaming; pp100–101: Gabriel's verse and Rose
@@ -66,7 +67,7 @@ export const SHARED_MOMENTS = Object.freeze({
     yukon: 'Word came round the barracks that the Order were walking the borough, and the gaming room emptied of everyone who had a window to look out of. Yukon kept playing. He also kept glancing at the door, which rather gave the game away.',
     gabriel: 'The Order colours went along the embankment below the Sanctuary and Gabriel watched them the whole way past with his arms folded and his wings very deliberately put away. He said something under his breath that would not have improved the afternoon if anybody had heard it.',
     rose: 'The Legion warehouse has one window that faces the road and Rose was at it before the first robe came level. She did not move, and she did not put the light on, and she stayed there until the last of them had gone by. Then she went back to the verse.',
-    emily: 'The Order came through the plaza gardens on the long path and the swing went still. Emily watched them from under her hair, entirely unremarkable, one more child in a public park at four in the afternoon. Not one of them looked at her. She waited a good while after they had gone before she started swinging again.',
+    emily: 'The Order came through the plaza gardens on the long path and the swing went still. Emily watched them from under her hair, entirely unremarkable, one more child in a public park. Not one of them looked at her. She waited a good while after they had gone before she started swinging again.',
     zara: 'Operations had the procession on three cameras before it reached the bridge. Zara logged the route, the count, and the time, because that is what the handover is for, and did not write down the part where the borough went quiet around them.',
   },
   veil_notice: {
@@ -79,7 +80,7 @@ export const SHARED_MOMENTS = Object.freeze({
   },
 });
 const MOMENT_KEYS = new Set(Object.keys(SHARED_MOMENTS));
-export const OFFSCREEN_FACT_KINDS = Object.freeze(['offscreen_result', 'offscreen_help']);
+export const OFFSCREEN_FACT_KINDS = Object.freeze(['offscreen_result', 'offscreen_help', 'offscreen_purpose_result']);
 export const OFFSCREEN_RULES = Object.freeze({ version: 1, dailyLimit: 2, duration: 22 * MIN,
   retryDelay: 30 * MIN, retries: 2, maxAttempts: 3, retainedProjects: 12, retainedActions: 128,
   encounterCooldown: 18 * 60 * MIN, transferInterval: 30 * MIN });
@@ -151,12 +152,52 @@ export const OFFSCREEN_CAST = Object.freeze({
     settled: 'Zara separated the muddled entry from the ordinary handover and left a clearer note in its place.' },
 });
 const IDS = Object.keys(OFFSCREEN_CAST), TYPES = new Set(OFFSCREEN_EVENT_TYPES), DAY = 24 * 60 * MIN;
-const SOURCES = new Set(['SUPPORTING_ENCOUNTER', 'SUPPORTING_OUTCOME', 'VENUE_SCENE', 'LEGION_VISIT']);
+const SOURCES = new Set(['SUPPORTING_ENCOUNTER', 'SUPPORTING_OUTCOME', 'VENUE_SCENE', 'LEGION_VISIT', 'SCENE_BANK_BEAT']);
 const hash = value => createHash('sha256').update(value).digest('hex').slice(0, 24);
 const of = state => state.offscreenLives ?? initialOffscreenLives();
 const unique = values => [...new Set(values.filter(Boolean))];
 const overlaps = (start, end, at, until) => start < until && at < end;
 const personName = lead => lead === 'goaden' ? 'Goaden' : 'Ashai';
+
+// These are consequences of a completed piece of work, not five new premises.
+// A result remains true when its owner returns: the same verse is not suddenly
+// unfinished again and Emily does not need a different swing every three days.
+export const OFFSCREEN_CONTINUATIONS = Object.freeze({
+  yukon: {
+    start: 'Yukon returned to the section he had already beaten, to see whether he could get through it again.',
+    settled: 'Yukon got through the section again. He put the controller down without the argument that had accompanied the earlier attempts.',
+    unfinished: 'Yukon had to stop before the run was finished. The section he had beaten was still beaten; this attempt would wait.' },
+  gabriel: {
+    start: 'Gabriel tried the finished verse from the beginning, leaving the last line the space he had found for it.',
+    settled: 'The ending held when Gabriel sang the whole verse through. This time he let the silence after the last beat stand.',
+    unfinished: 'Gabriel was interrupted before he reached the ending. He kept the shortened line as it was.' },
+  rose: {
+    start: 'At the Legion warehouse, Rose read the two lines she had kept. The pencil stayed beside her while she tried them aloud.',
+    settled: 'Rose said the two lines aloud and left them alone. The words she had cut stayed cut.',
+    unfinished: 'Rose put the verse aside before she could read it through. The two lines were still there, without the ones she had removed.' },
+  emily: {
+    start: 'Emily returned to the end swing. She had made the chains go slack before; now she watched for the same instant without beginning her rule again.',
+    settled: 'The chains went slack again. Emily let the swing slow, her hands resting on the chains she had been watching.',
+    unfinished: 'Emily stopped before she could try the top of the arc again. The two times she had managed it still counted.' },
+  zara: {
+    start: 'Zara read the handover with the rewritten entry in its place, checking whether it made sense among the ordinary notes.',
+    settled: 'The handover read cleanly with the rewritten entry in place. Zara left it for the next shift without another explanation in the margin.',
+    unfinished: 'Zara had to leave the handover check unfinished. She marked where to resume; the clear replacement entry remained in place.' },
+});
+
+function establishedPractice(state, guest, now) {
+  const record = of(state).people[guest], previous = of(state).projects[record.currentProjectId];
+  // Existing saved worlds already own the result and its acquired memory.
+  // Adopt that proof lazily instead of making them repeat the completed work.
+  const proof = record.practice ?? (previous?.status === 'settled' && previous.result
+    ? { projectId: previous.id, factKey: previous.result.factKey, sourceEventId: previous.result.sourceEventId,
+      establishedAt: previous.result.completedAt, confirmedAt: null } : null);
+  const fact = proof && state.facts?.[proof.factKey];
+  return fact && fact.sourceEventId === proof.sourceEventId && fact.createdAt < now
+    && fact.kind === 'offscreen_result' && fact.value?.guest === guest && fact.value.outcome === 'settled'
+    && record.knowledge.some(memory => memory.factKey === fact.key && memory.sourceEventId === fact.sourceEventId
+      && memory.learnedAt < now) ? proof : null;
+}
 
 // --------------------------------------------------------- night residence
 //
@@ -223,6 +264,10 @@ export function offscreenAvailable(state, id, { atMs, until = atMs + 1, location
   if (!IDS.includes(id)) return true;
   if (!Number.isSafeInteger(atMs) || !Number.isSafeInteger(until) || until <= atMs) return false;
   const record = of(state).people[id], lastSeen = record?.lastSeen, held = record?.commitment;
+  if ([state.sceneBank?.session, state.arcs?.session].some(session =>
+    session?.cast?.includes(id) && overlaps(session.startAt, session.until, atMs, until))) return false;
+  const presentation = record?.purpose?.status === 'performing' && record.purpose.request;
+  if (presentation && overlaps(presentation.at, presentation.until, atMs, until)) return false;
   if (lastSeen && (lastSeen.at > atMs || location && lastSeen.location !== location
     && atMs - lastSeen.at < OFFSCREEN_RULES.transferInterval)) return false;
   return !held || !overlaps(held.startAt, held.until, atMs, until);
@@ -231,6 +276,8 @@ export function offscreenAvailable(state, id, { atMs, until = atMs + 1, location
 // modules use offscreenAvailable themselves. Interval checks cover commitments
 // which start after this probe, not merely figures who are busy at this instant.
 function otherAvailable(state, guest, at, until, encounter = null) {
+  if ([state.sceneBank?.session, state.arcs?.session].some(session =>
+    session?.cast?.includes(guest) && overlaps(session.startAt, session.until, at, until))) return false;
   const agenda = state.agendas?.supporting?.[guest]?.commitment;
   if (agenda && overlaps(agenda.startAt, agenda.until, at, until)) return false;
   for (const row of Object.values(state.supportingStories?.instances ?? {})) {
@@ -252,6 +299,7 @@ function roomOpen(guest, at) {
 const shape = action => ({ type: action.type, dueAt: action.dueAt, priority: action.priority, day: action.day,
   version: action.version, projectId: action.projectId ?? null, token: action.token ?? null,
   retry: action.retry ?? 0, guest: action.guest ?? null, actors: action.actors ?? [],
+  ...(action.purposeId ? { purposeId: action.purposeId, purposeRequestEventId: action.purposeRequestEventId } : {}),
   encounter: action.encounter ?? null, moment: action.moment ?? null });
 const proposal = (id, at, type = 'OFFSCREEN_START', extra = {}) => ({ id, type, dueAt: at,
   priority: 29, day: londonDate(at), version: 1, actors: [], ...extra });
@@ -280,7 +328,9 @@ function ownedEncounter(ctx, proof) {
   return proof && ctx.event.visibility === 'public' && SOURCES.has(ctx.event.type)
     && proof.eventId === ctx.id && proof.occurredAt === ctx.now && proof.type === ctx.event.type
     && proof.location === ctx.event.location && proof.area === ctx.event.area
-    && sourceCast(ctx.event).includes(proof.guest) && ctx.event.participants.includes(proof.lead);
+    && sourceCast(ctx.event).includes(proof.guest) && ctx.event.participants.includes(proof.lead)
+    && (proof.type !== 'SCENE_BANK_BEAT' || proof.sceneBankId === ctx.event.payload?.sceneBankId
+      && committedBankMeeting(ctx.state, proof) && Number.isSafeInteger(proof.availableAt) && proof.availableAt > ctx.now);
 }
 export function issueOffscreenActions(ctx, proposals) {
   const result = [];
@@ -288,6 +338,13 @@ export function issueOffscreenActions(ctx, proposals) {
     if (!TYPES.has(action.type) || action.version !== 1 || !Number.isSafeInteger(action.dueAt) || action.dueAt <= ctx.now
       || action.day !== londonDate(action.dueAt) || action.type === 'OFFSCREEN_ENCOUNTER' && !ownedEncounter(ctx, action.encounter))
       throw new Error('Offscreen action requires an owned, strictly future causal source');
+    if (action.purposeId) {
+      const purpose = of(ctx.state).people[action.guest]?.purpose;
+      if (action.type !== 'OFFSCREEN_RESULT' || purpose?.id !== action.purposeId || purpose.status !== 'performing'
+        || purpose.request.eventId !== ctx.id || action.purposeRequestEventId !== ctx.id
+        || action.dueAt !== purpose.request.until || ctx.event.payload?.purposeStage !== 'requested')
+        throw new Error('A presentation result requires its actual owned request');
+    }
     const current = of(ctx.state); if (current.issued[action.id]) continue;
     const issued = Object.fromEntries(Object.entries(current.issued).filter(([, row]) => row.shape.dueAt >= ctx.now - 4 * DAY));
     if (Object.keys(issued).length >= OFFSCREEN_RULES.retainedActions) throw new Error('Offscreen action budget exceeded');
@@ -337,6 +394,8 @@ function knownEarlierAttempt(state, project, lead, now) {
 export function offscreenEncounterInterest(state, lead, guest, now) {
   if (!IDS.includes(guest) || !['goaden', 'ashai'].includes(lead)) return 0;
   const person = of(state).people[guest], project = of(state).projects[person.currentProjectId];
+  if (seekingPurpose(state, guest, now) && purposePlace(guest, state.characters[lead]?.location, state.characters[lead]?.area)
+    && (!person.encounters[lead] || now - person.encounters[lead].at >= OFFSCREEN_RULES.encounterCooldown)) return 2;
   if (!project?.result || project.status !== 'waiting' || project.help
     || person.encounters[lead] && now - person.encounters[lead].at < OFFSCREEN_RULES.encounterCooldown) return 0;
   return usableMemory(state, lead, state.facts[project.result.factKey], now)
@@ -348,24 +407,54 @@ function readyLead(state, proof, now) {
     && actor.location === proof.location && actor.area === proof.area
     && areaOf(actor.location, actor.area)?.social && areaOf(actor.location, actor.area).dayparts.includes(daypart(now));
 }
+function committedBankMeeting(state, proof) {
+  const completed = state.sceneBank?.completed?.[proof.sceneBankId], fact = state.facts?.[`scene-bank:${proof.sceneBankId}`];
+  return completed?.eventId === proof.eventId && completed.at === proof.occurredAt
+    && fact?.sourceEventId === proof.eventId && fact.createdAt === proof.occurredAt
+    && [proof.guest, proof.lead].every(who => completed.cast?.includes(who)
+      && state.sceneBank.knowledge?.[who]?.[proof.sceneBankId]?.sourceEventId === proof.eventId)
+    && usableMemory(state, proof.lead, fact, proof.occurredAt);
+}
+function bankListenerStillHere(state, proof, now) {
+  const actor = state.characters[proof.lead], lastSeen = of(state).people[proof.guest]?.lastSeen;
+  return committedBankMeeting(state, proof) && (actor?.activityId ?? null) === proof.activityId
+    && actor?.activity === proof.activity && lastSeen?.at >= proof.occurredAt && lastSeen.at <= now
+    && lastSeen.location === proof.location && lastSeen.area === proof.area
+    && otherAvailable(state, proof.lead, now, now + PURPOSE_RULES.duration, proof);
+}
 export function offscreenEncounterActions({ state, now, parentActionId, parentEventId, cast = [], participants = [],
-  location, area, sourceType }) {
+  location, area, sourceType, sourcePayload, sourceDuration }) {
   if (!parentActionId || !parentEventId || !SOURCES.has(sourceType)) return [];
+  const bank = sourceType === 'SCENE_BANK_BEAT';
+  if (bank && (!sourcePayload?.sceneBankId || !Number.isSafeInteger(sourceDuration) || sourceDuration <= 0)) return [];
+  // A written scene owns its five minutes. Its actual audience can become a
+  // listener afterwards, but only if they are still here when that time comes.
+  // This reuses the existing one-shot encounter, never a new visit or polling.
+  const session = state.sceneBank?.session;
+  const availableAt = bank ? Math.max(now + sourceDuration,
+    session?.sceneId === sourcePayload.sceneBankId ? session.until : now) + 1 : now + 1;
   const current = of(state), choices = IDS.filter(guest => cast.includes(guest))
     .flatMap(guest => participants.filter(lead => ['goaden', 'ashai'].includes(lead)).map(lead => ({ guest, lead })))
     .filter(({ guest, lead }) => {
       const person = current.people[guest], project = current.projects[person.currentProjectId];
       const prior = person.encounters[lead];
       return project?.result && project.result.completedAt < now && (!prior || now - prior.at >= OFFSCREEN_RULES.encounterCooldown)
-        && readyLead(state, { lead, location, area }, now) && offscreenAvailable(state, guest, { atMs: now, until: now + 2, location });
+        && readyLead(state, { lead, location, area }, now)
+        && (!bank || seekingPurpose(state, guest, now) && purposePlace(guest, location, area)
+          && committedBankMeeting(state, { sceneBankId: sourcePayload.sceneBankId, eventId: parentEventId, occurredAt: now, guest, lead }))
+        && offscreenAvailable(state, guest, { atMs: bank ? availableAt : now,
+          until: bank ? availableAt + PURPOSE_RULES.duration : now + 2, location });
     }).sort((a, b) => (current.people[a.guest].encounters[a.lead]?.at ?? -1)
       - (current.people[b.guest].encounters[b.lead]?.at ?? -1) || `${a.guest}:${a.lead}`.localeCompare(`${b.guest}:${b.lead}`));
   // One small reference per actual encounter, not a chorus of exposition.
   const choice = choices[0]; if (!choice) return [];
   const project = current.projects[current.people[choice.guest].currentProjectId];
-  return [proposal(`${parentActionId}/offscreen/${choice.guest}/${choice.lead}`, now + 1, 'OFFSCREEN_ENCOUNTER', {
+  const actor = state.characters[choice.lead];
+  return [proposal(`${parentActionId}/offscreen/${choice.guest}/${choice.lead}`, availableAt, 'OFFSCREEN_ENCOUNTER', {
     guest: choice.guest, projectId: project.id, token: project.token,
-    encounter: { eventId: parentEventId, occurredAt: now, type: sourceType, location, area, ...choice },
+    encounter: { eventId: parentEventId, occurredAt: now, type: sourceType, location, area, ...choice,
+      ...(bank ? { sceneBankId: sourcePayload.sceneBankId, availableAt, activityId: actor.activityId ?? null,
+        activity: actor.activity } : {}) },
   })];
 }
 function save(ctx, patch) { ctx.ops.setOffscreenLives({ ...of(ctx.state), ...patch }); }
@@ -380,18 +469,105 @@ function touch(ctx, project, patch) {
 function guestLearns(ctx, guest, fact) {
   const current = of(ctx.state).people[guest];
   if (current.knowledge.some(row => row.factKey === fact.key && row.sourceEventId === fact.sourceEventId)) return;
-  person(ctx, guest, { knowledge: [...current.knowledge, { factKey: fact.key, sourceEventId: fact.sourceEventId,
-    acquisitionEventId: ctx.id, learnedAt: ctx.now, validUntil: fact.validUntil }].slice(-12) });
+  const durable = new Set([current.practice?.factKey, current.purpose?.result?.factKey].filter(Boolean));
+  const established = current.knowledge.filter(row => durable.has(row.factKey));
+  const recent = [...current.knowledge.filter(row => !durable.has(row.factKey)), { factKey: fact.key, sourceEventId: fact.sourceEventId,
+    acquisitionEventId: ctx.id, learnedAt: ctx.now, validUntil: fact.validUntil }].slice(-(12 - established.length));
+  person(ctx, guest, { knowledge: [...established, ...recent] });
 }
 function publish(ctx, project, stage, description, extra = {}) {
+  if (project.continuation) ctx.event.causedBy.push(project.continuation.sourceEventId);
   ctx.event.location = project.location; ctx.event.area = project.area; ctx.event.participants = [];
   ctx.event.payload = { offscreenStoryId: project.id, guest: project.guest, cast: [project.guest],
     family: project.family, subject: OFFSCREEN_CAST[project.guest].subject, stage, attempt: project.attempt,
-    projectNumber: project.projectNumber, continuation: project.attempt > 1,
-    ...(stage === 'started' ? { newProject: true } : {}),
+    projectNumber: project.projectNumber, continuation: Boolean(project.continuation) || project.attempt > 1,
+    ...(stage === 'started' ? { newProject: !project.continuation } : {}),
+    ...(project.continuation ? { continuationSourceEventId: project.continuation.sourceEventId,
+      continuationOccurredAt: project.continuation.establishedAt,
+      continuationOf: project.continuation.projectId, routineContinuation: project.routineContinuation === true
+        && ['started', 'resumed', 'result'].includes(stage) && extra.outcome !== 'unfinished' } : {}),
     ...(project.previousResult ? { previousOutcome: project.previousResult.outcome,
       previousResultEventId: project.previousResult.sourceEventId } : {}), ...extra };
   ctx.ops.publish(description);
+}
+
+function seekingPurpose(state, guest, now) {
+  const purpose = of(state).people[guest]?.purpose, practice = establishedPractice(state, guest, now);
+  return purpose?.status === 'seeking' && purpose.attempts < PURPOSE_RULES.maxAttempts
+    && purpose.chosenAt < now && purpose.availableAt <= now
+    && purpose.source.sourceEventId === practice?.sourceEventId ? purpose : null;
+}
+function choosePurpose(ctx, guest, practice) {
+  if (!practice || of(ctx.state).people[guest].purpose) return null;
+  const purpose = { id: `purpose:${hash(`${guest}|${practice.sourceEventId}`)}`, kind: PURSUIT_PURPOSES[guest].kind,
+    source: { ...practice }, chosenAt: ctx.now, chosenEventId: ctx.id, availableAt: ctx.now + 1,
+    status: 'seeking', attempts: 0, request: null, result: null };
+  person(ctx, guest, { purpose });
+  return purpose;
+}
+function purposePayload(purpose, stage) {
+  return { offscreenStoryId: purpose.id, purposeId: purpose.id, purposeKind: purpose.kind, purposeStage: stage,
+    purposeSourceEventId: purpose.source.sourceEventId, purposeSourceOccurredAt: purpose.source.establishedAt,
+    purposeChosenEventId: purpose.chosenEventId, purposeChosenOccurredAt: purpose.chosenAt, routineContinuation: false };
+}
+function beginPurpose(ctx, project, proof, purpose) {
+  const guest = project.guest, lead = proof.lead, source = ctx.state.facts[purpose.source.factKey];
+  if (!source || !purposePlace(guest, proof.location, proof.area)
+    || !otherAvailable(ctx.state, guest, ctx.now, ctx.now + PURPOSE_RULES.duration, proof)) return false;
+  const actor = ctx.state.characters[lead], request = { ...proof, eventId: ctx.id, encounterEventId: proof.eventId,
+    at: ctx.now, until: ctx.now + PURPOSE_RULES.duration, activityId: actor.activityId ?? null, activity: actor.activity };
+  const next = { ...purpose, status: 'performing', attempts: purpose.attempts + 1, request };
+  person(ctx, guest, { purpose: next });
+  // The offer itself is where the listener learns what has actually been
+  // finished. A public result elsewhere never supplied that knowledge before.
+  ctx.ops.learn(lead, source, 'told_by_participant');
+  const acquired = ctx.ops.useMemory(lead, source.key);
+  const old = of(ctx.state).people[guest].encounters[lead];
+  person(ctx, guest, { encounters: { ...of(ctx.state).people[guest].encounters, [lead]: {
+    at: ctx.now, eventId: ctx.id, sourceEventId: source.sourceEventId,
+    acquisitionEventId: acquired?.acquisitionEventId ?? ctx.id, stage: 'purpose_requested',
+    familiarity: Math.min(8, (old?.familiarity ?? 0) + (acquired?.learnedAt < ctx.now ? 1 : 0)),
+  } } });
+  publish(ctx, project, 'purpose_requested', PURSUIT_PURPOSES[guest].request(personName(lead)), {
+    ...purposePayload(next, 'requested'), lead,
+  });
+  ctx.event.location = proof.location; ctx.event.area = proof.area;
+  ctx.event.participants = [lead]; ctx.event.payload.cast = [lead, guest];
+  ctx.event.causedBy.push(proof.eventId, purpose.chosenEventId, source.sourceEventId);
+  ctx.followups.push(...issueOffscreenActions(ctx, [proposal(`${purpose.id}/presentation/${next.attempts}`,
+    request.until, 'OFFSCREEN_RESULT', { guest, projectId: project.id, token: project.token,
+      purposeId: purpose.id, purposeRequestEventId: ctx.id })]));
+  return true;
+}
+function finishPurpose(ctx, project) {
+  const guest = project.guest, purpose = of(ctx.state).people[guest].purpose, request = purpose?.request;
+  if (purpose?.id !== ctx.action.purposeId || purpose.status !== 'performing' || !request
+    || request.eventId !== ctx.action.purposeRequestEventId || ctx.now !== request.until) {
+    ctx.ops.skip('No matching presentation is still in progress'); return;
+  }
+  const actor = ctx.state.characters[request.lead], lastSeen = of(ctx.state).people[guest].lastSeen;
+  const proof = { ...request, eventId: request.encounterEventId };
+  const present = readyLead(ctx.state, proof, ctx.now) && purposePlace(guest, request.location, request.area)
+    && (actor.activityId ?? null) === request.activityId && actor.activity === request.activity
+    && (!lastSeen || lastSeen.location === request.location && lastSeen.area === request.area)
+    && otherAvailable(ctx.state, guest, request.at, ctx.now + 1, proof);
+  const outcome = present ? 'shared' : 'unheard', retired = !present && purpose.attempts >= PURPOSE_RULES.maxAttempts;
+  const description = present ? PURSUIT_PURPOSES[guest].shared(personName(request.lead)) : PURSUIT_PURPOSES[guest].interrupted;
+  const key = `${purpose.id}:result:${purpose.attempts}`;
+  const fact = ctx.ops.createFact(key, 'offscreen_purpose_result', guest, { purposeId: purpose.id, guest,
+    lead: request.lead, purposeKind: purpose.kind, outcome, completedWorkEventId: purpose.source.sourceEventId,
+    requestEventId: request.eventId, presentationText: description }, null);
+  const result = { outcome, factKey: key, sourceEventId: ctx.id, completedAt: ctx.now };
+  person(ctx, guest, { purpose: { ...purpose, status: present ? 'shared' : retired ? 'shelved' : 'seeking',
+    availableAt: ctx.now + OFFSCREEN_RULES.encounterCooldown, result } });
+  guestLearns(ctx, guest, fact);
+  if (present) ctx.ops.learn(request.lead, fact, 'participated');
+  publish(ctx, project, 'purpose_result', description, { ...purposePayload(purpose, 'result'), lead: request.lead,
+    purposeOutcome: outcome, purposeRetired: retired, purposeRequestEventId: request.eventId,
+    purposeRequestOccurredAt: request.at });
+  ctx.event.location = request.location; ctx.event.area = request.area;
+  ctx.event.participants = present ? [request.lead] : []; ctx.event.payload.cast = present ? [request.lead, guest] : [];
+  ctx.event.causedBy.push(purpose.source.sourceEventId, purpose.chosenEventId, request.eventId);
 }
 function retry(ctx) {
   const at = ctx.now + OFFSCREEN_RULES.retryDelay, retries = ctx.action.retry ?? 0;
@@ -408,6 +584,10 @@ export function resolveOffscreenAction(ctx) {
   if (action.type !== 'OFFSCREEN_START' && (!project || project.token !== action.token)) return refuse('No matching offscreen life');
   save(ctx, { issued: { ...current.issued, [action.id]: { ...issued, consumed: true } } });
   ctx.event.causedBy.push(issued.sourceEventId);
+  if (action.purposeId) {
+    finishPurpose(ctx, project);
+    return true;
+  }
   if (action.type === 'OFFSCREEN_WITNESS') {
     // Somebody looked up. It cannot finish the work, cannot teach anybody
     // anything and cannot move the attempt along — if the project ended in the
@@ -437,10 +617,13 @@ export function resolveOffscreenAction(ctx) {
       ctx.event.causedBy.push(previous.result.sourceEventId);
     } else {
       const id = `life:${hash(`${ctx.id}|${guest}`)}`;
+      const continuation = establishedPractice(state, guest, now);
+      if (continuation && !record.practice) person(ctx, guest, { practice: continuation });
       project = { id, token: `${ctx.id}:offscreen-v1`, guest, family: authored.family, location: authored.location,
         area: authored.area, intention: authored.intention, status: 'active', attempt: 1, openedAt: now,
         attemptStartedAt: now, attemptStartEventId: ctx.id, originEventId: ctx.id, lastEventId: ctx.id,
-        causalEventIds: [ctx.id], result: null, previousResult: null, help: null, projectNumber: (record.projectCount ?? 0) + 1 };
+        causalEventIds: [ctx.id], result: null, previousResult: null, help: null, projectNumber: (record.projectCount ?? 0) + 1,
+        ...(continuation ? { continuation, routineContinuation: continuation.confirmedAt != null } : {}) };
       const liveIds = new Set(Object.values(of(state).people).map(row => row.currentProjectId));
       const retained = Object.values(of(state).projects).filter(row => row.status !== 'settled' || liveIds.has(row.id))
         .sort((a, b) => b.openedAt - a.openedAt).slice(0, OFFSCREEN_RULES.retainedProjects - 1);
@@ -454,11 +637,16 @@ export function resolveOffscreenAction(ctx) {
     const resumed = project.attempt > 1;
     const fresh = { yukon: 'Yukon chose a different section of the game for his next attempt.',
       gabriel: 'Gabriel began work on a new verse at Sanctuary. This one needed its own ending.',
-      rose: 'Rose began tapping a different rhythm at Sanctuary, listening for where this one wanted to stop.',
+      rose: 'Rose began cutting another verse at the Legion warehouse.',
+      emily: 'Emily returned to the end swing to try her rule about the chains again.',
       zara: 'Zara opened the next ordinary handover. A different unclear entry needed her attention.' };
-    publish(ctx, project, resumed ? 'resumed' : 'started', resumed
+    if (project.continuation) ctx.event.causedBy.push(project.continuation.sourceEventId);
+    const purpose = project.continuation ? choosePurpose(ctx, guest, establishedPractice(state, guest, now)) : null;
+    publish(ctx, project, resumed ? 'resumed' : 'started', project.continuation ? OFFSCREEN_CONTINUATIONS[guest].start : resumed
       ? `${authored.name} returned to ${authored.subject}, picking up the part left unfinished.`
-      : project.projectNumber > 1 ? fresh[guest] : authored.start);
+      : project.projectNumber > 1 ? fresh[guest] : authored.start,
+      purpose ? purposePayload(purpose, 'chosen') : {});
+    if (purpose) ctx.ops.publish(PURSUIT_PURPOSES[guest].choice);
     if (project.help) ctx.event.causedBy.push(project.help.sourceEventId);
     ctx.followups.push(...issueOffscreenActions(ctx, [proposal(`${project.id}/result/${project.attempt}`,
       now + OFFSCREEN_RULES.duration, 'OFFSCREEN_RESULT', { projectId: project.id, token: project.token })]));
@@ -469,28 +657,39 @@ export function resolveOffscreenAction(ctx) {
     const authored = OFFSCREEN_CAST[project.guest], helped = project.help && of(state).people[project.guest].knowledge.some(row =>
       row.factKey === project.help.factKey && row.sourceEventId === project.help.sourceEventId && row.learnedAt < now);
     const disrupted = !otherAvailable(state, project.guest, project.attemptStartedAt, now + 1);
-    const outcome = !disrupted && (helped || project.attempt >= OFFSCREEN_RULES.maxAttempts
+    const continued = project.continuation && establishedPractice(state, project.guest, now)?.sourceEventId === project.continuation.sourceEventId;
+    const outcome = !disrupted && (continued || helped || project.attempt >= OFFSCREEN_RULES.maxAttempts
       || Number.parseInt(hash(`${ctx.seed}|${project.id}|${project.attempt}`).slice(0, 2), 16) % 3 === 0) ? 'settled' : 'unfinished';
-    const description = authored[outcome], key = `${project.id}:result:${project.attempt}`;
+    const description = project.continuation ? OFFSCREEN_CONTINUATIONS[project.guest][outcome] : authored[outcome], key = `${project.id}:result:${project.attempt}`;
     const fact = ops.createFact(key, 'offscreen_result', project.guest,
       { storyId: project.id, guest: project.guest, family: project.family, outcome, attempt: project.attempt, presentationText: description }, null);
     const result = { outcome, factKey: key, sourceEventId: ctx.id, completedAt: now };
     project = touch(ctx, project, { status: outcome === 'settled' ? 'settled'
       : project.attempt >= OFFSCREEN_RULES.maxAttempts ? 'deferred' : 'waiting', result });
-    guestLearns(ctx, project.guest, fact); person(ctx, project.guest, { commitment: null });
+    guestLearns(ctx, project.guest, fact);
+    const practice = of(state).people[project.guest].practice;
+    person(ctx, project.guest, { commitment: null, ...(outcome === 'settled' ? { practice: continued
+      ? { ...practice, confirmedAt: practice.confirmedAt ?? now }
+      : { projectId: project.id, factKey: key, sourceEventId: ctx.id, establishedAt: now, confirmedAt: null } } : {}) });
     publish(ctx, project, 'result', description, { outcome, sourceEventId: ctx.id,
       ...(helped ? { helpSourceEventId: project.help.sourceEventId, helpMethod: authored.helpMethod, recalledSourceEventId: project.help.rememberedSourceEventId,
         acquisitionEventId: project.help.acquisitionEventId } : {}) });
-    ctx.event.causedBy.push(project.attemptStartEventId, ...(helped ? [project.help.sourceEventId] : []));
+    ctx.event.causedBy.push(project.attemptStartEventId, ...(helped ? [project.help.sourceEventId] : []),
+      ...(project.continuation ? [project.continuation.sourceEventId] : []));
   } else {
     const proof = action.encounter, guest = project.guest, record = of(state).people[guest], lead = proof?.lead;
-    if (!proof || proof.guest !== guest || now !== proof.occurredAt + 1 || !readyLead(state, proof, now)
+    const bank = proof?.type === 'SCENE_BANK_BEAT';
+    if (!proof || proof.guest !== guest || now !== (bank ? proof.availableAt : proof.occurredAt + 1) || !readyLead(state, proof, now)
+      || bank && !bankListenerStillHere(state, proof, now)
       || !offscreenAvailable(state, guest, { atMs: now, location: proof.location }) || !otherAvailable(state, guest, now, now + 1, proof)
       || record.currentProjectId !== project.id || !project.result || project.result.completedAt >= proof.occurredAt
       || record.encounters[lead] && now - record.encounters[lead].at < OFFSCREEN_RULES.encounterCooldown)
       return refuse('The actual encounter no longer contains this conversation');
     const fact = state.facts[project.result.factKey];
     if (!fact || fact.sourceEventId !== project.result.sourceEventId || fact.createdAt > now) return refuse('No completed public result to discuss');
+    const purpose = seekingPurpose(state, guest, now);
+    if (purpose && beginPurpose(ctx, project, proof, purpose)) return true;
+    if (bank) return refuse('The completed scene no longer offers this purpose an available listener');
     // Requiring knowledge of only the newest result would erase continuity
     // whenever the guest tried again. Familiar ordinary trouble can be recalled
     // across attempts, and across later projects in the same activity.
@@ -505,7 +704,7 @@ export function resolveOffscreenAction(ctx) {
       // nothing about whose work it was or what it consisted of. Each guest
       // reports their own result now, in their own register.
       description = `${personName(lead)} heard from ${authored.name} about ${authored.subject}. ${
-        authored.told?.[project.result.outcome]
+        (project.continuation ? OFFSCREEN_CONTINUATIONS[guest][project.result.outcome] : authored.told?.[project.result.outcome])
         ?? (project.result.outcome === 'unfinished' ? 'It was still waiting for another attempt.'
           : 'It had finally been settled.')}`;
     } else {
@@ -558,7 +757,7 @@ export function publicOffscreenSummaries(state, now) {
       id: row.id, title: `${OFFSCREEN_CAST[row.guest].name} · ${OFFSCREEN_CAST[row.guest].subject}`,
       location: row.location, status: !result ? 'active' : result.outcome === 'settled' ? 'resolved' : 'unfinished',
       openedAt: row.openedAt, eventId: result?.sourceEventId ?? row.attemptStartEventId,
-      description: result ? OFFSCREEN_CAST[row.guest][result.outcome] : row.attempt > 1
+      description: row.continuation ? OFFSCREEN_CONTINUATIONS[row.guest][result?.outcome ?? 'start'] : result ? OFFSCREEN_CAST[row.guest][result.outcome] : row.attempt > 1
         ? `${OFFSCREEN_CAST[row.guest].name} returned to the part left unfinished.` : OFFSCREEN_CAST[row.guest].start,
       ...(result ? { outcome: result.outcome, completedAt: result.completedAt } : {}) }; });
 }
@@ -583,6 +782,37 @@ export function assertOffscreenLives(state) {
       if (!fact || fact.sourceEventId !== memory.sourceEventId || memory.learnedAt < fact.createdAt || !memory.acquisitionEventId)
         throw new Error('Offscreen memory has no acquired source');
     }
+    if (row.practice && !establishedPractice(state, guest, Number.MAX_SAFE_INTEGER))
+      throw new Error('Established practice lost its actual learned result');
+    if (row.purpose) {
+      const purpose = row.purpose, source = state.facts[purpose.source?.factKey], request = purpose.request;
+      if (purpose.kind !== PURSUIT_PURPOSES[guest].kind
+        || purpose.id !== `purpose:${hash(`${guest}|${purpose.source?.sourceEventId}`)}`
+        || !['seeking', 'performing', 'shared', 'shelved'].includes(purpose.status)
+        || !Number.isSafeInteger(purpose.chosenAt) || !purpose.chosenEventId || !Number.isSafeInteger(purpose.availableAt)
+        || !Number.isInteger(purpose.attempts) || purpose.attempts < 0 || purpose.attempts > PURPOSE_RULES.maxAttempts
+        || source?.kind !== 'offscreen_result' || source.value?.guest !== guest || source.value.outcome !== 'settled'
+        || source.sourceEventId !== purpose.source.sourceEventId || source.createdAt !== purpose.source.establishedAt
+        || source.createdAt >= purpose.chosenAt || row.practice?.sourceEventId !== source.sourceEventId)
+        throw new Error('A next purpose requires the actual retained completed work');
+      if (purpose.attempts > 0 && (!request || !['goaden', 'ashai'].includes(request.lead)
+        || !request.eventId || !request.encounterEventId || request.at <= purpose.chosenAt
+        || request.until !== request.at + PURPOSE_RULES.duration || !purposePlace(guest, request.location, request.area)))
+        throw new Error('A presentation requires an actual eligible listener and owned interval');
+      if (purpose.result) {
+        const fact = state.facts[purpose.result.factKey];
+        if (fact?.kind !== 'offscreen_purpose_result' || fact.sourceEventId !== purpose.result.sourceEventId
+          || fact.value.purposeId !== purpose.id || fact.value.guest !== guest
+          || fact.value.completedWorkEventId !== purpose.source.sourceEventId
+          || fact.value.outcome !== purpose.result.outcome || fact.createdAt !== purpose.result.completedAt)
+          throw new Error('A presentation outcome requires its committed source');
+      }
+      if (purpose.status === 'shared' && purpose.result?.outcome !== 'shared'
+        || purpose.status === 'shelved' && (purpose.result?.outcome !== 'unheard' || purpose.attempts !== PURPOSE_RULES.maxAttempts)
+        || purpose.status === 'performing' && !request
+        || purpose.status === 'seeking' && purpose.attempts >= PURPOSE_RULES.maxAttempts)
+        throw new Error('A finished purpose cannot silently restart');
+    }
     for (const [lead, memory] of Object.entries(row.encounters)) if (!['goaden', 'ashai'].includes(lead)
       || !memory.eventId || !memory.acquisitionEventId || !memory.sourceEventId
       || memory.familiarity < 0 || memory.familiarity > 8) throw new Error('Invalid remembered encounter');
@@ -594,6 +824,12 @@ export function assertOffscreenLives(state) {
       || !Number.isInteger(project.attempt) || project.attempt < 1 || project.attempt > OFFSCREEN_RULES.maxAttempts
       || !Number.isSafeInteger(project.projectNumber) || project.projectNumber < 1
       || project.causalEventIds.length > 18) throw new Error('Invalid offscreen project');
+    if (project.continuation) {
+      const proof = project.continuation, fact = state.facts[proof.factKey];
+      if (!fact || fact.sourceEventId !== proof.sourceEventId || fact.value?.guest !== project.guest
+        || fact.value.outcome !== 'settled' || fact.createdAt >= project.openedAt)
+        throw new Error('Continuing practice lacks an earlier completed result');
+    }
     if (project.status !== 'active') {
       const result = project.result, fact = result && state.facts[result.factKey];
       if (!fact || fact.sourceEventId !== result.sourceEventId || fact.value.storyId !== project.id

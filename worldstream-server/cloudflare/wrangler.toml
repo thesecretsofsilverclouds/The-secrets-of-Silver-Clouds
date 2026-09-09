@@ -14,7 +14,28 @@ new_sqlite_classes = ["WorldDurableObject"]
 
 [vars]
 ENVIRONMENT = "production"
-WORLD_ID = "silver-clouds-now"
+# The world this deployment talks to, and the Durable Object's identity. Two
+# values are two separate objects with separate SQLite databases; there is no
+# path between them. Local development deliberately keeps the original object
+# name so existing local history is not orphaned.
+#   local/default  authoritative-world
+#   staging        worldstream-staging
+#   production     worldstream-production
+WORLD_ID = "authoritative-world"
 # 4323 is the integrated local dev site (worldstream-server/dev.mjs); 4317 and
 # 4322 remain for the workshop server, which can run at the same time.
 CORS_ORIGINS = "https://thesecretsofsilverclouds.com,https://www.thesecretsofsilverclouds.com,http://127.0.0.1:4317,http://127.0.0.1:4322,http://127.0.0.1:4323,http://localhost:4323,http://localhost:8787"
+
+
+# Deploy targets. Each names a different world; neither is deployed yet.
+[env.staging]
+[env.staging.vars]
+ENVIRONMENT = "staging"
+WORLD_ID = "worldstream-staging"
+CORS_ORIGINS = "https://thesecretsofsilverclouds.com,https://www.thesecretsofsilverclouds.com,http://127.0.0.1:4323,http://localhost:4323"
+
+[env.production]
+[env.production.vars]
+ENVIRONMENT = "production"
+WORLD_ID = "worldstream-production"
+CORS_ORIGINS = "https://thesecretsofsilverclouds.com,https://www.thesecretsofsilverclouds.com"

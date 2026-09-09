@@ -13,7 +13,7 @@ import { atLondon, nextLondonDay, prevLondonDay, londonDate } from '../src/time.
 import { LEGION_CAST, OUTSIDE_CAST, SIDE_CHARACTERS } from '../src/cast.mjs';
 import { veilDateForYear } from '../src/veil.mjs';
 import { EXCHANGES, MOODS, GOADEN_PLATES, ASHAI_PLATES, moodFor, linesOf } from '../src/dialogue.mjs';
-import { DAYPARTS, DAY_PHASES, daypart, dayPhase, sunEvents } from '../src/sky.mjs';
+import { DAYPARTS, DAY_PHASES, daypart, dayPhase, daylightFraction, sunEvents } from '../src/sky.mjs';
 import { THREAD_EVENT_TYPES } from '../src/threads.mjs';
 import { applyChange, readChange, sideOf } from '../src/ledger.mjs';
 import { SUPPORTING_EVENT_TYPES } from '../src/supporting-stories.mjs';
@@ -471,6 +471,12 @@ test('public projection excludes private state, source links and spoiler sentine
   for (const event of poisoned.events) {
     event.payload.privateNote = sentinel;
     event.causedBy.push(sentinel);
+    for (const field of ['narrativeParagraphs', 'sceneBeats']) {
+      for (const item of event.payload[field] ?? []) {
+        item.privateNote = sentinel;
+        item.sourceEventId = sentinel;
+      }
+    }
   }
   const projection = fixtureDefinition.publicProjection(poisoned);
   const text = JSON.stringify(projection);
@@ -509,17 +515,79 @@ test('public projection excludes private state, source links and spoiler sentine
     // for beats with dependent antecedents, disclosing no private state.
     // `memoryCallback` joined for authored callbacks with origin links. It carries
     // an earned callback reference ({ key, originEventId, originLabel, originLines, originSnippet, originTime, originTimeLabel }).
-    const keys = Object.keys(event).filter(key => key !== 'lines' && key !== 'prose' && key !== 'contextBridge' && key !== 'memoryCallback').sort();
+    // Read-side continuity adds only opaque committed story identity, ledger
+    // order and addressable PUBLIC origins. All payload/knowledge canaries and
+    // every private event ID are still excluded by the checks above.
+    const raw = snapshot.events.find(source => source.id === event.id);
+    const performanceFields = raw.type === 'SCENE_BANK_BEAT'
+      ? ['narrativeParagraphs', 'sceneBeats', 'sceneTime', 'sceneTitle', 'sceneBankId'] : [];
+    const keys = Object.keys(event).filter(key => !['lines', 'prose', 'contextBridge', 'memoryCallback',
+      'storyRef', 'narrativeOrder', 'earlierEventIds', 'routineContinuation', ...performanceFields].includes(key)).sort();
     assert.deepEqual(keys, ['description', 'id', 'location', 'occurredAt', 'participants', 'register', 'room', 'type']);
     assert.ok(['ticker', 'prose'].includes(event.register));
+    if (raw.type === 'SCENE_BANK_BEAT') {
+      assert.equal(raw.visibility, 'public');
+      for (const field of ['sceneTitle', 'sceneBankId']) {
+        assert.equal(typeof event[field], 'string');
+        assert.ok(event[field].length > 0);
+        assert.equal(event[field], raw.payload[field]);
+      }
+      assert.deepEqual(event.sceneTime, {
+        dayPhase: dayPhase(raw.occurredAt), daylight: daylightFraction(raw.occurredAt),
+      });
+      for (const field of ['narrativeParagraphs', 'sceneBeats']) {
+        assert.ok(Array.isArray(event[field]) && event[field].length > 0);
+        assert.equal(event[field].length, raw.payload[field].length);
+        for (const [index, item] of event[field].entries()) {
+          assert.deepEqual(Object.keys(item).filter(key => !['who', 'expression', 'nimbusPlate'].includes(key)).sort(),
+            ['kind', 'text']);
+          assert.ok(['prose', 'dialogue'].includes(item.kind));
+          assert.equal(typeof item.text, 'string');
+          assert.ok(item.text.trim());
+          for (const [key, value] of Object.entries(item)) {
+            assert.equal(typeof value, 'string');
+            assert.equal(value, raw.payload[field][index][key], 'only committed performance may reach the reader');
+          }
+        }
+      }
+    }
+    if (event.narrativeOrder !== undefined) assert.equal(event.narrativeOrder, raw.seq);
+    if (event.storyRef !== undefined) {
+      assert.deepEqual(Object.keys(event.storyRef).sort(), ['id', 'type']);
+      assert.ok(['story', 'arc', 'intention', 'operation'].includes(event.storyRef.type));
+      assert.equal(typeof event.storyRef.id, 'string');
+      assert.ok(event.storyRef.id.length > 0 && event.storyRef.id.length <= 200);
+    }
+    if (event.earlierEventIds !== undefined) {
+      assert.ok(Array.isArray(event.earlierEventIds) && event.earlierEventIds.length <= 16);
+      for (const id of event.earlierEventIds) {
+        const source = snapshot.events.find(row => row.id === id);
+        assert.equal(source?.visibility, 'public');
+        assert.ok(source.occurredAt <= event.occurredAt);
+        assert.ok(raw.causedBy.includes(id) || raw.payload.continuationSourceEventId === id
+          || raw.memoryCallback?.originEventId === id);
+      }
+    }
+    if (event.routineContinuation !== undefined) {
+      assert.equal(event.routineContinuation, true);
+      assert.equal(raw.payload.routineContinuation, true);
+    }
     if (event.prose !== undefined) {
       assert.equal(event.register, 'prose', 'a ticker line was given a paragraph');
       assert.equal(typeof event.prose, 'string');
     }
     if (event.contextBridge !== undefined) {
-      assert.deepEqual(Object.keys(event.contextBridge).sort(), ['snippet', 'time', 'timeLabel']);
+      assert.deepEqual(Object.keys(event.contextBridge).filter(key => !['originEventId', 'originOccurredAt', 'originType'].includes(key)).sort(),
+        ['snippet', 'time', 'timeLabel']);
       assert.equal(typeof event.contextBridge.snippet, 'string');
       assert.equal(typeof event.contextBridge.timeLabel, 'string');
+      if (event.contextBridge.originEventId !== undefined) {
+        const source = snapshot.events.find(row => row.id === event.contextBridge.originEventId);
+        assert.equal(source?.visibility, 'public');
+        assert.equal(event.contextBridge.originOccurredAt, source.occurredAt);
+        assert.equal(event.contextBridge.originType, source.type);
+        assert.ok(source.occurredAt <= event.occurredAt);
+      }
     }
     if (event.memoryCallback !== undefined) {
       assert.deepEqual(Object.keys(event.memoryCallback).sort(), ['key', 'originEventId', 'originLabel', 'originLines', 'originSnippet', 'originTime', 'originTimeLabel']);
@@ -1235,6 +1303,8 @@ test('a publicly visible event teaches Goaden and Ashai nothing by itself', t =>
   // AFTERMATH requires the memory to already exist rather than creating one.
   const acquisitions = new Set(['NOTICE_PUBLIC_FACT', 'SHARE_PRACTICAL_FACT', 'DEFER_ACTIVITY', 'PRACTICE_END', 'GAME_PAUSE',
     'OUTING_CUT_SHORT', 'ARCANE_SURGE', 'PLAN_BROKEN', 'INCIDENT',
+    // A committed scene teaches only its actual witnesses, never its audience.
+    'SCENE_BANK_BEAT',
     'INK_DESIGN_CHOSEN', 'INK_SLOT_RELEASED', 'INK_APPOINTMENT_BOOKED',
     'INK_APPOINTMENT_COMPLETED', 'INK_APPOINTMENT_INTERRUPTED', 'INK_RESULT_NOTICED', ...THREAD_EVENT_TYPES,
     // Reading an available report, doing the recorded preparation/work, and
@@ -1259,6 +1329,9 @@ test('a publicly visible event teaches Goaden and Ashai nothing by itself', t =>
       if (memory.provenance === 'canon_seed') continue;
       const via = byId.get(memory.acquisitionEventId);
       assert.ok(acquisitions.has(via.type), `unexpected acquisition ${via.type}`);
+      if (via.type === 'SCENE_BANK_BEAT') {
+        assert.ok(via.participants.includes(id), `${id} learned an unwitnessed scene ${via.id}`);
+      }
       // The rail that actually matters, and which the type allowlist above only
       // approximates: nothing arrives in a head without a channel. There are
       // exactly two — you were in the event, or the fact is about you.

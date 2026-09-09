@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
+import { narrativeWeight } from '../../worldstream/app/reader-narrative.js';
 
 const app = readFileSync(new URL('../../worldstream/app/app.js', import.meta.url), 'utf8');
 const html = readFileSync(new URL('../../worldstream/app/index.html', import.meta.url), 'utf8');
@@ -86,7 +87,7 @@ test('a rendered event retains actual social controls without showing viewer cou
     return item;
   }
   const render = runInNewContext(`${between('function eventRow(event) {', 'function loadSocialForVisibleEvents')}\neventRow`, {
-    node, cleanEventId: id => id, timeLabel: () => '12:00', asTime: value => value,
+    node, narrativeWeight, cleanEventId: id => id, timeLabel: () => '12:00', asTime: value => value,
     currentHighlight: null, latestClocks: [], cinematicRecordForEvent: () => null,
     cinematicSummary: () => null, locationName: () => 'MI6',
     getStoredUserReactions: () => ({}), isSavedMoment: () => false,
@@ -189,15 +190,16 @@ test('overlapping presence calls share one handshake and failure permits a new a
 test('leaving still ends authenticated presence and suspends the scene', async () => {
   let suspended = 0;
   const beacons = [];
-  const context = { viewerToken: 'signed-token', Blob,
+  const context = { viewerToken: 'signed-token',
+    apiUrl: path => `https://worldstream.test${path}`,
     scene: { suspend: () => suspended++ },
     navigator: { sendBeacon: (...args) => beacons.push(args) } };
   const leave = runInNewContext(`${between('function leaveWatching() {', 'elements.refresh.addEventListener')}\nleaveWatching`, context);
   leave();
   assert.equal(suspended, 1);
   assert.equal(beacons.length, 1);
-  assert.equal(beacons[0][0], '/api/presence/leave');
-  assert.deepEqual(JSON.parse(await beacons[0][1].text()), { viewerToken: 'signed-token' });
+  assert.equal(beacons[0][0], 'https://worldstream.test/api/presence/leave');
+  assert.deepEqual(JSON.parse(beacons[0][1]), { viewerToken: 'signed-token' });
   context.viewerToken = null;
   leave();
   assert.equal(beacons.length, 1, 'no unauthenticated departure request');

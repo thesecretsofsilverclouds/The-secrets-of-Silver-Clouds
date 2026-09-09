@@ -475,14 +475,15 @@ test('the presentation layer cannot reach the world', () => {
   // The Phase C rail is structural rather than a matter of care: nothing the
   // engine loads imports the presentation module, so no model can be in the
   // path of a decision even by accident.
+  const modelPresentationImport = /['"]\.\/(?:src\/)?presentation\.mjs['"]/;
   for (const file of ['fixture.mjs', 'world.mjs', 'dialogue.mjs', 'director.mjs', 'places.mjs', 'cast.mjs',
     'sky.mjs', 'time.mjs', 'veil.mjs']) {
     const source = readFileSync(new URL(`../src/${file}`, import.meta.url), 'utf8');
-    assert.ok(!source.includes('presentation.mjs'), `${file} imports the presentation layer`);
+    assert.ok(!modelPresentationImport.test(source), `${file} imports the presentation layer`);
     assert.ok(!/\bfetch\s*\(|node:https?\b/.test(source), `${file} reaches the network`);
   }
   const server = readFileSync(new URL('../server.mjs', import.meta.url), 'utf8');
-  assert.ok(!server.includes('presentation.mjs'), 'the request path renders prose');
+  assert.ok(!modelPresentationImport.test(server), 'the request path renders prose');
   // And the world's approved vocabulary still has no event a model can author.
   assert.ok(!EVENT_TYPES.some(type => /VIGNETTE|PROSE|GENERATED/.test(type)));
 });

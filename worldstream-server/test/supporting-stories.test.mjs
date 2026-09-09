@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { WorldStore, semanticDigest } from '../experiment-l/src/world.mjs';
-import { createFixture, DEFAULT_SEED } from '../src/fixture.mjs';
+import { createFixture, DEFAULT_SEED, publicEvents } from '../src/fixture.mjs';
 import { atLondon, londonDate, MINUTE_MS as MIN } from '../src/time.mjs';
 import { openWorld } from '../src/world.mjs';
 import { mkdtempSync, realpathSync, rmSync } from 'node:fs';
@@ -126,7 +126,8 @@ test('missed and cut-short encounters have different persistent outcomes, no una
     const event = h.events.find(row => row.id === h.story().result.sourceEventId);
     assert.equal(event.payload.cast.includes('davis'), false); assert.deepEqual(event.participants, []);
     assert.equal(h.state.supportingStories.people.davis.knowledge.some(memory => memory.factKey === h.story().result.factKey), false);
-    assert.equal(h.state.supportingStories.rapport['davis:goaden'].reliability, -1);
+    assert.equal(h.state.supportingStories.rapport['davis:goaden'].reliability, 0, 'actual travel interruption is not personal unreliability');
+    assert.equal(h.state.facts[h.story().result.factKey].value.interruption.eventId, interruption.id);
     assert.equal(h.state.supportingStories.rapport['davis:goaden'][meet ? 'cutShort' : 'missed'], 1);
   }
 });
@@ -159,10 +160,10 @@ test('callback requires actual learned outcome and a later eligible meeting; fai
   probe(later + 1, 'known'); assert.equal(h.queue.at(-1).type, 'SUPPORTING_CALLBACK');
   h.next(); assert.ok(h.story().callbackEventId);
   assert.ok(h.events.at(-1).causedBy.includes(result.sourceEventId));
-  // The rail is that a callback after a kept promise says it was kept, and
-  // never quietly reads as the unfinished one. Matched on the claim rather than
-  // on one exact sentence, so the prose can be rewritten without weakening it.
-  assert.match(h.events.at(-1).publicDescription, /\bkept\b/);
+  // The actual ending and its source survive, while the callback can show the
+  // chair being offered again without a generic sentence announcing 'kept'.
+  assert.equal(h.events.at(-1).payload.outcome, 'kept');
+  assert.match(h.events.at(-1).publicDescription, /chair|table/);
   assert.doesNotMatch(h.events.at(-1).publicDescription, /unfinished|did not come off|cut short/);
   assert.deepEqual(h.story().result, result);
   const before = structuredClone(h.state); h.commit({ ...h.events.at(-1), id: 'forged-callback', dueAt: later + 3,
@@ -233,6 +234,7 @@ test('actual integrated month reaches supporting encounters, diverse cast and ca
 
 test('bounded supporting fixture resumes queued causal stages with the same result under absence, small advances, process restart and duplicates', t => {
   const state = stateFor('yukon'), source = context(state, { id: 'source', dueAt: AT - MIN });
+  rememberedMeeting(state, { guest: 'yukon', at: START + MIN });
   const initial = issueSupportingActions(source, [{ id: 'restart-probe', type: 'SUPPORTING_COMMITMENT', dueAt: AT,
     day: londonDate(AT), version: 1, priority: 28, actors: [] }]);
   const fixture = { ...base, initialState: () => structuredClone(state), initialActions: () => structuredClone(initial),
@@ -255,5 +257,82 @@ test('bounded supporting fixture resumes queued causal stages with the same resu
     assert.deepEqual(frequent.semanticSnapshot(), one.semanticSnapshot());
     assert.deepEqual(restarted.semanticSnapshot(), one.semanticSnapshot());
     assert.equal(Object.values(one.semanticSnapshot().supportingStories.instances)[0].status, 'kept');
+    assert.equal(Object.values(one.semanticSnapshot().supportingStories.instances)[0].relationshipChoice.reason, 'familiar_company');
   } finally { one.close(); frequent.close(); restarted.close(); }
+});
+
+function rememberedMeeting(state, { guest = 'yukon', lead = 'goaden', id = 'prior-meeting',
+  at = AT, outcome = 'kept', witnesses = [lead], interruption = null } = {}) {
+  const key = `fact:${id}`, sourceEventId = `event:${id}`;
+  state.facts[key] = { key, kind: 'supporting_result', subject: lead, sourceEventId, createdAt: at, validUntil: null,
+    value: { guest, outcome, interruption, presentationText: `${guest}'s meeting ${outcome}.` } };
+  for (const who of witnesses) (state.characters[who] ?? state.supportingStories.people[who]).knowledge.push({
+    factKey: key, sourceEventId, acquisitionEventId: `learned:${who}:${id}`, learnedAt: at + 1, validUntil: null });
+}
+function chooseMeeting(state, at, id = 'history-probe') {
+  const source = context(state, { id: `source:${id}`, dueAt: at - 1 });
+  const [action] = issueSupportingActions(source, [{ id, type: 'SUPPORTING_COMMITMENT', dueAt: at,
+    priority: 28, day: londonDate(at), version: 1, actors: [] }]);
+  const ctx = context(state, action); resolveSupportingAction(ctx); assertSupportingStories(state); return ctx;
+}
+
+test('paired actual selection changes when a known meeting matters; unknown history, cast rotation and hard gates stay intact', () => {
+  const at = AT + 8 * 24 * 60 * MIN, ordinary = stateFor('davis', { at });
+  const remembered = structuredClone(ordinary), unknown = structuredClone(ordinary), unavailable = structuredClone(ordinary);
+  rememberedMeeting(remembered, { at: at - 4 * 24 * 60 * MIN });
+  rememberedMeeting(unknown, { at: at - 4 * 24 * 60 * MIN, witnesses: ['yukon'] });
+  rememberedMeeting(unavailable, { guest: 'emily', at: at - 4 * 24 * 60 * MIN });
+  const chosen = s => Object.values(s.supportingStories.instances).at(-1)?.guest;
+  chooseMeeting(ordinary, at); const decision = chooseMeeting(remembered, at); chooseMeeting(unknown, at); chooseMeeting(unavailable, at);
+  assert.equal(chosen(ordinary), 'davis'); assert.equal(chosen(remembered), 'yukon');
+  assert.equal(chosen(unknown), 'davis', 'another person knowing does not grant the lead knowledge');
+  assert.equal(chosen(unavailable), 'davis', 'remembering Emily cannot make her available at MI6');
+  assert.ok(decision.event.causedBy.includes('event:prior-meeting'));
+  assert.ok(decision.event.causedBy.includes('learned:goaden:prior-meeting'));
+  const [reading] = publicEvents({ events: [decision.event] });
+  assert.match(reading.prose, /remembered the last time with Yukon/);
+  assert.equal(JSON.stringify(reading).includes('fact:prior-meeting'), false, 'internal knowledge keys are not reader payload');
+  const rotated = stateFor('davis', { at }); rememberedMeeting(rotated, { at: at - 4 * 24 * 60 * MIN });
+  rotated.supportingStories.counts[londonDate(at)] = 1; chooseMeeting(rotated, at);
+  assert.equal(chosen(rotated), 'davis', 'the second daily slot retains least-seen cast variety');
+});
+
+test('a guest can actually defer after two learned misses, without a reservation, invented promise, or queued encounter', () => {
+  const at = AT + 8 * 24 * 60 * MIN, state = stateFor('davis', { at });
+  // All other possible guests have recently received a turn. This preserves
+  // the real 72-hour gate rather than making a test-only cast permission.
+  for (const guest of SUPPORTING_IDS) if (guest !== 'davis') state.supportingStories.lastChoices[
+    ['anarchy', 'balthazar'].includes(guest) ? 'anarchy+balthazar' : guest] = { at: at - MIN, eventId: `recent:${guest}`, response: 'accepted' };
+  for (const [id, days] of [['earlier', 6], ['later', 3]]) rememberedMeeting(state, { id, guest: 'davis',
+    at: at - days * 24 * 60 * MIN, outcome: 'missed', witnesses: ['goaden', 'davis'] });
+  const unaware = structuredClone(state); unaware.supportingStories.people.davis.knowledge = [];
+  const deferred = chooseMeeting(state, at), accepted = chooseMeeting(unaware, at);
+  assert.equal(deferred.event.visibility, 'public'); assert.equal(deferred.event.payload.outcome, 'deferred');
+  assert.equal(deferred.followups.length, 0); assert.equal(Object.keys(state.supportingStories.instances).length, 0);
+  assert.equal(Object.keys(state.arrangements).length, 0);
+  assert.equal(state.supportingStories.counts[londonDate(at)], 1);
+  assert.equal(state.supportingStories.lastChoices.davis.response, 'deferred');
+  assert.ok(accepted.followups.some(action => action.type === 'SUPPORTING_ENCOUNTER'));
+  assert.equal(Object.values(unaware.supportingStories.instances)[0].guest, 'davis');
+  for (const id of ['earlier', 'later']) {
+    assert.ok(deferred.event.causedBy.includes(`event:${id}`));
+    assert.ok(deferred.event.causedBy.includes(`learned:davis:${id}`));
+  }
+  const [reading] = publicEvents({ events: [deferred.event] });
+  assert.match(reading.prose, /two meetings that had never begun/);
+  assert.equal(reading.lines.length, 2); assert.match(reading.lines[0].text, /Leave it for now/);
+  assert.doesNotMatch(reading.prose, /forgiv|neglect|angry|blam|unreliab/i);
+  const authored = { ...deferred.event, lines: [{ who: 'davis', text: 'Exact recorded refusal. Bloody timing.' }] };
+  assert.deepEqual(publicEvents({ events: [authored] })[0].lines.map(line => ({ who: line.who, text: line.text })), authored.lines);
+});
+
+test('an owned scene-bank gathering blocks overlapping supporting reservations and releases at its actual end', () => {
+  const state = stateFor('yukon');
+  state.sceneBank = { session: { cast: ['goaden', 'yukon'], startAt: AT, until: AT + 10 * MIN } };
+  assert.equal(supportingStoryAvailability(state, 'yukon', { atMs: AT }), false);
+  assert.equal(supportingLeadAvailable(state, 'goaden', { atMs: AT + MIN }), false);
+  assert.deepEqual(eligibleSupportingGuests(state, 'goaden', AT), []);
+  assert.equal(supportingStoryAvailability(state, 'yukon', { atMs: AT - 1 }), true);
+  assert.equal(supportingLeadAvailable(state, 'goaden', { atMs: AT + 10 * MIN }), true);
+  assert.ok(eligibleSupportingGuests(state, 'goaden', AT + 10 * MIN).includes('yukon'));
 });

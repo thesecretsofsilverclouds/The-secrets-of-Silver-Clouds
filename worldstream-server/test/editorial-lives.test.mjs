@@ -31,6 +31,26 @@ function source(which = 0, stage = 'started', patch = {}) {
 }
 const allText = value => `${value?.description}\n${value?.prose}`;
 
+test('Emily midday attempts describe swinging without after-school, sunset or repair claims', () => {
+  for (let index = 0; index < 30; index++) for (const stage of ['started', 'result']) {
+    const event = source(3, stage); event.id = `emily-midday:${index}`;
+    event.occurredAt = Date.parse('2026-09-08T11:48:00Z');
+    const rendered = livesEditorial(event);
+    assert.doesNotMatch(allText(rendered), /after.school|amber|began working on|left unfinished the swing/i);
+    assert.match(rendered.description, /chains/);
+  }
+});
+
+test('a source-linked continuing practice keeps its actual later consequence and attendance guards', () => {
+  const event = source(0, 'started', { projectNumber: 2, continuationSourceEventId: 'source:previous', continuationOccurredAt: 1000 });
+  event.publicDescription = 'Yukon returned to the section he had already beaten.';
+  assert.deepEqual(livesEditorial(event), { description: event.publicDescription, prose: null });
+  assert.equal(livesEditorial({ ...event, participants: ['goaden'] }), null);
+  assert.equal(livesEditorial({ ...event, location: 'cafe' }), null);
+  const early = { ...event, payload: { ...event.payload, continuationOccurredAt: 5000 } };
+  assert.notEqual(livesEditorial(early)?.description, event.publicDescription, 'future proof cannot render a claimed continuation');
+});
+
 test('all authored offscreen lives have beginnings, unresolved work, results and knowledge-linked encounters', () => {
   for (let i = 0; i < CASES.length; i++) for (const stage of ['started', 'resumed', 'result', 'heard', 'helped', 'recalled']) {
     const event = source(i, stage), result = livesEditorial(event);

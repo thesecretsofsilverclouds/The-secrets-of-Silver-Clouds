@@ -1,6 +1,43 @@
 // Browser-only reading state. Fetching a world does not mean somebody read it.
-const fingerprint = event => JSON.stringify([event.description, event.prose, event.lines, event.cinematic]);
-const descending = (a, b) => Number(b.occurredAt) - Number(a.occurredAt) || b.id.localeCompare(a.id);
+const fingerprint = event => JSON.stringify([event.description, event.prose, event.lines, event.cinematic, event.narrativeParagraphs, event.sceneBeats,
+  event.readerContext, event.readerWeight, event.readerProse, event.readerDescription, event.readerSceneStart,
+  event.readerChapter, event.readerSceneId, event.readerSceneEnd, event.readerContextVisible,
+  event.readerMemoryVisible, event.readerCombinedIds, event.contextBridge, event.memoryCallback,
+  event.storyRef, event.earlierEventIds, event.routineContinuation, event.narrativeOrder]);
+const descending = (a, b) => Number(b.occurredAt) - Number(a.occurredAt)
+  || (Number.isSafeInteger(a.narrativeOrder) && Number.isSafeInteger(b.narrativeOrder)
+    ? b.narrativeOrder - a.narrativeOrder : b.id.localeCompare(a.id));
+
+// Auto-append only at the book's live end. A poll must not replace a selected
+// sentence, interrupt a control, or advance the book behind an open scene.
+export function atReadingLiveEdge(doc = document, win = window) {
+  if (doc.hidden || doc.body.dataset.reading !== 'true' || doc.body.classList.contains('scene-open')) return false;
+  const selection = doc.getSelection?.();
+  if (selection && !selection.isCollapsed) return false;
+  if (doc.activeElement?.closest?.('[data-reading-anchor], #reading-context')) return false;
+  const end = doc.querySelector('#reading-live');
+  if (!end || end.hidden) return false;
+  const box = end.getBoundingClientRect();
+  return box.bottom >= 0 && box.top <= win.innerHeight + 64;
+}
+
+export function positionReadingNavigation(doc, enabled) {
+  const earlier = doc.querySelector('#reading-earlier-controls');
+  const opening = doc.querySelector('#latest-passage');
+  const history = doc.querySelector('#older-history');
+  if (!earlier) return;
+  if (enabled && opening && earlier.nextElementSibling !== opening) opening.before(earlier);
+  else if (!enabled && history && history.nextElementSibling !== earlier) history.after(earlier);
+}
+
+export function earlierReadingRows(history, shown, after = 0) {
+  const order = (a, b) => a.occurredAt - b.occurredAt
+    || (Number.isSafeInteger(a.narrativeOrder) && Number.isSafeInteger(b.narrativeOrder)
+      ? a.narrativeOrder - b.narrativeOrder : a.id.localeCompare(b.id));
+  const first = [...shown].sort(order)[0], known = new Set(shown.map(event => event.id));
+  return [...history].filter(event => !known.has(event.id) && event.occurredAt >= after
+    && (!first || order(event, first) < 0)).sort(order);
+}
 
 // A change of reading viewpoint, never a change to the canonical world.
 export function passageEffectPlan(event, world) {
@@ -55,7 +92,7 @@ export function createPassageEffects({ document = globalThis.document, runtime =
       if (next?.key !== plan?.key || next?.image !== plan?.image) stop();
       plan = next;
       const label = card.querySelector('.passage-label');
-      if (label) label.textContent = plan?.image ? 'Elsewhere · latest passage' : 'Latest passage';
+      if (label) label.textContent = plan?.image ? 'Elsewhere · begin here' : 'Begin here';
       sync();
     },
     destroy() { stop(); observer?.disconnect(); changes?.disconnect();
@@ -64,10 +101,15 @@ export function createPassageEffects({ document = globalThis.document, runtime =
 }
 
 export class ReadingFeedBuffer {
-  constructor() { this.scope = null; this.shown = []; this.incoming = []; }
+  constructor() { this.scope = null; this.shown = []; this.incoming = []; this.gap = false; }
   update(scope, incoming) {
-    if (this.scope !== scope) { this.scope = scope; this.shown = []; this.incoming = []; }
-    this.incoming = [...new Map([...this.incoming, ...incoming].map(event => [event.id, event])).values()].sort(descending).slice(0, 200);
+    if (this.scope !== scope) { this.scope = scope; this.shown = []; this.incoming = []; this.gap = false; }
+    const previous = new Set(this.incoming.map(event => event.id));
+    if (previous.size && incoming.length && !incoming.some(event => previous.has(event.id))) this.gap = true;
+    const merged = [...new Map([...this.incoming, ...incoming].map(event => [event.id, event])).values()].sort(descending);
+    const displayed = new Set(this.shown.map(event => event.id));
+    if (merged.slice(200).some(event => !displayed.has(event.id))) this.gap = true;
+    this.incoming = merged.slice(0, 200);
     if (!this.shown.length) this.shown = this.incoming;
     return this.state();
   }
@@ -75,13 +117,15 @@ export class ReadingFeedBuffer {
     const known = new Map(this.shown.map(event => [event.id, event]));
     const added = this.incoming.filter(event => !known.has(event.id)).length;
     const revised = this.incoming.some(event => known.has(event.id) && fingerprint(event) !== fingerprint(known.get(event.id)));
-    return { events: this.shown, added, revised, pending: added > 0 || revised };
+    return { events: this.shown, added, revised, pending: added > 0 || revised, gap: this.gap };
   }
-  reveal() {
+  reveal({ includeRevisions = true } = {}) {
     // An explicit request may update passages. Keep earlier rendered rows so
     // opening the newest moment does not destroy the rest of this visit.
-    const merged = new Map([...this.shown, ...this.incoming].map(event => [event.id, event]));
+    const merged = new Map(this.shown.map(event => [event.id, event]));
+    for (const event of this.incoming) if (includeRevisions || !merged.has(event.id)) merged.set(event.id, event);
     this.shown = [...merged.values()].sort(descending).slice(0, 200);
+    this.gap = false;
     return this.state();
   }
 }
@@ -96,11 +140,14 @@ export function reconcileReadingRows(container, events, render, { replaceChanged
     let row = existing.get(event.id);
     const signature = fingerprint(event);
     if (row && replaceChanged && row.dataset.readingSignature !== signature) {
-      const replacement = render(event); row.replaceWith(replacement); if (cursor === row) cursor = replacement; row = replacement;
+      const replacement = render(event); replacement.dataset.readingSignature = signature;
+      row.replaceWith(replacement); if (cursor === row) cursor = replacement; row = replacement;
     }
-    if (!row) row = render(event);
-    row.dataset.readingSignature = signature;
+    if (!row) { row = render(event); row.dataset.readingSignature = signature; }
     row.dataset.readingAnchor = event.id;
+    // Appending another paragraph can extend the same scene card. Its border
+    // is geometry only; do not replace a selected sentence just to join it.
+    row.dataset.readerSceneEnd = String(event.readerSceneEnd !== false);
     if (row !== cursor) container.insertBefore(row, cursor);
     cursor = row.nextElementSibling;
   }
@@ -148,6 +195,7 @@ export function createReadingView({ onViewed = () => {}, runtime = {} } = {}) {
       if (enabled && history.nextElementSibling !== overview) overview.before(history);
       if (!enabled && overview.nextElementSibling !== history) overview.after(history);
     }
+    positionReadingNavigation(document, enabled);
   }
   const toggleReading = () => {
     enabled = !enabled; paint();

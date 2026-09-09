@@ -20,7 +20,7 @@ import { atLondon, londonDate } from '../../src/time.mjs';
 import { evaluatePlotClocks } from '../../src/clocks.mjs';
 import {
   CINEMATIC_PROMPT_VERSION, CINEMATIC_RULES_VERSION,
-  buildScenePacket, deterministicFallbackScene, scoreCinematicEvent
+  buildScenePacket, deterministicFallbackScene, scoreCinematicEvent, scenePacketKey
 } from '../../src/cinematics.mjs';
 import { editorialCinematicRecordForApi } from '../../src/editorial-cinematics.mjs';
 import { detectWagerForEvent } from '../../src/wagers.mjs';
@@ -31,6 +31,7 @@ import { getLatestDispatch, getDispatchByDate } from '../../src/dispatch.mjs';
 import { openSocialStore } from '../../src/social-store.mjs';
 import { openFeedbackStore, FeedbackError, MAX_FEEDBACK_BODY_BYTES } from '../../src/feedback-store.mjs';
 import { buildStoryThread, listStoryThreads } from '../../src/story-threads.mjs';
+import { historyOptions, readPublicHistory, readPublicEventContext, readPublicDialogueSources } from '../../src/public-history.mjs';
 import { BACKGROUND_BY_ID, selectVisualVocabulary } from '../../src/cinematic-assets.mjs';
 import { daypart } from '../../src/sky.mjs';
 import { TRACKS, AMBIENT_SOURCES } from './media-manifest.mjs';
@@ -39,6 +40,21 @@ const ALARM_INTERVAL_MS = 60_000; // 1 London minute
 
 /** Where the reader app is served from on the website. */
 const APP_MOUNT = '/worldstream/app';
+
+// Cached performances use the shared engine's /scene paths. Mount those public
+// asset URLs at the integrated website boundary, including archive/detail/live.
+function mountedCinematicRecordForApi(record, context) {
+  const api = editorialCinematicRecordForApi(record, context);
+  if (!api?.scene?.assets) return api;
+  const mounted = asset => asset ? { ...asset,
+    url: asset.url?.startsWith('/scene/') ? `${APP_MOUNT}${asset.url}` : asset.url,
+  } : null;
+  return { ...api, scene: { ...api.scene, assets: {
+    background: mounted(api.scene.assets.background),
+    plates: Object.fromEntries(Object.entries(api.scene.assets.plates ?? {})
+      .map(([id, asset]) => [id, mounted(asset)])),
+  } } };
+}
 
 export class WorldDurableObject {
   constructor(ctx, env = {}) {
@@ -51,6 +67,7 @@ export class WorldDurableObject {
     this.capacity = new CapacityTracker();
     this.fixture = null;
     this.initialized = false;
+    this.cinematicArchiveRecoveryComplete = false;
 
     this.initTables();
     this.initAudienceTables();
@@ -239,16 +256,19 @@ export class WorldDurableObject {
     }
 
     // Filter public events for reader delta
-    const publicDeltas = publicEvents({ events: newEvents, eventById: id => this.eventById(id) }, Infinity);
+    const publicDeltas = publicEvents({ events: newEvents, eventById: id => this.eventById(id),
+      publicSourcesForEvent: event => this.publicDialogueSources(event) }, Infinity);
     return publicDeltas;
   }
 
-  maybeIngestCinematic(event) {
-    if (!event || !event.visibility === 'public') return;
+  maybeIngestCinematic(event, { snapshot = null, acceptedAt = Date.now() } = {}) {
+    if (!event || event.visibility !== 'public') return;
+    if (event.type === 'SCENE_BANK_BEAT') return;
     try {
       const scoreData = scoreCinematicEvent(event);
       if (scoreData.score >= 70 || scoreData.band === 'gold' || scoreData.band === 'silver') {
-        const snap = this.presentationSnapshot();
+        if (this.db.prepare('SELECT event_id FROM cinematics WHERE event_id = ?').get(event.id)) return;
+        const snap = snapshot ?? this.presentationSnapshot();
         const packet = buildScenePacket(event, snap);
         if (packet) {
           const fallbackScene = deterministicFallbackScene(packet);
@@ -262,7 +282,7 @@ export class WorldDurableObject {
             event.id,
             CINEMATIC_RULES_VERSION,
             CINEMATIC_PROMPT_VERSION,
-            packet.packetKey,
+            scenePacketKey(packet),
             event.occurredAt,
             scoreData.score,
             scoreData.band,
@@ -270,13 +290,26 @@ export class WorldDurableObject {
             JSON.stringify(packet),
             JSON.stringify(fallbackScene),
             Date.now(),
-            Date.now()
+            acceptedAt
           );
         }
       }
     } catch {
       // Ingest failures never break canonical world progression
     }
+  }
+
+  recoverRecentCinematicArchive() {
+    if (this.cinematicArchiveRecoveryComplete) return;
+    // Once per object activation, only when a reader opens Scenes. The existing
+    // 1024-event presentation window bounds this repair; no full-ledger scan or
+    // polling work. Restore the same qualifying committed events, never a new
+    // story beat, and retain historical time so repair is not a live premiere.
+    const snapshot = this.presentationSnapshot();
+    for (const event of snapshot?.events ?? []) {
+      this.maybeIngestCinematic(event, { snapshot, acceptedAt: event.occurredAt });
+    }
+    this.cinematicArchiveRecoveryComplete = true;
   }
 
   catchUp(nowMs = Date.now()) {
@@ -342,21 +375,15 @@ export class WorldDurableObject {
     return row ? JSON.parse(row.semantic_json) : null;
   }
 
-  publicHistory({ beforeSeq = Number.MAX_SAFE_INTEGER, limit = 40 } = {}) {
-    limit = Math.min(100, Math.max(1, Math.trunc(limit) || 40));
-    const rows = this.db.prepare(`
-      SELECT semantic_json FROM events
-      WHERE seq < ? AND json_extract(semantic_json, '$.visibility') = 'public'
-      ORDER BY seq DESC
-      LIMIT ?
-    `).all(beforeSeq, limit + 1).map(r => JSON.parse(r.semantic_json));
+  publicHistory(options) { return readPublicHistory(this, options); }
 
-    const more = rows.length > limit;
-    const page = rows.slice(0, limit).reverse();
-    return {
-      events: publicEvents({ events: page, eventById: id => this.eventById(id) }, Infinity),
-      nextCursor: more ? page[0]?.seq : null
-    };
+  publicEventContext(id) { return readPublicEventContext(this, id); }
+
+  publicDialogueSources(event) { return readPublicDialogueSources(this, event); }
+
+  cinematicForApi(record, context = {}) {
+    return mountedCinematicRecordForApi(record, { ...context,
+      publicSourcesForEvent: event => this.publicDialogueSources(event) });
   }
 
   operationalStats() {
@@ -509,7 +536,7 @@ export class WorldDurableObject {
         const backgroundUrl = file ? `${APP_MOUNT}${file}` : undefined;
         const row = this.db.prepare('SELECT * FROM cinematics WHERE event_id = ?').get(event.id);
         const performed = row?.scene_json && ['performed', 'fallback'].includes(row.status)
-          ? editorialCinematicRecordForApi({
+          ? this.cinematicForApi({
             eventId: row.event_id, occurredAt: row.occurred_at, acceptedAt: row.accepted_at,
             score: row.score, band: row.band, status: row.status,
             scene: JSON.parse(row.scene_json), packet: JSON.parse(row.packet_json),
@@ -592,9 +619,22 @@ export class WorldDurableObject {
 
       // /api/history
       if (pathname === '/api/history') {
-        const before = url.searchParams.get('before') ? Number(url.searchParams.get('before')) : Number.MAX_SAFE_INTEGER;
-        const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 40;
-        return sendJson(200, this.publicHistory({ beforeSeq: before, limit }));
+        if (request.method !== 'GET') return sendJson(405, { error: 'Use GET for this endpoint.' });
+        try { return sendJson(200, this.publicHistory(historyOptions(url.searchParams))); }
+        catch (error) {
+          if (error instanceof RangeError) return sendJson(400, { error: error.message });
+          throw error;
+        }
+      }
+
+      const contextMatch = pathname.match(/^\/api\/events\/([^/]+)\/context$/);
+      if (contextMatch) {
+        if (request.method !== 'GET') return sendJson(405, { error: 'Use GET for this endpoint.' });
+        let eventId;
+        try { eventId = decodeURIComponent(contextMatch[1]); }
+        catch { return sendJson(400, { error: 'Invalid event reference.' }); }
+        const context = this.publicEventContext(eventId);
+        return context ? sendJson(200, context) : sendJson(404, { error: 'Public passage not found.' });
       }
 
       // /api/clocks
@@ -604,6 +644,7 @@ export class WorldDurableObject {
 
       // /api/cinematics/archive
       if (pathname === '/api/cinematics/archive') {
+        this.recoverRecentCinematicArchive();
         const snap = this.presentationSnapshot();
         const rows = this.db.prepare(`
           SELECT * FROM cinematics
@@ -621,7 +662,7 @@ export class WorldDurableObject {
             scene: JSON.parse(r.scene_json),
             packet: JSON.parse(r.packet_json)
           };
-          return editorialCinematicRecordForApi(parsed, { event, snapshot: snap });
+          return this.cinematicForApi(parsed, { event, snapshot: snap });
         });
         return sendJson(200, { cinematics: rows, serverTime: Date.now() });
       }
@@ -643,7 +684,7 @@ export class WorldDurableObject {
           scene: JSON.parse(r.scene_json),
           packet: JSON.parse(r.packet_json)
         };
-        return sendJson(200, { cinematic: editorialCinematicRecordForApi(parsed, { event, snapshot: snap }), serverTime: Date.now() });
+        return sendJson(200, { cinematic: this.cinematicForApi(parsed, { event, snapshot: snap }), serverTime: Date.now() });
       }
 
       // /api/dispatch/latest
@@ -716,7 +757,7 @@ export class WorldDurableObject {
         if (row) {
           const snap = this.presentationSnapshot();
           const event = this.eventById(row.event_id) ?? snap?.events?.find(e => e.id === row.event_id) ?? null;
-          cinematic = editorialCinematicRecordForApi({
+          cinematic = this.cinematicForApi({
             eventId: row.event_id, occurredAt: row.occurred_at, acceptedAt: row.accepted_at,
             score: row.score, band: row.band, status: row.status,
             scene: JSON.parse(row.scene_json), packet: JSON.parse(row.packet_json),
