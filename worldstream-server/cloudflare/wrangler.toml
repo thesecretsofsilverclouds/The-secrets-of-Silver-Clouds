@@ -39,3 +39,26 @@ CORS_ORIGINS = "https://thesecretsofsilverclouds.com,https://www.thesecretsofsil
 ENVIRONMENT = "production"
 WORLD_ID = "worldstream-production"
 CORS_ORIGINS = "https://thesecretsofsilverclouds.com,https://www.thesecretsofsilverclouds.com"
+
+# ---------------------------------------------------------------- the launch
+# Thursday 10 September 2026, 17:00 Europe/London. Until this instant the
+# Worker answers every route itself and never touches the Durable Object, so
+# nothing can start the world early.
+LAUNCH_MS = "1789056000000"
+
+# The world's epoch: Thursday 10 September 2026, 00:00 Europe/London.
+#
+# It has to be a London midnight — `createFixture` refuses anything else, and
+# that is what makes a day of history a day rather than an arbitrary span. So a
+# 17:00 opening cannot have exactly twenty-four hours behind it. This is the
+# nearer of the two available choices: the world will have been running since
+# midnight and be seventeen hours old when the doors open, having lived one
+# complete morning and afternoon. Midnight on the 9th, the alternative, would
+# be forty-one hours and would read as "yesterday and today".
+START_MS = "1788994800000"
+
+# 15:55 UTC is 16:55 BST, five minutes before opening. That firing creates the
+# world and catches it up; every other firing, this day and every day after,
+# returns immediately. Cron expressions are always UTC.
+[env.production.triggers]
+crons = ["55 15 * * *"]

@@ -9,6 +9,30 @@ import { WorldDurableObject } from './world-durable-object.mjs';
 
 export { WorldDurableObject };
 
+// A Durable Object comes into existence the first time anything fetches its
+// stub, and the moment it does it fixes its own epoch for good. So the gate
+// below is not decoration: before the launch instant this Worker answers every
+// route itself and never reaches the stub, which is the only way to be sure no
+// smoke test, uptime check, crawler or stray deploy request starts the world
+// early and bakes in the wrong epoch.
+//
+// `LAUNCH_MS` is the public opening instant in epoch milliseconds. Leaving it
+// unset means no gate at all, which is what local development and staging want.
+const launchAt = (env) => {
+  const value = Number(env.LAUNCH_MS);
+  return Number.isSafeInteger(value) && value > 0 ? value : null;
+};
+
+// How long before the opening instant the scheduled trigger may create the
+// world. One firing inside this window does the work; every firing outside it —
+// including every day after launch — returns immediately, so the mechanism
+// needs no stored state and no second deploy to switch itself off.
+const WAKE_WINDOW_MS = 15 * 60_000;
+
+/** Which world this deployment talks to. Configuration only, never a request. */
+const worldName = (env) => (typeof env.WORLD_ID === 'string' && env.WORLD_ID.trim()
+  ? env.WORLD_ID.trim() : 'authoritative-world');
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -46,6 +70,23 @@ export default {
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      });
+    }
+
+    // Closed until the opening instant. This answers before the Durable Object
+    // binding is used at all, so a request arriving early cannot create the
+    // world; `/worker-health` above still answers, which is what a health check
+    // should be reaching anyway.
+    const opensAt = launchAt(env);
+    if (opensAt !== null && Date.now() < opensAt) {
+      return new Response(JSON.stringify({ status: 'not_open', opensAt }), {
+        status: 503,
+        headers: {
+          'Content-Type': 'application/json',
+          'Retry-After': String(Math.max(1, Math.ceil((opensAt - Date.now()) / 1000))),
+          'Cache-Control': 'no-store',
+          ...corsHeaders,
+        },
       });
     }
 
@@ -91,5 +132,26 @@ export default {
       statusText: response.statusText,
       headers: responseHeaders
     });
-  }
+  },
+
+  /**
+   * The scheduled launch. A cron a few minutes before the opening instant is
+   * the only thing permitted to create the world, and it does so by making the
+   * ordinary reader bootstrap call: the object initialises from `START_MS` and
+   * `WORLD_SEED`, then catches up to the present, so the first visitor at
+   * opening time meets a world with its history already in place rather than
+   * one being built under them.
+   *
+   * Every firing outside the pre-launch window does nothing at all, so this is
+   * safe to leave installed permanently and never needs turning off.
+   */
+  async scheduled(event, env, ctx) {
+    const opensAt = launchAt(env);
+    if (opensAt === null || !env.WORLD_DO) return;
+    const now = Date.now();
+    if (now >= opensAt || now < opensAt - WAKE_WINDOW_MS) return;
+    const stub = env.WORLD_DO.get(env.WORLD_DO.idFromName(worldName(env)));
+    // The hostname is never read by the object; only the path is routed.
+    ctx.waitUntil(stub.fetch('https://worldstream.internal/api/observe', { method: 'POST' }));
+  },
 };

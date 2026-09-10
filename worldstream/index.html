@@ -4,7 +4,27 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Worldstream | The Secrets of Silver Clouds</title>
-  <link rel="canonical" href="https://thesecretsofsilverclouds.com/worldstream/app/">
+  <!-- /worldstream/ is the address to share; /worldstream/app/ is where the
+       reader happens to live. The canonical therefore points at this page, so
+       links, shares and search results all settle on the short form and the app
+       path stays free to move. -->
+  <link rel="canonical" href="https://thesecretsofsilverclouds.com/worldstream/">
+  <!-- The redirect below is JavaScript, and social crawlers do not run it. This
+       page is what they read, so the card lives here rather than on the reader,
+       which has no room for it and should not be changed to make room. -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://thesecretsofsilverclouds.com/worldstream/">
+  <meta property="og:site_name" content="The Secrets of Silver Clouds">
+  <meta property="og:title" content="Worldstream — a living epic fantasy novel, unfolding now">
+  <meta property="og:description" content="One shared magical London, running in real time. Weather, journeys and whole scenes happen whether or not anyone is reading, and the story is there when you arrive.">
+  <meta property="og:image" content="https://thesecretsofsilverclouds.com/images/worldstream-hero.jpg">
+  <meta property="og:image:width" content="1600">
+  <meta property="og:image:height" content="850">
+  <meta property="og:image:alt" content="Worldstream Fiction — a magical London beneath a sky of silver clouds">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Worldstream — a living epic fantasy novel, unfolding now">
+  <meta name="twitter:description" content="One shared magical London, running in real time. The story is there when you arrive.">
+  <meta name="twitter:image" content="https://thesecretsofsilverclouds.com/images/worldstream-hero.jpg">
   <script>location.replace((location.protocol === 'file:' ? 'http://127.0.0.1:4323' : '') + '/worldstream/app/' + location.search + location.hash);</script>
   <noscript><meta http-equiv="refresh" content="0; url=/worldstream/app/"></noscript>
 </head>
