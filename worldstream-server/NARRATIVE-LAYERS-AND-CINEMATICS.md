@@ -6,8 +6,9 @@ the system as it stands, recorded before the reasoning is lost.
 
 Two questions prompted it:
 
-1. The world publishes ~54 public events a day but only ~8 readable passages.
-   Why is so little of what the simulation does becoming story?
+1. The world publishes ~54 public events a day and, before this work, ~17
+   readable passages. Why is so little of what the simulation does becoming
+   story?
 2. Where is the LLM path, and is it the scene-reservoir design that was
    intended, or something else?
 
@@ -40,20 +41,29 @@ revision supplied prose; otherwise the event keeps its one-line
 `publicDescription` and reaches the reader as a ticker entry.
 
 `generalEditorial` is the catch-all. It polishes the description and **never
-returns prose**. Anything with no earlier match therefore cannot become a
-passage, by construction rather than by policy.
+returns prose of its own**. Anything with no earlier match therefore could not
+become a passage, by construction rather than by policy — which is the hole §9
+fills. (Its row in the table below counts events whose prose was set by the
+*reducer* — `arcs.mjs`, `night-stories.mjs`, `scene-bank.mjs` write
+`ctx.event.prose` at commit time and it survives the chain untouched.)
 
 ### Which editors can emit prose, and for what
 
-| Editor | Types it claims | Prose in a 7.7-day sample |
+| Editor | Types it claims | Prose over 7.8 days |
 |---|---|---|
-| `sceneBankEditorial` | `SCENE_BANK_BEAT` | 7 of 7 |
-| `livesEditorial` | **only** `OFFSCREEN_START/RESULT/ENCOUNTER` (`editorial-lives.mjs:10`) | 0 of 36 |
-| `supportingEditorial` | `SUPPORTING_*` | 9 of 12 |
-| `nightEditorial` | `NIGHT_*` | all |
-| `worldEditorial` | `MOMENT_NOTICED` and world texture | 0 of 22 |
-| `sceneEditorial` | `VENUE_SCENE`, `CONVERSATION` | all |
-| `generalEditorial` | everything else | never |
+| `sceneBankEditorial` | `SCENE_BANK_BEAT` | 7 |
+| `livesEditorial` | **only** `OFFSCREEN_START/RESULT/ENCOUNTER` (`editorial-lives.mjs:10`) | 26 |
+| `supportingEditorial` | `SUPPORTING_*` | 40 |
+| `nightEditorial` | `NIGHT_*` | 6 |
+| `worldEditorial` | `MOMENT_NOTICED` and world texture | 0 with prose; see §9 |
+| `sceneEditorial` | `VENUE_SCENE`, `CONVERSATION` | 1 |
+| `domesticEditorial` | ordinary life — see §9 | **90** |
+| `generalEditorial`, plus prose the reducer set directly | everything else | 52 |
+
+Counts are attributed by running each editor and matching its output against
+what the chain published, so they reflect who actually won rather than who was
+asked. An earlier version of this table reported `livesEditorial` at 0; that was
+the same read-the-ledger-directly mistake corrected in §2.
 
 `livesEditorial` is worth reading before writing any new editor. It *can* write
 prose — eight paths do — but it deliberately stays silent on continuations:
@@ -68,8 +78,9 @@ it rather than reinvent it.
 
 ### The domestic layer: events with no editor at all
 
-Measured over 7.7 simulated days (`scripts/create-launch-world.mjs`, 168h). These
-reach `generalEditorial` and become ticker lines. None has ever produced prose:
+Measured over 7.8 simulated days (`scripts/create-launch-world.mjs`, 168h).
+Before §9 these reached `generalEditorial` and became ticker lines; none had
+ever produced prose:
 
 | Type | Count | Type | Count |
 |---|---|---|---|
@@ -80,49 +91,61 @@ reach `generalEditorial` and become ticker lines. None has ever produced prose:
 | `PRACTICE_BEGIN` | 17 | `QUIET_TIME_BEGIN` | 6 |
 | `PRACTICE_END` | 17 | `GAME_BEGIN` | 5 |
 
-About **20 publishable state changes a day** that no editor can narrate.
+About **20 publishable state changes a day** that no editor could narrate.
+`INSTITUTION_NOTICE` and `MOMENT_NOTICED` remain uncovered by design — see §9.
 
 ---
 
 ## 2. Gap study
 
-Method: a clean 168-hour world from the canonical seed, then the committed
-ledger read directly. "Passage" means an event a reader would see as new prose —
-`prose`, `register: 'beat'`, `sceneBeats` or `lines`. Gaps are measured in
-waking hours (08:00–23:00 London), since an overnight silence is not starvation.
+> **Corrected 10 September 2026. An earlier version of this section reported
+> 8.2 passages a day and a 601-minute p90. Those numbers were wrong and are
+> gone.** They were measured by reading the committed ledger directly, which
+> misses every passage the editorial chain adds at read time — `publicEvents`
+> applies `editorialEvent` on the way out, so `supporting`, `lives`, `world` and
+> `general` revisions never appear in the stored rows. Any figure quoted here
+> now comes from running the real chain. If you find 8.2 anywhere else, it is
+> this same mistake.
 
-| | all public events | passages |
+Method: a clean 168-hour world from the canonical seed, its committed events
+then passed through `editorialEvent` exactly as `publicEvents` does. "Passage"
+means an event a reader sees as new prose. Gaps are measured in waking hours
+(08:00–23:00 London), since an overnight silence is not starvation.
+
+| | all public events | passages (pre-domestic) |
 |---|---|---|
-| Per day | 54.2 | **8.2** |
-| Median gap | 5 m | **47 m** |
-| p90 gap | 55 m | **601 m** |
-| Longest | 478 m | **932 m** |
+| Per day | 54.2 | **16.9** |
+| Median gap | 5 m | **14 m** |
+| p90 gap | 55 m | **183 m** |
+| Longest | 478 m | **876 m** |
 
 Waking-hours passage gaps, extrapolated:
 
 | Gap exceeds | Times per 30 days |
 |---|---|
-| 60 m | 93 |
-| 90 m | 74 |
-| 180 m | 62 |
-| 360 m | 39 |
+| 60 m | 112 |
+| 90 m | 85 |
+| 120 m | 69 |
+| 180 m | 50 |
+| 360 m | 31 |
 
-**There is no threshold that fires about once a month.** The distribution is
-bimodal — a ~45-minute daytime rhythm and long structural silences of 10–15
-hours. Even a six-hour threshold fires 39 times; above the 932-minute maximum it
-fires never. A monthly cadence has to come from a **budget**, not a threshold.
+**There is no threshold that fires about once a month**, and the correction does
+not change this. The distribution is bimodal — a quarter-hour daytime rhythm and
+long structural silences. Even a six-hour threshold fires 31 times; above the
+876-minute maximum it fires never. A monthly cadence has to come from a
+**budget**, not a threshold.
 
-Modelled effect of giving the domestic layer an editor:
+Measured effect of the domestic editor, same seed, both columns through the
+chain (see `src/editorial-domestic.mjs`, commit `efce99e`):
 
-| | passages/day | median gap | p90 gap | 3 h+ gaps |
+| | passages/day | waking median | waking p90 | 3 h+ gaps |
 |---|---|---|---|---|
-| today | 8.3 | 42 m | 750 m | 64/month |
-| + domestic at 50% | 18.1 | 38 m | 167 m | 32/month |
-| + domestic at 100% | 28.0 | 13 m | 100 m | 8/month |
+| before | 16.9 | 14 m | 183 m | 50/month |
+| **after** | **28.5** | **10 m** | **107 m** | **39/month** |
 
-Live production on launch day agreed with the simulation: 37 public events,
-**8 of them prose**, and a 4h47m afternoon silence between 13:10 and the 17:57
-meal.
+A 107-minute p90 is territory where the world breathes. The remaining long gaps
+do not all want filling; some silence is the world being honest about a quiet
+afternoon. **The visible enemy from here is repetition, not silence.**
 
 ---
 
@@ -322,3 +345,123 @@ Deployed production configuration, for reference:
 3. **Then** consider the reservoir, with a budget rather than a starvation
    timer, and with the owner's own session excluded from any viewer count.
    Note that this would give the production world its first outbound call.
+
+---
+
+## 9. The domestic editor
+
+`src/editorial-domestic.mjs`, added in commit `efce99e`. Last in the chain, so
+it fills holes and can never displace a specialist. Surface only: it reads a
+committed event and returns `{ description, prose }`, and returns the canonical
+`publicDescription` unchanged so the ledger line is never rewritten.
+
+### Event-type mapping
+
+This is the contract the staged reservoir has to be converted against. Anything
+generated or authored for these families must match these types, this admission
+rule and this prose shape — not a guess at them.
+
+| Event type | Admission | Bank size | Notes |
+|---|---|---|---|
+| `CROSS_PATHS` | always | 9 | Two people meeting unplanned is a beat by definition |
+| `PRACTICE_END` | always | 8 | An ending carries a result |
+| `PRACTICE_BEGIN` | 1 in 4 | 3 | A beginning carries only an intention |
+| `MEAL_BEGIN` | morning/evening/night always; midday 1 in 5 | 5 morning, 6 paired, 4 solo | Branches on `daypart` and on whether both leads are present |
+| `REST_BEGIN`, `QUIET_TIME_BEGIN` | 1 in 2 | 6 shared | |
+| `PIANO_BEGIN` | 2 in 3 | 5 | |
+| `GAME_BEGIN`, `TV_BEGIN`, `MUSIC_LISTEN_BEGIN` | 1 in 2 | 4 shared | |
+| `WEATHER_CHANGE` | only when `isShelterWeather(payload.weatherCode)` | 3 | Weather earns prose only where it changes what people can do |
+
+Deliberately **not** claimed: `INSTITUTION_NOTICE` (38 a week) and
+`MOMENT_NOTICED` (22 a week). The first is institutional furniture; the second
+belongs to `worldEditorial`. Both are candidates for the reservoir, not for a
+hand-written switch.
+
+### Selection
+
+```js
+roll(event, salt) = sha256(`silver-clouds-domestic-v1|${salt}|${event.id}|${event.type}`).readUInt32BE(0)
+choose(event, bank) = bank[roll(event,'pick') % bank.length]
+share(event, n, d)  = roll(event,'share') % d < n
+```
+
+Both draws depend only on committed event identity, so prose is stable across
+refreshes, viewers and replays. `share` is the thinning dial per family; it is
+not a random percentage but a stable partition of that family's events.
+
+### Substitution variables available to a bank row
+
+Every value comes off the committed event. Nothing is inferred.
+
+| Variable | Source |
+|---|---|
+| `who` | `event.participants` mapped through `NAMES`, joined with "and" |
+| `where` | `PLACES[event.location]` |
+| `room` | `event.room`, already the manuscript's name for it |
+| `when` | `daypart(event.occurredAt)` |
+| `both(event)` | true when both leads are participants |
+
+Any reservoir row for these families must restrict itself to these, or declare
+its own and have the runtime supply them. A row that names a character not in
+`event.participants` is invalid — the invariant harness checks this.
+
+### Measured behaviour, 7.8-day seed
+
+90 passages, 67 distinct sentences, worst reused 9 times. That reuse rate is the
+reason for the reservoir: single-digit exact repeats over a 30-day audit is not
+reachable with a hand-written switch, and Batch 01 exists to replace these banks
+with authored breadth rather than to extend them.
+
+---
+
+## 10. Checkpoint 2 investigation — description ownership vs prose enrichment
+
+**The question.** A specialist that returns a description-only revision claims
+the event and blocks domestic prose, because the chain is a single first-match
+`??` over one combined object. Can description ownership and prose enrichment be
+separated without breaking first-match for specialist *prose*?
+
+**The surface, measured.** 12 events across 7.8 days — 1.5 a day — where
+domestic has prose and the chain publishes a bare line. All 12 are claimed by
+`worldEditorial`:
+
+| Type | Count |
+|---|---|
+| `PIANO_BEGIN` | 6 |
+| `TV_BEGIN` | 4 |
+| `QUIET_TIME_BEGIN` | 1 |
+| `MUSIC_LISTEN_BEGIN` | 1 |
+
+Enrichment would take passages from 28.5 to **30.0 a day**. Real, modest, and
+not the main lever — repetition is.
+
+**Where it would go.** `editorial.mjs:274–279` already merges a revision over
+the event field by field. The minimal change keeps one chain and adds one
+fallback at the merge, not a second pass over the editors:
+
+```
+revision = <unchanged first-match chain>
+prose    = revision?.prose ?? event.prose ?? (revision && !revision.prose ? domesticEditorial(event)?.prose : undefined)
+```
+
+Properties worth stating, because they are what make it safe:
+
+- **Specialist prose still wins outright.** The fallback is reached only when
+  the winning revision carried no prose at all.
+- **Description ownership is untouched.** `revision.description` is still the
+  specialist's; domestic contributes text and nothing else.
+- **No editor runs twice**, and domestic stays last, so its own first-match
+  position is unchanged.
+- Domestic is already pure and side-effect free, so calling it a second time for
+  the same event returns the same string.
+
+**The risk to weigh.** A specialist that returns description-only may be saying
+"this event is deliberately quiet", not merely "I have no prose". `worldEditorial`
+is the only editor affected, and its four types here are piano, television,
+quiet time and music — the families where a claim of deliberate quiet is most
+plausible. That should be checked against `editorial-world.mjs` intent before
+implementing, and the cheap alternative is an explicit opt-in: let a revision
+carry `enrichable: true`, so silence stays the default and enrichment is a
+decision rather than an inference.
+
+**Not implemented.** No code was changed for this section.
