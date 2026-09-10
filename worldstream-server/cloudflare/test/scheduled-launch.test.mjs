@@ -131,3 +131,24 @@ test('the deployed configuration names the appointed minute and the day it opens
   assert.ok(!staging.includes('LAUNCH_MS'), 'staging must not inherit the launch gate');
   assert.ok(!staging.includes('START_MS'), 'staging must not inherit the production epoch');
 });
+
+test('the reader and the world agree on where the world answers', () => {
+  // The page is static on the .com; the world is a Worker on the .co.uk. Two
+  // origins, so the reader has to name the backend and the backend has to admit
+  // the reader — and a mismatch between them is invisible until the first
+  // deploy, when every request fails preflight and the page never fills in.
+  const HOST = 'https://worldstream-api.thesecretsofsilverclouds.co.uk';
+  const READER = 'https://thesecretsofsilverclouds.com';
+  const reader = readFileSync(fileURLToPath(new URL('../../../worldstream/app/index.html', import.meta.url)), 'utf8');
+  const production = config.slice(config.indexOf('[env.production]'));
+
+  assert.match(reader, new RegExp(`name="worldstream-api" content="${HOST}"`),
+    'the reader must name the deployed backend');
+  assert.match(production, /pattern = "worldstream-api\.thesecretsofsilverclouds\.co\.uk"/);
+  assert.match(production, /custom_domain = true/);
+
+  const cors = production.match(/CORS_ORIGINS = "([^"]+)"/)[1].split(',').map(o => o.trim());
+  assert.ok(cors.includes(READER), 'production CORS must admit the real reader origin');
+  assert.ok(!cors.some(o => o.includes('127.0.0.1') || o.includes('localhost')),
+    'production must not admit local origins');
+});

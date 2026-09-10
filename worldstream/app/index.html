@@ -8,10 +8,15 @@
   <link rel="stylesheet" href="reading-view.css">
   <link rel="stylesheet" href="scene-reading.css">
   <link rel="stylesheet" href="reader-feedback.css">
-    <!-- The Cloudflare backend. Empty means same-origin (a local proxy).
-       Local wrangler dev: http://127.0.0.1:8787
-       Deployed:           the .co.uk Worldstream worker -->
-  <meta name="worldstream-api" content="">
+    <!-- The Cloudflare backend. The page is static and served from the .com;
+       the world lives behind this hostname on the .co.uk, which is why the
+       two are named separately at all.
+
+       A local run overrides this rather than editing it: `dev.mjs` and the
+       showcase server inject `window.WORLDSTREAM_API`, which `api-base.js`
+       prefers over this tag. So the deployed value can sit here permanently
+       and nothing local ever reaches production by accident. -->
+  <meta name="worldstream-api" content="https://worldstream-api.thesecretsofsilverclouds.co.uk">
   <!-- Must load before app.js: it decides which backend /api/* goes to. -->
   <script type="module" src="api-base.js"></script>
   <script type="module" src="app.js"></script>

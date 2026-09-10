@@ -62,3 +62,12 @@ START_MS = "1788994800000"
 # returns immediately. Cron expressions are always UTC.
 [env.production.triggers]
 crons = ["55 15 * * *"]
+
+# Where the world answers. The reader is static and served from the .com; the
+# world is a Worker on the .co.uk, and the two are separate origins on purpose —
+# that split is the deployed architecture, and running it any other way would
+# hide CORS problems until the first deploy. `custom_domain` asks Cloudflare to
+# create and route the hostname, so the .co.uk zone must be on this account.
+[[env.production.routes]]
+pattern = "worldstream-api.thesecretsofsilverclouds.co.uk"
+custom_domain = true
