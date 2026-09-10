@@ -34,6 +34,20 @@ ENVIRONMENT = "staging"
 WORLD_ID = "worldstream-staging"
 CORS_ORIGINS = "https://thesecretsofsilverclouds.com,https://www.thesecretsofsilverclouds.com,http://127.0.0.1:4323,http://localhost:4323"
 
+# Durable Object bindings are NOT inherited by a named environment, and neither
+# are migrations. Declared only at the top level they apply to the default
+# deploy and silently vanish from `--env production`, which then boots with the
+# env vars present, no WORLD_DO, and a 500 on every request that needs the
+# world. The deploy output says so if you read the binding list.
+[env.staging.durable_objects]
+bindings = [
+  { name = "WORLD_DO", class_name = "WorldDurableObject" }
+]
+
+[[env.staging.migrations]]
+tag = "v1"
+new_sqlite_classes = ["WorldDurableObject"]
+
 [env.production]
 [env.production.vars]
 ENVIRONMENT = "production"
@@ -71,3 +85,17 @@ crons = ["55 15 * * *"]
 [[env.production.routes]]
 pattern = "worldstream-api.thesecretsofsilverclouds.co.uk"
 custom_domain = true
+
+# Durable Object bindings are NOT inherited by a named environment, and neither
+# are migrations. Declared only at the top level they apply to the default
+# deploy and silently vanish from `--env production`, which then boots with the
+# env vars present, no WORLD_DO, and a 500 on every request that needs the
+# world. The deploy output says so if you read the binding list.
+[env.production.durable_objects]
+bindings = [
+  { name = "WORLD_DO", class_name = "WorldDurableObject" }
+]
+
+[[env.production.migrations]]
+tag = "v1"
+new_sqlite_classes = ["WorldDurableObject"]
