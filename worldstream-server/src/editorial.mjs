@@ -6,6 +6,7 @@ import { callbackEditorial } from './callbacks.mjs';
 import { worldEditorial } from './editorial-world.mjs';
 import { sceneEditorial } from './editorial-scenes.mjs';
 import { sceneBankEditorial } from './scene-bank-presentation.mjs';
+import { domesticEditorial } from './editorial-domestic.mjs';
 
 // A new edition of the words, not a new edition of the world. Never called by
 // the reducer: event identity, effects, knowledge and the stored scene packet
@@ -270,7 +271,7 @@ export function editorialEvent(event, context = {}) {
     || !text(event.id) || !Number.isSafeInteger(event.occurredAt)
     || (Number.isSafeInteger(context.asOf) && event.occurredAt > context.asOf)) return event;
   const ownContext = { ...performanceContext(event), ...(context?.ashaiCoveredFloor !== undefined ? { ashaiCoveredFloor: context.ashaiCoveredFloor } : {}) };
-  const revision = sceneBankEditorial(event) ?? livesEditorial(event) ?? supportingEditorial(event, ownContext) ?? nightEditorial(event, ownContext) ?? callbackEditorial(event, ownContext) ?? worldEditorial(event) ?? sceneEditorial(event) ?? generalEditorial(event);
+  const revision = sceneBankEditorial(event) ?? livesEditorial(event) ?? supportingEditorial(event, ownContext) ?? nightEditorial(event, ownContext) ?? callbackEditorial(event, ownContext) ?? worldEditorial(event) ?? sceneEditorial(event) ?? generalEditorial(event) ?? domesticEditorial(event);
   return { ...event, publicDescription: correctEditorialText(revision?.description ?? event.publicDescription),
     ...((revision?.prose ?? event.prose) ? { prose: correctEditorialText(revision?.prose ?? event.prose) } : {}),
     ...(Array.isArray(revision?.lines) ? { lines: revision.lines } : (Array.isArray(event.lines) ? { lines: event.lines } : {})),
