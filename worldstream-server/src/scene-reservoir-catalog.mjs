@@ -26,7 +26,12 @@ const aliases = {'mi6/lunch_hall':'mi6/common_room','mi6/corridor':'mi6/corridor
   big_ben_plaza:'big_ben_plaza/venue',streamliner:'streamliner/transit',cafe:'cafe/venue',enchanted_ink:'enchanted_ink/venue'};
 const TITLES = {'domestic.ashai_greah.quiet':'A quiet moment with Greah','domestic.goaden_kai.quiet':'A quiet moment with Kai',
   'domestic.shared_meal':'Over lunch','domestic.cross_paths':'Passing in the corridor','domestic.practice_end':'At the end of practice',
-  'domestic.yukon_shared':'In the gaming area','night.low_stakes':'After midnight'};
+  'domestic.yukon_shared':'In the gaming area','night.low_stakes':'After midnight',
+  // The families Batch 01 carries that had no title and fell to "A passing
+  // moment". None is admitted yet; the titles are here for when one is.
+  'domestic.yukon_game':'Yukon and the game','supporting.henderson':'With the General','supporting.hammond':'At Hammond’s table',
+  'supporting.varied':'A colleague, briefly','offscreen.emily_plaza':'Emily in the plaza','travel.streamliner':'On the Streamliner',
+  'world.weather_magic':'The weather, and what was in it','callback.shared_recent':'Something from earlier'};
 const text = value => typeof value === 'string' && value.trim().length > 0;
 const plain = value => value && typeof value === 'object' && !Array.isArray(value);
 const members = (values,set) => Array.isArray(values) && values.length > 0 && values.every(value=>set.has(value));
