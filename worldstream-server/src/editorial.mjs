@@ -205,21 +205,52 @@ function generalEditorial(event) {
     ]);
     case 'TRAVEL_DEPART':
       if (!both || !places[p.to]) return null;
+      // The train is the one the manuscript rides at [P00161-165] and the Lore
+      // Book describes: carriages enchanted larger than they are, charms that
+      // take the city's noise away, arcane symbols set into the interior, and
+      // a phase through solid buildings that blurs the edges like watercolour.
+      // Goaden's headphones are his own, from the same pages.
       return prose([
         `The Streamliner slid into motion, carrying them towards ${places[p.to]}. Ashai turned to the window. Goaden leaned back beside her as London began to pass beyond the glass.`,
-        `They boarded the Streamliner for ${places[p.to]}. Goaden settled beside Ashai. She braced a hand as the carriage moved, then leaned towards the window.`
+        `They boarded the Streamliner for ${places[p.to]}. Goaden settled beside Ashai. She braced a hand as the carriage moved, then leaned towards the window.`,
+        `The charms took the noise of the platform away as the doors closed. The carriage was larger inside than it had any right to be, and ${places[p.to]} was a straight line through everything in the way. Goaden put his headphones on. Ashai took the window.`,
+        `The Streamliner gathered speed towards ${places[p.to]}, and the first building came at the glass and went through it. The edges of the carriage blurred for the length of a wall and were hard again. Ashai watched it happen. Goaden had seen it before.`,
+        `The symbols set into the carriage brightened as it moved off for ${places[p.to]}. Under the charms the whole carriage went quiet enough to hear a page turn. Goaden let a seat adjust itself around him and closed his eyes. Ashai did not.`
       ]);
     case 'TRAVEL_ARRIVE':
       if (!both || p.to !== event.location) return null;
-      if (p.to === 'enchanted_ink') return { prose: 'Ashai stepped into Enchanted Ink and stopped to follow a design across the wall. It kept moving after she did. Goaden came in beside her, turning his head to watch it go.' };
+      if (p.to === 'enchanted_ink') return prose([
+        'Ashai stepped into Enchanted Ink and stopped to follow a design across the wall. It kept moving after she did. Goaden came in beside her, turning his head to watch it go.',
+        'The designs at Enchanted Ink were moving before the door had closed behind them. Ashai went to the wall. Goaden nodded to the artisan at the counter and let her look.',
+        'Something on the display at Enchanted Ink crossed from one frame into the next as they came in. Ashai went after it. Goaden stayed by the door and watched her go.'
+      ]);
       if (p.to === 'mi6') return prose([
         'The thick metal doors of MI6 closed behind them. Goaden slowed to let Ashai catch up, and they walked on together. Voices carried from further along the passage.',
         'The metal doors shut behind them. Ashai matched Goaden’s pace along the familiar passage, their footsteps briefly indistinguishable. Beyond the walls, London kept going.',
         'Back inside MI6, Goaden loosened his shoulders. Ashai glanced at him as they walked, then turned towards the conversation further along the corridor.'
       ]);
-      if (p.to === 'sanctuary') return { prose: 'They reached the Sanctuary. Ashai slowed and looked around, Goaden stopping beside her. She turned back to him before they went further.' };
-      if (p.to === 'cafe') return { prose: 'Steam rose behind the counter at the Silver Spoon. Ashai stepped inside and looked for somewhere to sit. Goaden followed her gaze across the occupied tables.' };
-      if (p.to === 'big_ben_plaza') return { prose: 'At the plaza, Ashai tipped her head back to look up at New Big Ben. Goaden stopped beside her. People passed around them while she followed the structure upwards.' };
+      // The Sanctuary is the one at [P01741-1744] and in the Lore Book: a floating
+      // nightclub held above London on tethers of cloud, gothic spires against
+      // sleek metal, firefly lights strung along every parapet and pinnacle,
+      // music spilling from the portals, and an inside larger than the outside,
+      // with a central hub opening through an ornate arch onto doorway after
+      // doorway. It is not a cathedral, and it has no aisles.
+      if (p.to === 'sanctuary') return prose([
+        'They reached the Sanctuary. Ashai slowed and looked around, Goaden stopping beside her. She turned back to him before they went further.',
+        'The Sanctuary hung above London on its tethers of cloud, gothic spire and sleek metal side by side and neither giving way. Ashai looked up until she had to stop. Goaden had already found the archway.',
+        'Firefly lights ran along every parapet and pinnacle of the Sanctuary, and music came out of the portals whether anyone had asked for it or not. Ashai stopped under the arch. Goaden waited for her to be done looking.',
+        'Inside, the Sanctuary was larger than the outside allowed. The central hub opened through its ornate arch onto doorway after doorway, each with its own music leaking through. Ashai chose one with her eyes. Goaden had chosen the same one.'
+      ]);
+      if (p.to === 'cafe') return prose([
+        'Steam rose behind the counter at the Silver Spoon. Ashai stepped inside and looked for somewhere to sit. Goaden followed her gaze across the occupied tables.',
+        'The door of the Silver Spoon closed behind them and took the street with it. Ashai looked for a table by the window. Goaden looked for one away from the screen.',
+        'The Silver Spoon was half full and louder than it looked. Ashai took the first empty table. Goaden came after her with his hands in his pockets, reading the room on the way.'
+      ]);
+      if (p.to === 'big_ben_plaza') return prose([
+        'At the plaza, Ashai tipped her head back to look up at New Big Ben. Goaden stopped beside her. People passed around them while she followed the structure upwards.',
+        'They came out into the plaza under New Big Ben with the Chimes still an hour off. Two lintels were drifting over the paving. Ashai watched them cross. Goaden watched the crowd.',
+        'The plaza was full and moving. Ashai found the shape of New Big Ben through the people and stopped to look up at it. Goaden stopped because she had.'
+      ]);
       return null;
     case 'CONVERSATION': return both && event.location === 'mi6' && (event.lines?.length || p.lines?.length) ? { prose: conversationOpening(event) } : null;
     case 'PLAN_BROKEN': return event.publicDescription === 'An MI6 callout broke the evening Goaden and Ashai had arranged at Sanctuary.'
