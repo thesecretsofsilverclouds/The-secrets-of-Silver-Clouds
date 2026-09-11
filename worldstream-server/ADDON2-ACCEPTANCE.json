@@ -1,0 +1,192 @@
+{
+  "generatedAt": "2026-09-11T22:11:46.811Z",
+  "rulesVersion": "canon-ambient-p183-v25",
+  "modelCalls": 0,
+  "requestTimeAuthoring": 0,
+  "refillReservations": 0,
+  "dormantPaths": [
+    "legion.community_request — no genuine community-request source exists",
+    "legion.magical_cleanup / recovery_or_extraction / information_favour — unused families, reserved for later sources",
+    "referred_to_meu — removed from Addon 2 v1",
+    "future.legionjob.001–.030 — remain inactive",
+    "MEU referred_to_mi6 artefact jurisdiction — never offered to the Legion"
+  ],
+  "determinism": {
+    "silver-clouds-now-v1": {
+      "matched": true,
+      "digest": "42c1088ce8c99f24519e9e633523c2dd76bc9f57964d9e63a224360b2eac06ba"
+    },
+    "seed-beta": {
+      "matched": true,
+      "digest": "8151aafdf4d5e69cee64a29b8d11b17bfc834d72f03b87a6bf8ae420a129da10"
+    },
+    "seed-gamma": {
+      "matched": true,
+      "digest": "981f7d6b858bbfec5074a0b11f2bc52365a2c03a1d3ce164f7482672d0dc8561"
+    }
+  },
+  "restart": {
+    "silver-clouds-now-v1": {
+      "matched": true,
+      "digest": "42c1088ce8c99f24519e9e633523c2dd76bc9f57964d9e63a224360b2eac06ba"
+    },
+    "seed-beta": {
+      "matched": true,
+      "digest": "8151aafdf4d5e69cee64a29b8d11b17bfc834d72f03b87a6bf8ae420a129da10"
+    },
+    "seed-gamma": {
+      "matched": true,
+      "digest": "981f7d6b858bbfec5074a0b11f2bc52365a2c03a1d3ce164f7482672d0dc8561"
+    }
+  },
+  "observers": {
+    "silver-clouds-now-v1": {
+      "matched": true,
+      "digest": "42c1088ce8c99f24519e9e633523c2dd76bc9f57964d9e63a224360b2eac06ba"
+    },
+    "seed-beta": {
+      "matched": true,
+      "digest": "8151aafdf4d5e69cee64a29b8d11b17bfc834d72f03b87a6bf8ae420a129da10"
+    },
+    "seed-gamma": {
+      "matched": true,
+      "digest": "981f7d6b858bbfec5074a0b11f2bc52365a2c03a1d3ce164f7482672d0dc8561"
+    }
+  },
+  "thirtyDays": {
+    "silver-clouds-now-v1": {
+      "digest": "42c1088ce8c99f24519e9e633523c2dd76bc9f57964d9e63a224360b2eac06ba",
+      "stats": {
+        "meuOpened": 6,
+        "meuResolved": 6,
+        "meuPerWeek": 1.4,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "communityRequestJobs": 0,
+        "lifeBalance": {
+          "meals": 178,
+          "practices": 78,
+          "sleep": 60,
+          "travel": 32,
+          "legionVisits": 2
+        }
+      }
+    },
+    "seed-beta": {
+      "digest": "8151aafdf4d5e69cee64a29b8d11b17bfc834d72f03b87a6bf8ae420a129da10",
+      "stats": {
+        "meuOpened": 6,
+        "meuResolved": 6,
+        "meuPerWeek": 1.4,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "communityRequestJobs": 0,
+        "lifeBalance": {
+          "meals": 178,
+          "practices": 81,
+          "sleep": 60,
+          "travel": 32,
+          "legionVisits": 3
+        }
+      }
+    },
+    "seed-gamma": {
+      "digest": "981f7d6b858bbfec5074a0b11f2bc52365a2c03a1d3ce164f7482672d0dc8561",
+      "stats": {
+        "meuOpened": 7,
+        "meuResolved": 7,
+        "meuPerWeek": 1.63,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "communityRequestJobs": 0,
+        "lifeBalance": {
+          "meals": 177,
+          "practices": 79,
+          "sleep": 60,
+          "travel": 30,
+          "legionVisits": 1
+        }
+      }
+    }
+  },
+  "ninetyDays": {
+    "silver-clouds-now-v1": {
+      "digest": "945a594d00adca153caedcf0d885c2ca778e69fdf178ad21af4575d4bf15d31b",
+      "stats": {
+        "meuOpened": 18,
+        "meuResolved": 18,
+        "meuPerWeek": 1.4,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "communityRequestJobs": 0,
+        "lifeBalance": {
+          "meals": 534,
+          "practices": 237,
+          "sleep": 180,
+          "travel": 93,
+          "legionVisits": 6
+        }
+      }
+    },
+    "seed-beta": {
+      "digest": "1950c23aec2b0303f40add2bd7db208d5e2539c44d372b42d9c3178d21fd26fd",
+      "stats": {
+        "meuOpened": 20,
+        "meuResolved": 20,
+        "meuPerWeek": 1.56,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "communityRequestJobs": 0,
+        "lifeBalance": {
+          "meals": 533,
+          "practices": 236,
+          "sleep": 180,
+          "travel": 97,
+          "legionVisits": 7
+        }
+      }
+    },
+    "seed-gamma": {
+      "digest": "3966b53537308e918f95b7867011f927fd9868ab78e6ba6cb7a03f94cda599a2",
+      "stats": {
+        "meuOpened": 14,
+        "meuResolved": 14,
+        "meuPerWeek": 1.09,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "communityRequestJobs": 0,
+        "lifeBalance": {
+          "meals": 534,
+          "practices": 236,
+          "sleep": 178,
+          "travel": 94,
+          "legionVisits": 4
+        }
+      }
+    }
+  }
+}

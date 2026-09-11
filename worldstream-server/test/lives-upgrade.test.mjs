@@ -10,6 +10,7 @@ import { createFixture, eventId, RULES_VERSION } from '../src/fixture.mjs';
 import { initialOffscreenLives } from '../src/offscreen-lives.mjs';
 import { upgradeOffscreenLives } from '../src/lives-upgrade.mjs';
 import { upgradeMeuCases } from '../src/meu-upgrade.mjs';
+import { upgradeLegionJobs } from '../src/legion-upgrade.mjs';
 import { openPinnedWorld, restoreWorldBackup } from '../src/world-operations.mjs';
 import { atLondon } from '../src/time.mjs';
 
@@ -52,7 +53,7 @@ function legacy(t) {
 
 test('v22 to v23 preserves old ledger bytes, memories, clock, seed and every existing pending action', t => {
   const f = legacy(t), before = snapshot(f);
-  assert.ok([NEXT, 'canon-ambient-p183-v24'].includes(RULES_VERSION));
+  assert.ok([NEXT, 'canon-ambient-p183-v24', 'canon-ambient-p183-v25'].includes(RULES_VERSION));
   assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
   const result = upgradeOffscreenLives(f), after = snapshot(f);
   assert.equal(result.status, 'upgraded'); assert.equal(result.rulesVersion, NEXT);
@@ -92,9 +93,13 @@ test('v22 to v23 preserves old ledger bytes, memories, clock, seed and every exi
 test('activation begins after the cutover without backfilling events or changing continuity', t => {
   const f = legacy(t), history = events(f.db);
   upgradeOffscreenLives(f);
-  if (RULES_VERSION === 'canon-ambient-p183-v24') {
+  if (RULES_VERSION === 'canon-ambient-p183-v24' || RULES_VERSION === 'canon-ambient-p183-v25') {
     assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
     upgradeMeuCases({ directory: f.directory, backupPath: join(f.directory, 'before-v24.sqlite') });
+  }
+  if (RULES_VERSION === 'canon-ambient-p183-v25') {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeLegionJobs({ directory: f.directory, backupPath: join(f.directory, 'before-v25.sqlite') });
   }
   const world = openPinnedWorld({ directory: f.directory });
   try {
@@ -104,14 +109,19 @@ test('activation begins after the cutover without backfilling events or changing
     const after = world.semanticSnapshot();
     const activations = after.events.slice(history.length);
     assert.ok(activations.some(e => e.type === 'WORLD_LIVES_ACTIVATE'));
-    if (RULES_VERSION === 'canon-ambient-p183-v24') {
+    if (RULES_VERSION === 'canon-ambient-p183-v25') {
+      assert.ok(activations.some(e => e.type === 'WORLD_MEU_ACTIVATE'));
+      assert.ok(activations.some(e => e.type === 'WORLD_LEGION_ACTIVATE'));
+      assert.equal(activations.length, 3);
+    } else if (RULES_VERSION === 'canon-ambient-p183-v24') {
       assert.ok(activations.some(e => e.type === 'WORLD_MEU_ACTIVATE'));
       assert.equal(activations.length, 2);
     } else {
       assert.equal(activations.length, 1);
     }
-    assert.equal(activations[0].occurredAt, cutover + 1);
-    assert.equal(activations[0].visibility, 'private');
+    assert.ok(activations.every(e => e.occurredAt === cutover + 1));
+    const lives = activations.find(e => e.type === 'WORLD_LIVES_ACTIVATE');
+    assert.equal(lives.visibility, 'private');
     assert.ok(after.pendingActions.every(action => action.dueAt > cutover + 1));
     assert.equal(world.publicProjection().continuityId, continuity);
     assert.deepEqual(events(f.db).slice(0, history.length), history);

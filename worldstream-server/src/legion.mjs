@@ -539,7 +539,7 @@ export function selectLegionScene({ available = [], seed = '', key = '', weather
 // One line of feed text for a scene the page may not be rendering in full.
 export function summariseLegion(mood) {
   return {
-    billing:'Gabriel brought up the rankings again.',
+    billing:'Gabriel raised the matter of the rankings again.',
     gig:'The Legion argued about the set list.',
     domestic:'The Legion had a disagreement about the warehouse.',
     the_quiet_one:'Rose ended a conversation with four words.',

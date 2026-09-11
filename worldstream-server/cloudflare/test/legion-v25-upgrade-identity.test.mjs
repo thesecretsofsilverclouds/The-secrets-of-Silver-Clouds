@@ -7,13 +7,12 @@ import { DatabaseSync } from 'node:sqlite';
 import { WorldStore } from '../../experiment-l/src/world.mjs';
 import { createFixture, RULES_VERSION } from '../../src/fixture.mjs';
 import { fixtureIdentity } from '../../src/world-identity.mjs';
-import { upgradeMeuCases } from '../../src/meu-upgrade.mjs';
 import { upgradeLegionJobs } from '../../src/legion-upgrade.mjs';
 import { WorldDurableObject } from '../src/world-durable-object.mjs';
 import { createMockSqlStorage } from '../src/sqlite-adapter.mjs';
 import { atLondon } from '../../src/time.mjs';
 
-const OLD = 'canon-ambient-p183-v23';
+const OLD = 'canon-ambient-p183-v24';
 const start = atLondon('2026-09-05', '00:00');
 
 function mockDo(nodeDb, env) {
@@ -37,13 +36,17 @@ function rewriteBareRules(dbPath, version) {
   finally { db.close(); }
 }
 
-function v23Sqlite(seed = 'cf-live-copy', { bareRules = false } = {}) {
-  const directory = mkdtempSync(join(tmpdir(), 'sc-meu-cf-'));
+function v24Sqlite(seed = 'cf-legion-live-copy', { bareRules = false } = {}) {
+  const directory = mkdtempSync(join(tmpdir(), 'sc-legion-cf-'));
   const dbPath = join(directory, 'world.sqlite');
   const current = createFixture({ startMs: start }), initial = current.initialState();
-  delete initial.meuCases;
-  initial.meta.upgrades = [{ from: 'canon-ambient-p183-v22', to: OLD, cutoverAt: start,
-    activatedAt: start + 1, activationActionId: `lives-v23/activate/${start}` }];
+  delete initial.legionJobs;
+  initial.meta.upgrades = [
+    { from: 'canon-ambient-p183-v22', to: 'canon-ambient-p183-v23', cutoverAt: start,
+      activatedAt: start + 1, activationActionId: `lives-v23/activate/${start}` },
+    { from: 'canon-ambient-p183-v23', to: OLD, cutoverAt: start,
+      activatedAt: start + 1, activationActionId: `meu-v24/activate/${start}` },
+  ];
   const fixture = {
     ...current,
     rulesVersion: OLD,
@@ -58,7 +61,7 @@ function v23Sqlite(seed = 'cf-live-copy', { bareRules = false } = {}) {
     format: 1, database: 'world.sqlite', rulesVersion: OLD,
   }, null, 2) + '\n');
   if (bareRules) rewriteBareRules(dbPath, OLD);
-  return { directory, dbPath, backupPath: join(directory, 'before-v24.sqlite'), seed };
+  return { directory, dbPath, backupPath: join(directory, 'before-v25.sqlite'), seed };
 }
 
 function loadRow(path) {
@@ -67,10 +70,10 @@ function loadRow(path) {
   finally { db.close(); }
 }
 
-test('Cloudflare DO refuses an unupgraded v23 sqlite under v24 rules', () => {
-  const live = v23Sqlite();
+test('Cloudflare DO refuses an unupgraded v24 sqlite under v25 rules', () => {
+  const live = v24Sqlite();
   const row = loadRow(live.dbPath);
-  assert.match(row.rules_version, /canon-ambient-p183-v23/);
+  assert.match(row.rules_version, /canon-ambient-p183-v24/);
   const nodeDb = new DatabaseSync(':memory:');
   nodeDb.exec(`CREATE TABLE world_state (
     id INTEGER PRIMARY KEY CHECK(id = 1), seed TEXT NOT NULL, rules_version TEXT NOT NULL,
@@ -81,24 +84,10 @@ test('Cloudflare DO refuses an unupgraded v23 sqlite under v24 rules', () => {
     /refusing to reinterpret its history/);
 });
 
-test('after the documented copy-upgrade, Cloudflare DO accepts the same epoch and seed', () => {
-  const live = v23Sqlite();
+test('after the documented v24→v25 copy-upgrade, Cloudflare DO accepts the same epoch and seed', () => {
+  const live = v24Sqlite();
   const before = loadRow(live.dbPath);
-  upgradeMeuCases(live);
-  const afterMeu = loadRow(live.dbPath);
-  assert.equal(afterMeu.seed, before.seed);
-  assert.equal(afterMeu.resolved_through, before.resolved_through);
-  assert.equal(afterMeu.rules_version, fixtureIdentity(createFixture({ startMs: start }), 'canon-ambient-p183-v24'));
-  const refused = new DatabaseSync(':memory:');
-  refused.exec(`CREATE TABLE world_state (
-    id INTEGER PRIMARY KEY CHECK(id = 1), seed TEXT NOT NULL, rules_version TEXT NOT NULL,
-    resolved_through INTEGER NOT NULL, state_json TEXT NOT NULL)`);
-  refused.prepare('INSERT INTO world_state VALUES (1, ?, ?, ?, ?)').run(
-    afterMeu.seed, afterMeu.rules_version, afterMeu.resolved_through, afterMeu.state_json);
-  assert.throws(() => mockDo(refused, { WORLD_SEED: live.seed, START_MS: start }),
-    /refusing to reinterpret its history/);
-
-  upgradeLegionJobs({ directory: live.directory, backupPath: join(live.directory, 'before-v25.sqlite') });
+  upgradeLegionJobs(live);
   const after = loadRow(live.dbPath);
   assert.equal(after.seed, before.seed);
   assert.equal(after.resolved_through, before.resolved_through);
@@ -115,8 +104,8 @@ test('after the documented copy-upgrade, Cloudflare DO accepts the same epoch an
   assert.equal(doObj.getResolvedThrough(), before.resolved_through);
 });
 
-test('Cloudflare-shaped bare v23 export is refused, then accepted after copy-upgrade', () => {
-  const live = v23Sqlite('cf-bare-live-copy', { bareRules: true });
+test('Cloudflare-shaped bare v24 export is refused, then accepted after copy-upgrade', () => {
+  const live = v24Sqlite('cf-bare-legion-copy', { bareRules: true });
   const before = loadRow(live.dbPath);
   assert.equal(before.rules_version, OLD);
   const refused = new DatabaseSync(':memory:');
@@ -128,19 +117,7 @@ test('Cloudflare-shaped bare v23 export is refused, then accepted after copy-upg
   assert.throws(() => mockDo(refused, { WORLD_SEED: live.seed, START_MS: start }),
     /refusing to reinterpret its history/);
 
-  upgradeMeuCases(live);
-  const afterMeu = loadRow(live.dbPath);
-  assert.equal(afterMeu.rules_version, fixtureIdentity(createFixture({ startMs: start }), 'canon-ambient-p183-v24'));
-  const stillRefused = new DatabaseSync(':memory:');
-  stillRefused.exec(`CREATE TABLE world_state (
-    id INTEGER PRIMARY KEY CHECK(id = 1), seed TEXT NOT NULL, rules_version TEXT NOT NULL,
-    resolved_through INTEGER NOT NULL, state_json TEXT NOT NULL)`);
-  stillRefused.prepare('INSERT INTO world_state VALUES (1, ?, ?, ?, ?)').run(
-    afterMeu.seed, afterMeu.rules_version, afterMeu.resolved_through, afterMeu.state_json);
-  assert.throws(() => mockDo(stillRefused, { WORLD_SEED: live.seed, START_MS: start }),
-    /refusing to reinterpret its history/);
-
-  upgradeLegionJobs({ directory: live.directory, backupPath: join(live.directory, 'before-v25.sqlite') });
+  upgradeLegionJobs(live);
   const after = loadRow(live.dbPath);
   assert.equal(after.seed, before.seed);
   assert.equal(after.resolved_through, before.resolved_through);

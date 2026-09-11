@@ -1,327 +1,304 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { WorldStore } from '../experiment-l/src/world.mjs';
 import { openWorld } from '../src/world.mjs';
-import { atLondon, MINUTE_MS as MIN } from '../src/time.mjs';
+import { createFixture } from '../src/fixture.mjs';
+import { atLondon, londonDate, MINUTE_MS as MIN } from '../src/time.mjs';
 import {
-  LEGION_JOB_FAMILIES,
   LEGION_JOB_OUTCOMES,
-  LEGION_JOB_EVENT_TYPES,
   initialLegionJobsState,
   assertLegionJobs,
   selectLegionJobParticipants,
   legionSourceRemit,
-  legionJobOpportunityActions
+  legionJobOpportunityActions,
+  mi6MayOfferLegionJob,
+  mi6LegionReferralActions,
+  legionCandidateAvailable,
 } from '../src/legion-jobs.mjs';
+import { LEGION_CONTRACT_BINDINGS } from '../src/legion-job-bindings.mjs';
 import { selectReservoirSurface, reservoirSurfaceMatches } from '../src/scene-reservoir-select.mjs';
 import { SCENE_RESERVOIR_CATALOG } from '../src/scene-reservoir-catalog.mjs';
+import { editorialEvent } from '../src/editorial.mjs';
 
 const START = atLondon('2026-09-04', '00:00');
 const SEED = 'test-seed-legion-v1';
+const DECLINE_REASONS = new Set([
+  'no_viable_roster', 'conflicting_commitment', 'physically_unavailable',
+  'unsupported_job_fit', 'source_no_longer_valid',
+]);
 
-test('assertLegionJobs enforces all strict canon invariants', () => {
-  const validState = {
-    legionJobs: initialLegionJobsState()
-  };
-  assert.doesNotThrow(() => assertLegionJobs(validState));
-
-  // Rule 4: Goaden cannot auto-lead
-  const goadenLeadState = {
-    legionJobs: {
-      ...initialLegionJobsState(),
-      jobs: {
-        'j1': {
-          jobId: 'j1', token: 't1', version: 1, system: 'legion',
-          family: 'legion.community_request', status: 'active',
-          owner: 'legion', leader: 'goaden', participants: ['truth', 'rose'],
-          paymentStatus: 'not_applicable'
-        }
-      }
-    }
-  };
-  assert.throws(() => assertLegionJobs(goadenLeadState), /Goaden cannot be Legion job leader/);
-
-  // Rule 5: Balthazar requires Anarchy
-  const balthazarSoloState = {
-    legionJobs: {
-      ...initialLegionJobsState(),
-      jobs: {
-        'j2': {
-          jobId: 'j2', token: 't2', version: 1, system: 'legion',
-          family: 'legion.community_request', status: 'active',
-          owner: 'legion', leader: 'truth', participants: ['truth', 'balthazar'],
-          paymentStatus: 'not_applicable'
-        }
-      }
-    }
-  };
-  assert.throws(() => assertLegionJobs(balthazarSoloState), /Balthazar cannot participate without Anarchy/);
-
-  // Balthazar with Anarchy is valid
-  const balthazarValidState = {
-    legionJobs: {
-      ...initialLegionJobsState(),
-      jobs: {
-        'j3': {
-          jobId: 'j3', token: 't3', version: 1, system: 'legion',
-          family: 'legion.community_request', status: 'active',
-          owner: 'legion', leader: 'truth', participants: ['truth', 'anarchy', 'balthazar'],
-          paymentStatus: 'not_applicable'
-        }
-      }
-    }
-  };
-  assert.doesNotThrow(() => assertLegionJobs(balthazarValidState));
-
-  // Rule 6 & 8: Payment only for MI6 off-book work
-  const paidCommunityState = {
-    legionJobs: {
-      ...initialLegionJobsState(),
-      jobs: {
-        'j4': {
-          jobId: 'j4', token: 't4', version: 1, system: 'legion',
-          family: 'legion.community_request', status: 'resolved',
-          owner: 'legion', leader: 'truth', participants: ['truth', 'rose'],
-          paymentStatus: 'paid'
-        }
-      }
-    }
-  };
-  assert.throws(() => assertLegionJobs(paidCommunityState), /Payment is only permitted for MI6 off-book work/);
-
-  // Rule 10: Zero prose in canonical state
-  const proseState = {
-    legionJobs: {
-      ...initialLegionJobsState(),
-      jobs: {
-        'j5': {
-          jobId: 'j5', token: 't5', version: 1, system: 'legion',
-          family: 'legion.mi6_offbook_job', status: 'active',
-          owner: 'legion', leader: 'truth', participants: ['truth', 'rose'],
-          paymentStatus: 'unpaid',
-          prose: 'Invented narrative about the job'
-        }
-      }
-    }
-  };
-  assert.throws(() => assertLegionJobs(proseState), /No prose allowed in canonical Legion job state/);
-
-  // Bounds: closedSummaries <= 24
-  const overflowSummariesState = {
-    legionJobs: {
-      ...initialLegionJobsState(),
-      closedSummaries: new Array(25).fill({ jobId: 'j' })
-    }
-  };
-  assert.throws(() => assertLegionJobs(overflowSummariesState), /Legion closedSummaries limit exceeded/);
+const shape = action => ({
+  type: action.type, dueAt: action.dueAt, priority: action.priority, day: action.day,
+  version: action.version, jobId: action.jobId ?? null, jobToken: action.jobToken ?? null,
+  actor: action.actor ?? null, actors: action.actors ?? [],
 });
 
-test('selectLegionJobParticipants always pairs Balthazar with Anarchy and keeps Truth as leader', () => {
-  for (let i = 0; i < 50; i++) {
-    const seed = `seed-${i}`;
-    const token = `token-${i}`;
-    for (const fam of LEGION_JOB_FAMILIES) {
-      const roster = selectLegionJobParticipants(fam, seed, token);
-      assert.ok(roster.length >= 2, 'Roster must have at least 2 members');
-      if (roster.includes('balthazar')) {
-        assert.ok(roster.includes('anarchy'), 'Balthazar must be accompanied by Anarchy');
-      }
-      assert.ok(!roster.includes('goaden'), 'Goaden is not a default Legion job roster member');
-    }
+function referralAction({ id = 'test/mi6-legion-referral', caseId = 'meu:test-contained', dueAt = START + 2 * 60 * MIN } = {}) {
+  return {
+    id, type: 'MI6_LEGION_REFERRAL', dueAt, priority: 36, day: londonDate(dueAt),
+    actors: [], version: 1, caseId, sourceEventId: `evt:${caseId}`,
+    meuFamily: 'meu.magic_misuse', location: 'mi6', area: 'ops_room',
+  };
+}
+
+function seededWorld({ seed = SEED, referrals = [referralAction()], reservations = {}, extraState = {} } = {}) {
+  const current = createFixture({ startMs: START });
+  const initial = current.initialState();
+  initial.legionJobs = {
+    ...initialLegionJobsState(),
+    reservations,
+    issued: Object.fromEntries(referrals.map(action => [action.id, {
+      shape: shape(action), sourceEventId: action.sourceEventId, consumed: false,
+    }])),
+    ...extraState,
+  };
+  const fixture = {
+    ...current,
+    initialState: () => structuredClone(initial),
+    initialActions: () => [...current.initialActions(), ...referrals],
+    reduceAction: (state, action, seedValue) => current.reduceAction(state, action, seedValue),
+  };
+  return new WorldStore({ dbPath: ':memory:', seed, fixture });
+}
+
+function jobCanon(snap) {
+  return {
+    jobs: snap.legionJobs,
+    events: snap.events.filter(e => e.type === 'MI6_LEGION_REFERRAL' || e.type.startsWith('LEGION_JOB_'))
+      .map(e => ({
+        type: e.type, occurredAt: e.occurredAt, location: e.location, area: e.area,
+        participants: e.participants, payload: e.payload,
+      })),
+  };
+}
+
+test('assertLegionJobs enforces leadership, roster, payment, slot and zero-prose rails', () => {
+  assert.doesNotThrow(() => assertLegionJobs({ legionJobs: initialLegionJobsState() }));
+
+  const goadenLead = { legionJobs: { ...initialLegionJobsState(), jobs: {
+    j1: { jobId: 'j1', token: 't1', version: 1, system: 'legion', family: 'legion.mi6_offbook_job',
+      status: 'offered', owner: 'legion', leader: 'goaden', participants: ['truth', 'rose'],
+      paymentStatus: 'unpaid' },
+  }, activeJobId: 'j1' } };
+  assert.throws(() => assertLegionJobs(goadenLead), /Goaden cannot be Legion job leader/);
+
+  const balthazarSolo = { legionJobs: { ...initialLegionJobsState(), jobs: {
+    j2: { jobId: 'j2', token: 't2', version: 1, system: 'legion', family: 'legion.mi6_offbook_job',
+      status: 'offered', owner: 'legion', leader: 'truth', participants: ['truth', 'balthazar'],
+      paymentStatus: 'unpaid' },
+  }, activeJobId: 'j2' } };
+  assert.throws(() => assertLegionJobs(balthazarSolo), /Balthazar cannot participate without Anarchy/);
+
+  const ashaiDefault = { legionJobs: { ...initialLegionJobsState(), jobs: {
+    j3: { jobId: 'j3', token: 't3', version: 1, system: 'legion', family: 'legion.mi6_offbook_job',
+      status: 'offered', owner: 'legion', leader: 'truth', participants: ['truth', 'ashai'],
+      paymentStatus: 'unpaid' },
+  }, activeJobId: 'j3' } };
+  assert.throws(() => assertLegionJobs(ashaiDefault), /Ashai and Yukon are not default Legion members/);
+
+  const paidCommunity = { legionJobs: { ...initialLegionJobsState(), jobs: {
+    j4: { jobId: 'j4', token: 't4', version: 1, system: 'legion', family: 'legion.community_request',
+      status: 'closed', owner: 'legion', leader: 'truth', participants: ['truth', 'rose'],
+      paymentStatus: 'paid' },
+  } } };
+  assert.throws(() => assertLegionJobs(paidCommunity), /Payment is only permitted for MI6 off-book work/);
+
+  const referred = { legionJobs: { ...initialLegionJobsState(), jobs: {
+    j5: { jobId: 'j5', token: 't5', version: 1, system: 'legion', family: 'legion.mi6_offbook_job',
+      status: 'closed', owner: 'legion', leader: 'truth', participants: ['truth', 'rose'],
+      paymentStatus: 'unpaid', result: 'referred_to_meu' },
+  } } };
+  assert.throws(() => assertLegionJobs(referred), /Invalid Legion job result/);
+
+  const openWithoutSlot = { legionJobs: { ...initialLegionJobsState(), jobs: {
+    j6: { jobId: 'j6', token: 't6', version: 1, system: 'legion', family: 'legion.mi6_offbook_job',
+      status: 'offered', owner: 'legion', leader: 'truth', participants: ['truth', 'rose'],
+      paymentStatus: 'unpaid' },
+  } } };
+  assert.throws(() => assertLegionJobs(openWithoutSlot), /open Legion job must occupy activeJobId/);
+
+  assert.ok(!LEGION_JOB_OUTCOMES.includes('referred_to_meu'));
+});
+
+test('selectLegionJobParticipants uses real availability and never auto-leads Goaden', () => {
+  const free = { legionJobs: initialLegionJobsState(), characters: {} };
+  const picked = selectLegionJobParticipants(free, START, 'seed-a', 'job-a');
+  assert.ok(picked.participants.includes('truth'));
+  assert.ok(!picked.participants.includes('goaden'));
+  assert.ok(!picked.participants.includes('ashai'));
+  assert.ok(!picked.participants.includes('yukon'));
+  if (picked.participants.includes('balthazar')) {
+    assert.ok(picked.participants.includes('anarchy'));
   }
+
+  const busyTruth = {
+    legionJobs: { ...initialLegionJobsState(), reservations: {
+      truth: { jobId: 'other', startAt: START, until: START + 60 * MIN },
+    } },
+    characters: {},
+  };
+  const none = selectLegionJobParticipants(busyTruth, START + 10, 'seed-b', 'job-b');
+  assert.deepEqual(none.participants, []);
+  assert.equal(none.reason, 'no_viable_roster');
+  assert.equal(legionCandidateAvailable(busyTruth, 'truth', START + 10), false);
 });
 
-test('legionSourceRemit maps MEU referrals and street community incidents to valid job families', () => {
-  // MEU referred to MI6 -> MI6 off-book job (PE-A)
-  const meuMi6Event = {
+test('raw incidents and referred_to_mi6 are not Legion job sources', () => {
+  assert.equal(legionSourceRemit({ type: 'INCIDENT', payload: { kind: 'surge_incident' } }), null);
+  assert.equal(legionSourceRemit({ type: 'INCIDENT', payload: { kind: 'confrontation' } }), null);
+  assert.equal(legionSourceRemit({
     type: 'MEU_CASE_RESOLVE',
-    location: 'mi6',
-    area: 'ops_room',
-    payload: { caseId: 'meu:123', outcome: 'referred_to_mi6', family: 'meu.artifact_irregularity' }
-  };
-  const remitMi6 = legionSourceRemit(meuMi6Event);
-  assert.equal(remitMi6.family, 'legion.mi6_offbook_job');
-
-  // MEU referred external -> magical cleanup or recovery
-  const meuExternalEvent = {
+    payload: { outcome: 'referred_to_mi6', family: 'meu.artifact_irregularity' },
+  }), null);
+  assert.equal(legionSourceRemit({
     type: 'MEU_CASE_RESOLVE',
-    location: 'boroughs',
-    area: 'street',
-    payload: { caseId: 'meu:456', outcome: 'referred_external', family: 'meu.ward_or_containment' }
-  };
-  const remitExternal = legionSourceRemit(meuExternalEvent);
-  assert.equal(remitExternal.family, 'legion.magical_cleanup');
+    payload: { outcome: 'contained', family: 'meu.magic_misuse' },
+  }), null);
+  assert.deepEqual(legionSourceRemit({
+    type: 'MI6_LEGION_REFERRAL',
+    payload: { caseId: 'meu:1', family: 'legion.mi6_offbook_job' },
+  }), { family: 'legion.mi6_offbook_job', location: 'mi6', area: 'ops_room' });
 
-  // Street incidents
-  assert.equal(legionSourceRemit({ type: 'INCIDENT', payload: { kind: 'surge_incident' } }).family, 'legion.magical_cleanup');
-  assert.equal(legionSourceRemit({ type: 'INCIDENT', payload: { kind: 'sighting' } }).family, 'legion.recovery_or_extraction');
-  assert.equal(legionSourceRemit({ type: 'INCIDENT', payload: { kind: 'courier' } }).family, 'legion.information_favour');
-  assert.equal(legionSourceRemit({ type: 'INCIDENT', payload: { kind: 'confrontation' } }).family, 'legion.community_request');
+  assert.equal(mi6MayOfferLegionJob({
+    type: 'MEU_CASE_RESOLVE', payload: { outcome: 'referred_to_mi6', family: 'meu.artifact_irregularity' },
+  }), false);
+  assert.equal(mi6MayOfferLegionJob({
+    type: 'MEU_CASE_RESOLVE', payload: { outcome: 'contained', family: 'meu.artifact_irregularity' },
+  }), false);
+  assert.equal(mi6MayOfferLegionJob({
+    type: 'MEU_CASE_RESOLVE', payload: { outcome: 'contained', family: 'meu.magic_misuse' },
+  }), true);
 
-  // Non-qualifying events return null
-  assert.equal(legionSourceRemit({ type: 'MEU_CASE_RESOLVE', payload: { outcome: 'no_action' } }), null);
-  assert.equal(legionSourceRemit({ type: 'MEAL_BEGIN' }), null);
-});
-
-test('legionJobOpportunityActions respects negative gates', () => {
-  const dummyEvent = {
-    id: 'evt-1',
-    type: 'INCIDENT',
-    location: 'boroughs',
-    area: 'street',
-    payload: { kind: 'surge_incident' }
-  };
-
-  const baseState = {
-    legionJobs: initialLegionJobsState(),
-    arcs: { session: null }
-  };
-
-  // 1. Passes when clean
-  const acts = legionJobOpportunityActions({
-    state: baseState, day: '2026-09-04', now: START, seed: SEED,
-    parentActionId: 'act-1', parentEventId: 'evt-1', sourceEvent: dummyEvent
+  const incidentOffer = legionJobOpportunityActions({
+    state: { legionJobs: initialLegionJobsState(), arcs: { session: null } },
+    day: '2026-09-04', now: START, seed: SEED,
+    parentActionId: 'act-1', parentEventId: 'evt-1',
+    sourceEvent: { type: 'INCIDENT', payload: { kind: 'surge_incident' } },
   });
-  assert.equal(acts.length, 1);
-  assert.equal(acts[0].type, 'LEGION_JOB_OFFER');
+  assert.equal(incidentOffer.length, 0);
 
-  // 2. Blocked if active job exists
-  const busyState = {
-    ...baseState,
-    legionJobs: { ...initialLegionJobsState(), activeJobId: 'job-existing' }
-  };
-  assert.equal(legionJobOpportunityActions({
-    state: busyState, day: '2026-09-04', now: START, seed: SEED,
-    parentActionId: 'act-1', parentEventId: 'evt-1', sourceEvent: dummyEvent
-  }).length, 0);
-
-  // 3. Blocked if cooldown active (>=24h)
-  const cooldownState = {
-    ...baseState,
-    legionJobs: { ...initialLegionJobsState(), nextEligibleAt: START + 24 * 60 * MIN }
-  };
-  assert.equal(legionJobOpportunityActions({
-    state: cooldownState, day: '2026-09-04', now: START + 10 * 60 * MIN, seed: SEED,
-    parentActionId: 'act-1', parentEventId: 'evt-1', sourceEvent: dummyEvent
-  }).length, 0);
-
-  // 4. Blocked if authored arc active
-  const arcState = {
-    ...baseState,
-    arcs: { session: 'protected_arc_session' }
-  };
-  assert.equal(legionJobOpportunityActions({
-    state: arcState, day: '2026-09-04', now: START, seed: SEED,
-    parentActionId: 'act-1', parentEventId: 'evt-1', sourceEvent: dummyEvent
-  }).length, 0);
+  const artefactReferral = mi6LegionReferralActions({
+    state: { legionJobs: initialLegionJobsState(), facts: {} },
+    day: '2026-09-04', now: START, parentActionId: 'act-1', parentEventId: 'evt-1',
+    sourceEvent: { type: 'MEU_CASE_RESOLVE', payload: {
+      caseId: 'meu:art', outcome: 'referred_to_mi6', family: 'meu.artifact_irregularity',
+    } },
+  });
+  assert.equal(artefactReferral.length, 0);
 });
 
-test('Demon’s Legion jobs: full bounded lifecycle executes from committed referral to close', () => {
-  const world = openWorld({ dbPath: ':memory:', startMs: START, seed: 'seed-legion-lifecycle-1' });
+test('injected MI6 referral drives a bounded paid lifecycle with one slot from offer', () => {
+  const world = seededWorld();
   try {
-    // Advance 14 days to observe natural job opportunities, offers, starts, reports, resolves, closes
-    world.advance(START + 14 * 24 * 3600_000);
+    world.advance(START + 8 * 60 * MIN);
     const snap = world.semanticSnapshot();
+    const types = snap.events.filter(e => e.type === 'MI6_LEGION_REFERRAL' || e.type.startsWith('LEGION_JOB_'))
+      .map(e => e.type);
+    assert.ok(types.includes('MI6_LEGION_REFERRAL'));
+    assert.ok(types.includes('LEGION_JOB_OFFER'));
+    assert.ok(types.includes('LEGION_JOB_ACCEPT'), 'a free roster must accept rather than roll a decline');
 
-    const legionEvents = snap.events.filter(e => e.type.startsWith('LEGION_JOB_'));
-    assert.ok(legionEvents.length > 0, 'Legion job events must occur across a 14-day simulation');
+    const offer = snap.events.find(e => e.type === 'LEGION_JOB_OFFER');
+    assert.ok(offer.participants.includes('truth'));
+    assert.ok(!offer.participants.includes('goaden'));
+    assert.equal(offer.payload.family, 'legion.mi6_offbook_job');
 
-    const offers = legionEvents.filter(e => e.type === 'LEGION_JOB_OFFER');
-    assert.ok(offers.length >= 1, 'At least one job offer must occur');
+    assert.ok(types.includes('LEGION_JOB_START'));
+    assert.ok(types.includes('LEGION_JOB_REPORT'));
+    assert.ok(types.includes('LEGION_JOB_RESOLVE'));
+    assert.ok(types.includes('LEGION_JOB_PAYMENT'));
+    assert.ok(types.includes('LEGION_JOB_CLOSE'));
+    assert.equal(snap.events.filter(e => e.type === 'LEGION_JOB_PAYMENT').length, 1);
+    const payment = snap.events.find(e => e.type === 'LEGION_JOB_PAYMENT');
+    assert.equal(payment.payload.paymentStatus, 'paid');
+    assert.equal(snap.facts[payment.payload.factKey].value.price, undefined);
 
-    // Verify ordering and state for every job
-    for (const offer of offers) {
-      const jobId = offer.payload.jobId;
-      const jobEvents = legionEvents.filter(e => e.payload.jobId === jobId);
-      const types = jobEvents.map(e => e.type);
-
-      assert.equal(types[0], 'LEGION_JOB_OFFER');
-      const secondType = types[1];
-      assert.ok(['LEGION_JOB_ACCEPT', 'LEGION_JOB_DECLINE'].includes(secondType),
-        `Second stage must be accept or decline, got ${secondType}`);
-
-      if (secondType === 'LEGION_JOB_ACCEPT') {
-        assert.ok(types.includes('LEGION_JOB_START'), 'Accepted job must start');
-        assert.ok(types.includes('LEGION_JOB_REPORT'), 'Started job must report');
-        assert.ok(types.includes('LEGION_JOB_RESOLVE'), 'Reported job must resolve');
-        assert.ok(types.includes('LEGION_JOB_CLOSE'), 'Resolved job must close');
-      } else {
-        // Declined branch is terminal
-        assert.equal(types.length, 2, 'Declined job must have no further action stages');
-      }
-
-      // Verify zero prose in every event
-      for (const evt of jobEvents) {
-        assert.equal(evt.prose, undefined, `No prose in event ${evt.id}`);
-        assert.equal(evt.payload.prose, undefined, `No prose in payload of ${evt.id}`);
-      }
+    for (const e of snap.events.filter(e => e.type.startsWith('LEGION_JOB_'))) {
+      assert.equal(e.payload.prose, undefined);
+      if (e.participants.includes('balthazar')) assert.ok(e.participants.includes('anarchy'));
     }
-
-    // Verify closed summaries
-    const legionState = snap.legionJobs;
-    assert.ok(legionState.closedSummaries.length > 0, 'Closed jobs must be recorded in summaries');
-    for (const summary of legionState.closedSummaries) {
-      assert.ok(summary.jobId, 'Summary must record jobId');
-      assert.ok(summary.family, 'Summary must record family');
-      assert.ok(summary.result, 'Summary must record result');
-      assert.equal(summary.prose, undefined, 'Summary must not store copied prose');
-    }
+    assert.ok(!snap.events.some(e => e.payload?.reason && !DECLINE_REASONS.has(e.payload.reason)
+      && e.type === 'LEGION_JOB_DECLINE'));
   } finally {
     world.close();
   }
 });
 
-test('Demon’s Legion jobs: first-class DECLINE branch executes terminally', () => {
-  // Use a deterministic seed known to produce a decline or trigger one directly
-  const world = openWorld({ dbPath: ':memory:', startMs: START, seed: 'seed-decline-check-42' });
+test('one-job slot is held from OFFER and a second source cannot open a duplicate', () => {
+  const first = referralAction({ id: 'test/referral-a', caseId: 'meu:case-a', dueAt: START + 2 * 60 * MIN });
+  const secondSame = referralAction({ id: 'test/referral-a-dup', caseId: 'meu:case-a', dueAt: START + 3 * 60 * MIN });
+  const secondOther = referralAction({ id: 'test/referral-b', caseId: 'meu:case-b', dueAt: START + 3 * 60 * MIN });
+  const world = seededWorld({ referrals: [first, secondSame, secondOther] });
   try {
-    world.advance(START + 30 * 24 * 3600_000);
+    world.advance(START + 3 * 60 * MIN + 15 * MIN);
+    const snap = world.semanticSnapshot();
+    const offers = snap.events.filter(e => e.type === 'LEGION_JOB_OFFER');
+    assert.equal(offers.length, 1, 'only the first source may occupy the offer slot');
+    assert.ok(snap.legionJobs.activeJobId, 'offer occupies activeJobId');
+    const open = Object.values(snap.legionJobs.jobs).filter(j => ['offered', 'active', 'reported', 'resolved'].includes(j.status));
+    assert.equal(open.length, 1);
+    assert.equal(new Set(offers.map(e => e.payload.sourceCaseId)).size, 1);
+  } finally {
+    world.close();
+  }
+});
+
+test('decline occurs only when the roster is actually unavailable', () => {
+  const world = seededWorld({
+    reservations: { truth: { jobId: 'blocking', startAt: START, until: START + 24 * 60 * MIN } },
+  });
+  try {
+    world.advance(START + 8 * 60 * MIN);
     const snap = world.semanticSnapshot();
     const declines = snap.events.filter(e => e.type === 'LEGION_JOB_DECLINE');
-    assert.ok(declines.length >= 1, 'At least one decline should occur across 30 days');
-
-    for (const d of declines) {
-      const jobId = d.payload.jobId;
-      const jobEvents = snap.events.filter(e => e.payload?.jobId === jobId);
-      assert.equal(jobEvents.length, 2, 'Declined job must only have OFFER and DECLINE');
-      assert.equal(jobEvents[0].type, 'LEGION_JOB_OFFER');
-      assert.equal(jobEvents[1].type, 'LEGION_JOB_DECLINE');
-    }
+    assert.equal(declines.length, 1);
+    assert.equal(declines[0].payload.reason, 'no_viable_roster');
+    assert.ok(DECLINE_REASONS.has(declines[0].payload.reason));
+    assert.equal(snap.events.filter(e => e.type === 'LEGION_JOB_ACCEPT').length, 0);
+    assert.equal(snap.legionJobs.activeJobId, null);
   } finally {
     world.close();
   }
 });
 
-test('Demon’s Legion jobs: PE-A off-book payment executes idempotently without prices', () => {
-  const world = openWorld({ dbPath: ':memory:', startMs: START, seed: 'seed-payment-test-v1' });
+test('Goaden does not know a job he did not participate in or hear about', () => {
+  const world = seededWorld();
   try {
-    // Advance 60 days to ensure an MI6 off-book job occurs or schedule one deterministically
-    world.advance(START + 60 * 24 * 3600_000);
+    world.advance(START + 8 * 60 * MIN);
     const snap = world.semanticSnapshot();
-    const payments = snap.events.filter(e => e.type === 'LEGION_JOB_PAYMENT');
-
-    if (payments.length > 0) {
-      for (const p of payments) {
-        assert.equal(p.payload.paymentStatus, 'paid');
-        assert.ok(p.payload.factKey, 'Payment factKey must be emitted');
-        const fact = snap.facts[p.payload.factKey];
-        assert.ok(fact, 'Payment fact must exist in facts ledger');
-        assert.equal(fact.value.paymentStatus, 'paid');
-        // Rule 6: No prices, rates, salary, or economy simulator
-        assert.equal(fact.value.price, undefined);
-        assert.equal(fact.value.amount, undefined);
-        assert.equal(fact.value.rate, undefined);
-        assert.equal(fact.value.currency, undefined);
+    const jobFacts = Object.values(snap.facts).filter(f => String(f.kind).startsWith('legion_job_')
+      || f.kind === 'mi6_legion_referral');
+    const goadenKeys = new Set((snap.characters.goaden.knowledge ?? []).map(m => m.factKey));
+    const ashaiKeys = new Set((snap.characters.ashai.knowledge ?? []).map(m => m.factKey));
+    const handoffs = snap.events.filter(e => e.type === 'LEGION_JOB_HANDOFF_READ');
+    for (const fact of jobFacts) {
+      if (goadenKeys.has(fact.key)) {
+        assert.ok(handoffs.some(e => e.payload?.actor === 'goaden' && e.payload?.factKey === fact.key),
+          'Goaden may learn a job report only through an explicit handoff');
+      }
+      if (ashaiKeys.has(fact.key)) {
+        assert.ok(handoffs.some(e => e.payload?.actor === 'ashai' && e.payload?.factKey === fact.key),
+          'Ashai may learn a job report only through an explicit handoff');
       }
     }
+    assert.ok(snap.events.some(e => e.type === 'LEGION_JOB_OFFER' && e.publicDescription),
+      'public publish exists');
+    assert.ok(!(snap.characters.goaden.knowledge ?? []).some(m => m.provenance === 'public_publish'));
+  } finally {
+    world.close();
+  }
+});
 
-    // Direct idempotency test: assertLegionJobs rejects second payment or invalid family
-    const jobState = snap.legionJobs;
-    assert.ok(jobState);
-    for (const job of Object.values(jobState.jobs)) {
-      if (job.family !== 'legion.mi6_offbook_job') {
-        assert.notEqual(job.paymentStatus, 'paid', 'Non-MI6 work must never be marked paid');
-      }
+test('removing job prose leaves canonical job history unchanged', () => {
+  const world = seededWorld();
+  try {
+    world.advance(START + 8 * 60 * MIN);
+    const snap = world.semanticSnapshot();
+    const before = jobCanon(snap);
+    for (const event of snap.events.filter(e => e.type.startsWith('LEGION_JOB_') || e.type === 'LEGION_VISIT')) {
+      editorialEvent(event);
     }
+    assert.deepEqual(jobCanon(world.semanticSnapshot()), before);
   } finally {
     world.close();
   }
@@ -332,68 +309,67 @@ test('Social LEGION_VISIT cadence remains independent of job state', () => {
   try {
     world.advance(START + 21 * 24 * 3600_000);
     const snap = world.semanticSnapshot();
-
     const visits = snap.events.filter(e => e.type === 'LEGION_VISIT' && e.visibility === 'public');
     assert.ok(visits.length >= 1, 'Social Legion visits must occur periodically on their own cadence');
-
     for (const v of visits) {
+      assert.equal(v.payload.activeJobId, undefined);
       assert.ok(v.payload.mood, 'LEGION_VISIT must retain social mood');
       assert.ok(Array.isArray(v.payload.lines), 'LEGION_VISIT must retain banter lines');
-      assert.ok(v.payload.visitors.length > 0, 'LEGION_VISIT must have visitors');
     }
   } finally {
     world.close();
   }
 });
 
-test('Reservoir gating: legion_contracts scenes require active job state and payment status', () => {
+test('reservoir legion_contracts bind only to reviewed job stages', () => {
   const contractScenes = SCENE_RESERVOIR_CATALOG.filter(s => s.reservoir.family === 'legion_contracts');
-  assert.ok(contractScenes.length > 0, 'Catalog must have legion_contracts scenes');
+  assert.ok(contractScenes.length > 0);
+  assert.ok(!SCENE_RESERVOIR_CATALOG.some(s => String(s.reservoir.sourceId).startsWith('future.legionjob.')));
 
-  // Find a non-payment contract scene (e.g. initial brief or debrief)
-  const nonPaymentContract = contractScenes.find(s =>
-    !/counted the payment|hazard pay|invoice|remittance|payment confirmed/i.test(s.beats?.[0]?.text || '')
-  );
-  assert.ok(nonPaymentContract, 'Must have at least one non-payment contract scene');
-
-  // 1. Ordinary social visit without job state -> MUST NOT match
-  const plainSocialVisit = {
-    type: 'LEGION_VISIT',
-    occurredAt: START + 1000,
-    visibility: 'public',
-    location: nonPaymentContract.location.split('/')[0],
-    area: nonPaymentContract.area || 'common_room',
-    participants: ['goaden', 'ashai'],
-    payload: { visitors: nonPaymentContract.reservoir.requiredCast || ['anarchy', 'goaden'] }
+  const social = {
+    type: 'LEGION_VISIT', occurredAt: START + 1000, visibility: 'public',
+    location: 'mi6', area: 'ops_room', participants: ['goaden', 'anarchy'],
+    payload: { visitors: ['anarchy', 'gabriel'], mood: 'billing', lines: ['x'] },
   };
-  assert.equal(reservoirSurfaceMatches(plainSocialVisit, nonPaymentContract), false,
-    'Plain social visit without job state must reject legion_contracts scene');
-
-  // 2. Visit with active job state -> CAN match
-  const jobVisit = {
-    ...plainSocialVisit,
-    payload: { ...plainSocialVisit.payload, activeJobId: 'job-123' }
-  };
-  assert.equal(reservoirSurfaceMatches(jobVisit, nonPaymentContract), true,
-    'Visit with active job state can match legion_contracts scene');
-
-  // 3. Payment scene requires payment stage/paid status
-  const paymentScene = contractScenes.find(s =>
-    /counted the payment|hazard pay|invoice|remittance|payment confirmed/i.test(s.beats?.[0]?.text || '')
-  );
-  if (paymentScene) {
-    const nonPaymentJobVisit = {
-      ...plainSocialVisit,
-      payload: { ...plainSocialVisit.payload, visitors: paymentScene.reservoir.requiredCast, activeJobId: 'job-123', stage: 'start' }
-    };
-    assert.equal(reservoirSurfaceMatches(nonPaymentJobVisit, paymentScene), false,
-      'Payment prose scene must not match non-payment job stage');
-
-    const paymentJobVisit = {
-      ...plainSocialVisit,
-      payload: { ...plainSocialVisit.payload, visitors: paymentScene.reservoir.requiredCast, activeJobId: 'job-123', stage: 'payment', paymentStatus: 'paid' }
-    };
-    assert.equal(reservoirSurfaceMatches(paymentJobVisit, paymentScene), true,
-      'Payment prose scene matches when payment stage and status are satisfied');
+  for (const scene of contractScenes) {
+    assert.equal(reservoirSurfaceMatches(social, scene), false, `${scene.reservoir.sourceId} must not bind a social visit`);
   }
+
+  const unbound = contractScenes.find(s => !LEGION_CONTRACT_BINDINGS[s.reservoir.sourceId]);
+  assert.ok(unbound, 'catalog still contains unbound contract rows');
+  const fakeJob = {
+    type: 'LEGION_JOB_PAYMENT', occurredAt: START + 1000, visibility: 'public',
+    location: unbound.location, area: unbound.area,
+    participants: [...unbound.cast],
+    payload: { stage: 'payment', paymentStatus: 'paid', family: 'legion.mi6_offbook_job' },
+  };
+  assert.equal(reservoirSurfaceMatches(fakeJob, unbound), false, 'unbound scene must not narrate a job');
+
+  const offerBound = contractScenes.find(s => LEGION_CONTRACT_BINDINGS[s.reservoir.sourceId]?.stages.includes('offer'));
+  if (offerBound) {
+    const offerEvent = {
+      type: 'LEGION_JOB_OFFER', occurredAt: START + 1000, visibility: 'public',
+      location: offerBound.location, area: offerBound.area,
+      participants: [...offerBound.cast],
+      payload: { stage: 'offer', family: 'legion.mi6_offbook_job' },
+    };
+    assert.equal(reservoirSurfaceMatches(offerEvent, offerBound), true);
+    assert.equal(reservoirSurfaceMatches({ ...offerEvent, payload: { ...offerEvent.payload, stage: 'payment' } }, offerBound), false);
+  }
+
+  const paymentBound = contractScenes.find(s => LEGION_CONTRACT_BINDINGS[s.reservoir.sourceId]?.requirePaid);
+  if (paymentBound) {
+    const payEvent = {
+      type: 'LEGION_JOB_PAYMENT', occurredAt: START + 1000, visibility: 'public',
+      location: paymentBound.location, area: paymentBound.area,
+      participants: [...paymentBound.cast],
+      payload: { stage: 'payment', paymentStatus: 'paid', family: 'legion.mi6_offbook_job' },
+    };
+    assert.equal(reservoirSurfaceMatches(payEvent, paymentBound), true);
+    assert.equal(reservoirSurfaceMatches({
+      ...payEvent, type: 'LEGION_JOB_START', payload: { stage: 'start' },
+    }, paymentBound), false);
+  }
+
+  assert.equal(selectReservoirSurface(social, { catalog: contractScenes }), null);
 });

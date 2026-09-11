@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { SCENE_RESERVOIR_CATALOG, actorAlias, normalizeReservoirLocation } from './scene-reservoir-catalog.mjs';
+import { LEGION_CONTRACT_BINDINGS } from './legion-job-bindings.mjs';
 import { daypart } from './sky.mjs';
 
 const SKIP = new Set(['CONVERSATION','SCENE_BANK_BEAT','SCENE_BANK_GATHER','SCENE_BANK_REJOIN']);
@@ -93,14 +94,10 @@ export function reservoirSurfaceMatches(event, scene, { now, weatherCode, knownE
   if (!(gate.triggerTypes ?? []).some(trigger => eventSatisfiesTrigger(event, trigger))) return false;
   if (!locationCompatible(event, scene)) return false;
   if (scene.reservoir?.family === 'legion_contracts') {
-    const hasJob = Boolean(event.payload?.jobId || event.payload?.activeJobId || event.type?.startsWith('LEGION_JOB_'));
-    if (!hasJob) return false;
-    const text = scene.beats?.find(b => b.kind === 'prose')?.text || '';
-    const isPaymentProse = /counted the payment|hazard pay|invoice|remittance|payment confirmed/i.test(text);
-    if (isPaymentProse) {
-      const isPaymentStage = event.payload?.stage === 'payment' || event.payload?.paymentStatus === 'paid' || event.type === 'LEGION_JOB_PAYMENT';
-      if (!isPaymentStage) return false;
-    }
+    const bind = LEGION_CONTRACT_BINDINGS[scene.reservoir.sourceId];
+    if (!bind || !event.type?.startsWith('LEGION_JOB_')) return false;
+    if (!bind.stages.includes(event.payload?.stage)) return false;
+    if (bind.requirePaid && event.payload?.paymentStatus !== 'paid' && event.type !== 'LEGION_JOB_PAYMENT') return false;
   }
   const required = requiredCast(scene);
   const witnesses = reservoirWitnesses(event);

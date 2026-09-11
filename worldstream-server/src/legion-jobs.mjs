@@ -1,14 +1,15 @@
 import { createHash } from 'node:crypto';
 import { londonDate, MINUTE_MS as MIN } from './time.mjs';
-
 // Addon Two: Demon's Legion contracts / jobs
-// Grounded in Direct Canon CP-LEG-01..03, CP-MEU-03, and Silent approval PE-A.
-// Reuses existing incident, MEU referral, and street community pressure.
-// Does not build a second incident generator, second scheduler, or an economy simulator.
+// Grounded in CP-LEG-01..03, CP-MEU-03, and Silent PE-A (MI6 may pay for
+// magical-disaster work). Jobs open only from an explicit committed
+// MI6→Legion referral. Community-request sources are dormant until one exists.
+// No second incident generator. No drama RNG.
 
 export const LEGION_JOB_VERSION = 1;
 
 export const LEGION_JOB_EVENT_TYPES = Object.freeze([
+  'MI6_LEGION_REFERRAL',
   'LEGION_JOB_OFFER',
   'LEGION_JOB_ACCEPT',
   'LEGION_JOB_DECLINE',
@@ -16,10 +17,13 @@ export const LEGION_JOB_EVENT_TYPES = Object.freeze([
   'LEGION_JOB_REPORT',
   'LEGION_JOB_RESOLVE',
   'LEGION_JOB_PAYMENT',
-  'LEGION_JOB_CLOSE'
+  'LEGION_JOB_CLOSE',
+  'LEGION_JOB_HANDOFF_READ'
 ]);
 
 export const LEGION_JOB_FACT_KINDS = Object.freeze([
+  'mi6_legion_referral',
+  'legion_job_offer',
   'legion_job_report',
   'legion_job_result',
   'legion_job_payment'
@@ -36,9 +40,6 @@ export const LEGION_JOB_FAMILIES = Object.freeze([
 export const LEGION_JOB_OUTCOMES = Object.freeze([
   'success',
   'partial_success',
-  'safe_failure',
-  'target_not_found',
-  'referred_to_meu',
   'cancelled'
 ]);
 
@@ -51,10 +52,18 @@ export const LEGION_JOB_STATUSES = Object.freeze([
   'closed'
 ]);
 
+export const PE_A_MEU_FAMILIES = Object.freeze([
+  'meu.magic_misuse',
+  'meu.rogue_creature',
+  'meu.weather_consequence'
+]);
+
 const TYPES = new Set(LEGION_JOB_EVENT_TYPES);
 const FAMILIES = new Set(LEGION_JOB_FAMILIES);
 const OUTCOMES = new Set(LEGION_JOB_OUTCOMES);
 const STATUSES = new Set(LEGION_JOB_STATUSES);
+const OPEN_STATUSES = new Set(['offered', 'active', 'reported', 'resolved']);
+const DEFAULT_CREW = Object.freeze(['rose', 'gabriel', 'damien']);
 
 const hash = value => createHash('sha256').update(String(value)).digest('hex').slice(0, 24);
 
@@ -66,7 +75,8 @@ export function initialLegionJobsState() {
     nextEligibleAt: 0,
     lastResult: null,
     closedSummaries: [],
-    issued: {}
+    issued: {},
+    reservations: {}
   };
 }
 
@@ -77,10 +87,17 @@ export function assertLegionJobs(state) {
   if (typeof current.jobs !== 'object' || current.jobs === null) throw new Error('Invalid legionJobs jobs');
   if (current.closedSummaries.length > 24) throw new Error('Legion closedSummaries limit exceeded');
   if (Object.keys(current.issued).length > 128) throw new Error('Legion issued limit exceeded');
+  const open = Object.values(current.jobs).filter(j => OPEN_STATUSES.has(j.status));
+  if (open.length > 1) throw new Error('At most one offered or active Legion job');
   if (current.activeJobId != null) {
     if (typeof current.activeJobId !== 'string' || !current.jobs[current.activeJobId]) {
       throw new Error('Legion activeJobId must name an existing job');
     }
+    if (!OPEN_STATUSES.has(current.jobs[current.activeJobId].status)) {
+      throw new Error('Legion activeJobId must name an open job');
+    }
+  } else if (open.length) {
+    throw new Error('An open Legion job must occupy activeJobId');
   }
 
   for (const j of Object.values(current.jobs)) {
@@ -88,26 +105,22 @@ export function assertLegionJobs(state) {
     if (!STATUSES.has(j.status)) throw new Error(`Invalid Legion job status: ${j.status}`);
     if (j.result && !OUTCOMES.has(j.result)) throw new Error(`Invalid Legion job result: ${j.result}`);
     if (j.owner !== 'legion') throw new Error(`Invalid Legion job owner: ${j.owner}`);
-
-    // Rule 4: Goaden does not auto-lead. Truth is canon leader.
     if (j.leader === 'goaden') throw new Error('Goaden cannot be Legion job leader');
-
-    // Rule 5: Balthazar requires Anarchy unless separate manifestation exists
+    if (j.leader !== 'truth') throw new Error('Truth must lead Legion jobs');
     if (Array.isArray(j.participants) && j.participants.includes('balthazar')) {
       if (!j.participants.includes('anarchy')) {
         throw new Error('Balthazar cannot participate without Anarchy');
       }
     }
-
-    // Rule 6 & 8: Payment status bounds
+    if (j.participants?.includes('ashai') || j.participants?.includes('yukon')) {
+      throw new Error('Ashai and Yukon are not default Legion members');
+    }
     if (!['not_applicable', 'unpaid', 'paid'].includes(j.paymentStatus)) {
       throw new Error(`Invalid paymentStatus: ${j.paymentStatus}`);
     }
     if (j.paymentStatus === 'paid' && j.family !== 'legion.mi6_offbook_job') {
       throw new Error('Payment is only permitted for MI6 off-book work');
     }
-
-    // Rule 10: Zero prose in state
     if (j.prose !== undefined || j.text !== undefined || j.narrative !== undefined || j.notes !== undefined) {
       throw new Error('No prose allowed in canonical Legion job state');
     }
@@ -131,6 +144,105 @@ const shape = action => ({
 
 const equal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
+const known = (actor, key, now) => actor?.knowledge?.some(memory =>
+  memory.factKey === key && memory.learnedAt <= now && (memory.validUntil == null || memory.validUntil > now));
+
+const canReadHandoff = actor => actor?.location === 'mi6'
+  && ['ops_room', 'briefing_room'].includes(actor.area)
+  && !actor.journey
+  && ['unhurried_time', 'in_a_briefing', 'on_call', 'waiting'].includes(actor.activity);
+
+export function legionJobMemberAvailable(state, id, atMs, jobId = null) {
+  const reservation = of(state).reservations?.[id];
+  if (!reservation || !Number.isFinite(atMs)) return true;
+  if (jobId && reservation.jobId === jobId) return true;
+  return !(reservation.startAt <= atMs && atMs < reservation.until);
+}
+
+export function legionCandidateAvailable(state, id, atMs, jobId = null) {
+  if (!Number.isFinite(atMs)) return false;
+  if (!legionJobMemberAvailable(state, id, atMs, jobId)) return false;
+  const arc = state.arcs?.session;
+  if (arc?.cast?.includes(id) && arc.startAt <= atMs && atMs < arc.until) return false;
+  const bank = state.sceneBank?.session;
+  if (bank?.cast?.includes(id) && bank.startAt <= atMs && atMs < bank.until) return false;
+  const support = state.agendas?.supporting?.[id]?.commitment;
+  if (support && support.startAt <= atMs && atMs < support.until) return false;
+  const ch = state.characters?.[id];
+  if (ch) {
+    if (ch.journey) return false;
+    if (ch.activity === 'sleeping') return false;
+  }
+  return true;
+}
+
+export function mi6MayOfferLegionJob(sourceEvent) {
+  if (!sourceEvent || sourceEvent.type !== 'MEU_CASE_RESOLVE') return false;
+  const outcome = sourceEvent.payload?.outcome;
+  const family = sourceEvent.payload?.family;
+  if (outcome !== 'contained') return false;
+  if (family === 'meu.artifact_irregularity') return false;
+  return PE_A_MEU_FAMILIES.includes(family);
+}
+
+/**
+ * Maps a committed referral/request event to a job remit.
+ * Raw INCIDENT is never a request. Community-request stays dormant.
+ */
+export function legionSourceRemit(sourceEvent) {
+  if (!sourceEvent) return null;
+  if (sourceEvent.type === 'MI6_LEGION_REFERRAL') {
+    return {
+      family: 'legion.mi6_offbook_job',
+      location: 'mi6',
+      area: 'ops_room'
+    };
+  }
+  return null;
+}
+
+export function selectLegionJobParticipants(state, now, seed, jobToken) {
+  if (!legionCandidateAvailable(state, 'truth', now)) {
+    return { participants: [], reason: 'no_viable_roster' };
+  }
+  const extras = DEFAULT_CREW.filter(id => legionCandidateAvailable(state, id, now));
+  const anarchyFree = legionCandidateAvailable(state, 'anarchy', now);
+  const balthazarFree = anarchyFree && legionCandidateAvailable(state, 'balthazar', now);
+  if (balthazarFree && extras.length === 0) {
+    return { participants: ['truth', 'anarchy', 'balthazar'], reason: null };
+  }
+  if (extras.length === 0 && !anarchyFree) {
+    return { participants: [], reason: 'no_viable_roster' };
+  }
+  const pool = extras.length ? extras : (anarchyFree ? ['anarchy'] : []);
+  if (!pool.length) return { participants: [], reason: 'no_viable_roster' };
+  const pick = pool[parseInt(hash(`${seed}|legion-crew|${jobToken}`).slice(0, 4), 16) % pool.length];
+  const participants = ['truth', pick];
+  if (pick === 'anarchy' && balthazarFree) participants.push('balthazar');
+  if (participants.includes('balthazar') && !participants.includes('anarchy')) {
+    return { participants: [], reason: 'no_viable_roster' };
+  }
+  return { participants, reason: null };
+}
+
+function declineReason(state, now, job, participants) {
+  if (!job) return 'source_no_longer_valid';
+  if (!participants?.length || !participants.includes('truth')) return 'no_viable_roster';
+  if (participants.includes('balthazar') && !participants.includes('anarchy')) return 'no_viable_roster';
+  if (participants.some(id => !legionCandidateAvailable(state, id, now, job.jobId))) {
+    const busy = participants.find(id => !legionCandidateAvailable(state, id, now, job.jobId));
+    const ch = state.characters?.[busy];
+    if (ch?.journey) return 'physically_unavailable';
+    if (ch?.activity === 'sleeping') return 'physically_unavailable';
+    return 'conflicting_commitment';
+  }
+  const sourceFact = job.sourceFactKey ? state.facts?.[job.sourceFactKey] : null;
+  if (job.sourceFactKey && (!sourceFact || (sourceFact.validUntil != null && sourceFact.validUntil <= now))) {
+    return 'source_no_longer_valid';
+  }
+  return null;
+}
+
 function save(ctx, patch) {
   ctx.ops.setLegionJobs({ ...of(ctx.state), ...patch });
 }
@@ -143,6 +255,37 @@ function touchJob(ctx, j, patch) {
   const next = { ...j, ...patch, lastEventId: ctx.id, causalEventIds: [...new Set([...j.causalEventIds, ctx.id])] };
   setJob(ctx, next);
   return next;
+}
+
+function reserveCrew(ctx, participants, jobId, startAt, until) {
+  const reservations = { ...of(ctx.state).reservations };
+  for (const id of participants) {
+    reservations[id] = { jobId, startAt, until };
+  }
+  save(ctx, { reservations });
+}
+
+function releaseCrew(ctx, jobId, now) {
+  const reservations = { ...of(ctx.state).reservations };
+  for (const [id, row] of Object.entries(reservations)) {
+    if (row.jobId === jobId) {
+      reservations[id] = { ...row, until: Math.min(row.until, now) };
+    }
+  }
+  save(ctx, { reservations });
+}
+
+function occupySlot(ctx, jobId) {
+  save(ctx, { activeJobId: jobId });
+}
+
+function releaseSlot(ctx, jobId, result, now, cooldown) {
+  const current = of(ctx.state);
+  save(ctx, {
+    activeJobId: current.activeJobId === jobId ? null : current.activeJobId,
+    lastResult: result,
+    nextEligibleAt: now + cooldown
+  });
 }
 
 export function issueLegionJobActions(ctx, proposals) {
@@ -167,129 +310,50 @@ export function issueLegionJobActions(ctx, proposals) {
   return actions;
 }
 
-/**
- * Maps qualifying committed source events to a Legion job remit.
- */
-export function legionSourceRemit(sourceEvent) {
-  if (!sourceEvent) return null;
-  const type = sourceEvent.type;
-  const payload = sourceEvent.payload ?? {};
-
-  // Source 1: MEU referrals (from MEU_CASE_RESOLVE)
-  if (type === 'MEU_CASE_RESOLVE') {
-    const outcome = payload.outcome;
-    if (outcome === 'referred_to_mi6') {
-      return {
-        family: 'legion.mi6_offbook_job',
-        location: 'mi6',
-        area: 'common_room',
-        sourceSummary: `MEU referral ${payload.caseId} transferred off-book to Legion`
-      };
-    }
-    if (outcome === 'referred_external') {
-      return {
-        family: payload.family === 'meu.ward_or_containment' ? 'legion.magical_cleanup' : 'legion.recovery_or_extraction',
-        location: sourceEvent.location || 'boroughs',
-        area: sourceEvent.area || 'street',
-        sourceSummary: `MEU referral ${payload.caseId} taken by community specialists`
-      };
-    }
-  }
-
-  // Source 2: Street community incidents (INCIDENT)
-  if (type === 'INCIDENT') {
-    const kind = payload.kind;
-    if (kind === 'surge_incident') {
-      return {
-        family: 'legion.magical_cleanup',
-        location: sourceEvent.location || 'boroughs',
-        area: sourceEvent.area || 'street',
-        sourceSummary: 'Community request to clear residual surge fallout'
-      };
-    }
-    if (kind === 'sighting' || kind === 'pursuit') {
-      return {
-        family: 'legion.recovery_or_extraction',
-        location: sourceEvent.location || 'boroughs',
-        area: sourceEvent.area || 'street',
-        sourceSummary: 'Community report of displaced rogue element'
-      };
-    }
-    if (kind === 'courier') {
-      return {
-        family: 'legion.information_favour',
-        location: sourceEvent.location || 'big_ben_plaza',
-        area: sourceEvent.area || 'venue',
-        sourceSummary: 'Intercepted street communication'
-      };
-    }
-    if (kind === 'confrontation' || kind === 'breach') {
-      return {
-        family: 'legion.community_request',
-        location: sourceEvent.location || 'boroughs',
-        area: sourceEvent.area || 'street',
-        sourceSummary: 'Local residents seeking protection or assistance'
-      };
-    }
-  }
-
-  return null;
+export function mi6LegionReferralActions({ state, day, now, parentActionId, parentEventId, sourceEvent }) {
+  if (!parentActionId || !parentEventId || !sourceEvent) return [];
+  if (!mi6MayOfferLegionJob(sourceEvent)) return [];
+  const caseId = sourceEvent.payload?.caseId;
+  if (!caseId) return [];
+  const current = of(state);
+  if (Object.values(state.facts ?? {}).some(fact => fact.kind === 'mi6_legion_referral'
+    && fact.value?.caseId === caseId)) return [];
+  if (Object.values(current.jobs).some(j => j.sourceCaseId === caseId)) return [];
+  if (current.closedSummaries.some(s => s.sourceCaseId === caseId)) return [];
+  const dueAt = now + 10 * MIN;
+  return [{
+    id: `${parentActionId}/legion/referral`,
+    type: 'MI6_LEGION_REFERRAL',
+    dueAt,
+    priority: 36,
+    day: londonDate(dueAt),
+    actors: [],
+    version: 1,
+    caseId,
+    sourceEventId: parentEventId,
+    meuFamily: sourceEvent.payload?.family ?? null,
+    location: sourceEvent.location || 'mi6',
+    area: sourceEvent.area || 'ops_room'
+  }];
 }
 
-/**
- * Selects Legion roster for the job, strictly enforcing:
- * 1. Truth is leader (or designated leader). Goaden never auto-leads.
- * 2. If Balthazar participates, Anarchy MUST also participate.
- */
-export function selectLegionJobParticipants(family, seed, jobToken) {
-  const h = hash(`${seed}|legion-roster|${jobToken}`);
-  const val = parseInt(h.slice(0, 4), 16);
-
-  // Roster templates (all satisfy Balthazar/Anarchy invariant and Truth leadership)
-  const rosters = [
-    ['truth', 'rose'],
-    ['truth', 'gabriel'],
-    ['truth', 'anarchy', 'balthazar'],
-    ['truth', 'damien'],
-    ['truth', 'rose', 'anarchy', 'balthazar'],
-    ['truth', 'gabriel', 'damien']
-  ];
-
-  const picked = rosters[val % rosters.length];
-  // Strict assert check
-  if (picked.includes('balthazar') && !picked.includes('anarchy')) {
-    throw new Error('Invariant violation: Balthazar picked without Anarchy');
-  }
-  return picked;
-}
-
-/**
- * Proposes a new Legion job offer from a committed source event.
- */
 export function legionJobOpportunityActions({ state, day, now, seed, parentActionId, parentEventId, sourceEvent }) {
   if (!parentActionId || !parentEventId || !sourceEvent) return [];
   const current = of(state);
-
-  // Negative gate: max 1 active Legion job
   if (current.activeJobId) return [];
-
-  // Negative gate: cooldown between starts (≥24h)
+  if (Object.values(current.jobs).some(j => OPEN_STATUSES.has(j.status))) return [];
   if (now < current.nextEligibleAt) return [];
-
-  // Negative gate: authored arc ownership
   if (state.arcs?.session || sourceEvent.payload?.arcId) return [];
-
   const remit = legionSourceRemit(sourceEvent);
   if (!remit) return [];
-
   const dedupeKey = `source:${parentEventId}`;
   if (current.closedSummaries.some(s => s.dedupeKey === dedupeKey)) return [];
   if (Object.values(current.jobs).some(j => j.dedupeKey === dedupeKey)) return [];
-
+  const sourceCaseId = sourceEvent.payload?.caseId ?? null;
+  if (sourceCaseId && (Object.values(current.jobs).some(j => j.sourceCaseId === sourceCaseId)
+    || current.closedSummaries.some(s => s.sourceCaseId === sourceCaseId))) return [];
   const dueAt = now + 15 * MIN;
   const jobId = `legion:${hash(`${seed}|legion-offer|${parentActionId}|${parentEventId}`)}`;
-  const participants = selectLegionJobParticipants(remit.family, seed, jobId);
-
   return [{
     id: `${parentActionId}/legion/offer`,
     type: 'LEGION_JOB_OFFER',
@@ -304,11 +368,50 @@ export function legionJobOpportunityActions({ state, day, now, seed, parentActio
     sourceType: sourceEvent.type,
     sourceKind: sourceEvent.payload?.kind ?? null,
     sourceCaseId: sourceEvent.payload?.caseId ?? null,
+    sourceFactKey: sourceEvent.payload?.factKey ?? null,
     location: remit.location,
     area: remit.area,
-    participants,
     dedupeKey
   }];
+}
+
+export function legionHandoffReadActions({ state, day, now, parentActionId }) {
+  if (!parentActionId) return [];
+  const reported = Object.values(of(state).jobs).filter(j =>
+    j.report && j.report.createdAt < now && (now - j.report.createdAt < 3 * 24 * 60 * MIN)
+  ).sort((a, b) => b.openedAt - a.openedAt);
+  if (!reported.length) return [];
+  const latest = reported[0];
+  return ['goaden', 'ashai'].filter(who =>
+    canReadHandoff(state.characters[who]) && !known(state.characters[who], latest.report.factKey, now)
+  ).map(actor => ({
+    id: `${parentActionId}/legion/handoff/${actor}`,
+    type: 'LEGION_JOB_HANDOFF_READ',
+    dueAt: now + 1,
+    priority: 37,
+    day,
+    actors: [],
+    actor,
+    version: 1,
+    jobId: latest.jobId,
+    jobToken: latest.token,
+    factKey: latest.report.factKey
+  }));
+}
+
+function follow(ctx, job, type, slug, dueAt, extra = {}) {
+  ctx.followups.push(...issueLegionJobActions(ctx, [{
+    id: `${job.jobId}/${slug}`,
+    type,
+    dueAt,
+    priority: 37,
+    day: londonDate(dueAt),
+    actors: [],
+    version: 1,
+    jobId: job.jobId,
+    jobToken: job.token,
+    ...extra
+  }]));
 }
 
 export function resolveLegionJobAction(ctx) {
@@ -322,32 +425,46 @@ export function resolveLegionJobAction(ctx) {
   }
 
   let j = a.jobId ? jobOf(state, a.jobId) : null;
-  if (a.type !== 'LEGION_JOB_OFFER' && (!j || a.jobToken !== j.token || j.version !== 1)) {
+  if (!['MI6_LEGION_REFERRAL', 'LEGION_JOB_OFFER'].includes(a.type)
+    && (!j || a.jobToken !== j.token || j.version !== 1)) {
     return refuse('No matching Legion job');
   }
 
   if (j && ['LEGION_JOB_ACCEPT', 'LEGION_JOB_DECLINE'].includes(a.type) && j.status !== 'offered') {
     return refuse('Job is not in offered status');
   }
-
   if (j && ['LEGION_JOB_START', 'LEGION_JOB_REPORT'].includes(a.type) && j.status !== 'active') {
     return refuse('Job is not active');
   }
-
-  if (a.type === 'LEGION_JOB_OFFER' && current.activeJobId) {
-    return refuse('An active Legion job already exists');
+  if (a.type === 'LEGION_JOB_OFFER' && (current.activeJobId || Object.values(current.jobs).some(job => OPEN_STATUSES.has(job.status)))) {
+    return refuse('An open Legion job already exists');
+  }
+  if (a.type === 'MI6_LEGION_REFERRAL' && Object.values(state.facts ?? {}).some(fact =>
+    fact.kind === 'mi6_legion_referral' && fact.value?.caseId === a.caseId)) {
+    return refuse('Referral already committed for this case');
   }
 
-  save(ctx, { issued: { ...current.issued, [a.id]: { ...issuance, consumed: true } } });
+  save(ctx, { issued: { ...of(ctx.state).issued, [a.id]: { ...issuance, consumed: true } } });
   event.causedBy.push(issuance.sourceEventId);
 
-  // 1. LEGION_JOB_OFFER
-  if (a.type === 'LEGION_JOB_OFFER') {
-    // Rule 5 check:
-    if (a.participants.includes('balthazar') && !a.participants.includes('anarchy')) {
-      return refuse('Balthazar cannot be in participants without Anarchy');
-    }
+  if (a.type === 'MI6_LEGION_REFERRAL') {
+    const factKey = `${a.day}:mi6-legion-referral-${a.caseId}`;
+    const fact = ops.createFact(factKey, 'mi6_legion_referral', 'mi6', {
+      caseId: a.caseId, sourceEventId: a.sourceEventId, meuFamily: a.meuFamily,
+      family: 'legion.mi6_offbook_job'
+    }, now + 7 * 24 * 60 * MIN);
+    event.location = a.location || 'mi6';
+    event.area = a.area || 'ops_room';
+    event.participants = [];
+    event.payload = { caseId: a.caseId, sourceEventId: a.sourceEventId, factKey, family: 'legion.mi6_offbook_job' };
+    ops.publish('MI6 recorded an off-book disaster referral for the Legion.');
+    event.causedBy.push(a.sourceEventId);
+    if (fact) event.payload.factId = fact.id ?? factKey;
+    return true;
+  }
 
+  if (a.type === 'LEGION_JOB_OFFER') {
+    const picked = selectLegionJobParticipants(state, now, ctx.seed, a.jobId);
     const jobToken = `${id}:legion-v1`;
     j = {
       jobId: a.jobId,
@@ -358,332 +475,224 @@ export function resolveLegionJobAction(ctx) {
       status: 'offered',
       openedAt: now,
       sourceEventIds: [a.sourceEventId],
-      sourceFactIds: [],
+      sourceFactIds: a.sourceFactKey ? [a.sourceFactKey] : [],
       sourceType: a.sourceType ?? null,
       sourceKind: a.sourceKind ?? null,
       sourceCaseId: a.sourceCaseId ?? null,
+      sourceFactKey: a.sourceFactKey ?? null,
       owner: 'legion',
       leader: 'truth',
-      participants: [...a.participants],
+      participants: picked.participants.length ? [...picked.participants] : ['truth'],
       location: a.location,
       area: a.area,
       deadlineAt: now + 48 * 60 * MIN,
       result: null,
       paymentStatus: a.family === 'legion.mi6_offbook_job' ? 'unpaid' : 'not_applicable',
       closedAt: null,
+      declineReason: null,
+      interrupted: false,
+      report: null,
       dedupeKey: a.dedupeKey,
       originEventId: id,
       lastEventId: id,
       causalEventIds: [id]
     };
 
-    save(ctx, {
-      jobs: { ...current.jobs, [j.jobId]: j }
-    });
+    save(ctx, { jobs: { ...of(ctx.state).jobs, [j.jobId]: j } });
+    occupySlot(ctx, j.jobId);
+    if (picked.participants.length) reserveCrew(ctx, picked.participants, j.jobId, now, j.deadlineAt);
+
+    const offerKey = `${a.day}:legion-offer-${j.jobId}`;
+    const offerFact = ops.createFact(offerKey, 'legion_job_offer', 'legion', {
+      jobId: j.jobId, family: j.family, sourceCaseId: j.sourceCaseId, sourceEventId: a.sourceEventId
+    }, now + 7 * 24 * 60 * MIN);
+    touchJob(ctx, j, { sourceFactIds: [...j.sourceFactIds, offerKey] });
+    for (const who of j.participants) {
+      if (state.characters?.[who] && offerFact) ops.learn(who, offerFact, 'job_offer');
+    }
 
     event.location = j.location;
     event.area = j.area;
     event.participants = [...j.participants];
-    event.payload = { jobId: j.jobId, family: j.family, stage: 'offer', sourceEventId: a.sourceEventId };
-    ops.publish(`Demon's Legion received word of a callout in ${j.location}: ${j.family.replace('legion.', '').replace(/_/g, ' ')}.`);
+    event.payload = { jobId: j.jobId, family: j.family, stage: 'offer', sourceEventId: a.sourceEventId,
+      factKey: offerKey, sourceCaseId: j.sourceCaseId };
+    ops.publish(`Demon's Legion received an off-book disaster offer at ${j.location}.`);
 
-    // Evaluate accept vs decline deterministically
-    // Rule 3: Decline is a valid first-class branch
-    const evalHash = hash(`${ctx.seed}|legion-decision|${j.jobId}`);
-    const evalVal = parseInt(evalHash.slice(0, 4), 16);
-    // MI6 off-book work is treated with caution (~25% decline), community requests have higher accept rate (~12% decline)
-    const declineThreshold = j.family === 'legion.mi6_offbook_job' ? 4 : 8;
-    const shouldDecline = (evalVal % declineThreshold === 0);
-
-    if (shouldDecline) {
-      ctx.followups.push(...issueLegionJobActions(ctx, [{
-        id: `${j.jobId}/decline`,
-        type: 'LEGION_JOB_DECLINE',
-        dueAt: now + 15 * MIN,
-        priority: 37,
-        day: londonDate(now + 15 * MIN),
-        actors: [],
-        version: 1,
-        jobId: j.jobId,
-        jobToken: j.token,
-        reason: j.family === 'legion.mi6_offbook_job' ? 'bureaucratic_distrust' : 'prior_crew_commitments'
-      }]));
+    const reason = picked.reason ?? declineReason(ctx.state, now, j, j.participants);
+    if (reason) {
+      follow(ctx, j, 'LEGION_JOB_DECLINE', 'decline', now + 15 * MIN, { reason });
     } else {
-      ctx.followups.push(...issueLegionJobActions(ctx, [{
-        id: `${j.jobId}/accept`,
-        type: 'LEGION_JOB_ACCEPT',
-        dueAt: now + 15 * MIN,
-        priority: 37,
-        day: londonDate(now + 15 * MIN),
-        actors: [],
-        version: 1,
-        jobId: j.jobId,
-        jobToken: j.token
-      }]));
+      follow(ctx, j, 'LEGION_JOB_ACCEPT', 'accept', now + 15 * MIN);
     }
     return true;
   }
 
-  // 2. LEGION_JOB_DECLINE (Terminal branch)
   if (a.type === 'LEGION_JOB_DECLINE') {
-    touchJob(ctx, j, { status: 'declined', result: 'cancelled', closedAt: now });
-
+    const reason = a.reason ?? declineReason(state, now, j, j.participants) ?? 'source_no_longer_valid';
+    touchJob(ctx, j, { status: 'declined', result: 'cancelled', closedAt: now, declineReason: reason });
+    releaseCrew(ctx, j.jobId, now);
     const summary = {
-      jobId: j.jobId,
-      family: j.family,
-      openedAt: j.openedAt,
-      closedAt: now,
-      sourceEventIds: j.sourceEventIds,
-      result: 'cancelled',
-      dedupeKey: j.dedupeKey
+      jobId: j.jobId, family: j.family, openedAt: j.openedAt, closedAt: now,
+      sourceEventIds: j.sourceEventIds, sourceCaseId: j.sourceCaseId,
+      result: 'cancelled', declineReason: reason, dedupeKey: j.dedupeKey
     };
-
-    const closedSummaries = [summary, ...current.closedSummaries].slice(0, 24);
-    save(ctx, {
-      activeJobId: null,
-      lastResult: 'cancelled',
-      nextEligibleAt: now + 24 * 60 * MIN, // ≥24h cooldown
-      closedSummaries
-    });
-
+    save(ctx, { closedSummaries: [summary, ...of(ctx.state).closedSummaries].slice(0, 24) });
+    releaseSlot(ctx, j.jobId, 'cancelled', now, 24 * 60 * MIN);
     event.location = j.location;
     event.area = j.area;
     event.participants = [...j.participants];
-    event.payload = { jobId: j.jobId, family: j.family, stage: 'decline', reason: a.reason };
-    ops.publish(`The Legion turned down the ${j.family.replace('legion.', '').replace(/_/g, ' ')} offer.`);
+    event.payload = { jobId: j.jobId, family: j.family, stage: 'decline', reason };
+    ops.publish(`The Legion turned down the off-book disaster offer.`);
     return true;
   }
 
-  // 3. LEGION_JOB_ACCEPT
   if (a.type === 'LEGION_JOB_ACCEPT') {
+    const reason = declineReason(state, now, j, j.participants);
+    if (reason) {
+      follow(ctx, j, 'LEGION_JOB_DECLINE', 'decline-late', now + 1, { reason });
+      return true;
+    }
     touchJob(ctx, j, { status: 'active' });
-
-    save(ctx, {
-      activeJobId: j.jobId,
-      nextEligibleAt: now + 24 * 60 * MIN // ≥24h cooldown between starts
-    });
-
+    reserveCrew(ctx, j.participants, j.jobId, now, j.deadlineAt);
+    save(ctx, { nextEligibleAt: now + 24 * 60 * MIN });
+    for (const who of j.participants) {
+      const actor = state.characters?.[who];
+      const offerFact = state.facts[`${londonDate(j.openedAt)}:legion-offer-${j.jobId}`]
+        ?? Object.values(state.facts).find(fact => fact.kind === 'legion_job_offer' && fact.value?.jobId === j.jobId);
+      if (actor && offerFact && !known(actor, offerFact.key, now)) ops.learn(who, offerFact, 'participated');
+    }
     event.location = j.location;
     event.area = j.area;
     event.participants = [...j.participants];
     event.payload = { jobId: j.jobId, family: j.family, stage: 'accept' };
-    ops.publish(`Truth confirmed the crew would handle the ${j.family.replace('legion.', '').replace(/_/g, ' ')}.`);
-
-    ctx.followups.push(...issueLegionJobActions(ctx, [{
-      id: `${j.jobId}/start`,
-      type: 'LEGION_JOB_START',
-      dueAt: now + 30 * MIN,
-      priority: 37,
-      day: londonDate(now + 30 * MIN),
-      actors: [],
-      version: 1,
-      jobId: j.jobId,
-      jobToken: j.token
-    }]));
+    ops.publish('Truth confirmed the crew would take the off-book disaster work.');
+    follow(ctx, j, 'LEGION_JOB_START', 'start', now + 30 * MIN);
     return true;
   }
 
-  // 4. LEGION_JOB_START
   if (a.type === 'LEGION_JOB_START') {
-    // Invariant check on participants
-    if (j.participants.includes('balthazar') && !j.participants.includes('anarchy')) {
-      return refuse('Balthazar cannot be on a job without Anarchy');
+    const reason = declineReason(state, now, j, j.participants);
+    if (reason) {
+      touchJob(ctx, j, { status: 'resolved', result: 'cancelled', declineReason: reason });
+      follow(ctx, j, 'LEGION_JOB_CLOSE', 'close', now + 30 * MIN);
+      event.location = j.location;
+      event.area = j.area;
+      event.participants = [...j.participants];
+      event.payload = { jobId: j.jobId, family: j.family, stage: 'start', outcome: 'cancelled', reason };
+      ops.publish('The Legion could not start the off-book work.');
+      return true;
     }
-
     event.location = j.location;
     event.area = j.area;
     event.participants = [...j.participants];
     event.payload = { jobId: j.jobId, family: j.family, stage: 'start' };
-    ops.publish(`The Legion set out on the ${j.family.replace('legion.', '').replace(/_/g, ' ')}.`);
-
-    ctx.followups.push(...issueLegionJobActions(ctx, [{
-      id: `${j.jobId}/report`,
-      type: 'LEGION_JOB_REPORT',
-      dueAt: now + 60 * MIN,
-      priority: 37,
-      day: londonDate(now + 60 * MIN),
-      actors: [],
-      version: 1,
-      jobId: j.jobId,
-      jobToken: j.token
-    }]));
+    ops.publish('The Legion set out on the off-book disaster work.');
+    follow(ctx, j, 'LEGION_JOB_REPORT', 'report', now + 60 * MIN);
     return true;
   }
 
-  // 5. LEGION_JOB_REPORT
   if (a.type === 'LEGION_JOB_REPORT') {
-    // Derive evidence-based outcome deterministically from source facts/family
-    const outcomeHash = hash(`${ctx.seed}|legion-outcome|${j.jobId}`);
-    const outcomeVal = parseInt(outcomeHash.slice(0, 4), 16);
-
-    let outcome;
-    if (j.family === 'legion.information_favour' && outcomeVal % 5 === 0) {
-      outcome = 'target_not_found';
-    } else if (j.family === 'legion.magical_cleanup' && outcomeVal % 7 === 0) {
-      outcome = 'referred_to_meu';
-    } else if (outcomeVal % 9 === 0) {
-      outcome = 'safe_failure';
-    } else if (outcomeVal % 4 === 0) {
-      outcome = 'partial_success';
-    } else {
-      outcome = 'success';
-    }
+    const sourceGone = j.sourceFactKey && (!(state.facts?.[j.sourceFactKey])
+      || (state.facts[j.sourceFactKey].validUntil != null && state.facts[j.sourceFactKey].validUntil <= now));
+    const interrupted = j.interrupted || j.participants.some(id => !legionJobMemberAvailable(state, id, now)
+      && of(state).reservations?.[id]?.jobId !== j.jobId);
+    let outcome = 'success';
+    if (sourceGone) outcome = 'cancelled';
+    else if (interrupted) outcome = 'partial_success';
 
     const factKey = `${a.day}:legion-report-${j.jobId}`;
-    const reportFact = ops.createFact(
-      factKey,
-      'legion_job_report',
-      'legion',
-      { jobId: j.jobId, family: j.family, outcome, location: j.location },
-      now + 7 * 24 * 60 * MIN
-    );
-
+    const reportFact = ops.createFact(factKey, 'legion_job_report', 'legion', {
+      jobId: j.jobId, family: j.family, outcome, location: j.location, sourceCaseId: j.sourceCaseId
+    }, now + 7 * 24 * 60 * MIN);
+    for (const who of j.participants) {
+      if (state.characters?.[who] && reportFact) ops.learn(who, reportFact, 'participated');
+    }
     touchJob(ctx, j, {
-      status: 'reported',
-      result: outcome,
+      status: 'reported', result: outcome,
+      report: { factKey, createdAt: now, factId: reportFact?.id ?? factKey },
       sourceFactIds: [...j.sourceFactIds, factKey]
     });
-
     event.location = j.location;
     event.area = j.area;
     event.participants = [...j.participants];
     event.payload = { jobId: j.jobId, family: j.family, stage: 'report', outcome, factKey };
-    ops.publish(`The Legion completed work on Case ${j.jobId}: preliminary result ${outcome.replace(/_/g, ' ')}.`);
-
-    ctx.followups.push(...issueLegionJobActions(ctx, [{
-      id: `${j.jobId}/resolve`,
-      type: 'LEGION_JOB_RESOLVE',
-      dueAt: now + 45 * MIN,
-      priority: 37,
-      day: londonDate(now + 45 * MIN),
-      actors: [],
-      version: 1,
-      jobId: j.jobId,
-      jobToken: j.token,
-      outcome
-    }]));
+    ops.publish(`The Legion reported the off-book work as ${outcome.replace(/_/g, ' ')}.`);
+    follow(ctx, j, 'LEGION_JOB_RESOLVE', 'resolve', now + 45 * MIN, { outcome });
     return true;
   }
 
-  // 6. LEGION_JOB_RESOLVE
   if (a.type === 'LEGION_JOB_RESOLVE') {
     const outcome = a.outcome || j.result || 'success';
     const resultFactKey = `${a.day}:legion-result-${j.jobId}`;
-
-    ops.createFact(
-      resultFactKey,
-      'legion_job_result',
-      'legion',
-      { jobId: j.jobId, outcome, family: j.family },
-      now + 7 * 24 * 60 * MIN
-    );
-
+    const resultFact = ops.createFact(resultFactKey, 'legion_job_result', 'legion', {
+      jobId: j.jobId, outcome, family: j.family, sourceCaseId: j.sourceCaseId
+    }, now + 7 * 24 * 60 * MIN);
+    for (const who of j.participants) {
+      if (state.characters?.[who] && resultFact) ops.learn(who, resultFact, 'participated');
+    }
     touchJob(ctx, j, { status: 'resolved', result: outcome });
-
     event.location = j.location;
     event.area = j.area;
     event.participants = [...j.participants];
     event.payload = { jobId: j.jobId, family: j.family, stage: 'resolve', outcome, factKey: resultFactKey };
     ops.publish(`Legion job ${j.jobId} resolved: ${outcome.replace(/_/g, ' ')}.`);
-
-    // Rule 6: Payment allowed ONLY for MI6 off-book work
     if (j.family === 'legion.mi6_offbook_job' && ['success', 'partial_success'].includes(outcome)) {
-      ctx.followups.push(...issueLegionJobActions(ctx, [{
-        id: `${j.jobId}/payment`,
-        type: 'LEGION_JOB_PAYMENT',
-        dueAt: now + 30 * MIN,
-        priority: 37,
-        day: londonDate(now + 30 * MIN),
-        actors: [],
-        version: 1,
-        jobId: j.jobId,
-        jobToken: j.token
-      }]));
+      follow(ctx, j, 'LEGION_JOB_PAYMENT', 'payment', now + 30 * MIN);
     } else {
-      ctx.followups.push(...issueLegionJobActions(ctx, [{
-        id: `${j.jobId}/close`,
-        type: 'LEGION_JOB_CLOSE',
-        dueAt: now + 30 * MIN,
-        priority: 37,
-        day: londonDate(now + 30 * MIN),
-        actors: [],
-        version: 1,
-        jobId: j.jobId,
-        jobToken: j.token
-      }]));
+      follow(ctx, j, 'LEGION_JOB_CLOSE', 'close', now + 30 * MIN);
     }
     return true;
   }
 
-  // 7. LEGION_JOB_PAYMENT (Idempotent payment flag)
   if (a.type === 'LEGION_JOB_PAYMENT') {
-    // Rule 6 & 7: Check family and idempotency
-    if (j.family !== 'legion.mi6_offbook_job') {
-      return refuse('Payment not applicable to this job family');
-    }
-    if (j.paymentStatus === 'paid') {
-      return refuse('Job is already paid');
-    }
-
+    if (j.family !== 'legion.mi6_offbook_job') return refuse('Payment not applicable to this job family');
+    if (j.paymentStatus === 'paid') return refuse('Job is already paid');
     const paymentFactKey = `${a.day}:legion-payment-${j.jobId}`;
-    ops.createFact(
-      paymentFactKey,
-      'legion_job_payment',
-      'legion',
-      { jobId: j.jobId, paymentStatus: 'paid' },
-      now + 7 * 24 * 60 * MIN
-    );
-
+    const paymentFact = ops.createFact(paymentFactKey, 'legion_job_payment', 'legion', {
+      jobId: j.jobId, paymentStatus: 'paid'
+    }, now + 7 * 24 * 60 * MIN);
+    for (const who of j.participants) {
+      if (state.characters?.[who] && paymentFact) ops.learn(who, paymentFact, 'participated');
+    }
     touchJob(ctx, j, { paymentStatus: 'paid' });
-
     event.location = 'mi6';
     event.area = 'common_room';
     event.participants = [...j.participants];
-    event.payload = { jobId: j.jobId, stage: 'payment', paymentStatus: 'paid', factKey: paymentFactKey };
+    event.payload = { jobId: j.jobId, family: j.family, stage: 'payment', paymentStatus: 'paid', factKey: paymentFactKey };
     ops.publish(`Off-book remittance settled for Legion job ${j.jobId}.`);
-
-    ctx.followups.push(...issueLegionJobActions(ctx, [{
-      id: `${j.jobId}/close`,
-      type: 'LEGION_JOB_CLOSE',
-      dueAt: now + 30 * MIN,
-      priority: 37,
-      day: londonDate(now + 30 * MIN),
-      actors: [],
-      version: 1,
-      jobId: j.jobId,
-      jobToken: j.token
-    }]));
+    follow(ctx, j, 'LEGION_JOB_CLOSE', 'close', now + 30 * MIN);
     return true;
   }
 
-  // 8. LEGION_JOB_CLOSE
   if (a.type === 'LEGION_JOB_CLOSE') {
     touchJob(ctx, j, { status: 'closed', closedAt: now });
-
+    releaseCrew(ctx, j.jobId, now);
     const summary = {
-      jobId: j.jobId,
-      family: j.family,
-      openedAt: j.openedAt,
-      closedAt: now,
-      sourceEventIds: j.sourceEventIds,
-      result: j.result,
-      paymentStatus: j.paymentStatus,
-      dedupeKey: j.dedupeKey
+      jobId: j.jobId, family: j.family, openedAt: j.openedAt, closedAt: now,
+      sourceEventIds: j.sourceEventIds, sourceCaseId: j.sourceCaseId,
+      result: j.result, paymentStatus: j.paymentStatus, dedupeKey: j.dedupeKey
     };
-
-    const closedSummaries = [summary, ...current.closedSummaries].slice(0, 24);
-    save(ctx, {
-      activeJobId: null,
-      lastResult: j.result,
-      nextEligibleAt: now + 48 * 60 * MIN, // 48h cooldown after completion (yielding ~1-2 jobs/wk)
-      closedSummaries
-    });
-
+    save(ctx, { closedSummaries: [summary, ...of(ctx.state).closedSummaries].slice(0, 24) });
+    releaseSlot(ctx, j.jobId, j.result, now, 48 * 60 * MIN);
     event.location = j.location;
     event.area = j.area;
     event.participants = [...j.participants];
     event.payload = { jobId: j.jobId, family: j.family, stage: 'close', result: j.result };
     ops.publish(`Legion job ${j.jobId} closed.`);
+    return true;
+  }
+
+  if (a.type === 'LEGION_JOB_HANDOFF_READ') {
+    if (!j || !j.report || j.report.createdAt >= now || !canReadHandoff(state.characters[a.actor])
+      || known(state.characters[a.actor], j.report.factKey, now)) {
+      return refuse('The Legion handoff cannot be read here');
+    }
+    const reportFact = state.facts[j.report.factKey];
+    if (reportFact) ops.learn(a.actor, reportFact, 'handoff_reading');
+    event.location = state.characters[a.actor].location;
+    event.area = state.characters[a.actor].area;
+    event.participants = [a.actor];
+    event.payload = { jobId: j.jobId, stage: 'handoff', actor: a.actor, factKey: j.report.factKey };
     return true;
   }
 

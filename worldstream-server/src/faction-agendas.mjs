@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { legionJobMemberAvailable } from './legion-jobs.mjs';
 import { atLondon, londonDate, nextLondonDay, MINUTE_MS as MIN } from './time.mjs';
 import { offscreenAvailable } from './offscreen-lives.mjs';
 import { surfaceLine } from './downtime.mjs';
@@ -44,6 +45,7 @@ export function initialAgendaState() {
 export function supportingAvailability(state, id, { atMs, location, area } = {}) {
   if ([state.sceneBank?.session, state.arcs?.session].some(session =>
     session?.cast?.includes(id) && session.startAt <= atMs && atMs < session.until)) return false;
+  if (!legionJobMemberAvailable(state, id, atMs)) return false;
   const record = of(state).supporting[id];
   if (!record?.commitment) return true;
   const commitment = record.commitment;

@@ -8,7 +8,7 @@ This is the exact procedure for an **existing** `canon-ambient-p183-v23` world (
 
 `src/meu-upgrade.mjs` `upgradeMeuCases()`:
 
-1. Refuses unless the checkout is `canon-ambient-p183-v24` and the pinned world is still v23.
+1. Refuses unless the checkout is `canon-ambient-p183-v24` or later, and the pinned world is still v23. A v25 checkout may still run this MEU upgrade; it still writes only the v24 identity and does **not** install Legion jobs. The later v24→v25 Legion boundary is `scripts/upgrade-legion-jobs.mjs`.
 2. Backs up the SQLite image (`VACUUM INTO`) with SHA-256 + integrity check.
 3. Installs empty `meuCases` (no reconstructed cases).
 4. Writes one pending `WORLD_MEU_ACTIVATE` at `resolved_through + 1`.

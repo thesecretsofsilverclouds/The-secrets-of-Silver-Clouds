@@ -38,7 +38,8 @@ import { AGENDA_EVENT_TYPES, AGENDA_FACT_KINDS, initialAgendaState, agendaDayAct
 import { MEU_EVENT_TYPES, MEU_FACT_KINDS, initialMeuCasesState, resolveMeuCaseAction,
   issueMeuCaseActions, meuCaseOpportunityActions, meuReportActions, assertMeuCases } from './meu-cases.mjs';
 import { LEGION_JOB_EVENT_TYPES, LEGION_JOB_FACT_KINDS, initialLegionJobsState, resolveLegionJobAction,
-  issueLegionJobActions, legionJobOpportunityActions, assertLegionJobs } from './legion-jobs.mjs';
+  issueLegionJobActions, legionJobOpportunityActions, mi6LegionReferralActions, legionHandoffReadActions,
+  legionJobMemberAvailable, assertLegionJobs } from './legion-jobs.mjs';
 import { ABILITY_EVENT_TYPES, ABILITY_FACT_KINDS, GROUND_ACTIVITIES, initialAbilities,
   abilityDayActions, resolveAbilityAction, assertAbilities, canEnterAbilityArea,
   abilityActivityChanged } from './abilities.mjs';
@@ -57,16 +58,20 @@ import { OFFSCREEN_EVENT_TYPES, OFFSCREEN_FACT_KINDS, initialOffscreenLives,
   offscreenWitnessActions,
   offscreenAvailable, noteOffscreenPresence, assertOffscreenLives, publicOffscreenSummaries } from './offscreen-lives.mjs';
 
-export const RULES_VERSION = 'canon-ambient-p183-v24';
+export const RULES_VERSION = 'canon-ambient-p183-v25';
 export function isMeuActive(state) {
   if (!state?.meuCases) return false;
-  if (state.meta?.upgrades?.length) {
+  if (state.meta?.upgrades?.some(item => item.to === 'canon-ambient-p183-v24')) {
     return state.meta.upgrades.some(item => item.to === 'canon-ambient-p183-v24' && item.activatedAt);
   }
-  return RULES_VERSION === 'canon-ambient-p183-v24';
+  return ['canon-ambient-p183-v24', 'canon-ambient-p183-v25'].includes(RULES_VERSION);
 }
 export function isLegionJobsActive(state) {
-  return Boolean(state?.legionJobs);
+  if (!state?.legionJobs) return false;
+  if (state.meta?.upgrades?.some(item => item.to === 'canon-ambient-p183-v25')) {
+    return state.meta.upgrades.some(item => item.to === 'canon-ambient-p183-v25' && item.activatedAt);
+  }
+  return RULES_VERSION === 'canon-ambient-p183-v25';
 }
 // Existing pending actions and memories keep their identities across an explicit
 // rules upgrade. A release number describes semantics, not a new fictional world.
@@ -101,7 +106,7 @@ export const EVENT_TYPES = Object.freeze([
   // An hour at a venue used to be two lines and a gap. This is the hour.
   'VENUE_SCENE', ...INK_EVENT_TYPES, ...THREAD_EVENT_TYPES, ...INTENT_EVENT_TYPES,
   ...AGENDA_EVENT_TYPES, ...MEU_EVENT_TYPES, ...LEGION_JOB_EVENT_TYPES, ...ABILITY_EVENT_TYPES, ...OUTING_RECOVERY_EVENT_TYPES,
-  ...SUPPORTING_EVENT_TYPES, ...NIGHT_EVENT_TYPES, ...OFFSCREEN_EVENT_TYPES, ...SCENE_BANK_EVENT_TYPES, 'WORLD_DEPTH_ACTIVATE', 'WORLD_LIVES_ACTIVATE', 'WORLD_MEU_ACTIVATE',
+  ...SUPPORTING_EVENT_TYPES, ...NIGHT_EVENT_TYPES, ...OFFSCREEN_EVENT_TYPES, ...SCENE_BANK_EVENT_TYPES, 'WORLD_DEPTH_ACTIVATE', 'WORLD_LIVES_ACTIVATE', 'WORLD_MEU_ACTIVATE', 'WORLD_LEGION_ACTIVATE',
 ]);
 const TYPES = new Set(EVENT_TYPES);
 // City venues are a creator-approved v3 expansion. The cafe is manuscript canon (p.37);
@@ -1109,6 +1114,7 @@ function reduceAction(state,a,seed) {
   const agreement=()=>state.arrangements[a.arrangementKey];
   const validAgreement=()=>{const r=agreement();return r&&['accepted','started','completed'].includes(r.status)&&r.startAt<=now&&now<=r.until;};
   const castAvailable=(who,where={})=>arcParticipantAvailable(state,who,now)&&sceneBankAvailable(state,who,now)&&supportingAvailability(state,who,{...where,atMs:now})
+    &&legionJobMemberAvailable(state,who,now)
     &&supportingStoryAvailability(state,who,{atMs:now})&&offscreenAvailable(state,who,{...where,atMs:now});
   // The pair's side of a shared moment: one beat each, two minutes after the
   // thing itself, only for whoever has an authored line for what they are
@@ -1168,6 +1174,14 @@ function reduceAction(state,a,seed) {
     resolveOffscreenAction(storyContext());
   } else if(ARC_EVENT_TYPES.includes(a.type)) {
     resolveArcAction(storyContext());
+  } else if(a.type==='WORLD_LEGION_ACTIVATE') {
+    const receipt=state.meta.upgrades?.find(item=>item.to==='canon-ambient-p183-v25'
+      &&a.id===`legion-v25/activate/${item.cutoverAt}`&&now===item.cutoverAt+1);
+    if(!receipt||receipt.activatedAt) skip('No pending Legion jobs activation');
+    else {
+      setWorld('meta',{...state.meta,upgrades:state.meta.upgrades.map(item=>item===receipt?{...item,activatedAt:now}:item)});
+      publish('MI6 off-book Legion disaster referrals are now active.');
+    }
   } else if(a.type==='WORLD_MEU_ACTIVATE') {
     const receipt=state.meta.upgrades?.find(item=>item.to==='canon-ambient-p183-v24'
       &&a.id===`meu-v24/activate/${item.cutoverAt}`&&now===item.cutoverAt+1);
@@ -1760,8 +1774,7 @@ function reduceAction(state,a,seed) {
       if(!scene) skip('The available visitors do not have a scene together');
       else {
         event.participants=['goaden','ashai'];
-        event.payload={mood:scene.mood,lines:scene.lines,visitors:scene.cast,
-          ...(state.legionJobs?.activeJobId ? { activeJobId: state.legionJobs.activeJobId } : {})};
+        event.payload={mood:scene.mood,lines:scene.lines,visitors:scene.cast};
         publish(summariseLegion(scene.mood));
       }
     }
@@ -1858,8 +1871,14 @@ function reduceAction(state,a,seed) {
   if(isMeuActive(state)&&['INCIDENT','ARCANE_SURGE'].includes(a.type)) {
     followups.push(...issueMeuCaseActions(storyContext(),meuCaseOpportunityActions({state,day:a.day,now,seed,parentActionId:a.id,parentEventId:id,sourceEvent:event})));
   }
-  if(isLegionJobsActive(state)&&(a.type==='MEU_CASE_RESOLVE'||a.type==='INCIDENT')) {
+  if(isLegionJobsActive(state)&&a.type==='MEU_CASE_RESOLVE') {
+    followups.push(...issueLegionJobActions(storyContext(),mi6LegionReferralActions({state,day:a.day,now,parentActionId:a.id,parentEventId:id,sourceEvent:event})));
+  }
+  if(isLegionJobsActive(state)&&a.type==='MI6_LEGION_REFERRAL') {
     followups.push(...issueLegionJobActions(storyContext(),legionJobOpportunityActions({state,day:a.day,now,seed,parentActionId:a.id,parentEventId:id,sourceEvent:event})));
+  }
+  if(isLegionJobsActive(state)&&event.visibility==='public'&&['BRIEFING_BEGIN','STANDBY_BEGIN','COMMS_CHECK_BEGIN'].includes(a.type)) {
+    followups.push(...issueLegionJobActions(storyContext(),legionHandoffReadActions({state,day:a.day,now,parentActionId:a.id})));
   }
   outingRecoveryAfterAction(storyContext());
   if(event.visibility==='public'&&['CROSS_PATHS','TRAVEL_ARRIVE','CITY_ACTIVITY_BEGIN','ACTIVITY_COMPLETE','PRACTICE_END'].includes(a.type))

@@ -18,7 +18,7 @@ const pending = db => db.prepare('SELECT id,due_at,priority,action_json FROM sch
 // and no existing event, memory or pending action is rewritten.
 export function upgradeMeuCases({ directory, backupPath } = {}) {
   if (typeof directory !== 'string' || !directory.trim()) throw new TypeError('An existing pinned directory is required');
-  if (RULES_VERSION !== TO) throw new Error('This upgrade belongs to release v24 only');
+  if (![TO, 'canon-ambient-p183-v25'].includes(RULES_VERSION)) throw new Error('This upgrade belongs to release v24 or later');
   directory = resolve(directory);
   const manifestPath = join(directory, 'active-world.json'), databasePath = join(directory, 'world.sqlite');
   if (!existsSync(manifestPath) || !existsSync(databasePath)) throw new Error('An existing pinned world is required');
