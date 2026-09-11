@@ -47,6 +47,7 @@ export const SIDE_CHARACTERS = Object.freeze({
   // "his Guardian, Kai. The small dragon" [M25], who rides Goaden's shoulder
   // throughout. An ever-present, so he is never met — only noticed.
   kai:{name:'Kai',role:"Goaden's Guardian",page:25,attachedTo:'goaden',
+    plates:['annoyed','greeting','happy','sad','surprised'],
     areas:null,dayparts:['morning','midday','evening','night'],
     lines:['Kai stayed on his shoulder for the whole of it.',
       'Kai had found the warm end of the room an hour before either of them did.',
@@ -54,6 +55,7 @@ export const SIDE_CHARACTERS = Object.freeze({
   // "her Guardian, Greah, fluttered near, her soft glow a comforting" [M69],
   // and "an ever-present" who "kept watch with a solemn vow" [M62].
   greah:{name:'Greah',role:"Ashai's Guardian",page:69,attachedTo:'ashai',
+    plates:['annoyed','cheeky','happy','sad','surprised','warm-greeting'],
     areas:null,dayparts:['morning','midday','evening','night'],
     lines:['Greah kept close, glowing faintly, and let it be.',
       'Greah settled on the back of the chair and stayed there.',
@@ -77,9 +79,9 @@ export const SIDE_CHARACTER_IDS = Object.freeze(Object.keys(SIDE_CHARACTERS));
 // leaves no memory, exactly like every Goaden and Ashai conversation since v10.
 // They can be in the room and take the piss. They cannot change the world.
 //
-// Truth and the Dread Twins are deliberately absent from the plate list: they
-// are canon and they are named in the banter, but no art exists for them, and a
-// written line must never ask for a plate the world does not own.
+// Truth and Damien now have plates. Marley remains LEGION_OFFSCREEN: art
+// exists on disk (`twin2-marley.png`) but he is not a runtime actor, and
+// wiring him here would change who the simulation can put on stage.
 export const LEGION_CAST = Object.freeze({
   // "Perched atop an aged drum set sat Rose, fiery strands of hair framing her
   // face", holding a conversation with a bird [M101]. At the reunion she gives

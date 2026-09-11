@@ -881,6 +881,9 @@ const scene = (() => {
     lintel:{ has:new Set(['idle','curious','bright','content']), fallback:'idle' },
     nimbus:{ has:new Set(['angry','happy','showoff','smile','surprised','wink']), fallback:'smile' },
     yukon:{ has:new Set(['irritated']), fallback:'irritated' },
+    // Guardians already attached to the pair; the plates were in /scene unused.
+    greah:{ has:new Set(['annoyed','cheeky','happy','sad','surprised','warm-greeting']), fallback:'happy' },
+    kai:{ has:new Set(['annoyed','greeting','happy','sad','surprised']), fallback:'greeting' },
   };
   // Which room the scene is played in, from the location mode the world reports.
   const BACKDROPS = {

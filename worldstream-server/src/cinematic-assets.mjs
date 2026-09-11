@@ -47,8 +47,11 @@ export const CHARACTER_PLATES = Object.freeze({
     .map((emotion) => plate(`balthazar_${emotion}`, 'balthazar', emotion, `/scene/balthazar-${emotion}.png`))),
   gabriel: Object.freeze(['annoyed', 'frown', 'humble', 'impressed', 'laughing', 'showing-off', 'surprised', 'thinking']
     .map((emotion) => plate(`gabriel_${emotion.replaceAll('-', '_')}`, 'gabriel', emotion, `/scene/gabriel-${emotion}.png`))),
-  truth: Object.freeze(['annoyed', 'disgust', 'laughing', 'shock', 'stern']
+  truth: Object.freeze(['annoyed', 'disgust', 'laughing', 'shock', 'stern', 'idle']
     .map((emotion) => plate(`truth_${emotion}`, 'truth', emotion, `/scene/truth-${emotion}.png`))),
+  damien: Object.freeze([
+    plate('damien_idle', 'damien', 'idle', '/scene/damien-idle.png'),
+  ]),
   emily: Object.freeze(['annoyed', 'curious', 'laughing', 'leans-in-sad', 'mocking', 'sad', 'thinking']
     .map((emotion) => plate(`emily_${emotion.replaceAll('-', '_')}`, 'emily', emotion, `/scene/emily-${emotion}.png`))),
   zara: Object.freeze(['angry', 'happy', 'idle', 'sad', 'shocked', 'smile', 'smiling']
@@ -78,6 +81,14 @@ export const CHARACTER_PLATES = Object.freeze({
     plate('henderson_idle', 'henderson', 'idle', '/scene/henderson-idle.png'),
     plate('henderson_waiting', 'henderson', 'thoughtful', '/scene/henderson-waiting.png'),
   ]),
+  // Greah and Kai already speak in authored scenes and ride with the pair.
+  // The plates were sitting in /scene; they were never generated for this pass.
+  greah: Object.freeze(['annoyed', 'cheeky', 'happy', 'sad', 'surprised', 'warm-greeting']
+    .map((emotion) => plate(`greah_${emotion.replaceAll('-', '_')}`, 'greah', emotion, `/scene/greah-${emotion}.png`,
+      { suitableFor: ['conversation', 'social', 'banter', 'emotion'] }))),
+  kai: Object.freeze(['annoyed', 'greeting', 'happy', 'sad', 'surprised']
+    .map((emotion) => plate(`kai_${emotion}`, 'kai', emotion, `/scene/kai-${emotion}.png`,
+      { suitableFor: ['conversation', 'social', 'banter', 'emotion'] }))),
 });
 
 const background = (id, location, file, {
@@ -104,6 +115,8 @@ export const CINEMATIC_BACKGROUNDS = Object.freeze([
   background('silver_spoon', 'cafe', '/scene/world-cafe-day.jpg', { dayparts: ['morning', 'midday', 'evening'], suitableFor: ['social', 'banter', 'quiet'] }),
   background('london_day', 'big_ben_plaza', '/scene/world-london-day.jpg', { dayparts: ['morning', 'midday', 'evening'], suitableFor: ['city', 'travel', 'anomaly'] }),
   background('london_night', 'big_ben_plaza', '/scene/world-london-night.jpg', { dayparts: ['night', 'small_hours'], suitableFor: ['city', 'danger', 'mystery'] }),
+  background('legion_hideout_day', 'legion_hideout', '/scene/world-legion-hideout-day.jpg', { dayparts: ['morning', 'midday', 'evening'], suitableFor: ['social', 'banter', 'conversation'] }),
+  background('legion_hideout_night', 'legion_hideout', '/scene/world-legion-hideout-night.jpg', { dayparts: ['night', 'small_hours'], suitableFor: ['social', 'mystery', 'quiet'] }),
 ]);
 
 export const BACKGROUND_BY_ID = Object.freeze(Object.fromEntries(CINEMATIC_BACKGROUNDS.map((item) => [item.id, item])));

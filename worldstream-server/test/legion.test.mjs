@@ -67,10 +67,8 @@ test('every written line asks for a plate the world actually owns', () => {
 });
 
 test('nobody speaks who has no face, and nobody is invented', () => {
-  // Truth has plates now and speaks. Damien and Marley are still canon, still
-  // named in the banter, and still without art — so a written line must never
-  // hand either of them a plate, and this is the test that keeps that true as
-  // the cast grows.
+  // Truth and Damien have plates and speak. Marley remains LEGION_OFFSCREEN:
+  // named in banter, not a runtime speaker, even though twin2-marley.png exists.
   const speakers = new Set(Object.values(LEGION_EXCHANGES).flat().flat().map(line => line.who));
   for (const who of speakers) {
     assert.ok(['goaden', 'ashai', ...LEGION_IDS].includes(who), `${who} speaks without being cast`);
