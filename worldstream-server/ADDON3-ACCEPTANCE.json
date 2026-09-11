@@ -1,0 +1,243 @@
+{
+  "generatedAt": "2026-09-11T23:23:53.968Z",
+  "rulesVersion": "canon-ambient-p183-v26",
+  "modelCalls": 0,
+  "requestTimeAuthoring": 0,
+  "refillReservations": 0,
+  "activeScenes": 874,
+  "activeQuips": 673,
+  "dormantPaths": [
+    "duskkin.feeding_suspicion — no unverified rumours committed on canonical seeds",
+    "duskkin.verified_feeding — no feeding incidents manufactured; natural volume is 0",
+    "duskkin.public_safety — immediate ongoing danger containment dormant without live incident",
+    "future_duskkin_compliance — 30 staged scenes remain quarantined in batch library",
+    "Zara liaison knowledge transfer — dormant when no compliance cases arise",
+    "Council response referral — dormant when no cases are notified"
+  ],
+  "determinism": {
+    "silver-clouds-now-v1": {
+      "matched": true,
+      "digest": "bad614bdbfa74cc3c7416772e2a42ff7b6852cde4c84d4c494d18af41d722f98"
+    },
+    "seed-beta": {
+      "matched": true,
+      "digest": "f74785099c9051a7d1c6d47ee5d55cfd3299cdea8888f9ed0e54651d34bde38f"
+    },
+    "seed-gamma": {
+      "matched": true,
+      "digest": "ed76cc436d83a2727e054a1ee486a4ca99483c06679d40f6319340c73bee8e0f"
+    }
+  },
+  "restart": {
+    "silver-clouds-now-v1": {
+      "matched": true,
+      "digest": "bad614bdbfa74cc3c7416772e2a42ff7b6852cde4c84d4c494d18af41d722f98"
+    },
+    "seed-beta": {
+      "matched": true,
+      "digest": "f74785099c9051a7d1c6d47ee5d55cfd3299cdea8888f9ed0e54651d34bde38f"
+    },
+    "seed-gamma": {
+      "matched": true,
+      "digest": "ed76cc436d83a2727e054a1ee486a4ca99483c06679d40f6319340c73bee8e0f"
+    }
+  },
+  "observers": {
+    "silver-clouds-now-v1": {
+      "matched": true,
+      "digest": "bad614bdbfa74cc3c7416772e2a42ff7b6852cde4c84d4c494d18af41d722f98"
+    },
+    "seed-beta": {
+      "matched": true,
+      "digest": "f74785099c9051a7d1c6d47ee5d55cfd3299cdea8888f9ed0e54651d34bde38f"
+    },
+    "seed-gamma": {
+      "matched": true,
+      "digest": "ed76cc436d83a2727e054a1ee486a4ca99483c06679d40f6319340c73bee8e0f"
+    }
+  },
+  "thirtyDays": {
+    "silver-clouds-now-v1": {
+      "digest": "bad614bdbfa74cc3c7416772e2a42ff7b6852cde4c84d4c494d18af41d722f98",
+      "stats": {
+        "meuOpened": 6,
+        "meuResolved": 6,
+        "meuPerWeek": 1.4,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "duskkin": {
+          "notices": 0,
+          "evidence": 0,
+          "transfers": 0,
+          "notifies": 0,
+          "responses": 0,
+          "contains": 0,
+          "closes": 0
+        },
+        "lifeBalance": {
+          "meals": 178,
+          "practices": 78,
+          "sleep": 60,
+          "travel": 32,
+          "legionVisits": 2
+        }
+      }
+    },
+    "seed-beta": {
+      "digest": "f74785099c9051a7d1c6d47ee5d55cfd3299cdea8888f9ed0e54651d34bde38f",
+      "stats": {
+        "meuOpened": 6,
+        "meuResolved": 6,
+        "meuPerWeek": 1.4,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "duskkin": {
+          "notices": 0,
+          "evidence": 0,
+          "transfers": 0,
+          "notifies": 0,
+          "responses": 0,
+          "contains": 0,
+          "closes": 0
+        },
+        "lifeBalance": {
+          "meals": 178,
+          "practices": 81,
+          "sleep": 60,
+          "travel": 32,
+          "legionVisits": 3
+        }
+      }
+    },
+    "seed-gamma": {
+      "digest": "ed76cc436d83a2727e054a1ee486a4ca99483c06679d40f6319340c73bee8e0f",
+      "stats": {
+        "meuOpened": 7,
+        "meuResolved": 7,
+        "meuPerWeek": 1.63,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "duskkin": {
+          "notices": 0,
+          "evidence": 0,
+          "transfers": 0,
+          "notifies": 0,
+          "responses": 0,
+          "contains": 0,
+          "closes": 0
+        },
+        "lifeBalance": {
+          "meals": 177,
+          "practices": 79,
+          "sleep": 60,
+          "travel": 30,
+          "legionVisits": 1
+        }
+      }
+    }
+  },
+  "ninetyDays": {
+    "silver-clouds-now-v1": {
+      "digest": "f36070915bd49e90165373c48d88441fe95b09b91a9508a86125736e4d94555b",
+      "stats": {
+        "meuOpened": 18,
+        "meuResolved": 18,
+        "meuPerWeek": 1.4,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "duskkin": {
+          "notices": 0,
+          "evidence": 0,
+          "transfers": 0,
+          "notifies": 0,
+          "responses": 0,
+          "contains": 0,
+          "closes": 0
+        },
+        "lifeBalance": {
+          "meals": 534,
+          "practices": 237,
+          "sleep": 180,
+          "travel": 93,
+          "legionVisits": 6
+        }
+      }
+    },
+    "seed-beta": {
+      "digest": "efe6260ad1b26663134c0848ac44e606122191cbd90a4c360c2ecc29d73eb39e",
+      "stats": {
+        "meuOpened": 20,
+        "meuResolved": 20,
+        "meuPerWeek": 1.56,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "duskkin": {
+          "notices": 0,
+          "evidence": 0,
+          "transfers": 0,
+          "notifies": 0,
+          "responses": 0,
+          "contains": 0,
+          "closes": 0
+        },
+        "lifeBalance": {
+          "meals": 533,
+          "practices": 236,
+          "sleep": 180,
+          "travel": 97,
+          "legionVisits": 7
+        }
+      }
+    },
+    "seed-gamma": {
+      "digest": "66087e06109a26db805a6f1525b7bb5a32facf68e2bc42f65eb313ad94445840",
+      "stats": {
+        "meuOpened": 14,
+        "meuResolved": 14,
+        "meuPerWeek": 1.09,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "duskkin": {
+          "notices": 0,
+          "evidence": 0,
+          "transfers": 0,
+          "notifies": 0,
+          "responses": 0,
+          "contains": 0,
+          "closes": 0
+        },
+        "lifeBalance": {
+          "meals": 534,
+          "practices": 236,
+          "sleep": 178,
+          "travel": 94,
+          "legionVisits": 4
+        }
+      }
+    }
+  }
+}

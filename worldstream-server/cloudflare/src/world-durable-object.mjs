@@ -193,7 +193,7 @@ export class WorldDurableObject {
       const startMs = savedEpochStartMs(existing.state_json);
       this.fixture = createFixture({ startMs });
       if (!matchesRulesIdentity(existing.rules_version, this.fixture)) {
-        throw new Error(`Saved world does not match rules ${RULES_VERSION}; refusing to reinterpret its history. Stop this Durable Object, export its SQLite, run the documented copy-upgrade on a pinned copy (v23→v24 MEU, then v24→v25 Legion), then replace storage with the upgraded database.`);
+        throw new Error(`Saved world does not match rules ${RULES_VERSION}; refusing to reinterpret its history. Stop this Durable Object, export its SQLite, run the documented copy-upgrade on a pinned copy (v23→v24 MEU, then v24→v25 Legion, then v25→v26 Duskkin), then replace storage with the upgraded database.`);
       }
     }
     this.initialized = true;

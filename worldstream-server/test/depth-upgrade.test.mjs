@@ -12,6 +12,7 @@ import { upgradeWorldDepth } from '../src/depth-upgrade.mjs';
 import { upgradeOffscreenLives } from '../src/lives-upgrade.mjs';
 import { upgradeMeuCases } from '../src/meu-upgrade.mjs';
 import { upgradeLegionJobs } from '../src/legion-upgrade.mjs';
+import { upgradeDuskkinCompliance } from '../src/duskkin-upgrade.mjs';
 import { atLondon } from '../src/time.mjs';
 
 const OLD = 'canon-ambient-p183-v21', DEPTH = 'canon-ambient-p183-v22', day = '2026-09-05', start = atLondon(day,'00:00');
@@ -71,12 +72,15 @@ test('v21 upgrade preserves every old ledger byte, seed, clock, character and pe
   assert.equal(next.rulesVersion,'canon-ambient-p183-v24');
   assert.throws(()=>openPinnedWorld({directory:f.directory}),/differs/);
   const legion=upgradeLegionJobs({directory:f.directory,backupPath:join(f.directory,'before-v25.sqlite')});
-  assert.equal(legion.rulesVersion,RULES_VERSION);
+  assert.equal(legion.rulesVersion,'canon-ambient-p183-v25');
+  assert.throws(()=>openPinnedWorld({directory:f.directory}),/differs/);
+  const duskkin=upgradeDuskkinCompliance({directory:f.directory,backupPath:join(f.directory,'before-v26.sqlite')});
+  assert.equal(duskkin.rulesVersion,RULES_VERSION);
   assert.deepEqual(events(f.db),history);
   const world = openPinnedWorld({directory:f.directory});
   const continuity = world.publicProjection().continuityId;
   world.advance(before.resolved_through+1);
-  assert.equal(world.semanticSnapshot().events.length,history.length+4);
+  assert.equal(world.semanticSnapshot().events.length,history.length+5);
   assert.equal(world.publicProjection().continuityId,continuity);
   assert.ok(world.semanticSnapshot().pendingActions.every(a=>a.dueAt>before.resolved_through+1));
   world.close();
