@@ -18,6 +18,12 @@ const TYPES = new Set(['SUPPORTING_COMMITMENT', 'SUPPORTING_ENCOUNTER',
   'SUPPORTING_OUTCOME', 'SUPPORTING_DEADLINE', 'SUPPORTING_CALLBACK']);
 const OUTCOMES = new Set(['kept', 'missed', 'cut_short']);
 const LEADS = Object.freeze({ goaden: 'Goaden', ashai: 'Ashai' });
+// The ticker line for a stage used to be one string per story; over 90 days
+// the fourteen stories' forty-two lines were the second-most repeated text
+// the reader saw. A stage may now offer a bank, chosen by the event, and each
+// alternative says exactly what the one line said: who agreed, with whom, to
+// what, and that it began or was kept. Nothing about how it went.
+const line = (event, stage, value) => Array.isArray(value) ? pick(event, `line:${stage}`, value) : value;
 const pick = (event, stage, choices) => choices[createHash('sha256')
   .update(`supporting-editorial-v2|${event.id}|${stage}`).digest().readUInt32BE(0) % choices.length];
 
@@ -46,9 +52,9 @@ const familyKey = family => Object.hasOwn(FAMILY_ALIASES, family) ? FAMILY_ALIAS
 const BANK = {
   'another attempt': {
     guest: 'yukon', name: 'Yukon', subject: 'the game attempt',
-    request: n => `${n} agreed to keep Yukon company for another attempt at the game.`,
-    begin: n => `${n} joined Yukon for the next attempt.`,
-    end: n => `${n} stayed with Yukon through the end of the game attempt.`,
+    request: n => [`${n} agreed to keep Yukon company for another attempt at the game.`, `Yukon wanted company for another go at the game, and ${n} said yes.`, `${n} agreed to sit through one more attempt with Yukon.`, `Another attempt at the game; ${n} agreed to be there for it.`],
+    begin: n => [`${n} joined Yukon for the next attempt.`, `Yukon started again, with ${n} beside him.`, `The next attempt began. ${n} had the seat next to Yukon.`],
+    end: n => [`${n} stayed with Yukon through the end of the game attempt.`, `The attempt ended with ${n} still there.`, `Yukon finished the attempt. ${n} had not left.`, `${n} saw Yukon's attempt through to the end.`],
     opening: n => [
       `Yukon tightened his grey fingers around the controller. He wanted company for another attempt at the game. ${n === 'Goaden' ? 'Goaden agreed to watch. He looked rather too pleased by the prospect of seeing Yukon get angry with it.' : 'Ashai agreed to watch. Yukon looked from her to the screen, already impatient to begin.'}`,
       `Yukon still had the controller in his hands when ${n} agreed to keep him company. Another attempt. He rolled his shoulders, his pointed ears framing a face set against the screen. This time, at least, somebody would be watching.`],
@@ -61,9 +67,9 @@ const BANK = {
   },
   'a timing question': {
     guest: 'henderson', name: 'General Henderson', subject: 'the timing question',
-    request: n => `${n} agreed to help General Henderson settle a question of timing.`,
-    begin: n => `${n} and General Henderson turned to the timing question.`,
-    end: n => `${n} and General Henderson settled the timing question.`,
+    request: n => [`${n} agreed to help General Henderson settle a question of timing.`, `General Henderson had a timing question on the rota, and ${n} agreed to go through it.`, `${n} agreed to check a piece of the rota's timing with the General.`, `A question of timing from the General; ${n} took it on.`],
+    begin: n => [`${n} and General Henderson turned to the timing question.`, `The General put the timing question to ${n}.`, `${n} went through the rota timing with General Henderson.`, `General Henderson and ${n} took up the question of timing.`],
+    end: n => [`${n} and General Henderson settled the timing question.`, `The timing question was settled between ${n} and the General.`, `General Henderson had his answer on the timing. ${n} had given it.`, `The rota timing was cleared up, and the General went back to his rounds.`],
     opening: n => [
       `Henderson needed to check the timing on a rota. ${n === 'Goaden' ? 'Goaden agreed to help, keeping his usual slouch as he gave the General his attention.' : 'Ashai agreed to help. She turned towards the General, waiting to hear which part needed checking.'}`,
       `The General had a question about the rota before he continued his rounds. ${n} agreed to go through it with him. Henderson began with the timing that needed checking.`],
@@ -76,9 +82,9 @@ const BANK = {
   },
   'a handover interval': {
     guest: 'davis', name: 'Agent Davis', subject: 'the pause between handovers',
-    request: n => `${n} agreed to spend a few minutes with Agent Davis between handovers.`,
-    begin: n => `${n} joined Agent Davis during her break between handovers.`,
-    end: n => `${n} and Agent Davis shared the few minutes between handovers.`,
+    request: n => [`${n} agreed to spend a few minutes with Agent Davis between handovers.`, `Agent Davis had a few minutes between handovers, and ${n} agreed to spend them with her.`, `${n} said yes to a short pause with Agent Davis between her handovers.`],
+    begin: n => [`${n} joined Agent Davis during her break between handovers.`, `Agent Davis's break between handovers began with ${n} in it.`, `${n} sat down with Agent Davis while the handovers waited.`],
+    end: n => [`${n} and Agent Davis shared the few minutes between handovers.`, `The minutes between handovers ran out. ${n} and Agent Davis had spent them together.`, `Agent Davis went back to the next handover. ${n} had kept her company until then.`],
     opening: n => [
       `Davis had a few minutes between handovers. She turned towards ${n} and offered them with a smile. ${n === 'Goaden' ? 'He agreed, hands loose at his sides. Her gaze went briefly over his face before returning to his eyes.' : 'Ashai accepted. Davis kept her attention on her, waiting until she had the whole answer.'}`,
       `${n} agreed to spend Davis’s break with her. She drew back from the work and gave ${n === 'Goaden' ? 'him' : 'her'} a measured smile. The next handover had not started yet; there was time to sit.`],
@@ -91,9 +97,9 @@ const BANK = {
   },
   'a quiet seat': {
     guest: 'kartel', name: 'Captain Hammond', subject: 'the quiet at Hammond’s table', recallSubject: 'the quiet at the table',
-    request: n => `${n} accepted the quiet seat Captain Hammond made room for.`,
-    begin: n => `${n} sat with Captain Hammond.`,
-    end: n => `${n} stayed with Captain Hammond through the quiet pause.`,
+    request: n => [`${n} accepted the quiet seat Captain Hammond made room for.`, `Captain Hammond made room, and ${n} took the seat.`, `${n} took the quiet seat beside Captain Hammond.`],
+    begin: n => [`${n} sat with Captain Hammond.`, `Captain Hammond had company: ${n}, in the seat he had made room for.`, `${n} took the seat beside Captain Hammond and stayed in it.`, `A quiet pause with Captain Hammond began, ${n} beside him.`],
+    end: n => [`${n} stayed with Captain Hammond through the quiet pause.`, `The quiet pause with Captain Hammond ran its course. ${n} was there for all of it.`, `Captain Hammond's quiet pause ended with ${n} still in the seat.`],
     opening: n => [
       `Hammond made room at the table. ${n} accepted. The invitation had needed no voice.`,
       `There was space at Hammond's table, and ${n} agreed to take it. He had offered it without saying a word.`],
@@ -106,9 +112,9 @@ const BANK = {
   },
   'time with Kai': {
     guest: 'kai', name: 'Kai', owner: 'goaden', subject: 'the quiet with Kai',
-    request: () => 'Goaden made time to be still with Kai.',
-    begin: () => 'Goaden settled into a quiet moment with Kai close by.',
-    end: () => 'Goaden and Kai had their few quiet minutes together.',
+    request: () => ['Goaden made time to be still with Kai.', 'Goaden set a few minutes aside for Kai.', 'Kai was owed some stillness, and Goaden made time for it.'],
+    begin: () => ['Goaden settled into a quiet moment with Kai close by.', 'Goaden went still, and Kai came close.', 'A quiet few minutes began, Goaden and Kai together.'],
+    end: () => ['Goaden and Kai had their few quiet minutes together.', 'The few quiet minutes with Kai were had.', 'Goaden and Kai finished their few still minutes.'],
     opening: () => [
       'Kai shifted on Goaden’s shoulder, claws adjusting their grip. Goaden stopped and turned his head towards the small dragon. He had agreed to give him a few quiet minutes; he could start by standing still.',
       'Goaden stopped for Kai. The dragon was already warm against his shoulder, black and ivory scales catching the light as he moved. Goaden raised a hand close to him and waited for him to settle.'],
@@ -121,9 +127,9 @@ const BANK = {
   },
   'time with Greah': {
     guest: 'greah', name: 'Greah', owner: 'ashai', subject: 'the quiet with Greah',
-    request: () => 'Ashai made room for a quieter moment with Greah.',
-    begin: () => 'Ashai paused with Greah close by.',
-    end: () => 'Ashai and Greah had their few quiet minutes together.',
+    request: () => ['Ashai made room for a quieter moment with Greah.', 'Ashai set a few quieter minutes aside for Greah.', 'Greah wanted a quieter moment, and Ashai made room for it.'],
+    begin: () => ['Ashai paused with Greah close by.', 'Ashai stopped, and Greah settled beside her.', 'A quieter moment began, Greah close by Ashai.'],
+    end: () => ['Ashai and Greah had their few quiet minutes together.', 'The quieter minutes with Greah were had.', 'Ashai and Greah finished their few quiet minutes.'],
     opening: () => [
       'Greah hovered close to Ashai’s hand, her glow bright along its edge. Ashai stopped and looked down at her. She had a few minutes to give her Guardian, and she would spend them here.',
       'Ashai slowed for Greah. The little wings kept moving beside her, steadying the soft glow in the air. She turned her hand towards it and stopped, giving Greah her attention.'],
@@ -136,9 +142,9 @@ const BANK = {
   },
   'a little quiet': {
     guest: 'rose', name: 'Rose', subject: 'the quiet with Rose', recallSubject: 'their earlier quiet',
-    request: n => `${n} agreed to a few quieter minutes with Rose.`,
-    begin: n => `${n} joined Rose for a little quiet.`,
-    end: n => `${n} and Rose let their quiet pause last.`,
+    request: n => [`${n} agreed to a few quieter minutes with Rose.`, `Rose wanted a little quiet, and ${n} agreed to share it.`, `${n} said yes to a quieter few minutes with Rose.`],
+    begin: n => [`${n} joined Rose for a little quiet.`, `A little quiet began, Rose and ${n} in it.`, `${n} sat down with Rose for the quiet she had asked for.`],
+    end: n => [`${n} and Rose let their quiet pause last.`, `The quiet pause with Rose lasted as long as it was meant to.`, `Rose's few quiet minutes ended with ${n} still there.`],
     opening: n => [
       `Rose wanted a few minutes without anyone trying to get the last word. ${n === 'Goaden' ? 'Goaden agreed, lifting his hands briefly. She watched until he lowered them.' : 'Ashai agreed with a nod. Rose moved enough to leave room beside her.'}`,
       `Rose looked towards the space beside her. ${n} agreed to sit quietly with her. ${n === 'Goaden' ? 'His mouth opened once, then shut again under her green-eyed stare.' : 'Ashai left it at that. Rose’s shoulders lowered a little.'}`],
@@ -151,9 +157,9 @@ const BANK = {
   },
   'a shorter rhythm': {
     guest: 'anarchy', name: 'Anarchy', bodyPair: true, subject: 'the short rhythm',
-    request: n => `${n} agreed to listen to Anarchy’s short rhythm.`,
-    begin: n => `Anarchy began the rhythm for ${n}, with Balthazar present through him.`,
-    end: n => `${n} heard Anarchy’s rhythm through to its end.`,
+    request: n => [`${n} agreed to listen to Anarchy’s short rhythm.`, `Anarchy had a short rhythm to play, and ${n} agreed to hear it.`, `${n} agreed to give Anarchy's rhythm a listen.`],
+    begin: n => [`Anarchy began the rhythm for ${n}, with Balthazar present through him.`, `The rhythm began. Anarchy played it for ${n}; Balthazar was present through him.`, `Anarchy started the short rhythm, ${n} listening, Balthazar there through him.`],
+    end: n => [`${n} heard Anarchy’s rhythm through to its end.`, `Anarchy's rhythm reached its end with ${n} still listening.`, `The short rhythm finished. ${n} had heard all of it.`],
     opening: n => [
       `Anarchy wanted ${n} to hear a short rhythm. His fingers were already moving as Goaden agreed. Balthazar shared that same body; the sharp lift of its chin checked Anarchy’s restless motion for a moment.`,
       `${n} agreed to listen to Anarchy’s rhythm. Anarchy flexed his hands, eager to start. Balthazar was present through him, two presences in one body, and Goaden kept his attention on the same face as its expression shifted.`],
@@ -166,9 +172,9 @@ const BANK = {
   },
   'an end to the argument': {
     guest: 'balthazar', name: 'Balthazar', bodyPair: true, subject: 'the argument about timing',
-    request: n => `${n} agreed to stay while Balthazar brought the small argument about timing to a close.`,
-    begin: n => `${n} listened as Balthazar, present through Anarchy, returned to the timing argument.`,
-    end: n => `The timing argument ended with ${n} still there to hear it.`,
+    request: n => [`${n} agreed to stay while Balthazar brought the small argument about timing to a close.`, `Balthazar wanted the timing argument finished, and ${n} agreed to stay for it.`, `${n} agreed to see the small argument about timing to its close.`],
+    begin: n => [`${n} listened as Balthazar, present through Anarchy, returned to the timing argument.`, `Balthazar took up the timing argument again, present through Anarchy, with ${n} listening.`, `The timing argument resumed. ${n} stayed to hear Balthazar, through Anarchy, close it.`],
+    end: n => [`The timing argument ended with ${n} still there to hear it.`, `Balthazar closed the timing argument. ${n} had stayed for the end.`, `The small argument about timing was over, and ${n} had heard it out.`],
     opening: n => [
       `Balthazar wanted the argument about timing finished. He raised it through Anarchy’s body, its chin lifting as ${n} agreed to hear him out. The fingers stopped moving; Goaden had the full attention of the face before him.`,
       `${n} agreed to stay for the argument about timing. Anarchy and Balthazar shared the same body, and it straightened as Balthazar began to explain himself. Goaden folded his arms and waited.`],
@@ -181,9 +187,9 @@ const BANK = {
   },
   'one short verse': {
     guest: 'gabriel', name: 'Gabriel', subject: 'the verse',
-    request: n => `${n} agreed to listen to a verse whose timing Gabriel wanted an opinion on.`,
-    begin: n => `Gabriel began the verse for ${n}.`,
-    end: n => `${n} heard Gabriel’s verse to its end.`,
+    request: n => [`${n} agreed to listen to a verse whose timing Gabriel wanted an opinion on.`, `Gabriel wanted an opinion on a verse's timing, and ${n} agreed to give one.`, `${n} agreed to hear one short verse from Gabriel.`],
+    begin: n => [`Gabriel began the verse for ${n}.`, `The verse began. Gabriel had ${n} for an audience.`, `Gabriel started the short verse with ${n} listening.`],
+    end: n => [`${n} heard Gabriel’s verse to its end.`, `Gabriel's verse finished with ${n} still listening.`, `The short verse ended. ${n} had heard the whole of it.`],
     opening: n => [
       `Gabriel wanted an opinion on the timing of a verse. ${n} agreed to listen. Gabriel straightened at once, running a hand back over his short blond hair before looking ${n === 'Goaden' ? 'him' : 'her'} in the eye.`,
       `${n} agreed to hear the verse. Gabriel nodded, then drew breath, his shoulders rising as he prepared to begin. The question was its timing; he wanted somebody to listen all the way through.`],
@@ -196,9 +202,9 @@ const BANK = {
   },
   'a few minutes together': {
     guest: 'truth', name: 'Truth', subject: 'the time with Truth', recallSubject: 'their earlier conversation',
-    request: n => `${n} agreed to spend a few unhurried minutes with Truth.`,
-    begin: n => `${n} joined Truth for the few minutes they had set aside.`,
-    end: n => `${n} stayed with Truth through their time together.`,
+    request: n => [`${n} agreed to spend a few unhurried minutes with Truth.`, `Truth wanted a few minutes, unhurried, and ${n} agreed.`, `${n} said yes to a few minutes with Truth and no particular purpose.`],
+    begin: n => [`${n} joined Truth for the few minutes they had set aside.`, `The few minutes with Truth began.`, `${n} sat down with Truth for the time they had set aside.`, `Truth had ${n} for a few unhurried minutes.`],
+    end: n => [`${n} stayed with Truth through their time together.`, `The few minutes with Truth ran out. ${n} had stayed for them.`, `Truth's few minutes were up, and ${n} had spent them with him.`],
     opening: n => [
       `Truth wanted a few minutes with ${n}. He leaned towards ${n === 'Goaden' ? 'him' : 'her'} as he asked, his voice carrying. ${n} agreed. Truth’s grin widened and he drew back enough to make room.`,
       `${n} agreed to stay with Truth for a few minutes. Truth beamed, turning his whole body towards ${n === 'Goaden' ? 'him' : 'her'}. ${n === 'Goaden' ? 'Goaden looked up at the grin and shook his head, smiling despite himself.' : 'Ashai met his look and settled herself to listen.'}`],
@@ -211,9 +217,9 @@ const BANK = {
   },
   'a bass part that is not working': {
     guest: 'damien', name: 'Damien', subject: 'the bass part',
-    request: n => `${n} agreed to listen to the bass part Damien was working on.`,
-    begin: n => `Damien began working through the bass part for ${n}.`,
-    end: n => `${n} stayed to hear Damien’s bass part through.`,
+    request: n => [`${n} agreed to listen to the bass part Damien was working on.`, `Damien had a bass part that was not working, and ${n} agreed to listen to it.`, `${n} agreed to hear the bass part Damien could not get right.`, `Damien wanted the bass part heard. ${n} agreed to hear it.`],
+    begin: n => [`Damien began working through the bass part for ${n}.`, `Damien started on the bass part with ${n} listening.`, `The bass part began, Damien working at it and ${n} hearing it out.`, `${n} listened as Damien went at the bass part again.`],
+    end: n => [`${n} stayed to hear Damien’s bass part through.`, `Damien's bass part reached its end. ${n} had stayed for it.`, `${n} heard the bass part through to where Damien stopped.`, `The bass part was played through, ${n} listening to the last of it.`],
     opening: n => [
       `Damien wanted someone to listen to a bass part that was not working. ${n} agreed. Damien gave a brief nod and returned his attention to the instrument, fingers resting against the strings.`,
       `${n} agreed to listen. Damien looked up from the bass long enough to check the answer, then moved his hand along the neck. He wanted the part heard before anybody started telling him what to do with it.`],
@@ -226,9 +232,9 @@ const BANK = {
   },
   'a cautious pause': {
     guest: 'emily', name: 'Emily', subject: 'the pause with Emily', recallSubject: 'their earlier pause',
-    request: n => `${n} agreed to stay nearby while Emily looked around a little longer.`,
-    begin: n => `${n} stayed near Emily as she looked around.`,
-    end: n => `${n} stayed nearby until Emily’s short pause was over.`,
+    request: n => [`${n} agreed to stay nearby while Emily looked around a little longer.`, `Emily wanted to look around a little longer, and ${n} agreed to stay near.`, `${n} agreed to keep close while Emily took her time looking.`],
+    begin: n => [`${n} stayed near Emily as she looked around.`, `Emily looked around. ${n} stayed within reach.`, `${n} kept near while Emily looked her fill.`],
+    end: n => [`${n} stayed nearby until Emily’s short pause was over.`, `Emily's short pause ended with ${n} still close by.`, `Emily had looked enough. ${n} had stayed near the whole time.`],
     opening: n => [
       `Emily wanted to look around a little longer. ${n} agreed to stay nearby. She adjusted the strap of her grey bag, smiled at ${n === 'Goaden' ? 'him' : 'her'}, and went back to looking.`,
       `${n} agreed to wait near Emily for a few minutes. She received the answer with a sunny smile, one hand resting on the strap of her bag. Her eyes moved away from ${n === 'Goaden' ? 'him' : 'her'}, following something further off.`],
@@ -241,9 +247,9 @@ const BANK = {
   },
   'an unhurried interval': {
     guest: 'zara', name: 'Zara', subject: 'the pause with Zara', recallSubject: 'their earlier pause',
-    request: n => `${n} agreed to spend Zara’s free few minutes with her.`,
-    begin: n => `${n} joined Zara for a pause between pieces of work.`,
-    end: n => `${n} and Zara had their few minutes free of work.`,
+    request: n => [`${n} agreed to spend Zara’s free few minutes with her.`, `Zara had a few minutes free, and ${n} agreed to share them.`, `${n} said yes to Zara's few free minutes.`],
+    begin: n => [`${n} joined Zara for a pause between pieces of work.`, `Zara's pause between pieces of work began with ${n} in it.`, `${n} sat with Zara while the next piece of work waited.`],
+    end: n => [`${n} and Zara had their few minutes free of work.`, `Zara's free few minutes ran out, spent with ${n}.`, `The pause between pieces of work ended. ${n} and Zara had used it.`],
     opening: n => [
       `Zara had a gap between pieces of work and wanted company. ${n} agreed to stay with her. She checked the time as she gave ${n === 'Goaden' ? 'him' : 'her'} a brisk nod, then turned her attention back.`,
       `${n} agreed to spend Zara’s free few minutes with her. She was still looking at the time when ${n === 'Goaden' ? 'he' : 'she'} answered. Zara caught herself and looked up, her shoulders easing a little.`],
@@ -517,12 +523,12 @@ export function supportingEditorial(event, { story } = {}) {
       }
       return choice;
     }
-    if (outcome == null) return { description: entry.request(n),
+    if (outcome == null) return { description: line(event, 'request', entry.request(n)),
       prose: [choice?.prose, pick(event, 'opening', entry.opening(n))].filter(Boolean).join('\n\n') };
   }
   if (event.type === 'SUPPORTING_ENCOUNTER' && outcome == null)
-    return { description: entry.begin(n), prose: pick(event, 'middle', entry.middle(n)), ...sceneLines(event, entry, present, 'middle') };
+    return { description: line(event, 'begin', entry.begin(n)), prose: pick(event, 'middle', entry.middle(n)), ...sceneLines(event, entry, present, 'middle') };
   if (['SUPPORTING_OUTCOME', 'SUPPORTING_DEADLINE'].includes(event.type) && outcome === 'kept')
-    return { description: entry.end(n), prose: pick(event, 'ending', entry.ending(n)), ...sceneLines(event, entry, present, 'ending') };
+    return { description: line(event, 'end', entry.end(n)), prose: pick(event, 'ending', entry.ending(n)), ...sceneLines(event, entry, present, 'ending') };
   return null;
 }
