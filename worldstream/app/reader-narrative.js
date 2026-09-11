@@ -13,6 +13,12 @@ const CHANGE = new Set(['INCIDENT', 'AFTERMATH', 'ARCANE_SURGE', 'MINOR_ANOMALY'
   'PLAN_BROKEN', 'PLAN_CHANGE', 'OUTING_CUT_SHORT', 'ANNOUNCE_ARRANGEMENT',
   'INVITATION_ACCEPTED', 'SMALL_DISAGREEMENT', 'GAME_PAUSE', 'GAME_RESUME']);
 const ROUTINE_MAINTENANCE = /^(?:GROUND_RESTRICTION|GROUND_PREPARATION|GROUND_PREPARED|GROUND_WORK_INTERRUPTED|GROUND_WORK_OPPORTUNITY)$/;
+// A maintenance loop has two states the reader can see change — the yard shut,
+// the yard open again — and any number of steps in between that leave it where
+// it was. The steps stay in the ledger and stay addressable; the novel shows
+// the two changes. Over 90 days the steps alone were 125 rows a world and the
+// second-most repeated text the reader saw.
+const MAINTENANCE_STEP = new Set(['GROUND_PREPARATION', 'GROUND_PREPARED', 'GROUND_WORK_OPPORTUNITY', 'GROUND_WORK_INTERRUPTED']);
 const MUNDANE_BEATS = new Set(['CROSS_PATHS', 'PLAN_CHANGE', 'ANNOUNCE_ARRANGEMENT', 'SMALL_DISAGREEMENT', 'GAME_PAUSE', 'GAME_RESUME']);
 const DAY_FORMAT = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London',
   year: 'numeric', month: '2-digit', day: '2-digit' });
@@ -188,6 +194,12 @@ export function forwardReadingEvents(events = [], locationLabel = value => value
         // fiction itself. Keep its source and context addressable, but do not
         // let dependency chains promote each rehearsal back into the novel.
         weight = 0; prose = ''; omission = 'routine';
+      } else if (MAINTENANCE_STEP.has(event.type)) {
+        // An intermediate step of a loop whose state has not changed. Every
+        // step carries a context bridge back to the restriction, so the bridge
+        // cannot be what earns it a row; and like an unchanged routine it stays
+        // addressable as an origin without being promoted back into the novel.
+        weight = 0; prose = ''; omission = 'maintenance';
       } else if (isRoutineMaintenance && repeated && !hasRealOrigin && !neededOrigins.has(event.id) && !setup) {
         // Repeated routine maintenance cycles stay in living-world, omitted from novel prose
         weight = 0; prose = ''; omission = 'repeated';
