@@ -1365,7 +1365,12 @@ function reduceAction(state,a,seed) {
       // Directional on purpose: the worry is hers, about him. He is working.
       relation('ashai','goaden','concern',raiseTo('concern',pair('ashai','goaden').concern,2));
       event.participants=['goaden'];
-      publish('MEU scanners registered a surge along the Thames corridor, and Goaden was called to stand by.');
+      publish(surfaceLine(id, [
+        'MEU scanners registered a surge along the Thames corridor, and Goaden was called to stand by.',
+        'A surge along the Thames corridor put Goaden on stand-by.',
+        'The MEU scanners picked up a surge along the Thames corridor. Goaden was called to stand by for it.',
+        'Goaden was put on stand-by: the scanners had a surge along the Thames corridor.',
+        'Another surge along the Thames corridor. Goaden went on stand-by while the MEU read it.']));
       // A surge on the corridor is felt by everything with a Presence in it,
       // which is most of the cast. Whoever is mid-project gets their own beat.
       followups.push(...offscreenWitnessActions(storyContext(),'arcane_surge'));

@@ -171,6 +171,9 @@ const ENCOUNTER = Object.freeze([
   'Goaden came through {room}. Ashai was already there and did not move.',
   'Ashai was in {room} first. Goaden arrived and made it look accidental.',
   'The two of them fell into step in {room} and stopped there.',
+  'Goaden and Ashai were in {room} at the same time. Neither had planned it and neither minded.',
+  '{room} again, and the two of them in it again.',
+  'Ashai looked up in {room} and Goaden was there. That was the whole of it.',
 ]);
 // The room does some of the work. A wet training ground and a warm lunch hall
 // are not the same meeting, and the feed can say so for free.
@@ -182,10 +185,15 @@ const ENCOUNTER_BY_ROOM = Object.freeze({
   common_room: [
     'The lunch hall had them both in it again. It usually does around then.',
     'They took the same table in the lunch hall without discussing it.',
+    'Goaden found Ashai in the lunch hall, or the other way round; it was not clear which.',
+    'The lunch hall put the two of them at the same table without either of them choosing it.',
+    'Ashai had a table in the lunch hall. Goaden had the other chair before she had looked up.',
   ],
   gaming_room: [
     'Both of them turned up in the gaming area within a minute of each other.',
     'Goaden and Ashai met over the good chair. Neither got it.',
+    'They arrived in the gaming area a minute apart and pretended it was longer.',
+    'The gaming area had them both in it before either had sat down.',
   ],
   music_room: [
     'Ashai followed the sound to the music room and found who she expected.',

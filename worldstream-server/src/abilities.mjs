@@ -26,6 +26,8 @@ const RESET_DONE = Object.freeze([
   'The safety check and preparations were complete. The outdoor training ground reopened.',
   'The yard passed its check and opened again. The cones came in off the grass at last.',
   'Preparations finished and the ground signed off. Outdoor training is back on from the next watch.',
+  'The outdoor ground was signed off and reopened. The covered floor went back to being the second choice.',
+  'The reset was done and the check was passed. The yard was open again.',
 ]);
 const RESET_HELD = Object.freeze([
   'The outdoor reset was held until conditions improved. The covered training floor remained available.',

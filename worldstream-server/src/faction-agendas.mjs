@@ -124,11 +124,17 @@ const AGENDA_RESERVED = Object.freeze([
   'to cross-check a dispatch record against its own copy. The deadline belongs to somebody else, as usual.',
   'for a records review with a fixed window and an inconveniently fixed handover after it.',
   'to close out a dispatch discrepancy before the handover took it off their hands.',
+  'to reconcile two copies of a dispatch record inside a window nobody had chosen.',
+  'for a dispatch review that had a deadline before it had a reason.',
+  'to check a service record against its handover copy, with the handover not waiting.',
 ]);
 const AGENDA_RELEASED = Object.freeze([
   'The dispatch-review allocation ended. Its staff and checking time became available again.',
   'The review window closed and the allocation came off the board. Two people got their afternoon back.',
   'The dispatch review released its people on the hour, which is the one part of the process that never slips.',
+  'The review window ran out and its staff went back to whatever the review had interrupted.',
+  'The dispatch-review allocation ended on the hour. The checking time went back into the day.',
+  'Time was up on the dispatch review. The people on it were released to their other work.',
 ]);
 const AGENDA_OUTCOME = Object.freeze({
   cleared: [
