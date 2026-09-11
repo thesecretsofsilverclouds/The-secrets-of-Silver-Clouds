@@ -255,7 +255,9 @@ export function resolveIntentAction(ctx) {
       const selected = decision.motive === 'rest' ? 'quiet' : decision.motive === 'ambition' ? 'practice' : item.proposed;
       const responseText = decision.motive === 'duty' ? 'Goaden declined the short shared session because he was already committed.'
         : selected === item.proposed ? `Goaden accepted Ashai’s offer of ${activityText[selected]}.`
-          : `Goaden suggested ${activityText[selected]} instead of the original plan.`;
+          : surfaceLine(`${id}|counter`, [`Goaden suggested ${activityText[selected]} instead of the original plan.`,
+            `Goaden countered with ${activityText[selected]}.`, `Goaden had a different idea: ${activityText[selected]}.`,
+            `Instead of what Ashai had asked for, Goaden suggested ${activityText[selected]}.`]);
       const responseFactKey = `${item.id}:response`;
       const fact = ops.createFact(responseFactKey, 'intent_response', 'both',
         { intentId: item.id, response: decision.motive === 'duty' ? 'declined' : selected === item.proposed ? 'accepted' : 'counteroffer',

@@ -210,7 +210,8 @@ const BANK = {
       `${n} agreed to stay with Truth for a few minutes. Truth beamed, turning his whole body towards ${n === 'Goaden' ? 'him' : 'her'}. ${n === 'Goaden' ? 'Goaden looked up at the grin and shook his head, smiling despite himself.' : 'Ashai met his look and settled herself to listen.'}`],
     middle: n => [
       `Truth turned fully towards ${n} as they settled together, leaning close enough that he had no need to raise his voice. He raised it anyway. ${n === 'Goaden' ? 'Goaden tipped his head back and looked at him, the corners of his mouth twitching.' : 'Ashai held his gaze and waited for a place to answer.'}`,
-      `${n} sat with Truth. His hands moved as he began talking, his grin broad, his voice reaching well beyond the space between them. ${n === 'Goaden' ? 'Goaden leaned back, looking up at him.' : 'Ashai stayed facing him, her eyebrows rising as his voice rose.'}`],
+      `${n} sat with Truth. His hands moved as he began talking, his grin broad, his voice reaching well beyond the space between them. ${n === 'Goaden' ? 'Goaden leaned back, looking up at him.' : 'Ashai stayed facing him, her eyebrows rising as his voice rose.'}`,
+      `Truth talked. That was the shape of the few minutes: Truth talked, with his whole body, and ${n === 'Goaden' ? 'Goaden let him, grinning at the bits that deserved it and at some that did not.' : 'Ashai kept up, which with Truth is its own kind of work.'}`],
     ending: n => [
       `Truth finished speaking and lowered his hands. ${n} had stayed for all the time they had set aside. ${n === 'Goaden' ? 'Goaden leaned forward again, meeting Truth’s grin with a tired shake of his head.' : 'Ashai returned his smile as she began to straighten.'} Truth held the look a moment before drawing back.`,
       `The few minutes with Truth were over. ${n} was still beside him when his last words came out, loud as the first. He grinned and let his hands fall. ${n === 'Goaden' ? 'Goaden rolled his shoulders, smiling up at him.' : 'Ashai smiled back, her hands leaving her lap.'}`],
@@ -225,7 +226,8 @@ const BANK = {
       `${n} agreed to listen. Damien looked up from the bass long enough to check the answer, then moved his hand along the neck. He wanted the part heard before anybody started telling him what to do with it.`],
     middle: n => [
       `Damien worked through the bass part with ${n} listening. His hand moved along the neck, returned, and went through the passage again. He glanced towards ${n === 'Goaden' ? 'Goaden' : 'Ashai'} without taking his fingers from the strings.`,
-      `${n} listened as Damien played the bass part. Damien bent over the instrument, fingers moving, then lifted his eyes towards ${n === 'Goaden' ? 'him' : 'her'}. ${n === 'Goaden' ? 'Goaden stayed where he was, his head tipped to listen.' : 'Ashai kept her attention on the playing.'}`],
+      `${n} listened as Damien played the bass part. Damien bent over the instrument, fingers moving, then lifted his eyes towards ${n === 'Goaden' ? 'him' : 'her'}. ${n === 'Goaden' ? 'Goaden stayed where he was, his head tipped to listen.' : 'Ashai kept her attention on the playing.'}`,
+      `Damien played the part once through without stopping, then went back to the bar that was not working and played that four times. ${n === 'Goaden' ? 'Goaden did not say which bar it was. He did not need to.' : 'Ashai listened to each of the four and could hear the difference by the third.'}`],
     ending: n => [
       `Damien finished the bass part and rested his hand across the strings. ${n} had stayed to hear it through. He looked up, waiting, his fingers still against the instrument.`,
       `${n} was still listening when Damien stopped. The bass fell quiet under his hand. He lifted his chin towards ${n === 'Goaden' ? 'Goaden' : 'Ashai'}, who had stayed for the whole part.`],
@@ -429,7 +431,8 @@ function callback(event, entry, n, outcome) {
       ? 'The dragon shifted against his shoulder. Goaden turned his head towards him and held still while he settled.'
       : 'The glow fell across her hand. Ashai turned it towards the light, watching the small wings hold their place.';
     return {
-      description: `${n} recalled the earlier quiet with ${entry.name}.`,
+      description: pick(event, 'recall-line', [`${n} recalled the earlier quiet with ${entry.name}.`,
+        `${n} thought back to the quiet with ${entry.name}.`, `The earlier quiet with ${entry.name} came back to ${n}.`]),
       prose: pick(event, `callback-${outcome}`, [
         `${n} noticed ${entry.name}, and remembered the quiet that ${end}. ${touch}`,
         `${n} remembered that the quiet with ${entry.name} ${end}. ${touch}`]),
@@ -474,7 +477,9 @@ function callback(event, entry, n, outcome) {
   }[entry.guest];
   const subject = entry.recallSubject ?? entry.subject;
   return {
-    description: `${n} and ${entry.name} recalled ${subject}.`,
+    description: pick(event, 'recall-line', [`${n} and ${entry.name} recalled ${subject}.`,
+      `${subject.charAt(0).toUpperCase() + subject.slice(1)} came up again between ${n} and ${entry.name}.`,
+      `${n} and ${entry.name} went back over ${subject}.`]),
     prose: pick(event, `callback-${outcome}`, [
       `${subject[0].toUpperCase()}${subject.slice(1)} came up again between ${n} and ${entry.name}. ${ending} ${response}`,
       `${n} brought ${subject} up again with ${entry.name}. ${response} ${ending}`]),

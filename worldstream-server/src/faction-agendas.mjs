@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { atLondon, londonDate, nextLondonDay, MINUTE_MS as MIN } from './time.mjs';
 import { offscreenAvailable } from './offscreen-lives.mjs';
+import { surfaceLine } from './downtime.mjs';
 
 // Bounded authored staging, not an extra incident from Book One. Davis is at
 // surveillance screens in manuscript_indexed.txt P00690; the ordinary MEU/MI6
@@ -141,6 +142,9 @@ const AGENDA_OUTCOME = Object.freeze({
     'The dispatch review closed with the service records reconciled. MI6 cleared its review for handover.',
     'Records reconciled, review closed, handover clean. Nobody will ever read the file again.',
     'The two copies agreed in the end. The review closed on time and told nobody anything they wanted to know.',
+    'The dispatch review closed clean. The records agreed and the handover took them.',
+    'Review closed, records reconciled. The file went to handover and out of everybody’s day.',
+    'The service records were reconciled and the review was closed for handover. That was the whole of it.',
   ],
   followup_required: [
     'The dispatch review left a discrepancy unresolved. A replacement record and another check were required.',
@@ -163,6 +167,8 @@ const AGENDA_REPORT = Object.freeze({
     'The MI6 dispatch review found matching service records.',
     'Both copies of the record said the same thing, which surprised at least one person in the room.',
     'The service records matched line for line. The review noted this without enthusiasm.',
+    'The two copies of the service record agreed. The review recorded the fact and moved on.',
+    'The dispatch review found nothing between the copies. Matching, it said, and left it there.',
   ],
   mismatched: [
     'The MI6 dispatch review found that the service records did not match.',
@@ -304,7 +310,10 @@ export function resolveAgendaAction(ctx) {
     ops.useMemory(a.actor, report.factKey);
     event.area = state.characters[a.actor].area; event.participants = [a.actor];
     event.payload = { family: operation.family };
-    ops.publish(`${a.actor === 'ashai' ? 'Ashai' : 'Goaden'} read the retained MI6 dispatch report. ${fact.value.presentationText}`);
+    ops.publish(`${surfaceLine(`${id}|read`, [
+      `${a.actor === 'ashai' ? 'Ashai' : 'Goaden'} read the retained MI6 dispatch report.`,
+      `The retained dispatch report came round to ${a.actor === 'ashai' ? 'Ashai' : 'Goaden'}, who read it.`,
+      `${a.actor === 'ashai' ? 'Ashai' : 'Goaden'} went through the dispatch report MI6 had kept.`])} ${fact.value.presentationText}`);
   }
   return true;
 }

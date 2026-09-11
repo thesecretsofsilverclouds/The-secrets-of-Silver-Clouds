@@ -75,6 +75,12 @@ routine('PIANO_BEGIN', 'goaden',
 routine('PIANO_BEGIN', 'goaden',
   'Goaden played with the door open, which he only does when he thinks nobody is up.',
   'Goaden left the music-room door open as he played. The piano carried into the corridor.');
+routine('PIANO_BEGIN', 'goaden',
+  'The piano started in the music room and stopped, and started again from further back.',
+  'Goaden began at the piano, broke off, and went back to an earlier bar. The second run went further than the first.');
+routine('PIANO_BEGIN', 'goaden',
+  'Goaden was at the piano again. Nobody in the corridor could have named the piece, and nobody tried.',
+  'Goaden sat down at the piano in the music room and played something unfamiliar to the building, slowly, as if working out where it went.');
 routine('TV_BEGIN', 'ashai',
   'Ashai found something on the television and stopped arguing with the day.',
   'Ashai found a programme on the gaming-room television and settled back to watch.');

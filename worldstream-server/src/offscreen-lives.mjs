@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { atLondon, londonDate, MINUTE_MS as MIN } from './time.mjs';
 import { areaOf } from './places.mjs';
 import { daypart } from './sky.mjs';
+import { surfaceLine } from './downtime.mjs';
 import { PURSUIT_PURPOSES, PURPOSE_RULES, purposePlace } from './pursuit-purpose.mjs';
 
 // Author-approved ambient staging, not additional Book One plot. Canon sources:
@@ -53,10 +54,14 @@ export const SHARED_MOMENTS = Object.freeze({
   // corridor surge. Weather is the cheapest way a world proves it is one place.
   storm_breaks: {
     label: 'the storm coming up the river',
-    yukon: 'The rain hit the gaming room window like gravel and Yukon did not look up, because the section was going well for once. Two minutes later the lights browned out and it was not going well any more. He blamed the weather, out loud, at length.',
+    yukon: ['The rain hit the gaming room window like gravel and Yukon did not look up, because the section was going well for once. Two minutes later the lights browned out and it was not going well any more. He blamed the weather, out loud, at length.',
+      'The storm found the gaming room window and stayed on it. Yukon turned the volume up rather than look, which worked until the screen flickered and the section with it.',
+      'Yukon heard the storm arrive before he saw it: the gaming room window went from grey to running. He paused, watched it for exactly as long as it took to decide it was not his problem, and unpaused.'],
     gabriel: 'The storm arrived at the Sanctuary from underneath, which is a thing that only happens up there. Gabriel went to the glass and watched the whole front come up the river at him, and got about four lines out of it before he lost them again.',
     rose: 'The rain came through the hole in the warehouse roof they all call the vibe, directly onto the drum kit, and Rose moved the second verse out of the way before she moved herself. Then she sat in the dry half and carried on cutting, with the kit ringing behind her every time it got hit.',
-    emily: 'It came over the plaza gardens in one wall and everybody ran except Emily, who stayed on the swing until the chains were too wet to hold and then a little after that. Her hair went flat against her face. She kept going.',
+    emily: ['It came over the plaza gardens in one wall and everybody ran except Emily, who stayed on the swing until the chains were too wet to hold and then a little after that. Her hair went flat against her face. She kept going.',
+      'The plaza gardens emptied in the time it took the storm to cross the river. The swing did not. Emily rode it through the worst of it with her eyes shut and her mouth open, catching what she could.',
+      'Rain came across the plaza gardens hard enough to bounce. Emily let the swing slow on its own, sat in the wet with her feet dragging, and watched the puddles fill as if she had ordered them.'],
     zara: 'Operations does not have windows, so the storm arrived as three amber lights on the transit board and a note about the eastern line. Zara moved two things in the handover, put a fourth item under them, and did not find out it was raining until she went up.',
   },
   // The Order working the boroughs, seen from four rooms none of which are the
@@ -64,8 +69,12 @@ export const SHARED_MOMENTS = Object.freeze({
   // past and the whole city adjusts around it, quietly, the way a city does.
   order_procession: {
     label: 'the Order in the streets',
-    yukon: 'Word came round the barracks that the Order were walking the borough, and the gaming room emptied of everyone who had a window to look out of. Yukon kept playing. He also kept glancing at the door, which rather gave the game away.',
-    gabriel: 'The Order colours went along the embankment below the Sanctuary and Gabriel watched them the whole way past with his arms folded and his wings very deliberately put away. He said something under his breath that would not have improved the afternoon if anybody had heard it.',
+    yukon: ['Word came round the barracks that the Order were walking the borough, and the gaming room emptied of everyone who had a window to look out of. Yukon kept playing. He also kept glancing at the door, which rather gave the game away.',
+      'The Order were in the borough, the barracks said, and the gaming room went quiet around Yukon. He did not get up. He did stop scoring, for a while, without noticing.',
+      'Somebody came into the gaming room to say the Order were walking the streets, and left again to go and look. Yukon stayed with the game. His shoulders did not.'],
+    gabriel: ['The Order colours went along the embankment below the Sanctuary and Gabriel watched them the whole way past with his arms folded and his wings very deliberately put away. He said something under his breath that would not have improved the afternoon if anybody had heard it.',
+      'From the Sanctuary the Order procession was a line of colour on the embankment, moving at the speed of people who want to be seen. Gabriel watched it to the bridge and did not go back to the verse until it was out of sight.',
+      'Gabriel saw the Order go along the embankment from the Sanctuary glass, wings folded, saying nothing at all, which for Gabriel is a speech.'],
     rose: 'The Legion warehouse has one window that faces the road and Rose was at it before the first robe came level. She did not move, and she did not put the light on, and she stayed there until the last of them had gone by. Then she went back to the verse.',
     emily: 'The Order came through the plaza gardens on the long path and the swing went still. Emily watched them from under her hair, entirely unremarkable, one more child in a public park. Not one of them looked at her. She waited a good while after they had gone before she started swinging again.',
     zara: 'Operations had the procession on three cameras before it reached the bridge. Zara logged the route, the count, and the time, because that is what the handover is for, and did not write down the part where the borough went quiet around them.',
@@ -592,7 +601,9 @@ export function resolveOffscreenAction(ctx) {
     // Somebody looked up. It cannot finish the work, cannot teach anybody
     // anything and cannot move the attempt along — if the project ended in the
     // two minutes between the moment and this, the moment simply passes unseen.
-    const line = SHARED_MOMENTS[action.moment]?.[project.guest];
+    const bank = SHARED_MOMENTS[action.moment]?.[project.guest];
+    // A witness may have more than one way of looking up; the event decides which.
+    const line = Array.isArray(bank) ? surfaceLine(`${ctx.id}|witness`, bank) : bank;
     if (!line || project.status !== 'active') return refuse('The moment passed them by');
     publish(ctx, project, 'witness', line, { moment: action.moment });
     return true;
@@ -703,7 +714,11 @@ export function resolveOffscreenAction(ctx) {
       // everybody — "it was still waiting for another attempt" told a reader
       // nothing about whose work it was or what it consisted of. Each guest
       // reports their own result now, in their own register.
-      description = `${personName(lead)} heard from ${authored.name} about ${authored.subject}. ${
+      description = `${surfaceLine(`${ctx.id}|heard`, [
+        `${personName(lead)} heard from ${authored.name} about ${authored.subject}.`,
+        `${authored.name} told ${personName(lead)} how ${authored.subject} had gone.`,
+        `News of ${authored.subject} reached ${personName(lead)}, from ${authored.name} directly.`,
+        `${personName(lead)} got the story of ${authored.subject} from ${authored.name}.`])} ${
         (project.continuation ? OFFSCREEN_CONTINUATIONS[guest][project.result.outcome] : authored.told?.[project.result.outcome])
         ?? (project.result.outcome === 'unfinished' ? 'It was still waiting for another attempt.'
           : 'It had finally been settled.')}`;

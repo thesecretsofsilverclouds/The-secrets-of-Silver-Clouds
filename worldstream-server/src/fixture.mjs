@@ -312,6 +312,15 @@ const ANNOUNCE_LINES = Object.freeze({
   'Goaden and Ashai arranged a walk to hear the Chimes of Renewal.': [
     'Goaden and Ashai arranged a walk to hear the Chimes of Renewal.', 'A walk to the plaza was agreed, timed for the Chimes.',
     'Goaden and Ashai settled on the plaza for the afternoon, and the Chimes with it.'],
+  'Goaden and Ashai arranged a meal for later.': [
+    'Goaden and Ashai arranged a meal for later.', 'A meal later was agreed between them.',
+    'Goaden and Ashai settled on eating together later.', 'Later, they agreed, they would eat. That was the arrangement.'],
+  "Goaden and Ashai took up Yukon's challenge in the MI6 gaming room.": [
+    "Goaden and Ashai took up Yukon's challenge in the MI6 gaming room.", "Yukon's challenge was accepted. The gaming room, later.",
+    "Goaden and Ashai agreed to meet Yukon's challenge in the gaming room."],
+  'Goaden and Ashai arranged an evening visit to Sanctuary, once the night halls open.': [
+    'Goaden and Ashai arranged an evening visit to Sanctuary, once the night halls open.', 'Goaden and Ashai arranged an evening visit to Sanctuary for when the night halls opened.',
+    'Once the night halls open, then: Goaden and Ashai arranged an evening visit to Sanctuary.'],
   'Goaden and Ashai arranged a visit to Enchanted Ink, the moving tattoo parlour.': [
     'Goaden and Ashai arranged a visit to Enchanted Ink, the moving tattoo parlour.', 'Enchanted Ink was agreed for the afternoon.',
     'Goaden and Ashai settled on a visit to Enchanted Ink.'],
@@ -1501,7 +1510,8 @@ function reduceAction(state,a,seed) {
       for(const who of game.participants.map(w=>state.characters[w])) {learn(who,fact,'participated');activity(who,'unhurried_time',null,defaultArea(who.location,now));}
       event.participants=[...game.participants];
       publish(a.reason==='night_recall'?'Goaden and Ashai broke off their match when Goaden was called to the night watch.'
-        :'Goaden and Ashai paused their game before training.');}
+        :surfaceLine(id, ['Goaden and Ashai paused their game before training.', 'The game was paused for training. It would keep.',
+          'Training was due, so Goaden and Ashai left the game where it was.', 'Goaden and Ashai put the game down for training and did not finish it.']));}
   } else if(a.type==='PRACTICE_SLOT_NOTICE') {
     createFact(a.factKey,'practice_slot','world',{startAt:a.startAt},a.validUntil);publish('An ordinary MI6 training slot has moved.');
   } else if(a.type==='INVITATION_AVAILABLE') {
@@ -1511,7 +1521,10 @@ function reduceAction(state,a,seed) {
   } else if(a.type==='INVITATION_ACCEPTED') {
     const inv=state.invitations[a.factKey];
     if(!inv||!inv.party.includes(actor.id)||inv.acceptedAt!==null||now>=inv.replyUntil||!useMemory(actor,a.factKey)) skip('Invitation unavailable, ineligible or unknown');
-    else {update('invitations',a.factKey,{...inv,acceptedAt:now,acceptanceEventId:id});publish(`${shortName(actor.id)} received a Sanctuary guest invitation.`);}
+    else {update('invitations',a.factKey,{...inv,acceptedAt:now,acceptanceEventId:id});publish(surfaceLine(id, [`${shortName(actor.id)} received a Sanctuary guest invitation.`,
+        `A guest invitation to the Sanctuary came through for ${shortName(actor.id)}.`,
+        `${shortName(actor.id)} was invited up to the Sanctuary as a guest.`,
+        `The Sanctuary sent ${shortName(actor.id)} a guest invitation.`]));}
   } else if(a.type==='TRAVEL_DEPART') {
     const r=agreement(),inv=state.invitations[a.invitationKey],arrivalAt=now+a.duration*MIN;
     const ink=activeInkAppointment(state), tagged=state.storyEffects.ink.appointments[a.inkAppointmentId];
