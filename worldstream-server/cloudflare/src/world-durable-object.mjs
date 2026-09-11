@@ -31,6 +31,7 @@ import { getLatestDispatch, getDispatchByDate } from '../../src/dispatch.mjs';
 import { openSocialStore } from '../../src/social-store.mjs';
 import { openFeedbackStore, FeedbackError, MAX_FEEDBACK_BODY_BYTES } from '../../src/feedback-store.mjs';
 import { buildStoryThread, listStoryThreads } from '../../src/story-threads.mjs';
+import { createSceneReservoirRuntime } from '../../src/scene-reservoir-runtime.mjs';
 import { historyOptions, readPublicHistory, readPublicEventContext, readPublicDialogueSources } from '../../src/public-history.mjs';
 import { BACKGROUND_BY_ID, selectVisualVocabulary } from '../../src/cinematic-assets.mjs';
 import { daypart } from '../../src/sky.mjs';
@@ -397,12 +398,27 @@ export class WorldDurableObject {
   /**
    * Alarm lifecycle handler: wakes every minute to advance world, ingest cinematics, and broadcast deltas.
    */
+  // One owner for the reservoir's durable refill state. Maintenance only:
+  // nothing on a read path or a socket touches this, and nothing here reads
+  // the audience. Off unless RESERVOIR_REFILL_ENABLED and a key are both set.
+  get sceneReservoir() {
+    if (!this._sceneReservoir) this._sceneReservoir = createSceneReservoirRuntime({ db: this.db, env: this.env });
+    return this._sceneReservoir;
+  }
+
   async alarm() {
     const startMs = Date.now();
     try {
       const newDeltas = this.advance(startMs);
       if (newDeltas.length > 0) {
         this.broadcastEvents(newDeltas);
+      }
+      // Deliver prose first. A bounded refill must not delay the feed or
+      // multiply with requests; waitUntil keeps it alive through hibernation.
+      const refill = this.sceneReservoir.tick(this.presentationSnapshot(), startMs);
+      if (refill?.generation) {
+        if (this.ctx.waitUntil) this.ctx.waitUntil(refill.generation);
+        else await refill.generation;
       }
       this.capacity.recordRequest('alarms', Date.now() - startMs);
     } catch (err) {

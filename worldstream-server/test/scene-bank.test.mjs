@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createFixture } from '../src/fixture.mjs';
 import { SCENE_BANK_CATALOG, SCENE_BANK_BY_ID, SCENE_BANK_MANIFEST } from '../src/scene-bank-catalog.mjs';
+import { SCENE_RESERVOIR_CATALOG } from '../src/scene-reservoir-catalog.mjs';
 import { initialSceneBank, sceneBankAfterAction, sceneBankAvailable, assertSceneBank } from '../src/scene-bank.mjs';
 import { atLondon, londonDate, MINUTE_MS as MIN } from '../src/time.mjs';
 import { areaOf, SEALED_AREAS } from '../src/places.mjs';
@@ -47,8 +48,8 @@ function harness() {
 }
 
 test('every source scene has an explicit status; sealed and future material cannot slip into the enabled bank',()=>{
-  assert.equal(SCENE_BANK_MANIFEST.length,134);
-  assert.equal(new Set(SCENE_BANK_MANIFEST.map(s=>s.id)).size,134);
+  assert.equal(SCENE_BANK_MANIFEST.length,134+SCENE_RESERVOIR_CATALOG.length);
+  assert.equal(new Set(SCENE_BANK_MANIFEST.map(s=>s.id)).size,134+SCENE_RESERVOIR_CATALOG.length);
   for(const s of SCENE_BANK_MANIFEST) {
     assert.ok(['enabled','prerequisite_gated','excluded'].includes(s.status));
     if(s.status!=='enabled') assert.ok(s.gate,`${s.id} lacks a reason`);

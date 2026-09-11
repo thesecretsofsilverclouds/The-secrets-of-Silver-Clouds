@@ -1,5 +1,6 @@
 import { SCENE_BANK_SOURCE } from './scene-bank-data.mjs';
 import { polishSceneBeats } from './scene-bank-copy.mjs';
+import { SCENE_RESERVOIR_CATALOG } from './scene-reservoir-catalog.mjs';
 
 const ids = value => value.split(' ').filter(Boolean);
 const names = {goaden:'Goaden',ashai:'Ashai',davis:'Davis',henderson:'Henderson',yukon:'Yukon',
@@ -189,7 +190,7 @@ export const SCENE_BANK_CATALOG = Object.freeze(SCENE_BANK_SOURCE.map(source => 
       : source.id === 'P10' ? 'The witnessed absorption creates the restricted report Henderson later reads.'
       : source.id === 'P2' ? 'The conversation can happen in the common room; no corridor-specific action is lost.' : null,
   });
-}));
+}).concat(SCENE_RESERVOIR_CATALOG));
 export const SCENE_BANK_BY_ID = Object.freeze(Object.fromEntries(SCENE_BANK_CATALOG.map(s => [s.id,s])));
 export const SCENE_BANK_MANIFEST = Object.freeze(SCENE_BANK_CATALOG.map(({id,title,status,gate,dependencies,minAgeDays,location,area,adaptation}) =>
   Object.freeze({id,title,status,gate,dependencies,minAgeDays,location,area,adaptation})));

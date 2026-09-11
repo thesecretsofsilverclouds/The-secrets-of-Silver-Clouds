@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { SCENE_BANK_CATALOG, SCENE_BANK_BY_ID, sceneNarrativeParagraphs } from './scene-bank-catalog.mjs';
+import { reservoirSceneEligible } from './scene-reservoir-catalog.mjs';
 import { areaOf, permitsArea } from './places.mjs';
 import { daypart, isShelterWeather } from './sky.mjs';
 import { londonDate, londonClock, atLondon, MINUTE_MS as MIN } from './time.mjs';
@@ -242,6 +243,11 @@ function holderPresent(state,location) {
 function eligible(ctx, scene, {gather=false}={}) {
   const state=ctx.state, now=ctx.now, bank=of(state), isNimbus=scene.id.startsWith('P');
   if (scene.status==='excluded' || sceneSpent(bank,scene,now) || !scene.location || !areaOf(scene.location,scene.area)) return false;
+  // A reservoir entry carries its own gates — the exact source event, what each
+  // lead must be doing and for how long, weather, daypart. They are the entry's
+  // contract with the world and the same terms the health ledger counts demand
+  // by, so the two cannot disagree about what an entry needs.
+  if (scene.reservoir && !reservoirSceneEligible(ctx,scene)) return false;
   if (scene.dependencies.some(id=>!bank.completed[id])) return false;
   if (scene.night && !['night','small_hours'].includes(daypart(now))) return false;
   if (!isNimbus && !guardedPrerequisite(ctx,scene)) return false;
@@ -430,6 +436,11 @@ export function resolveSceneBankAction(ctx) {
   }
   const scene=SCENE_BANK_BY_ID[a.sceneBankId];
   if (!scene||scene.status==='excluded'||sceneSpent(bank,scene,now)) return refuse(ctx,'Scene unavailable or already spent');
+  // The source event was checked once, when the booking was made. Everything
+  // physical is checked again now, so a world that moved on between the offer
+  // and the performance cannot have the prose anyway.
+  if (scene.reservoir && !reservoirSceneEligible({...ctx,state:ownView(ctx.state)},scene,{checkTrigger:false}))
+    return refuse(ctx,'The moment this passage needed has passed');
   if (a.type==='SCENE_BANK_GATHER') {
     const match=eligible({...ctx,state:ownView(ctx.state) },scene,{gather:true});
     if(!match || JSON.stringify(match.cast)!==JSON.stringify(pending.cast)
