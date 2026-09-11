@@ -117,3 +117,8 @@ export function daylightFraction(ms) {
   if (ms >= events.sunset && ms < events.dusk) return Number((1 - (ms - events.sunset) / (events.dusk - events.sunset)).toFixed(3));
   return 0;
 }
+
+// Weather bad enough to close the outdoor yard and move the day indoors.
+// Lives here rather than in fixture.mjs so that the scene bank can ask the
+// question without importing the module that imports the scene bank.
+export const isShelterWeather = code => code === 'heavy_rain' || code === 'storm';

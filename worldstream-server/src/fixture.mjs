@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { SCENE_BANK_EVENT_TYPES, SCENE_BANK_FACT_KINDS, SCENE_BANK_RULES, initialSceneBank, sceneBankAfterAction,
   resolveSceneBankAction, assertSceneBank, sceneBankAvailable, guardSceneBankAction, interruptSceneBankSession } from './scene-bank.mjs';
 import { atLondon, londonDate, nextLondonDay, prevLondonDay, MINUTE_MS as MIN } from './time.mjs';
-import { DAYPARTS, daypart, dayPhase, daylightFraction, sunEvents } from './sky.mjs';
+import { DAYPARTS, daypart, dayPhase, daylightFraction, sunEvents, isShelterWeather } from './sky.mjs';
 import { moodFor, selectExchange, summarise, correctLegacyWakeDialogue } from './dialogue.mjs';
 import { nextVeil, phaseFor, VEIL_PRESSURE, VEIL_NOTICES } from './veil.mjs';
 import { AREAS_BY_LOCATION, areaOf, permitsArea, defaultArea, encounterEligibility,
@@ -310,7 +310,7 @@ const WEATHERS = Object.freeze([
 ]);
 export const weatherForDay = (date, seed) => WEATHERS[hash(`${seed}|${SELECTION_VERSION}|${date}/weather`) % WEATHERS.length];
 // Sheltering keeps morning training off the outdoor yard; delays slow the Streamliner.
-export const isShelterWeather = code => code === 'heavy_rain' || code === 'storm';
+export { isShelterWeather };
 export const isTravelDelayWeather = code => code === 'fog' || code === 'storm';
 const RAINY = new Set(['light_rain','heavy_rain','storm']);
 // Duty types are ordinary activities that additionally require being on station.
@@ -1755,7 +1755,12 @@ function reduceAction(state,a,seed) {
   const ENDS=a.type==='ACTIVITY_COMPLETE'||a.type==='PRACTICE_END';
   if(!['UNEASE','INCIDENT',...THREAD_EVENT_TYPES,...INTENT_EVENT_TYPES,...AGENDA_EVENT_TYPES,...ABILITY_EVENT_TYPES,...SUPPORTING_EVENT_TYPES,...NIGHT_EVENT_TYPES,...OFFSCREEN_EVENT_TYPES,...SCENE_BANK_EVENT_TYPES,...ARC_EVENT_TYPES].includes(a.type))
     event.area=(ENDS?areaBefore:state.characters[event.participants[0]]?.area)??areaBefore??null;
-  const notable=event.visibility==='public'&&a.type!=='DIRECTOR_TICK'
+  // Authored prose is not the world being eventful at them either. A scene the
+  // bank staged put words on the page, not an incident in the room; counting it
+  // let a richer bank quietly starve every director family of the quiet it
+  // waits for. The two keep separate clocks and share only a short spacing
+  // window, held in DIRECTOR_RULES.
+  const notable=event.visibility==='public'&&a.type!=='DIRECTOR_TICK'&&!SCENE_BANK_EVENT_TYPES.includes(a.type)
     &&(event.participants.length>=2||NOTABLE_ALONE.has(a.type));
   if(notable) setDirector({lastNotableAt:Math.max(state.director?.lastNotableAt??0,now)});
   // Sharing an already completed result is a separate, causal action. Merely

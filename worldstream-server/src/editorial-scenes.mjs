@@ -25,6 +25,25 @@ const openings = {
   ink_emily_commission: 'Ashai watched a customer considering his commission at Enchanted Ink. She turned back towards Goaden; the little girl nearby was listening.',
   cafe_lintel_table_six: 'A lintel hung above the outside tables at the Silver Spoon. Ashai stopped to watch the drifting creature.',
   plaza_lintel_rabbit: 'Light rose over the street performer in the plaza. Ashai tipped her head back, following the enormous outline taking shape.',
+  // Named scripts that had never been given a staging line. Without one the
+  // event reached the page as dialogue with nothing around it: the reader was
+  // handed an opening remark and left to work out the room for themselves.
+  cafe_sprite_toast: 'Something had been done to the toaster at the Silver Spoon overnight. What arrived at the table did not much resemble breakfast, and Goaden stopped to look at it.',
+  cafe_sprite_doorbell: 'The door of the Silver Spoon let a customer in without making a sound about it. Ashai noticed the quiet before Goaden did.',
+  cafe_sprite_channel: 'The screen above the counter at the Silver Spoon changed channel by itself. Ashai set her cup down.',
+  cafe_wrong_table: 'Zara arrived at their table at the Silver Spoon without sitting down at it, her attention fixed somewhere over Goaden’s shoulder.',
+  cafe_finale_night: 'The Silver Spoon had turned the screen out towards the room for the finale. Goaden had found a chair with a view of it.',
+  cafe_two_teas: 'At the next table a woman set down two cups and drank from one of them. Goaden had been watching her do it for a fortnight.',
+  cafe_blackout: 'The lights went out along the whole street, and the Silver Spoon went with them. Ashai looked towards the window.',
+  cafe_lost_jacket: 'Goaden reached for the back of his chair at the Silver Spoon. The jacket that had been over it was not there.',
+  plaza_sprites_napping: 'The plaza crowd was parting around one of the steps and closing up again beyond it. Ashai had already seen why. Goaden had not.',
+  plaza_presence_chess: 'A crowd had built around the Presence board in the plaza. Ashai watched the man behind the pieces send another learner away from it.',
+  plaza_umbrella_vendor: 'Rain was falling on the north corner of the plaza and nowhere else in it. Goaden looked up into the weather, and then at the stall doing very well underneath it.',
+  plaza_emily_counting: 'A small girl stood in the middle of the plaza with her chin up, counting under her breath. Ashai stopped to listen to her.',
+  // The complaint this answers: the exchange opened on the chains, and nothing
+  // on the page had said she was sitting on a swing.
+  plaza_emily_swing: 'In the plaza gardens a girl sat on one of the swings, turning it a little on its chains with the toe of one bare foot. She looked up as Goaden and Ashai came past.',
+  plaza_gabriel_apology: 'Gabriel was waiting for them in the plaza with a folded sheet of paper held out ahead of him. Ashai looked at the paper before she looked at him.',
 };
 const firstOpenings = new Map([
   ['Ordered, yeah.', 'Goaden turned back from the counter at the Silver Spoon. Ashai was waiting for him.'],
@@ -37,6 +56,14 @@ const firstOpenings = new Map([
   ['Everyone has stopped talking.', 'Conversation around them died away all at once. Ashai turned towards Goaden in the sudden quiet.'],
   ['Fancy that.', 'Zara came up to Goaden and Ashai in the plaza. Ashai watched her approach.'],
   ['Open your mouth. You can hear it in your teeth... in your teeth...', 'Under the Chimes, a little girl looked up at Ashai and opened her mouth to the sound.'],
+  // The four remaining unnamed scripts. Keyed by opening line like the rest,
+  // rather than by giving the scenes ids: an id is the venue usage key, and
+  // renaming a script the world has already performed would tell the selector
+  // it had never been played.
+  ["Do not talk to me, I'm working.", 'Gabriel had a table to himself at the Silver Spoon and a page in front of him. He waved Goaden and Ashai over to it.'],
+  ["It's nice sitting somewhere that isn't the canteen.", 'The Silver Spoon was quiet and neither of them was needed anywhere else. Ashai sat back in her chair.'],
+  ['We should head back.', 'The plaza had filled up around them and neither of them had moved for some time. Goaden watched the light going off the paving.'],
+  ["It isn't on the hour. It has never once been on the hour.", 'New Big Ben stood over the plaza with the Chimes still to come. Goaden had a position on the timing, and no intention of letting it go.'],
 ]);
 
 export function sceneEditorial(event) {

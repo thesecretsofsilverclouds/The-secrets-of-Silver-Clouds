@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto';
 import { SCENE_BANK_CATALOG, SCENE_BANK_BY_ID, sceneNarrativeParagraphs } from './scene-bank-catalog.mjs';
 import { areaOf, permitsArea } from './places.mjs';
-import { daypart } from './sky.mjs';
-import { londonDate, londonClock, MINUTE_MS as MIN } from './time.mjs';
+import { daypart, isShelterWeather } from './sky.mjs';
+import { londonDate, londonClock, atLondon, MINUTE_MS as MIN } from './time.mjs';
+import { nextVeil } from './veil.mjs';
 import { SIDE_CHARACTERS } from './cast.mjs';
 import { supportingAvailability } from './faction-agendas.mjs';
 import { supportingStoryAvailability, supportingLeadAvailable } from './supporting-stories.mjs';
@@ -10,11 +11,12 @@ import { offscreenAvailable } from './offscreen-lives.mjs';
 import { nightStoryAvailable } from './night-stories.mjs';
 import { outingRecoveryActorAvailable } from './outing-recovery.mjs';
 import { competingCommitments } from './intent.mjs';
+import { DIRECTOR_RULES } from './director.mjs';
 
 export const SCENE_BANK_EVENT_TYPES = Object.freeze(['SCENE_BANK_GATHER','SCENE_BANK_BEAT','SCENE_BANK_REJOIN']);
 export const SCENE_BANK_FACT_KINDS = Object.freeze(['scene_bank_observation']);
 export const SCENE_BANK_RULES = Object.freeze({version:1,ordinaryGap:12*60*MIN,nimbusGap:60*MIN,
-  gatherDuration:3*MIN,sceneDuration:5*MIN,retainedProofs:16});
+  gatherDuration:3*MIN,sceneDuration:5*MIN,retainedProofs:16,replayCooldownDays:21});
 const TYPES = new Set(SCENE_BANK_EVENT_TYPES), DAY = 24*60*MIN;
 const OPPORTUNITIES = new Set(['PRACTICE_BEGIN','PRACTICE_END','MEAL_BEGIN','GAME_BEGIN','GAME_PAUSE',
   'PIANO_BEGIN','ACTIVITY_COMPLETE','CITY_ACTIVITY_BEGIN','CROSS_PATHS','TRAVEL_ARRIVE','SIDE_PRESENCE',
@@ -28,6 +30,45 @@ const visits={ink_visit:['enchanted_ink','visiting_enchanted_ink'],cafe_outing:[
 const hash = text => createHash('sha256').update(text).digest('hex').slice(0,24);
 const of = state => state.sceneBank ?? initialSceneBank();
 const completed = (state,id) => of(state).completed[id];
+
+// Two lifecycles, because the bank holds two different kinds of thing.
+//
+// The Nimbus chain and the authored one-offs are consequential. Each moves the
+// artefact, hands somebody knowledge they later act on, or is the stated cause
+// of the next scene. Those play once and stay played: replaying P4 would put
+// the coat back in the vending machine after it had left.
+//
+// Reservoir prose is surface. A quiet moment with Greah, passing in the
+// corridor, the end of practice — these narrate conditions the world produces
+// over and over, and the entries say so themselves with `effectPolicy` and
+// their own cooldown. Sealing them after one performance is what turns a
+// reservoir into a fortnight of material. The marker is an opt-in and not a
+// guess: an entry is reusable because it declares itself surface-only, never
+// because nothing obvious happened in it.
+const surface = scene => scene.effectPolicy==='surface_only';
+const playCount = record => record?.plays ?? (record ? 1 : 0);
+const lastPlayed = record => record?.lastAt ?? record?.at ?? null;
+const sceneCooldown = scene =>
+  (scene.reservoir?.cooldown?.sceneDays ?? SCENE_BANK_RULES.replayCooldownDays)*DAY;
+/** Neighbours: same family, or the same two people, too recently. */
+function crowded(bank, scene, now, catalog) {
+  const rule=scene.reservoir?.cooldown; if(!rule) return false;
+  const family=scene.reservoir?.family, cast=[...scene.cast].sort().join(',');
+  return catalog.some(other=>{
+    if(other.id===scene.id || !surface(other)) return false;
+    const played=lastPlayed(bank.completed[other.id]); if(played===null) return false;
+    const since=now-played;
+    if(family && other.reservoir?.family===family && since<(rule.familyHours??0)*60*MIN) return true;
+    return [...other.cast].sort().join(',')===cast && since<(rule.pairHours??0)*60*MIN;
+  });
+}
+export function sceneSpent(bank, scene, now, catalog=SCENE_BANK_CATALOG) {
+  const record=bank.completed[scene.id];
+  if (!surface(scene)) return Boolean(record);
+  return record && now-lastPlayed(record) < sceneCooldown(scene) || crowded(bank,scene,now,catalog);
+}
+/** A proof stamped by today's world, not a fact left over from last week. */
+const today = (proof, now) => Boolean(proof) && londonDate(proof.at)===londonDate(now);
 const ownView = state => ({...state,sceneBank:{...of(state),session:null}});
 const save = (ctx,value) => ctx.ops.setSceneBank(value);
 const roomName = (location,area) => areaOf(location,area)?.name ?? 'the room';
@@ -111,7 +152,7 @@ function observedHere(ctx, scene, id) {
   return event.location===scene.location && at===scene.area && cast.includes(id);
 }
 function guardedPrerequisite(ctx, scene) {
-  const state=ctx.state, now=ctx.now, p=of(state).proofs;
+  const state=ctx.state, now=ctx.now, bank=of(state), p=bank.proofs, n=bank.nimbus;
   const alarm=p.north_face_alarm;
   switch(scene.id) {
     case 'D1': return alarm?.eventId===ctx.event.id;
@@ -135,6 +176,58 @@ function guardedPrerequisite(ctx, scene) {
       && now-state.characters[id].activitySince>=15*MIN);
     case 'N1': return people(scene.cast).every(id=>now-state.characters[id].activitySince>=MIN);
     case 'L5': return state.factions.arcane==='high';
+
+    // Conditions the world produces over and over, read off facts it already
+    // commits. Nothing below asks the simulation for a new event; each is a
+    // question about something already on the page.
+    //
+    // The outdoor yard closes on storm and heavy rain and training moves to the
+    // covered floor. That closure is the whole premise of the scene.
+    case 'C6': return isShelterWeather(state.weather?.code);
+    // Said before it arrives. On a sheltering day the storm is published at
+    // 13:02; until then a forecast is all anybody has to go on.
+    case 'E1': return isShelterWeather(state.weather?.code) && !today(p.storm_broke,now);
+    case 'H2': return today(p.storm_broke,now) && now-p.storm_broke.at<=30*MIN;
+    case 'N3': return today(p.storm_broke,now) && now-p.storm_broke.at>=60*MIN
+      && isShelterWeather(state.weather?.code);
+    // The chimes coming in heavier than the hour required is a published
+    // notice, so there is something real for Emily to have counted.
+    case 'N4': return today(p.chimes_pulse,now);
+    // Read at the same midday anchor the rest of the world uses, so the bank
+    // and the Church agree about which phase the day is in.
+    case 'L1': return ['imminent','underway'].includes(nextVeil(atLondon(londonDate(now),'12:00'),ctx.seed).phase);
+    // A day nothing happened in can only be recognised at the end of one.
+    case 'N8': return !today(p.last_incident,now) && ['evening','night'].includes(daypart(now));
+    // She has to have been on the swing where a reader could see her. Same
+    // rule E3 uses for the counting: the venue original comes first.
+    case 'K1': return (state.director?.venueScenes?.plaza_emily_swing ?? 0) > 0;
+    case 'H4': return n.arrivedAt!==null && Object.keys(n.knownBy).length>0;
+    case 'H7': return Boolean(n.knownBy.yukon) && now-n.arrivedAt>=3*DAY;
+
+    // Gated on facts this world does not commit. These were falling through to
+    // the default, which answers false for anything not marked enabled, so
+    // twenty-four catalogued scenes could never fire and nothing said so out
+    // loud. They are still shut, but the reason is now written down. Each needs
+    // the simulation to start committing the named fact before it can open.
+    case 'E12':   // no path across the plaza is ever closed
+    case 'E15':   // no vent shortcut is ever reported to anyone
+    case 'F4':    // MI6 never loses power; the only blackout is a cafe scene
+    case 'F5':    // no training authorisation is issued for anything extinct
+    case 'I9':    // a bear all morning is written, not world state
+    case 'L3':    // nothing ever cordons a stall in the plaza
+    case 'L4':    // as I9: there is no per-month count of forms to reach four
+    case 'M4':    // no camera recording is retained, the ground D6 is shut on
+    case 'M5':    // no notice of an unrecognised door is ever posted
+    case 'N5':    // no shared-chair routine is established anywhere in state
+      return false;
+    // Not a missing fact but a decided one: duty beats belong to Goaden at
+    // this checkpoint and Ashai is never posted, so nobody can tell her she is
+    // on again. See the dutyActor note in director.mjs.
+    case 'M1': return false;
+    // The scene needs Goaden asleep, and a sleeping lead is never free for a
+    // scene. F2 and F3 are the same night continued, so they wait on F1.
+    case 'F1': case 'F2': case 'F3': return false;
+
     default: return scene.status==='enabled';
   }
 }
@@ -148,7 +241,7 @@ function holderPresent(state,location) {
 // story trigger. The committed cause persists the exact future action below.
 function eligible(ctx, scene, {gather=false}={}) {
   const state=ctx.state, now=ctx.now, bank=of(state), isNimbus=scene.id.startsWith('P');
-  if (scene.status==='excluded' || bank.completed[scene.id] || !scene.location || !areaOf(scene.location,scene.area)) return false;
+  if (scene.status==='excluded' || sceneSpent(bank,scene,now) || !scene.location || !areaOf(scene.location,scene.area)) return false;
   if (scene.dependencies.some(id=>!bank.completed[id])) return false;
   if (scene.night && !['night','small_hours'].includes(daypart(now))) return false;
   if (!isNimbus && !guardedPrerequisite(ctx,scene)) return false;
@@ -200,15 +293,37 @@ function eligible(ctx, scene, {gather=false}={}) {
   return {cast,actors:people(cast)};
 }
 
+// Facts the world has already committed, kept where a gate can ask for them.
+//
+// Observing is not the same as offering. A storm breaking and the chimes coming
+// in heavy are things the gates above need to know about, but neither may be
+// allowed to start a scene by itself, so they are recorded here rather than
+// added to OPPORTUNITIES. Nothing in this function creates, schedules or alters
+// anything; it stamps events that have already happened.
+function recordProofs(ctx, bank) {
+  const event=ctx.event;
+  const mark = (key, extra={}) => {
+    bank={...bank,proofs:{...bank.proofs,[key]:{eventId:ctx.id,at:ctx.now,...extra}}};save(ctx,bank);
+  };
+  if (event.type==='INCIDENT' && event.payload?.kind==='breach')
+    mark('north_face_alarm',{cast:[...event.participants]});
+  if (event.type==='INSTITUTION_NOTICE') {
+    if (event.payload?.notice==='storm_breaks') mark('storm_broke');
+    if (event.payload?.notice==='chimes_pulse') mark('chimes_pulse');
+  }
+  // What makes a quiet day recognisably quiet. UNEASE and MINOR_ANOMALY are
+  // deliberately not counted: texture is not an incident.
+  if (['INCIDENT','ARCANE_SURGE','AFTERMATH'].includes(event.type)) mark('last_incident',{kind:event.type});
+  return bank;
+}
+
 export function sceneBankAfterAction(ctx) {
+  if (ctx.event.visibility!=='public') return;
+  let bank=recordProofs(ctx,of(ctx.state));
   // Atmospheric texture has no consequences. In particular UNEASE and
   // MINOR_ANOMALY cannot activate this feature or issue a physical scene.
-  if (!OPPORTUNITIES.has(ctx.action.type) || ctx.event.visibility!=='public') return;
-  let bank=of(ctx.state);
+  if (!OPPORTUNITIES.has(ctx.action.type)) return;
   if (bank.activatedAt===null) {bank={...bank,activatedAt:ctx.now};save(ctx,bank);}
-  if (ctx.event.type==='INCIDENT' && ctx.event.payload?.kind==='breach') {
-    bank={...bank,proofs:{...bank.proofs,north_face_alarm:{eventId:ctx.id,at:ctx.now,cast:[...ctx.event.participants]}}};save(ctx,bank);
-  }
   if (bank.pending && ctx.now>bank.pending.expiresAt) {
     bank={...bank,pending:null,session:null};save(ctx,bank);
   }
@@ -219,11 +334,21 @@ export function sceneBankAfterAction(ctx) {
     const gather=scene.id!=='P1', match=eligible(sceneContext,scene,{gather});
     if(match) {choice=scene;booking={...match,gather};break;}
   }
-  if (!choice && bank.nextEligibleAt<=ctx.now) {
+  // The director's half of the shared spacing window. Its beat has just been
+  // on the page; an ordinary scene waits for the next opportunity rather than
+  // publishing on top of it. Nimbus keeps his own clock: P1 is a ten-minute
+  // window that a deferral would miss.
+  const afterDirector=ctx.state.director?.lastBeatAt&&ctx.now-ctx.state.director.lastBeatAt<DIRECTOR_RULES.spacingMinutes*MIN;
+  if (!choice && !afterDirector && bank.nextEligibleAt<=ctx.now) {
     const options=SCENE_BANK_CATALOG.filter(scene=>!scene.id.startsWith('P') && eligible(sceneContext,scene));
-    options.sort((a,b)=>hash(`${ctx.seed}|scene-bank-v1|${a.id}|${londonDate(ctx.now)}`)
+    // Fewest performances first, then the day's seeded order within that tier.
+    // Nothing comes round a second time while the bank still holds something
+    // this world has never shown, which is the whole of the repetition rule.
+    const fewest=Math.min(...options.map(scene=>playCount(bank.completed[scene.id])),Infinity);
+    const fresh=options.filter(scene=>playCount(bank.completed[scene.id])===fewest);
+    fresh.sort((a,b)=>hash(`${ctx.seed}|scene-bank-v1|${a.id}|${londonDate(ctx.now)}`)
       .localeCompare(hash(`${ctx.seed}|scene-bank-v1|${b.id}|${londonDate(ctx.now)}`)));
-    choice=options[0]; if(choice) booking={...eligible(sceneContext,choice),gather:false};
+    choice=fresh[0]; if(choice) booking={...eligible(sceneContext,choice),gather:false};
   }
   if (!choice) {
     if (['gardens','venue'].includes(bank.nimbus.place?.area) && ctx.state.characters.goaden?.location==='big_ben_plaza'
@@ -304,7 +429,7 @@ export function resolveSceneBankAction(ctx) {
     save(ctx,{...bank,pending:null,nimbus:{...bank.nimbus,holder:'goaden',place:null}});return;
   }
   const scene=SCENE_BANK_BY_ID[a.sceneBankId];
-  if (!scene||scene.status==='excluded'||bank.completed[scene.id]) return refuse(ctx,'Scene unavailable or already spent');
+  if (!scene||scene.status==='excluded'||sceneSpent(bank,scene,now)) return refuse(ctx,'Scene unavailable or already spent');
   if (a.type==='SCENE_BANK_GATHER') {
     const match=eligible({...ctx,state:ownView(ctx.state) },scene,{gather:true});
     if(!match || JSON.stringify(match.cast)!==JSON.stringify(pending.cast)
@@ -364,16 +489,27 @@ export function resolveSceneBankAction(ctx) {
     narrativeParagraphs:paragraphs,lines:beats.filter(b=>b.kind==='dialogue').map(b=>({who:b.who,expression:b.expression??'idle',text:b.text})),
     ...(scene.nimbusPlate?{nimbusPlate:scene.nimbusPlate}:{})};
   const text=paragraphs.map(p=>p.text).join('\n\n');ctx.ops.publish(text);ctx.event.prose=text;
-  const fact=ctx.ops.createFact(`scene-bank:${scene.id}`,'scene_bank_observation',scene.id,
-    {sceneId:scene.id,presentationText:scene.title},null);
-  for(const who of actualCast) {
-    if(ctx.state.characters[who]) ctx.ops.learn(who,fact,'participated_in_scene');
-    next.knowledge={...next.knowledge,[who]:{...(next.knowledge[who]??{}),[scene.id]:{sourceEventId:id,learnedAt:now,provenance:'participated_in_scene'}}};
+  // The fact is the observation, and it is made once. A surface scene coming
+  // round again is the world saying a familiar thing a second time, not a
+  // second thing to know: the fact key would collide, offscreen lives verify
+  // their proofs against the exact source event, and nobody learns anything
+  // from a quiet half hour they have already had.
+  if(!bank.completed[scene.id]) {
+    const fact=ctx.ops.createFact(`scene-bank:${scene.id}`,'scene_bank_observation',scene.id,
+      {sceneId:scene.id,presentationText:scene.title},null);
+    for(const who of actualCast) {
+      if(ctx.state.characters[who]) ctx.ops.learn(who,fact,'participated_in_scene');
+      next.knowledge={...next.knowledge,[who]:{...(next.knowledge[who]??{}),[scene.id]:{sourceEventId:id,learnedAt:now,provenance:'participated_in_scene'}}};
+    }
   }
-  next={...next,pending:null,
+  next={...next,pending:null,lastPerformedAt:now,
     session:{id:bank.session?.id??id,sceneId:scene.id,cast:[...actualCast],
       startAt:bank.session?.startAt??now,until:now+SCENE_BANK_RULES.sceneDuration,performanceEventId:id},
-    completed:{...next.completed,[scene.id]:{eventId:id,at:now,cast:[...actualCast]}},
+    // `eventId` and `at` stay the first performance: dependency ordering, the
+    // Nimbus arrival check and every recorded cause read them. A replay adds
+    // its own count and time alongside.
+    completed:{...next.completed,[scene.id]:{...(next.completed[scene.id]??{eventId:id,at:now}),
+      plays:playCount(next.completed[scene.id])+1,lastAt:now,lastEventId:id,cast:[...actualCast]}},
     ...(scene.id.startsWith('P')?{nextNimbusAt:now+(scene.id==='P4'?MIN:SCENE_BANK_RULES.nimbusGap)}
       :{nextEligibleAt:now+SCENE_BANK_RULES.ordinaryGap})};
   save(ctx,next);

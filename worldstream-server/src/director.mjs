@@ -29,6 +29,11 @@ export const DIRECTOR_RULES = Object.freeze({
   maxBeatsPerDay:2,     // a budget, so a slack day does not become a busy one
   minGapMinutes:180,    // and they cannot be spent back to back
   memory:3,             // families used this recently are not chosen again
+  // The one rule the director shares with the scene bank. Each keeps its own
+  // cadence and cooldowns; this is only a presentation window, so that two
+  // substantial beats do not land on the page on top of each other. It defers.
+  // It never restarts anybody's clock.
+  spacingMinutes:20,
 });
 // Tension is read off the world, never stored. Institutional posture is most of
 // it — an elevated MI6 or the Order working the boroughs is what "a tense day"
@@ -134,6 +139,11 @@ export function directorDecision(context,seed,key) {
   if((director?.beatsToday??0)>=DIRECTOR_RULES.maxBeatsPerDay) return {family:null,reason:'budget_spent'};
   if(director?.lastBeatAt&&now-director.lastBeatAt<DIRECTOR_RULES.minGapMinutes*MIN)
     return {family:null,reason:'too_soon'};
+  // Authored prose has just been on the page. Wait for it to clear; the quiet
+  // clock keeps whatever it had accumulated, because a scene the bank staged
+  // is not the world being eventful at them.
+  if(context.lastAuthoredAt&&now-context.lastAuthoredAt<DIRECTOR_RULES.spacingMinutes*MIN)
+    return {family:null,reason:'after_authored_scene'};
   const quiet=quietMinutes(director,now);
   if(quiet<=DIRECTOR_RULES.quietMinutes) return {family:null,reason:'not_quiet_yet',quiet};
   const tension=tensionOf(context);
@@ -252,6 +262,7 @@ export function tickContext({state,now,day,weather,factions}) {
   const area=crew[0]?.area==='common_room'?'common_room':'corridors';
   return {day,now,part,weather,factions,director:state.director,
     relationships:state.relationships,
+    lastAuthoredAt:state.sceneBank?.lastPerformedAt??null,
     asleep:crew.some(who=>who.activity==='sleeping'),
     travelling:crew.some(who=>Boolean(who.journey)),
     busy:crew.some(who=>!INTERRUPTIBLE.includes(who.activity)),

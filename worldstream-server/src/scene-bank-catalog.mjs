@@ -11,7 +11,7 @@ const nimbus = (text,expression) => ({kind:'prose',who:'nimbus',text,expression,
 
 // Every omitted scene has a named gate below. An ANY label in the workshop is
 // not a license to manufacture a prior injury, report, ability or secret.
-const OPEN = new Set(ids('B6 C2 C3 C7 C9 E2 E4 E6 E7 E9 E10 E11 E13 F6 G1 G2 G3 G5 H1 H3 I1 I2 I7 I8 I10 J2 J5 M3 N1 N2 N6 N7'));
+const OPEN = new Set(ids('C2 C3 C7 C9 E2 E4 E6 E7 E9 E10 E11 E13 F6 G1 G2 G3 G5 H1 H3 I1 I2 I7 I8 I10 J2 J5 M3 N1 N2 N6 N7'));
 const CONDITIONAL = {
   C1:'one_hour_of_shared_training', C6:'wet_outdoor_training', D1:'actual_north_face_alarm',
   // E3 is the callback, not the introduction. "Forty-one so far" only means
@@ -38,6 +38,10 @@ const CLOSED = {
   B3:'A recruit demonstration needs a staffed training session.',
   B4:'The specific filed report is not established by the betrayal anchor.',
   B5:'Greah must first have given the advice being recalled.',
+  // Part Two is post-betrayal throughout; B1-B5, B7 and B8 were closed on that
+  // ground and this one was missed. The charm is not behind them at this
+  // checkpoint, so wordless cold civility is the wrong Davis for the world.
+  B6:'Part Two is after the betrayal; that phase has not been reached.',
   B7:'Marked after the current manuscript checkpoint.',
   B8:'Do not create a new family-search promise across the disclosure boundary.',
   C4:'A bad landing needs an injury and care lifecycle, not a passing line.',

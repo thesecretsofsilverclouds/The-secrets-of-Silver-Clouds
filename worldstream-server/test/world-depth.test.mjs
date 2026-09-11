@@ -170,7 +170,7 @@ test('the director obeys its own two thresholds, its budget and its spacing, eve
   // A tick that stages nothing says which rule stopped it, so a quiet afternoon
   // can be audited rather than merely observed.
   for (const tick of ticks.filter(item => !item.payload.family)) {
-    assert.ok(['asleep', 'travelling', 'budget_spent', 'too_soon', 'not_quiet_yet', 'world_is_busy', 'nothing_eligible']
+    assert.ok(['asleep', 'travelling', 'budget_spent', 'too_soon', 'after_authored_scene', 'not_quiet_yet', 'world_is_busy', 'nothing_eligible']
       .includes(tick.payload.reason), tick.payload.reason);
   }
 });
