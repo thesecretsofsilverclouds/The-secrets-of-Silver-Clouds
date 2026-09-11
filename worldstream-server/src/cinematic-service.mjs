@@ -6,6 +6,7 @@ import {
 } from './cinematics.mjs';
 import { editorialCinematicRecordForApi } from './editorial-cinematics.mjs';
 import { londonDate } from './time.mjs';
+import { noteRequestTimeAuthoring } from './production-path-spies.mjs';
 
 const NO_PRESENCE = Object.freeze({ count: 0, activeSinceMs: null, checkedAt: null });
 
@@ -187,6 +188,7 @@ export class CinematicService {
   }
 
   generate(eventId, { now = this.now(), presence = null } = {}) {
+    noteRequestTimeAuthoring();
     const current = this.store.get(eventId);
     if (!current) return Promise.reject(new Error('Unknown cinematic candidate'));
     if (current.status === 'performed' || current.status === 'fallback'

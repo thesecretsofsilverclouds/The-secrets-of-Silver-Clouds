@@ -1,4 +1,5 @@
 import { SCENE_REFILL_APPROVAL_POLICY } from './scene-reservoir-approval.mjs';
+import { noteModelCall, noteRefillReservation } from './production-path-spies.mjs';
 
 // Optional maintenance of a quarantined prose reservoir. This cannot emit an
 // event, admit prose to the scene bank, or alter canonical world state.
@@ -54,6 +55,7 @@ export function openAISceneRefillClient({ apiKey, model = 'gpt-5-mini', fetchImp
   if (!apiKey) throw new TypeError('An API key is required');
   return async (packet, { signal } = {}) => {
     const context = JSON.parse(packet.user);
+    noteModelCall();
     const response = await fetchImpl('https://api.openai.com/v1/responses', {
       method: 'POST', signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(SCENE_REFILL_LIMITS.timeoutMs)])
         : AbortSignal.timeout(SCENE_REFILL_LIMITS.timeoutMs),
@@ -174,6 +176,7 @@ export class SceneReservoirRefill {
       if (!candidate) return outcome('recording_deficit');
       const reservation = { id: `refill:${now}:${candidate.familyId}`, at: now,
         familyId: candidate.familyId, archetypeId: candidate.archetypeId, status: 'reserved' };
+      noteRefillReservation();
       state.attempts = [...recent, reservation];
       this.#save(state);
       const controller = new AbortController();

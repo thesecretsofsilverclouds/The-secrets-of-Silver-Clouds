@@ -4,6 +4,7 @@ import { daypart } from './sky.mjs';
 import { RULES_VERSION } from './fixture.mjs';
 import { londonClock, londonDate } from './time.mjs';
 import { findSpoilers } from './spoilers.mjs';
+import { noteModelCall } from './production-path-spies.mjs';
 
 // Phase C. A model is allowed to write, and allowed to write nothing else.
 //
@@ -214,6 +215,7 @@ export function openAIClient({apiKey,model=DEFAULT_MODEL,fetchImpl=globalThis.fe
   if(!apiKey) throw new TypeError('An API key is required');
   return async function render({system,user}) {
     const abort=AbortSignal.timeout(timeoutMs);
+    noteModelCall();
     const response=await fetchImpl('https://api.openai.com/v1/responses',{method:'POST',signal:abort,
       headers:{'content-type':'application/json',authorization:`Bearer ${apiKey}`},
       body:JSON.stringify({model,input:[{role:'system',content:system},{role:'user',content:user}],

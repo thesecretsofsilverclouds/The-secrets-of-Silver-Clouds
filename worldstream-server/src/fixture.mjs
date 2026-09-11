@@ -1858,7 +1858,7 @@ function reduceAction(state,a,seed) {
   // after is the wrong one — it produced "Ashai finished training in the lunch
   // hall", which is where she went, not where she trained.
   const ENDS=a.type==='ACTIVITY_COMPLETE'||a.type==='PRACTICE_END';
-  if(!['UNEASE','INCIDENT',...THREAD_EVENT_TYPES,...INTENT_EVENT_TYPES,...AGENDA_EVENT_TYPES,...MEU_EVENT_TYPES,...LEGION_JOB_EVENT_TYPES,...ABILITY_EVENT_TYPES,...SUPPORTING_EVENT_TYPES,...NIGHT_EVENT_TYPES,...OFFSCREEN_EVENT_TYPES,...SCENE_BANK_EVENT_TYPES,...ARC_EVENT_TYPES].includes(a.type))
+  if(!['UNEASE','INCIDENT',...THREAD_EVENT_TYPES,...INTENT_EVENT_TYPES,...AGENDA_EVENT_TYPES,...MEU_EVENT_TYPES,...LEGION_JOB_EVENT_TYPES,...DUSKKIN_COMPLIANCE_EVENT_TYPES,...ABILITY_EVENT_TYPES,...SUPPORTING_EVENT_TYPES,...NIGHT_EVENT_TYPES,...OFFSCREEN_EVENT_TYPES,...SCENE_BANK_EVENT_TYPES,...ARC_EVENT_TYPES].includes(a.type))
     event.area=(ENDS?areaBefore:state.characters[event.participants[0]]?.area)??areaBefore??null;
   // Authored prose is not the world being eventful at them either. A scene the
   // bank staged put words on the page, not an incident in the room; counting it

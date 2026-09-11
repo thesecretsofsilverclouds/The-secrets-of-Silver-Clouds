@@ -477,12 +477,28 @@ function touch(ctx, project, patch) {
 }
 function guestLearns(ctx, guest, fact) {
   const current = of(ctx.state).people[guest];
+  if (!current || !fact?.key) return;
   if (current.knowledge.some(row => row.factKey === fact.key && row.sourceEventId === fact.sourceEventId)) return;
   const durable = new Set([current.practice?.factKey, current.purpose?.result?.factKey].filter(Boolean));
   const established = current.knowledge.filter(row => durable.has(row.factKey));
   const recent = [...current.knowledge.filter(row => !durable.has(row.factKey)), { factKey: fact.key, sourceEventId: fact.sourceEventId,
     acquisitionEventId: ctx.id, learnedAt: ctx.now, validUntil: fact.validUntil }].slice(-(12 - established.length));
   person(ctx, guest, { knowledge: [...established, ...recent] });
+}
+
+/** Supporting/offscreen knowledge only. Never writes `state.characters`. */
+export function learnOffscreenFact(ctx, guest, fact) {
+  if (!IDS.includes(guest) || !fact?.key) return false;
+  guestLearns(ctx, guest, fact);
+  return true;
+}
+
+export function offscreenKnowsFact(state, guest, factKey, atMs) {
+  if (!IDS.includes(guest) || typeof factKey !== 'string' || !Number.isFinite(atMs)) return false;
+  const row = of(state).people[guest];
+  return Boolean(row?.knowledge?.some(memory =>
+    memory.factKey === factKey && memory.learnedAt <= atMs
+    && (memory.validUntil == null || memory.validUntil > atMs)));
 }
 function publish(ctx, project, stage, description, extra = {}) {
   if (project.continuation) ctx.event.causedBy.push(project.continuation.sourceEventId);

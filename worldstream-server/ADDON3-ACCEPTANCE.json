@@ -1,11 +1,14 @@
 {
-  "generatedAt": "2026-09-11T23:23:53.968Z",
+  "generatedAt": "2026-09-11T23:48:33.246Z",
   "rulesVersion": "canon-ambient-p183-v26",
   "modelCalls": 0,
   "requestTimeAuthoring": 0,
   "refillReservations": 0,
   "activeScenes": 874,
   "activeQuips": 673,
+  "inactiveProduction": 91,
+  "futureInactive": 200,
+  "futureDuskkin": 30,
   "dormantPaths": [
     "duskkin.feeding_suspicion — no unverified rumours committed on canonical seeds",
     "duskkin.verified_feeding — no feeding incidents manufactured; natural volume is 0",
@@ -56,6 +59,34 @@
       "digest": "ed76cc436d83a2727e054a1ee486a4ca99483c06679d40f6319340c73bee8e0f"
     }
   },
+  "ninetyRestart": {
+    "silver-clouds-now-v1": {
+      "matched": true,
+      "digest": "f36070915bd49e90165373c48d88441fe95b09b91a9508a86125736e4d94555b"
+    },
+    "seed-beta": {
+      "matched": true,
+      "digest": "efe6260ad1b26663134c0848ac44e606122191cbd90a4c360c2ecc29d73eb39e"
+    },
+    "seed-gamma": {
+      "matched": true,
+      "digest": "66087e06109a26db805a6f1525b7bb5a32facf68e2bc42f65eb313ad94445840"
+    }
+  },
+  "ninetyObservers": {
+    "silver-clouds-now-v1": {
+      "matched": true,
+      "digest": "f36070915bd49e90165373c48d88441fe95b09b91a9508a86125736e4d94555b"
+    },
+    "seed-beta": {
+      "matched": true,
+      "digest": "efe6260ad1b26663134c0848ac44e606122191cbd90a4c360c2ecc29d73eb39e"
+    },
+    "seed-gamma": {
+      "matched": true,
+      "digest": "66087e06109a26db805a6f1525b7bb5a32facf68e2bc42f65eb313ad94445840"
+    }
+  },
   "thirtyDays": {
     "silver-clouds-now-v1": {
       "digest": "bad614bdbfa74cc3c7416772e2a42ff7b6852cde4c84d4c494d18af41d722f98",
@@ -70,6 +101,7 @@
         "payments": 0,
         "closes": 0,
         "duskkin": {
+          "sources": 0,
           "notices": 0,
           "evidence": 0,
           "transfers": 0,
@@ -100,6 +132,7 @@
         "payments": 0,
         "closes": 0,
         "duskkin": {
+          "sources": 0,
           "notices": 0,
           "evidence": 0,
           "transfers": 0,
@@ -130,6 +163,7 @@
         "payments": 0,
         "closes": 0,
         "duskkin": {
+          "sources": 0,
           "notices": 0,
           "evidence": 0,
           "transfers": 0,
@@ -162,6 +196,7 @@
         "payments": 0,
         "closes": 0,
         "duskkin": {
+          "sources": 0,
           "notices": 0,
           "evidence": 0,
           "transfers": 0,
@@ -192,6 +227,7 @@
         "payments": 0,
         "closes": 0,
         "duskkin": {
+          "sources": 0,
           "notices": 0,
           "evidence": 0,
           "transfers": 0,
@@ -222,6 +258,7 @@
         "payments": 0,
         "closes": 0,
         "duskkin": {
+          "sources": 0,
           "notices": 0,
           "evidence": 0,
           "transfers": 0,

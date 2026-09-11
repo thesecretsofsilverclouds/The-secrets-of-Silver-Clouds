@@ -1,6 +1,6 @@
 # Addon 3 acceptance — canon-ambient-p183-v26
 
-Generated: 2026-09-11T23:23:53.968Z
+Generated: 2026-09-11T23:48:33.246Z
 
 ## Bar
 
@@ -8,9 +8,9 @@ Generated: 2026-09-11T23:23:53.968Z
 - restart == uninterrupted
 - differing observer schedules == same canonical history
 - 0 model calls, 0 request-time authoring, 0 refill reservations
-- Active reservoir identity preserved (874 scenes, 673 quips)
-- MEU cadence remains healthy
-- Legion job and social cadence remains healthy
+- Active reservoir identity preserved (874 / 673 / 91 / 200-inactive)
+- Addon 1 MEU cadence unchanged
+- Addon 2 Legion behaviour/social cadence unchanged
 - ordinary sleep / meals / training / travel remain healthy
 - zero manufactured feeding events (natural volume is 0)
 - suspicion != guilt (unverified notices resolve cleanly)
@@ -29,10 +29,15 @@ Generated: 2026-09-11T23:23:53.968Z
 | Refill reservations | 0 |
 | Active Scenes | 874 |
 | Active Quips | 673 |
+| Inactive production rows | 91 |
+| Future simulation inactive | 200 |
+| future.duskkin quarantined | 30 |
 | 30d one-shot == chunked | PASS |
 | 30d restart | PASS |
 | 30d observer schedules | PASS |
 | 90d one-shot == chunked | PASS |
+| 90d restart | PASS |
+| 90d observer schedules | PASS |
 | Prose-removal identity | PASS |
 
 ## 30-day census
@@ -66,4 +71,4 @@ Generated: 2026-09-11T23:23:53.968Z
 - Zara liaison knowledge transfer — dormant when no compliance cases arise
 - Council response referral — dormant when no cases are notified
 
-Natural Duskkin case volume is zero on canonical seeds because no feeding incidents arise naturally. This is an honest invariant, not a missing generator. Invariant compliance, containment jurisdiction, Zara liaison transfer, Council notification, and clean closure are fully proven in unit tests.
+Natural Duskkin case volume is zero on canonical seeds because no dedicated DUSKKIN_COMPLIANCE_INCIDENT is issued. This is an honest invariant, not a missing generator. Lifecycle proof, evidence sufficiency, containment jurisdiction, Zara offscreen transfer, Council notification, and clean closure are proven through the Worldstream reducer in production-path tests.

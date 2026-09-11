@@ -1,15 +1,17 @@
-import { writeFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { openWorld, semanticDigest } from '../src/world.mjs';
 import { atLondon } from '../src/time.mjs';
-import { knowsFact } from '../src/fixture.mjs';
 import { editorialEvent } from '../src/editorial.mjs';
 import { MEU_FAMILIES, MEU_OUTCOMES } from '../src/meu-cases.mjs';
 import { LEGION_JOB_FAMILIES, LEGION_JOB_OUTCOMES } from '../src/legion-jobs.mjs';
-import { DUSKKIN_COMPLIANCE_EVENT_TYPES, assertDuskkinCompliance } from '../src/duskkin-compliance.mjs';
+import { DUSKKIN_COMPLIANCE_EVENT_TYPES, DUSKKIN_SOURCE_EVENT_TYPE, assertDuskkinCompliance } from '../src/duskkin-compliance.mjs';
 import { SCENE_RESERVOIR_CATALOG } from '../src/scene-reservoir-catalog.mjs';
+import { SCENE_RESERVOIR_BATCHES } from '../src/scene-reservoir-data.mjs';
 import { CAST } from '../lab/grammar/cast.mjs';
+import { readProductionPathSpies, resetProductionPathSpies, noteModelCall } from '../src/production-path-spies.mjs';
 
 const START = atLondon('2026-09-04', '00:00');
 const SEEDS = ['silver-clouds-now-v1', 'seed-beta', 'seed-gamma'];
@@ -48,7 +50,7 @@ function analyze(snap, days) {
   const payments = events.filter(e => e.type === 'LEGION_JOB_PAYMENT');
   const closes = events.filter(e => e.type === 'LEGION_JOB_CLOSE');
 
-  // Duskkin Compliance event census
+  const duskkinSources = events.filter(e => e.type === DUSKKIN_SOURCE_EVENT_TYPE);
   const duskkinNotices = events.filter(e => e.type === 'DUSKKIN_COMPLIANCE_NOTICE');
   const duskkinEvidence = events.filter(e => e.type === 'DUSKKIN_COMPLIANCE_EVIDENCE');
   const duskkinTransfers = events.filter(e => e.type === 'DUSKKIN_EVIDENCE_TRANSFER');
@@ -92,7 +94,7 @@ function analyze(snap, days) {
       if (e.payload?.prose || e.payload?.text || e.payload?.description) {
         throw new Error(`Prose detected in Duskkin event ${e.type} payload`);
       }
-      if (e.participants?.includes('duskkin_liaison')) {
+      if (e.participants?.includes('duskkin_liaison') || e.payload?.liaisonRole === 'duskkin_liaison') {
         throw new Error('Generic duskkin_liaison placeholder actor detected');
       }
       if (e.participants?.includes('eirik')) {
@@ -121,6 +123,7 @@ function analyze(snap, days) {
     payments: payments.length,
     closes: closes.length,
     duskkin: {
+      sources: duskkinSources.length,
       notices: duskkinNotices.length,
       evidence: duskkinEvidence.length,
       transfers: duskkinTransfers.length,
@@ -174,22 +177,92 @@ function proveProseIdentity(snap) {
   if (before !== after) throw new Error('Editorial prose changed canonical Duskkin history');
 }
 
+function measureReservoirGoldens() {
+  const catalogIds = new Set(SCENE_RESERVOIR_CATALOG.map(s => s.reservoir.sourceId));
+  const inactiveProduction = SCENE_RESERVOIR_BATCHES.flatMap(b => b.entries).filter(e => !catalogIds.has(e.id)).length;
+  const quips = [...CAST.values()].reduce((n, g) => n + Object.values(g.quips ?? {}).reduce((m, bank) => m + bank.length, 0), 0);
+  const futurePath = resolve(dirname(fileURLToPath(import.meta.url)),
+    '../../../../WORLDSTREAM_CANON_CONTENT_MEGA_BATCH_04/WORLDSTREAM_FUTURE_SIMULATION_LIBRARY_BATCH_04.json');
+  let futureInactive = 0;
+  let futureDuskkin = 0;
+  if (existsSync(futurePath)) {
+    const library = JSON.parse(readFileSync(futurePath, 'utf8'));
+    futureInactive = library.scenes.length;
+    futureDuskkin = library.scenes.filter(s => String(s.id).startsWith('future.duskkin.')).length;
+    for (const scene of library.scenes) {
+      if (catalogIds.has(scene.id)) throw new Error(`Future simulation scene ${scene.id} leaked into the active catalog`);
+      if (scene.status !== 'staged_future') throw new Error(`Future scene ${scene.id} is not staged_future`);
+    }
+  }
+  if (SCENE_RESERVOIR_CATALOG.some(s => String(s.reservoir.sourceId).startsWith('future.duskkin.'))) {
+    throw new Error('future.duskkin prose leaked into the active catalog');
+  }
+  if (SCENE_RESERVOIR_CATALOG.some(s => s.reservoir.family === 'duskkin_compliance')) {
+    throw new Error('duskkin_compliance family leaked into the active catalog');
+  }
+  return {
+    activeScenes: SCENE_RESERVOIR_CATALOG.length,
+    activeQuips: quips,
+    inactiveProduction,
+    futureInactive,
+    futureDuskkin,
+  };
+}
+
+const ADDON1_2_GOLDENS = {
+  thirtyDays: {
+    'silver-clouds-now-v1': { meuOpened: 6, meals: 178, practices: 78, legionVisits: 2 },
+    'seed-beta': { meuOpened: 6, meals: 178, practices: 81, legionVisits: 3 },
+    'seed-gamma': { meuOpened: 7, meals: 177, practices: 79, legionVisits: 1 },
+  },
+  ninetyDays: {
+    'silver-clouds-now-v1': { meuOpened: 18, meals: 534, practices: 237, legionVisits: 6 },
+    'seed-beta': { meuOpened: 20, meals: 533, practices: 236, legionVisits: 7 },
+    'seed-gamma': { meuOpened: 14, meals: 534, practices: 236, legionVisits: 4 },
+  },
+};
+
+function assertAddonCadence(seed, days, stats) {
+  const expected = days === 30 ? ADDON1_2_GOLDENS.thirtyDays[seed] : ADDON1_2_GOLDENS.ninetyDays[seed];
+  if (stats.meuOpened !== expected.meuOpened) {
+    throw new Error(`${seed} ${days}d Addon 1 MEU cadence changed: ${stats.meuOpened} !== ${expected.meuOpened}`);
+  }
+  if (stats.lifeBalance.meals !== expected.meals || stats.lifeBalance.practices !== expected.practices
+    || stats.lifeBalance.legionVisits !== expected.legionVisits) {
+    throw new Error(`${seed} ${days}d Addon 2 / ordinary cadence changed`);
+  }
+  if (stats.duskkin.sources !== 0 || stats.duskkin.notices !== 0) {
+    throw new Error(`${seed} ${days}d manufactured Duskkin volume; expected 0`);
+  }
+}
+
 async function main() {
-  let fetchCalls = 0;
+  resetProductionPathSpies();
   const previousFetch = globalThis.fetch;
   globalThis.fetch = async (...args) => {
-    fetchCalls++;
+    noteModelCall();
     throw new Error(`Acceptance requested a model/network call: ${String(args[0])}`);
   };
+
+  const goldens = measureReservoirGoldens();
+  if (goldens.activeScenes !== 874 || goldens.activeQuips !== 673 || goldens.inactiveProduction !== 91) {
+    throw new Error(`Reservoir goldens drifted: ${goldens.activeScenes}/${goldens.activeQuips}/${goldens.inactiveProduction}`);
+  }
+  if (goldens.futureDuskkin !== 30) {
+    throw new Error(`future.duskkin rows drifted: ${goldens.futureDuskkin}`);
+  }
 
   const report = {
     generatedAt: new Date().toISOString(),
     rulesVersion: 'canon-ambient-p183-v26',
-    modelCalls: 0,
-    requestTimeAuthoring: 0,
-    refillReservations: 0,
-    activeScenes: SCENE_RESERVOIR_CATALOG.length,
-    activeQuips: [...CAST.values()].reduce((n, g) => n + Object.values(g.quips ?? {}).reduce((m, bank) => m + bank.length, 0), 0),
+    modelCalls: null,
+    requestTimeAuthoring: null,
+    refillReservations: null,
+    activeScenes: goldens.activeScenes,
+    activeQuips: goldens.activeQuips,
+    inactiveProduction: goldens.inactiveProduction,
+    futureInactive: goldens.futureInactive,
+    futureDuskkin: goldens.futureDuskkin,
     dormantPaths: [
       'duskkin.feeding_suspicion — no unverified rumours committed on canonical seeds',
       'duskkin.verified_feeding — no feeding incidents manufactured; natural volume is 0',
@@ -201,6 +274,8 @@ async function main() {
     determinism: {},
     restart: {},
     observers: {},
+    ninetyRestart: {},
+    ninetyObservers: {},
     thirtyDays: {},
     ninetyDays: {},
   };
@@ -228,6 +303,7 @@ async function main() {
     const observers = proveObservers(seed, 30, one.digest);
     proveProseIdentity(one.snap);
     const stats = analyze(one.snap, 30);
+    assertAddonCadence(seed, 30, stats);
     console.log(`${seed}: one-shot==chunked PASS | restart PASS | observers PASS | digest ${one.digest}`);
     report.determinism[seed] = { matched: true, digest: one.digest };
     report.restart[seed] = restart;
@@ -256,12 +332,14 @@ async function main() {
     const one = runTo(seed, 90);
     const chunked = runTo(seed, 90, { chunkHours: 24 });
     if (one.digest !== chunked.digest) throw new Error(`90d chunked mismatch ${seed}`);
+    const restart = proveRestart(seed, 90, one.digest);
+    const observers = proveObservers(seed, 90, one.digest);
     proveProseIdentity(one.snap);
     const stats = analyze(one.snap, 90);
-    if (stats.lifeBalance.meals < 60 || stats.lifeBalance.practices < 30 || stats.lifeBalance.legionVisits < 2) {
-      throw new Error(`${seed} 90d lost ordinary cadence`);
-    }
+    assertAddonCadence(seed, 90, stats);
     report.ninetyDays[seed] = { digest: one.digest, stats };
+    report.ninetyRestart[seed] = restart;
+    report.ninetyObservers[seed] = observers;
     console.log(`\n${seed} digest ${one.digest}`);
     console.log(`  MEU opened ${stats.meuOpened} (${stats.meuPerWeek}/wk) resolved ${stats.meuResolved}`);
     console.log(`  Legion referrals ${stats.referrals} offers ${stats.offers} accepts ${stats.accepts} declines ${stats.declines} paid ${stats.payments}`);
@@ -269,8 +347,13 @@ async function main() {
     console.log(`  Life: meals ${stats.lifeBalance.meals} training ${stats.lifeBalance.practices} sleep ${stats.lifeBalance.sleep} travel ${stats.lifeBalance.travel} social Legion ${stats.lifeBalance.legionVisits}`);
   }
 
-  report.modelCalls = fetchCalls;
-  if (fetchCalls !== 0) throw new Error(`Acceptance made ${fetchCalls} network/model calls`);
+  const spies = readProductionPathSpies();
+  report.modelCalls = spies.modelCalls;
+  report.requestTimeAuthoring = spies.requestTimeAuthoring;
+  report.refillReservations = spies.refillReservations;
+  if (spies.modelCalls !== 0 || spies.requestTimeAuthoring !== 0 || spies.refillReservations !== 0) {
+    throw new Error(`Acceptance production-path spies were ${spies.modelCalls}/${spies.requestTimeAuthoring}/${spies.refillReservations}`);
+  }
 
   writeFileSync(new URL('../ADDON3-ACCEPTANCE.md', import.meta.url), renderMarkdown(report));
   writeFileSync(new URL('../ADDON3-ACCEPTANCE.json', import.meta.url), JSON.stringify(report, null, 2));
@@ -294,9 +377,9 @@ Generated: ${report.generatedAt}
 - restart == uninterrupted
 - differing observer schedules == same canonical history
 - 0 model calls, 0 request-time authoring, 0 refill reservations
-- Active reservoir identity preserved (874 scenes, 673 quips)
-- MEU cadence remains healthy
-- Legion job and social cadence remains healthy
+- Active reservoir identity preserved (874 / 673 / 91 / ${report.futureInactive}-inactive)
+- Addon 1 MEU cadence unchanged
+- Addon 2 Legion behaviour/social cadence unchanged
 - ordinary sleep / meals / training / travel remain healthy
 - zero manufactured feeding events (natural volume is 0)
 - suspicion != guilt (unverified notices resolve cleanly)
@@ -315,10 +398,15 @@ Generated: ${report.generatedAt}
 | Refill reservations | ${report.refillReservations} |
 | Active Scenes | ${report.activeScenes} |
 | Active Quips | ${report.activeQuips} |
+| Inactive production rows | ${report.inactiveProduction} |
+| Future simulation inactive | ${report.futureInactive} |
+| future.duskkin quarantined | ${report.futureDuskkin} |
 | 30d one-shot == chunked | PASS |
 | 30d restart | PASS |
 | 30d observer schedules | PASS |
 | 90d one-shot == chunked | PASS |
+| 90d restart | PASS |
+| 90d observer schedules | PASS |
 | Prose-removal identity | PASS |
 
 ## 30-day census
@@ -343,7 +431,7 @@ ${SEEDS.map(seed => line(seed, report.ninetyDays[seed].stats)).join('\n')}
 
 ${report.dormantPaths.map(item => `- ${item}`).join('\n')}
 
-Natural Duskkin case volume is zero on canonical seeds because no feeding incidents arise naturally. This is an honest invariant, not a missing generator. Invariant compliance, containment jurisdiction, Zara liaison transfer, Council notification, and clean closure are fully proven in unit tests.
+Natural Duskkin case volume is zero on canonical seeds because no dedicated DUSKKIN_COMPLIANCE_INCIDENT is issued. This is an honest invariant, not a missing generator. Lifecycle proof, evidence sufficiency, containment jurisdiction, Zara offscreen transfer, Council notification, and clean closure are proven through the Worldstream reducer in production-path tests.
 `;
 }
 

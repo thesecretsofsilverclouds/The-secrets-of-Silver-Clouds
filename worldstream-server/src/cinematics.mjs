@@ -10,6 +10,7 @@ import { daypart, dayPhase, daylightFraction } from './sky.mjs';
 import { londonClock, londonDate } from './time.mjs';
 import { findSpoilers, properNouns } from './presentation.mjs';
 import { settingForPerformance, SCENE_LOCATION_ALIASES } from './cinematic-setting.mjs';
+import { noteModelCall } from './production-path-spies.mjs';
 
 export const CINEMATIC_RULES_VERSION = 'worldstream-cinematic-v1';
 export const CINEMATIC_PROMPT_VERSION = 'sentient-scene-v3';
@@ -578,6 +579,7 @@ export function openAICinematicClient({ apiKey, model = DEFAULT_CINEMATIC_MODEL,
   if (!apiKey) throw new TypeError('An API key is required');
   return async function generate(packet, { signal, repairReason } = {}) {
     const timeout = AbortSignal.timeout(timeoutMs);
+    noteModelCall();
     const response = await fetchImpl('https://api.openai.com/v1/responses', {
       method: 'POST', signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
       headers: { 'content-type': 'application/json', authorization: `Bearer ${apiKey}` },
