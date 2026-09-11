@@ -23,6 +23,7 @@ import { openFeedbackStore, FeedbackError, MAX_FEEDBACK_BODY_BYTES } from './src
 import { openAudienceStore } from './src/audience-store.mjs';
 import { BACKGROUND_BY_ID, selectVisualVocabulary } from './src/cinematic-assets.mjs';
 import { daypart } from './src/sky.mjs';
+import { createSceneReservoirRuntime } from './src/scene-reservoir-runtime.mjs';
 
 const directory = dirname(fileURLToPath(import.meta.url));
 // The reader app now lives in the website itself — `worldstream/app/` — because
@@ -156,6 +157,8 @@ export function createApp({ world, socialStore, feedbackStore, audienceStore, ci
     store: sceneStore, client: sceneClient, config: sceneConfig, now,
     getPresence: at => viewers.snapshot(at),
   });
+  const sceneReservoir = (world.db && typeof world.db.exec === 'function' && typeof world.db.prepare === 'function')
+    ? createSceneReservoirRuntime({ db: world.db, env: process.env }) : null;
   const sessions = new Map();
   function heartbeat(request, at) {
     for (const [id, lastSeen] of sessions) if (at - lastSeen > 86_400_000) sessions.delete(id);
@@ -179,6 +182,15 @@ export function createApp({ world, socialStore, feedbackStore, audienceStore, ci
         ...(row?.scene && ['performed', 'fallback'].includes(row.status) ? { cinematic: editorialCinematicRecordForApi(row,
           { event: world.eventById?.(row.eventId), snapshot: snap, publicSourcesForEvent: dialogueSourcesForEvent }) } : {}) };
     }) };
+  }
+
+  function runSceneReservoirMaintenance(atMs) {
+    if (!sceneReservoir) return;
+    try {
+      const snapshot = world.presentationSnapshot?.() ?? world.semanticSnapshot?.();
+      const result = sceneReservoir.tick(snapshot, atMs);
+      result?.generation?.catch(() => {});
+    } catch {}
   }
 
   function getClientOrigin(req) {
@@ -779,6 +791,7 @@ export function createApp({ world, socialStore, feedbackStore, audienceStore, ci
       try { sceneStore.close(); } catch {}
     });
   }
+  server.runSceneReservoirMaintenance = runSceneReservoirMaintenance;
   return server;
 }
 
