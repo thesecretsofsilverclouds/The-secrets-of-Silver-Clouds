@@ -135,14 +135,25 @@ test('public context retains an ordinary source for retrieval and orders same-ti
   assert.equal(result[1].contextBridge.originEventId, source.id);
 });
 
-test('ordinary scene setup keeps a short recorded action when the next scene needs it', () => {
-  const meal = passage('meal', 10, { type: 'MEAL_BEGIN', room: 'the lunch hall' });
+test('ordinary scene setup shows the passage the world committed for it, or a short line when there is none', () => {
+  // The row is shown either way as the setup for the exchange. It used to be
+  // demoted to its ticker line even when a passage existed; the 90-day census
+  // found that demotion to be the reader's largest source of repeated text.
   const exchange = passage('exchange', 1000, { type: 'CONVERSATION', room: 'the lunch hall',
     lines: [{ who: 'ashai', text: 'I kept your seat.' }] });
-  const result = forwardReadingEvents([exchange, meal]);
-  assert.equal(result[0].readerWeight, 1); assert.equal(result[0].readerProse, '');
-  assert.equal(result[0].readerDescription, meal.description);
-  assert.equal(result[1].readerSceneStart, false);
+  const meal = passage('meal', 10, { type: 'MEAL_BEGIN', room: 'the lunch hall' });
+  const withPassage = forwardReadingEvents([exchange, meal]);
+  assert.equal(withPassage[0].readerWeight, 2); assert.equal(withPassage[0].readerProse, meal.prose);
+  assert.equal(withPassage[1].readerSceneStart, false);
+  const bare = passage('bare', 10, { type: 'MEAL_BEGIN', room: 'the lunch hall', prose: '', register: 'ticker' });
+  const withoutPassage = forwardReadingEvents([exchange, bare]);
+  assert.equal(withoutPassage[0].readerWeight, 1); assert.equal(withoutPassage[0].readerProse, '');
+  assert.equal(withoutPassage[0].readerDescription, bare.description);
+  // A passage this window has already shown is not performed again as setup.
+  const earlier = passage('earlier', 5, { type: 'MEAL_BEGIN', room: 'the lunch hall' });
+  const again = forwardReadingEvents([exchange, meal, earlier]);
+  assert.equal(again.find(r => r.id === 'meal').readerWeight, 1); assert.equal(again.find(r => r.id === 'meal').readerProse, '');
+  assert.equal(forwardReadingEvents([exchange, meal]).length, withPassage.length, 'no row is added');
 });
 
 test('selection and scene boundaries agree across paging, duplicates, and reload order', () => {

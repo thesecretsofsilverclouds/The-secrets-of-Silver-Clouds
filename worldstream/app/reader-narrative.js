@@ -194,14 +194,25 @@ export function forwardReadingEvents(events = [], locationLabel = value => value
       } else if (ordinary && !hasContext(event) && !neededOrigins.has(event.id)) {
         if (recentMundane && event.type === 'CROSS_PATHS') {
           weight = 0; prose = ''; omission = 'routine';
+        } else if (setup) {
+          // The row is shown either way, as the setup for the scene that
+          // follows. If the world committed a passage for it and this window
+          // has not already shown that passage, the passage is the better
+          // text for the same row. Nothing new is shown; a line becomes a
+          // paragraph. The 90-day census found the reader demoting 718 such
+          // passages a world to their ticker lines, and the ticker lines are
+          // the most repeated text the reader sees.
+          const keep = Boolean(prose) && !repeated;
+          weight = keep ? 2 : 1; prose = keep ? prose : ''; omission = null;
         } else {
-          weight = setup ? 1 : 0; prose = ''; omission = setup ? null : 'routine';
+          weight = 0; prose = ''; omission = 'routine';
         }
       } else if (ordinary && neededOrigins.has(event.id)) {
         if (recentMundane && !setup) {
           weight = 0; prose = ''; omission = 'routine';
         } else {
-          weight = 1; prose = '';
+          const keep = Boolean(prose) && !repeated;
+          weight = keep ? 2 : 1; prose = keep ? prose : '';
         }
       } else if (recentMundane && !setup && !hasRealOrigin && !neededOrigins.has(event.id)) {
         // Cooldown for ungrounded mundane beats
