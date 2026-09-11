@@ -50,7 +50,8 @@ test('observe/refill boundary: Node /api/observe is strictly reader catch-up and
   const server = createApp({
     world,
     now: () => startMs + 3600_000,
-    cinematicOptions: { enabled: false }
+    cinematicOptions: { enabled: false },
+    cinematicClient: () => { clientCallCount++; }
   });
 
   try {
