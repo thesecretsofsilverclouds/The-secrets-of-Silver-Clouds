@@ -1310,7 +1310,7 @@ test('a publicly visible event teaches Goaden and Ashai nothing by itself', t =>
     // Reading an available report, doing the recorded preparation/work, and
     // participating in an actual negotiation/session are explicit acquisitions.
     // Merely announcing an agenda, restriction or future intention is absent.
-    'AGENDA_REPORT_READ', 'GROUND_PREPARED', 'GROUND_WORK_COMPLETED',
+    'AGENDA_REPORT_READ', 'MEU_REPORT_READ', 'GROUND_PREPARED', 'GROUND_WORK_COMPLETED',
     'INTENT_OFFER', 'INTENT_RESPONSE', 'INTENT_RENEGOTIATE', 'INTENT_COMPLETE', 'INTENT_INTERRUPTED',
     // The supporting, offscreen and night families are pulled in from their own
     // modules rather than retyped, so a new event type cannot quietly grant

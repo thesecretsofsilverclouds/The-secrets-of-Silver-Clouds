@@ -8,8 +8,9 @@ import { DatabaseSync } from 'node:sqlite';
 import { WorldStore } from '../experiment-l/src/world.mjs';
 import { createFixture, eventId, RULES_VERSION } from '../src/fixture.mjs';
 import { initialOffscreenLives } from '../src/offscreen-lives.mjs';
-import { openPinnedWorld, restoreWorldBackup } from '../src/world-operations.mjs';
 import { upgradeOffscreenLives } from '../src/lives-upgrade.mjs';
+import { upgradeMeuCases } from '../src/meu-upgrade.mjs';
+import { openPinnedWorld, restoreWorldBackup } from '../src/world-operations.mjs';
 import { atLondon } from '../src/time.mjs';
 
 const OLD = 'canon-ambient-p183-v22', NEXT = 'canon-ambient-p183-v23';
@@ -51,7 +52,7 @@ function legacy(t) {
 
 test('v22 to v23 preserves old ledger bytes, memories, clock, seed and every existing pending action', t => {
   const f = legacy(t), before = snapshot(f);
-  assert.equal(RULES_VERSION, NEXT);
+  assert.ok([NEXT, 'canon-ambient-p183-v24'].includes(RULES_VERSION));
   assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
   const result = upgradeOffscreenLives(f), after = snapshot(f);
   assert.equal(result.status, 'upgraded'); assert.equal(result.rulesVersion, NEXT);
@@ -91,16 +92,26 @@ test('v22 to v23 preserves old ledger bytes, memories, clock, seed and every exi
 test('activation begins after the cutover without backfilling events or changing continuity', t => {
   const f = legacy(t), history = events(f.db);
   upgradeOffscreenLives(f);
+  if (RULES_VERSION === 'canon-ambient-p183-v24') {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeMeuCases({ directory: f.directory, backupPath: join(f.directory, 'before-v24.sqlite') });
+  }
   const world = openPinnedWorld({ directory: f.directory });
   try {
     const continuity = world.publicProjection().continuityId;
     assert.equal(world.semanticSnapshot().events.length, history.length);
     world.advance(cutover + 1);
     const after = world.semanticSnapshot();
-    assert.equal(after.events.length, history.length + 1);
-    assert.equal(after.events.at(-1).type, 'WORLD_LIVES_ACTIVATE');
-    assert.equal(after.events.at(-1).occurredAt, cutover + 1);
-    assert.equal(after.events.at(-1).visibility, 'private');
+    const activations = after.events.slice(history.length);
+    assert.ok(activations.some(e => e.type === 'WORLD_LIVES_ACTIVATE'));
+    if (RULES_VERSION === 'canon-ambient-p183-v24') {
+      assert.ok(activations.some(e => e.type === 'WORLD_MEU_ACTIVATE'));
+      assert.equal(activations.length, 2);
+    } else {
+      assert.equal(activations.length, 1);
+    }
+    assert.equal(activations[0].occurredAt, cutover + 1);
+    assert.equal(activations[0].visibility, 'private');
     assert.ok(after.pendingActions.every(action => action.dueAt > cutover + 1));
     assert.equal(world.publicProjection().continuityId, continuity);
     assert.deepEqual(events(f.db).slice(0, history.length), history);

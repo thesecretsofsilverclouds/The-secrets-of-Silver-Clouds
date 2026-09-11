@@ -16,13 +16,13 @@ const accepted=batch.entries.find(e=>e.id==='domestic.shared_meal.02');
 const one=entry=>({...batch,entries:[entry]});
 const sceneContext=(scene,{type=scene.reservoir.triggerTypes[0],at=atLondon('2026-09-10','13:00'),weather='storm'}={})=>({
   now:at,event:{type,visibility:'public',location:scene.location,area:scene.area},
-  state:{weather:{code:weather},characters:Object.fromEntries(Object.entries(scene.reservoir.activitiesByActor)
+  state:{weather:{code:weather},characters:Object.fromEntries(Object.entries(scene.reservoir.activitiesByActor??{})
     .map(([id,activities])=>[id,{id,activity:activities[0],location:scene.location,area:scene.area,journey:null,activitySince:at-3600000}]))}});
 
-test('all 140 supplied surfaces are retained, with 22 unchanged reviewed scenes and explicit rejection/staging reasons',()=>{
+test('all 140 supplied surfaces are retained, with reviewed scenes and explicit rejection/staging reasons',()=>{
   assert.equal(batch.entries.length,140);
   const report=SCENE_RESERVOIR_IMPORT_REPORT[0];
-  assert.equal(report.total,140);assert.equal(report.accepted,22);assert.equal(report.staged,111);assert.equal(report.rejected,7);
+  assert.equal(report.total,140);assert.equal(report.accepted,118);assert.equal(report.staged,22);assert.equal(report.rejected,0);
   const allEntries = SCENE_RESERVOIR_BATCHES.flatMap(b=>b.entries);
   for(const scene of SCENE_RESERVOIR_CATALOG) {
     const source=allEntries.find(entry=>entry.id===scene.reservoir.sourceId);
@@ -94,7 +94,19 @@ test('monthly importer produces an explicit report without any saved-world or pr
     const run=spawnSync(process.execPath,[script,'--input',input,'--report',output],{encoding:'utf8'});
     assert.equal(run.status,0,run.stderr);
     const report=JSON.parse(readFileSync(output,'utf8'));
-    assert.equal(report.accepted,22);assert.equal(report.rows.length,140);
+    assert.equal(report.accepted,118);assert.equal(report.rows.length,140);
     assert.equal(JSON.parse(run.stdout).write,false);
   } finally {rmSync(directory,{recursive:true,force:true});}
+});
+test('the supporting/world lane admits committed events with no lead',()=>{
+  const emily=SCENE_RESERVOIR_CATALOG.find(s=>s.cast.includes('emily')&&!s.cast.includes('goaden')&&!s.cast.includes('ashai'));
+  assert.ok(emily,'Emily-only surfaces are selectable');
+  assert.equal(emily.reservoir.lane,'supporting');
+  const world=SCENE_RESERVOIR_CATALOG.find(s=>s.reservoir.lane==='world'||s.reservoir.family==='world.weather_magic');
+  assert.ok(world,'world/weather surfaces are selectable');
+});
+test('callback surfaces stay inactive until a real origin event is known',()=>{
+  const callbacks=SCENE_RESERVOIR_IMPORT_REPORT[0].rows.filter(r=>String(r.id).startsWith('callback.'));
+  assert.ok(callbacks.length);
+  assert.ok(callbacks.every(r=>r.status==='staged'&&/origin event/.test(r.reason)));
 });

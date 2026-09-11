@@ -20,7 +20,8 @@ export const SCENE_BANK_RULES = Object.freeze({version:1,ordinaryGap:12*60*MIN,n
   gatherDuration:3*MIN,sceneDuration:5*MIN,retainedProofs:16,replayCooldownDays:21});
 const TYPES = new Set(SCENE_BANK_EVENT_TYPES), DAY = 24*60*MIN;
 const OPPORTUNITIES = new Set(['PRACTICE_BEGIN','PRACTICE_END','MEAL_BEGIN','GAME_BEGIN','GAME_PAUSE',
-  'PIANO_BEGIN','ACTIVITY_COMPLETE','CITY_ACTIVITY_BEGIN','CROSS_PATHS','TRAVEL_ARRIVE','SIDE_PRESENCE',
+  'PIANO_BEGIN','ACTIVITY_COMPLETE','CITY_ACTIVITY_BEGIN','CROSS_PATHS','TRAVEL_ARRIVE','TRAVEL_DEPART',
+  'LEGION_VISIT','SANCTUARY_VISIT','SIDE_PRESENCE',
   'VENUE_SCENE','CONVERSATION','SUPPORTING_ENCOUNTER','SUPPORTING_OUTCOME','OFFSCREEN_RESULT',
   'OFFSCREEN_ENCOUNTER','AGENDA_RESOLVE','INCIDENT','AFTERMATH']);
 const ordinary = new Set(['unhurried_time','quiet_break','eating','gaming','watching_television',
@@ -243,11 +244,9 @@ function holderPresent(state,location) {
 function eligible(ctx, scene, {gather=false}={}) {
   const state=ctx.state, now=ctx.now, bank=of(state), isNimbus=scene.id.startsWith('P');
   if (scene.status==='excluded' || sceneSpent(bank,scene,now) || !scene.location || !areaOf(scene.location,scene.area)) return false;
-  // A reservoir entry carries its own gates — the exact source event, what each
-  // lead must be doing and for how long, weather, daypart. They are the entry's
-  // contract with the world and the same terms the health ledger counts demand
-  // by, so the two cannot disagree about what an entry needs.
-  if (scene.reservoir && !reservoirSceneEligible(ctx,scene)) return false;
+  // Reservoir prose is presentation of an already committed event. It must not
+  // book SCENE_BANK_BEAT actions or share the ordinary-scene cadence window.
+  if (scene.reservoir) return false;
   if (scene.dependencies.some(id=>!bank.completed[id])) return false;
   if (scene.night && !['night','small_hours'].includes(daypart(now))) return false;
   if (!isNimbus && !guardedPrerequisite(ctx,scene)) return false;
@@ -346,7 +345,7 @@ export function sceneBankAfterAction(ctx) {
   // window that a deferral would miss.
   const afterDirector=ctx.state.director?.lastBeatAt&&ctx.now-ctx.state.director.lastBeatAt<DIRECTOR_RULES.spacingMinutes*MIN;
   if (!choice && !afterDirector && bank.nextEligibleAt<=ctx.now) {
-    const options=SCENE_BANK_CATALOG.filter(scene=>!scene.id.startsWith('P') && eligible(sceneContext,scene));
+    const options=SCENE_BANK_CATALOG.filter(scene=>!scene.reservoir && !scene.id.startsWith('P') && eligible(sceneContext,scene));
     // Fewest performances first, then the day's seeded order within that tier.
     // Nothing comes round a second time while the bank still holds something
     // this world has never shown, which is the whole of the repetition rule.

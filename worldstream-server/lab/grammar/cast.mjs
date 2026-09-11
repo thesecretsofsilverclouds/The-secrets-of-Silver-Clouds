@@ -1,4 +1,5 @@
 import { defineCast, quip } from '../engine/grammar.mjs';
+import { applyValidatedMomentGrammar, VALIDATED_MOMENT_GRAMMAR_REPORT } from './validated-lines.mjs';
 
 // Four grammars. Emily is the quality fixture; the other three exist to prove
 // that the same seven practices produce structurally different behaviour rather
@@ -734,5 +735,7 @@ export const CAST = defineCast([
     },
   },
 ]);
+
+Object.assign(VALIDATED_MOMENT_GRAMMAR_REPORT, applyValidatedMomentGrammar(CAST));
 
 export const CAST_IDS = [...CAST.keys()];

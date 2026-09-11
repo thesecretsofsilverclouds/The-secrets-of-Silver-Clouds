@@ -2,22 +2,34 @@ import { SCENE_RESERVOIR_CATALOG } from './scene-reservoir-catalog.mjs';
 
 const HOUR = 3_600_000, DAY = 24 * HOUR, WINDOW = 72 * HOUR;
 const LEADS = new Set(['goaden', 'ashai']);
-const GATES = ['triggerTypes', 'activitiesByActor', 'minimumActivityMsByActor', 'weatherCodes', 'dayparts'];
+const GATES = ['triggerTypes', 'activitiesByActor', 'minimumActivityMsByActor', 'weatherCodes', 'dayparts',
+  'lane', 'requiredCast', 'optionalCast', 'originTypes'];
 const lastAt = record => record?.lastAt ?? record?.at;
 const valid = scene => scene.status === 'enabled' && scene.effectPolicy === 'surface_only'
   && scene.reservoir?.family && scene.reservoir?.sourceId && !scene.dependencies?.length
-  && scene.reservoir.triggerTypes?.length && scene.cast?.some(id => LEADS.has(id))
+  && scene.reservoir.triggerTypes?.length
   && scene.beats?.some(beat => beat.kind === 'prose' && beat.text?.trim());
 function freeze(value) {
   if (value && typeof value === 'object') { Object.values(value).forEach(freeze); Object.freeze(value); }
   return value;
 }
 function matches(event, scene) {
-  if (!scene.reservoir.triggerTypes.includes(event.type) || event.location !== scene.location
-    || event.area !== scene.area) return false;
+  if (!scene.reservoir.triggerTypes.includes(event.type) &&
+      !(scene.reservoir.triggerTypes.includes('SANCTUARY_VISIT')
+        && ((event.type === 'TRAVEL_ARRIVE' && event.location === 'sanctuary')
+          || (event.type === 'VENUE_SCENE' && event.location === 'sanctuary')))) return false;
+  if (scene.reservoir.triggerTypes.includes('LEGION_VISIT') && event.type === 'LEGION_VISIT') {
+    /* Legion visits occur wherever the pair actually are, not at the warehouse. */
+  } else if (scene.reservoir.triggerTypes.includes('WEATHER_CHANGE') && event.type === 'WEATHER_CHANGE') {
+    /* World weather has no single room. */
+  } else if (event.location !== scene.location || (scene.area && event.area && event.area !== scene.area
+      && !(event.type === 'TRAVEL_DEPART' && scene.location === 'streamliner'))) return false;
   const witnesses = new Set([...(event.participants ?? []), ...(event.payload?.cast ?? []),
     ...(event.payload?.visitors ?? []), event.payload?.who]);
-  return scene.cast.every(id => LEADS.has(id) ? event.participants?.includes(id)
+  if (witnesses.has('goaden')) witnesses.add('kai');
+  if (witnesses.has('ashai')) witnesses.add('greah');
+  const required = (scene.reservoir.requiredCast ?? scene.cast ?? []).filter(id => id && id !== 'world');
+  return required.every(id => LEADS.has(id) ? event.participants?.includes(id)
     : id === 'kai' ? event.participants?.includes('goaden')
       : id === 'greah' ? event.participants?.includes('ashai') : witnesses.has(id));
 }

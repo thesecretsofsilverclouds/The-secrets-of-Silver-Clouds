@@ -8,11 +8,12 @@ import { worldEditorial } from './editorial-world.mjs';
 import { sceneEditorial } from './editorial-scenes.mjs';
 import { sceneBankEditorial } from './scene-bank-presentation.mjs';
 import { domesticEditorial } from './editorial-domestic.mjs';
+import { reservoirPresentation } from './scene-reservoir-select.mjs';
 
 // A new edition of the words, not a new edition of the world. Never called by
 // the reducer: event identity, effects, knowledge and the stored scene packet
 // are immutable. This also lets old recorded scenes receive copy corrections.
-export const EDITORIAL_REVISION = 'silver-clouds-editorial-v5';
+export const EDITORIAL_REVISION = 'silver-clouds-editorial-v6';
 export function correctEditorialText(value) {
   return typeof value === 'string' ? value.replaceAll(
     'the street it had left was one street shorter than it should be',
@@ -24,7 +25,14 @@ export function correctEditorialText(value) {
     'Only part of the record could be cross-checked. What was checked was fine; what was not remains not.',
     'They had checked only part of the dispatch record. Those entries matched, but the rest still needed comparing. MI6 could not clear the record yet.').replaceAll(
     'The review window closed and the allocation came off the board. Two people got their afternoon back.',
-    'The time set aside for the dispatch review had run out. Its staff were released to return to their other work.') : value;
+    'The time set aside for the dispatch review had run out. Its staff were released to return to their other work.').replaceAll(
+    '“Do not tell Whisper.”', '“Do not tell anyone.”').replaceAll(
+    'Do not tell Whisper.', 'Do not tell anyone.').replaceAll(
+    'Whisper closed his visible eye and returned to doing professionally nothing.', 'The room hummed quietly, settling back into routine.').replaceAll(
+    'Somewhere behind them, Whisper had claimed a sofa and the right to judge everyone without participating.', 'Somewhere behind them, the common room hummed quietly in the afternoon light.').replaceAll(
+    'Whisper watched from the sofa with one bandaged eye visible.', 'The room remained quiet from the corner to the door.').replaceAll(
+    'Whisper had chosen the exact middle of the passage to lean against the wall.', 'A maintenance cart had chosen the exact middle of the passage.').replaceAll(
+    'Goaden tossed Whisper a practice blade. Whisper let it bounce off the mat.', 'Goaden retrieved a practice blade from the rack.') : value;
 }
 const pair = event => ['goaden', 'ashai'].every(id => event.participants?.includes(id));
 const pick = (event, choices) => choices[createHash('sha256')
@@ -359,7 +367,21 @@ export function editorialEvent(event, context = {}) {
     || !text(event.id) || !Number.isSafeInteger(event.occurredAt)
     || (Number.isSafeInteger(context.asOf) && event.occurredAt > context.asOf)) return event;
   const ownContext = { ...performanceContext(event), ...(context?.ashaiCoveredFloor !== undefined ? { ashaiCoveredFloor: context.ashaiCoveredFloor } : {}) };
-  const revision = sceneBankEditorial(event) ?? livesEditorial(event) ?? supportingEditorial(event, ownContext) ?? nightEditorial(event, ownContext) ?? callbackEditorial(event, ownContext) ?? worldEditorial(event) ?? sceneEditorial(event) ?? generalEditorial(event) ?? domesticEditorial(event);
+  const exclusive = sceneBankEditorial(event) ?? livesEditorial(event)
+    ?? supportingEditorial(event, ownContext) ?? nightEditorial(event, ownContext)
+    ?? callbackEditorial(event, ownContext) ?? sceneEditorial(event);
+  const reservoir = context.skipReservoir ? null : reservoirPresentation(event, {
+    memory: context.reservoirMemory ?? null,
+    seed: context.seed ?? '',
+    weatherCode: context.weatherCode ?? event.payload?.weatherCode ?? null,
+    knownEventIds: context.knownEventIds ?? null,
+    now: event.occurredAt,
+    catalog: context.reservoirCatalog,
+  });
+  const fallback = worldEditorial(event) ?? generalEditorial(event) ?? domesticEditorial(event);
+  const revision = exclusive ?? (reservoir
+    ? { ...(fallback?.description ? { description: fallback.description } : {}), prose: reservoir.prose }
+    : fallback);
   return { ...event, publicDescription: correctEditorialText(revision?.description ?? event.publicDescription),
     ...((revision?.prose ?? event.prose) ? { prose: correctEditorialText(revision?.prose ?? event.prose) } : {}),
     ...(Array.isArray(revision?.lines) ? { lines: revision.lines } : (Array.isArray(event.lines) ? { lines: event.lines } : {})),

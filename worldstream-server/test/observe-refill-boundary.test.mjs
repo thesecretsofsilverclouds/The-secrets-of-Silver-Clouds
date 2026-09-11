@@ -134,3 +134,89 @@ test('observe/refill boundary: Cloudflare DO alarm owns scheduled maintenance', 
   assert.ok(nextAlarm > 0, 'alarm schedules the next alarm 60 seconds out');
   assert.ok(doObj.getResolvedThrough() >= startMs, 'alarm advances world progression');
 });
+
+test('Correction 5: Hardened Phase 0 observe spy test: request/observe paths cannot author text, mutate ledger, or reserve refill', async () => {
+  const startMs = atLondon('2026-09-04', '00:00');
+  const world = openWorld({ dbPath: ':memory:', startMs, seed: 'test-seed-hardened-spy' });
+  world.advance(startMs + 3600_000);
+
+  // Snapshot ledger and pending before hammering requests
+  const eventsBefore = world.db.prepare('SELECT seq, id, occurred_at, semantic_json FROM events ORDER BY seq').all();
+  const pendingBefore = world.db.prepare('SELECT id, due_at, priority, action_json FROM scheduled_actions ORDER BY id').all();
+  const stateRowBefore = world.db.prepare('SELECT * FROM world_state WHERE id=1').get();
+
+  const prevEnabled = process.env.RESERVOIR_REFILL_ENABLED;
+  const prevKey = process.env.OPENAI_API_KEY;
+  process.env.RESERVOIR_REFILL_ENABLED = 'true';
+  process.env.OPENAI_API_KEY = 'test-mock-key';
+
+  let cinematicCalls = 0;
+  let authoringCalls = 0;
+
+  const server = createApp({
+    world,
+    now: () => startMs + 3600_000,
+    cinematicOptions: { enabled: false },
+    cinematicClient: () => { cinematicCalls++; },
+  });
+
+  try {
+    await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+    const port = server.address().port;
+    const base = `http://127.0.0.1:${port}`;
+    const testEventId = eventsBefore[0]?.id || 'evt-test';
+
+    // Hammer reader and observation endpoints concurrently
+    const endpoints = [
+      () => fetch(`${base}/api/observe`, { method: 'POST' }),
+      () => fetch(`${base}/api/presence`),
+      () => fetch(`${base}/api/events/${testEventId}/social`),
+      () => fetch(`${base}/api/dispatch/latest`),
+      () => fetch(`${base}/api/events/${testEventId}/wager`),
+      () => fetch(`${base}/api/highlights/today`),
+    ];
+
+    const requests = [];
+    for (let round = 0; round < 10; round++) {
+      for (const fn of endpoints) {
+        requests.push(fn());
+      }
+    }
+
+    const responses = await Promise.all(requests);
+    for (const res of responses) {
+      assert.ok([200, 404].includes(res.status), `Unexpected status ${res.status}`);
+    }
+
+    // Strictly 0 model calls and 0 authoring calls
+    assert.equal(cinematicCalls, 0, 'Cinematic model client must never be invoked by observe or query paths');
+    assert.equal(authoringCalls, 0, 'No authoring calls may occur on observe or query paths');
+
+    // Refill reservations must be 0
+    const refillTable = world.db.prepare(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='scene_refill_state'"
+    ).get();
+    if (refillTable) {
+      const row = world.db.prepare('SELECT state_json FROM scene_refill_state WHERE id = 1').get();
+      if (row) {
+        const state = JSON.parse(row.state_json);
+        assert.equal(state.attempts?.length ?? 0, 0, 'Zero refill attempts or reservations');
+      }
+    }
+
+    // Ledger, state row, and pending actions must be completely identical
+    const eventsAfter = world.db.prepare('SELECT seq, id, occurred_at, semantic_json FROM events ORDER BY seq').all();
+    const pendingAfter = world.db.prepare('SELECT id, due_at, priority, action_json FROM scheduled_actions ORDER BY id').all();
+    const stateRowAfter = world.db.prepare('SELECT * FROM world_state WHERE id=1').get();
+
+    assert.deepEqual(eventsAfter, eventsBefore, 'World ledger must not be mutated by observe/query endpoints');
+    assert.deepEqual(pendingAfter, pendingBefore, 'Pending scheduled actions must not be mutated by observe/query endpoints');
+    assert.deepEqual(stateRowAfter, stateRowBefore, 'World state row must not be mutated by observe/query endpoints');
+  } finally {
+    process.env.RESERVOIR_REFILL_ENABLED = prevEnabled;
+    process.env.OPENAI_API_KEY = prevKey;
+    await new Promise(r => server.close(r));
+    world.close();
+  }
+});
+

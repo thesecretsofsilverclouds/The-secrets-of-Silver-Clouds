@@ -156,7 +156,7 @@ test('the integrated edition changes public wording without changing truth, dial
   assert.equal(JSON.stringify(row), before);
   const piano = source('PIANO_BEGIN', 'The same eight bars came out of the music room a dozen times before they turned into the rest of it.',
     {}, { participants: ['goaden'], register: 'ticker' });
-  const readable = editorialEvent(piano);
+  const readable = editorialEvent(piano, { skipReservoir: true });
   assert.equal(readable.register, 'ticker');
   assert.match(readable.publicDescription, /Goaden repeated an eight-bar phrase/);
   assert.equal(Object.hasOwn(readable, 'prose'), false);

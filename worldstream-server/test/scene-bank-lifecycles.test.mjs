@@ -140,35 +140,16 @@ test('authored prose does not reset the director’s quiet, and the two only sha
   assert.ok(SCENE_BANK_RULES.ordinaryGap===12*60*MIN,'the bank keeps its own cadence; nothing here tuned it');
 });
 
-test('the bank enforces a reservoir entry’s own gates at offer and again at commit',()=>{
+test('reservoir prose is presentation-only: the bank never books a reservoir SCENE_BANK_BEAT',()=>{
   const h=harness(), now=START+15*60*MIN; h.place(now);
-  // Only reservoir material left: every ordinary authored scene is already
-  // spent, and the Nimbus chain cannot start in a common room.
   h.state.sceneBank={...(h.state.sceneBank??{}),version:1,completed:Object.fromEntries(SCENE_BANK_CATALOG
     .filter(s=>!s.reservoir&&!s.id.startsWith('P')).map(s=>[s.id,{eventId:'evt:spent',at:START,cast:[]}])),knowledge:{},proofs:{},pending:null,session:null,
     nextEligibleAt:0,nextNimbusAt:0,nimbus:{arrivedAt:null,holder:null,place:null,knownBy:{},bounty:null,report:null,damage:{},feeders:[],namedAt:null}};
-  assert.ok(SCENE_BANK_CATALOG.some(s=>s.reservoir),'reservoir entries are in the catalogue');
-  const leads=['goaden','ashai'].map(id=>h.state.characters[id]);
-  const source=(t,type='ACTIVITY_COMPLETE')=>({id:`source:${t}`,type,occurredAt:t,visibility:'public',participants:['goaden','ashai'],
-    location:'mi6',area:'common_room',payload:{}});
-  const offered=(t,type)=>{ h.state.sceneBank={...h.state.sceneBank,pending:null,nextEligibleAt:0};
-    return h.probe(t,{type,cast:['goaden','ashai']}).filter(a=>String(a.sceneBankId).startsWith('R:')); };
-  // Nobody is doing anything any entry asks for: nothing.
-  for (const actor of leads) actor.activity='training';
-  assert.deepEqual(offered(now),[],'an entry whose activity gate is unmet is never offered');
-  // Whatever is offered had its whole gate met at that moment, including any
-  // minimum time in the activity — the bank asks the entry, not the other way.
-  for (const actor of leads) { actor.activity='unhurried_time'; actor.activitySince=now-5*MIN; }
-  for (const a of offered(now+1)) assert.ok(reservoirSceneEligible({state:h.state,now:now+1,event:source(now+1)},SCENE_BANK_BY_ID[a.sceneBankId]),a.sceneBankId);
-  // Right people, wrong source event: nothing, even with every physical gate satisfied.
-  for (const actor of leads) actor.activitySince=now-20*MIN;
-  assert.deepEqual(offered(now+2,'WEATHER_CHANGE'),[],'the exact source event type is part of the contract');
-  // Everything satisfied: a reservoir scene is offered.
-  const [booking]=offered(now+3); assert.ok(booking,'a satisfied entry is offered');
-  const scene=SCENE_BANK_BY_ID[booking.sceneBankId]; assert.equal(scene.effectPolicy,'surface_only');
-  assert.ok(reservoirSceneEligible({state:h.state,now:now+3,event:source(now+3)},scene));
-  // The world moves on between the offer and the performance: refused.
-  for (const actor of leads) actor.activity='training';
-  const refused=h.run(booking); assert.equal(refused.event.visibility,'private');
-  assert.equal(h.state.sceneBank.completed[scene.id],undefined,'a refused performance records nothing');
+  assert.ok(SCENE_BANK_CATALOG.some(s=>s.reservoir),'reservoir entries remain in the catalogue for historical beats');
+  for (const actor of ['goaden','ashai'].map(id=>h.state.characters[id])) {
+    actor.activity='unhurried_time'; actor.activitySince=now-20*MIN;
+  }
+  assert.deepEqual(h.probe(now,{type:'ACTIVITY_COMPLETE'}).filter(a=>String(a.sceneBankId).startsWith('R:')),[],
+    'reservoir size must not mint scene-bank actions');
+  assert.deepEqual(h.probe(now,{type:'TRAVEL_DEPART',location:'streamliner',area:'transit'}),[]);
 });

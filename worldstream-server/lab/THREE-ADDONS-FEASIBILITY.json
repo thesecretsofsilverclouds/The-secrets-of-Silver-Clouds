@@ -1,0 +1,76 @@
+{
+  "scope": "Feasibility experiments, not implemented addons or reader-quality proof",
+  "tests": {
+    "spectralArithmetic": {
+      "timesInSteps": {
+        "0.487": 1.3898711496317773,
+        "0.839": 5.6965589176215925,
+        "0.998": 499.4998331664548,
+        "0.621": 2.0989697966534386,
+        "0.963": 26.523885279190534
+      },
+      "stableEigenvalues": [
+        0.8,
+        0.8
+      ],
+      "transientGains": [
+        4.079215610874228,
+        6.43192039751737,
+        7.697047745726931,
+        8.202233607987525,
+        8.19855098065506,
+        7.86868785371081,
+        7.3430273202634275,
+        6.712983224422365
+      ]
+    },
+    "actualReducer": {
+      "pressureDerivative": 0.9999999999954489,
+      "retainedTrustStep": 1,
+      "fractionalTrustRejected": true,
+      "pressureAfterDay": 0.76,
+      "conclusion": "Pressure derivative one is ordinary additive decay; trust is integer-only. Neither proves instability."
+    },
+    "motifPulse": {
+      "initialAffinity": -0.4,
+      "peakFirst8Hours": 0.16607479500044736,
+      "residualAfter30Days": 0,
+      "isolatedNode": 0,
+      "opportunityWindowAffinity": {
+        "12": 0.038767813533241935,
+        "36": 0.0016684114600243793
+      }
+    },
+    "syntheticCSV": {
+      "routine": 0.026730638997086286,
+      "seed": 0.8326426344532625,
+      "loud": 0.24408564778956962
+    },
+    "unsignedSensitivity": {
+      "positive": 0.5877866649021191,
+      "negative": 0.5877866649021191,
+      "withoutReviewedBenefit": 0,
+      "caveat": "A benefit registry is not implemented. This demonstrates why divergence alone cannot rank choices."
+    },
+    "selector": {
+      "originalMultiplier": 6.12,
+      "combinedCap": 2,
+      "tenPercentAfterOriginal": 0.4047619047619048,
+      "tenPercentAfterCap": 0.18181818181818182
+    },
+    "catalog": {
+      "bankRows": 242,
+      "enabledReservoirRows": 108,
+      "reservoirFamilies": 13,
+      "contextSignatures": 36
+    },
+    "actual24Hours": {
+      "committedEvents": 107,
+      "processedActions": 107,
+      "advanceMs": 64.99869999999999,
+      "equalSteppedHistory": true,
+      "readOnlyProjection": true,
+      "caveat": "Node in-memory database; not Cloudflare CPU or candidate-rollout benchmark"
+    }
+  }
+}

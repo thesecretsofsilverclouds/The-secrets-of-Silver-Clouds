@@ -56,10 +56,10 @@ test('delivery resolution cannot invent accepted supplies, shop closing time, or
 test('travel prose does not finish a journey at departure or manufacture weather, opening hours or permission', () => {
   for (let i = 0; i < 20; i++) {
     const source = make('TRAVEL_DEPART', { to: 'sanctuary' }, { id: `travel:${i}`, location: 'streamliner' });
-    const revised = editorialEvent(source);
+    const revised = editorialEvent(source, { skipReservoir: true });
     assert.doesNotMatch(revised.prose, /arrived|came in|slept|whole way|gold|rain|night halls|invitation/i);
     const solo = { ...source, participants: ['goaden'] };
-    assert.equal(editorialEvent(solo).prose, solo.prose);
+    assert.equal(editorialEvent(solo, { skipReservoir: true }).prose, solo.prose);
   }
 });
 
@@ -96,7 +96,7 @@ test('resuming a game cannot narrate its duration or ending before it happens', 
   // Four resumption lines now, chosen by the event. Every one says the game
   // resumed and none says how long it went or how it ended.
   for (let i = 0; i < 12; i++) {
-    const revised = editorialEvent({ ...source, id: 'resume:' + i });
+    const revised = editorialEvent({ ...source, id: 'resume:' + i }, { skipReservoir: true });
     assert.match(revised.publicDescription, /returned to their unfinished game|picked up where they had left it|went back to the game|unfinished game resumed/);
     assert.doesNotMatch(revised.publicDescription, /longer|finished their|won|lost|ahead|behind|score/);
     assert.equal(revised.register, source.register);
