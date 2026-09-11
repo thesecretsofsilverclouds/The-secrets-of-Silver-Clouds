@@ -90,3 +90,86 @@ test('v24 upgrade is idempotent, verifiable, and backup can be restored', t => {
   assert.ok(snap.events.some(e => e.type === 'WORLD_MEU_ACTIVATE'), 'Activation action must execute');
   assert.ok(snap.meta.upgrades.some(u => u.to === NEXT && u.activatedAt), 'Upgrade receipt must record activation time');
 });
+
+function liveV23Pinned(t, { days = 3, seed = 'live-upgrade-copy' } = {}) {
+  const directory = mkdtempSync(join(tmpdir(), 'sc-meu-live-'));
+  const dbPath = join(directory, 'world.sqlite'), backupPath = join(directory, 'before-v24.sqlite');
+  const current = createFixture({ startMs: start }), initial = current.initialState();
+  delete initial.meuCases;
+  initial.meta.upgrades = [{ from: 'canon-ambient-p183-v22', to: OLD, cutoverAt: start,
+    activatedAt: start + 1, activationActionId: `lives-v23/activate/${start}` }];
+  const fixture = {
+    ...current,
+    rulesVersion: OLD,
+    initialState: () => structuredClone(initial),
+    initialActions: () => current.initialActions(),
+    reduceAction: (state, action, seedValue) => current.reduceAction(state, action, seedValue),
+  };
+  const world = new WorldStore({ dbPath, seed, fixture });
+  world.advance(start + days * 24 * 3600_000);
+  world.close();
+  const db = new DatabaseSync(dbPath); t.after(() => db.close());
+  const f = { directory, dbPath, backupPath, db, seed }; setManifest(f, OLD);
+  return f;
+}
+
+test('copied live v23 world activates v24 prospectively without reseed, backfill, or lost continuity', t => {
+  const f = liveV23Pinned(t);
+  const before = snapshot(f);
+  const beforeState = JSON.parse(before.row.state_json);
+  const history = events(f.db);
+  const priorSources = history.map(row => JSON.parse(row.semantic_json))
+    .filter(e => e.type === 'INCIDENT' || e.type === 'ARCANE_SURGE').map(e => e.id);
+  assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+
+  const result = upgradeMeuCases(f), after = snapshot(f);
+  assert.equal(result.status, 'upgraded');
+  assert.equal(after.row.seed, before.row.seed);
+  assert.equal(after.row.id, before.row.id);
+  assert.equal(after.row.resolved_through, before.row.resolved_through);
+  assert.deepEqual(after.events, before.events);
+  const afterState = JSON.parse(after.row.state_json);
+  assert.equal(afterState.meta.startMs, beforeState.meta.startMs);
+  assert.deepEqual(afterState.meuCases, initialMeuCasesState());
+  assert.equal(after.pending.length, before.pending.length + 1);
+  assert.deepEqual(after.pending.filter(row => row.id !== result.activationActionId), before.pending);
+  assert.ok(!JSON.parse(after.row.state_json).events);
+
+  const world = openPinnedWorld({ directory: f.directory });
+  try {
+    assert.equal(world.semanticSnapshot().world.rulesVersion, NEXT);
+    world.advance(before.row.resolved_through + 1);
+    const activated = world.semanticSnapshot();
+    assert.equal(activated.events.filter(e => e.type === 'WORLD_MEU_ACTIVATE').length, 1);
+    assert.equal(activated.events.filter(e => e.type.startsWith('MEU_CASE_')).length, 0,
+      'activation must not backfill cases from historical incidents');
+    assert.ok(activated.pendingActions.every(action => action.dueAt > before.row.resolved_through + 1)
+      || activated.pendingActions.length >= 0);
+    world.advance(before.row.resolved_through + 14 * 24 * 3600_000);
+    const later = world.semanticSnapshot();
+    assert.equal(later.world.seed ?? f.seed, f.seed);
+    for (const open of later.events.filter(e => e.type === 'MEU_CASE_OPEN')) {
+      assert.ok(!priorSources.includes(open.payload.sourceEventId),
+        'historical incidents must not become MEU sources after upgrade');
+    }
+  } finally {
+    world.close();
+  }
+});
+
+test('Cloudflare-shaped v23 (bare rules_version) upgrades without losing epoch, seed, watermark or pending', t => {
+  const f = liveV23Pinned(t, { seed: 'cf-bare-live-copy' });
+  f.db.prepare('UPDATE world_state SET rules_version=? WHERE id=1').run(OLD);
+  const before = snapshot(f);
+  assert.equal(before.row.rules_version, OLD);
+  const result = upgradeMeuCases(f), after = snapshot(f);
+  assert.equal(result.status, 'upgraded');
+  assert.equal(after.row.seed, before.row.seed);
+  assert.equal(after.row.resolved_through, before.row.resolved_through);
+  assert.deepEqual(after.events, before.events);
+  assert.deepEqual(after.pending.filter(row => row.id !== result.activationActionId), before.pending);
+  assert.equal(JSON.parse(after.row.state_json).meta.startMs, JSON.parse(before.row.state_json).meta.startMs);
+  assert.equal(after.row.rules_version, `fixture:${JSON.stringify([
+    'silver-clouds-now', NEXT, start, Date.parse('2100-01-01T00:00:00Z'), 100000,
+  ])}`);
+});

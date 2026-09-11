@@ -6,10 +6,9 @@ import { createFixture, RULES_VERSION, assertCanonState } from './fixture.mjs';
 import { initialMeuCasesState } from './meu-cases.mjs';
 import { backupWorld } from './world-operations.mjs';
 import { londonDate } from './time.mjs';
+import { fixtureIdentity, matchesRulesIdentity } from './world-identity.mjs';
 
 const FROM = 'canon-ambient-p183-v23', TO = 'canon-ambient-p183-v24';
-const identity = (fixture, version) => `fixture:${JSON.stringify([fixture.worldId, version,
-  fixture.startMs, fixture.endMs, fixture.maxActions])}`;
 const digest = rows => createHash('sha256').update(JSON.stringify(rows)).digest('hex');
 const ledger = db => db.prepare('SELECT seq,id,occurred_at,semantic_json,recorded_at FROM events ORDER BY seq').all();
 const pending = db => db.prepare('SELECT id,due_at,priority,action_json FROM scheduled_actions ORDER BY id').all();
@@ -32,7 +31,7 @@ export function upgradeMeuCases({ directory, backupPath } = {}) {
     const original = JSON.parse(before.state_json);
     if (!Number.isSafeInteger(original.meta?.startMs)) throw new Error('World epoch is missing');
     const fixture = createFixture({ startMs: original.meta.startMs });
-    if (before.rules_version === identity(fixture, TO)) {
+    if (matchesRulesIdentity(before.rules_version, fixture, TO)) {
       const receipts = original.meta?.upgrades?.filter(item => item.from === FROM && item.to === TO) ?? [];
       const receipt = receipts[0];
       if (![FROM, TO].includes(manifest.rulesVersion) || receipts.length !== 1
@@ -47,7 +46,7 @@ export function upgradeMeuCases({ directory, backupPath } = {}) {
       return { status: 'already_upgraded', rulesVersion: TO, cutoverAt: receipt.cutoverAt,
         activationActionId: receipt.activationActionId };
     }
-    if (manifest.rulesVersion !== FROM || before.rules_version !== identity(fixture, FROM))
+    if (manifest.rulesVersion !== FROM || !matchesRulesIdentity(before.rules_version, fixture, FROM))
       throw new Error('Only the pinned v23 release can be upgraded');
     if ((original.meta.upgrades ?? []).some(item => item.to === TO)) throw new Error('Unexpected prior meu upgrade receipt');
     if (!Number.isSafeInteger(before.resolved_through) || before.resolved_through < fixture.startMs
@@ -76,7 +75,7 @@ export function upgradeMeuCases({ directory, backupPath } = {}) {
       db.prepare('INSERT INTO scheduled_actions(id,due_at,priority,action_json) VALUES(?,?,?,?)')
         .run(action.id, action.dueAt, action.priority, JSON.stringify(action));
       db.prepare('UPDATE world_state SET rules_version=?,state_json=? WHERE id=1')
-        .run(identity(fixture, TO), JSON.stringify(state));
+        .run(fixtureIdentity(fixture, TO), JSON.stringify(state));
       if (digest(ledger(db)) !== historyBefore) throw new Error('Historical ledger changed during upgrade');
       const untouched = pending(db).filter(row => row.id !== action.id);
       if (JSON.stringify(untouched) !== JSON.stringify(pendingBefore)) throw new Error('Existing pending actions changed during upgrade');

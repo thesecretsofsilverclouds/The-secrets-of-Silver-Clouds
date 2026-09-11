@@ -2,10 +2,42 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { openWorld, semanticDigest } from '../src/world.mjs';
 import { atLondon } from '../src/time.mjs';
-import { MEU_FAMILIES } from '../src/meu-cases.mjs';
+import { MEU_FAMILIES, deriveInspectionEvidence, meuEscalationTarget } from '../src/meu-cases.mjs';
 
 const START = atLondon('2026-09-04', '00:00');
 const SEED = 'test-seed-meu';
+
+test('inspect evidence is copied from committed source kinds, never rolled', () => {
+  assert.equal(deriveInspectionEvidence({ sourceType: 'INCIDENT', sourceKind: 'artefact' }), 'uncertain_unregistered_artefact');
+  assert.equal(deriveInspectionEvidence({ sourceType: 'INCIDENT', sourceKind: 'sighting' }), 'rogue_creature_involvement');
+  assert.equal(deriveInspectionEvidence({ sourceType: 'INCIDENT', sourceKind: 'pursuit' }), 'rogue_creature_involvement');
+  assert.equal(deriveInspectionEvidence({ sourceType: 'INCIDENT', sourceKind: 'confrontation' }), 'rogue_creature_involvement');
+  assert.equal(deriveInspectionEvidence({ sourceType: 'INCIDENT', sourceKind: 'breach' }), 'ward_containment_fault');
+  assert.equal(deriveInspectionEvidence({ sourceType: 'INCIDENT', sourceKind: 'surge_incident' }), 'dangerous_magic_residue');
+  assert.equal(deriveInspectionEvidence({ sourceType: 'INCIDENT', sourceKind: 'severe_event' }), 'dangerous_magic_residue');
+  assert.equal(deriveInspectionEvidence({ sourceType: 'INCIDENT', sourceKind: 'courier' }), 'insufficient_evidence');
+  assert.equal(deriveInspectionEvidence({ sourceType: 'ARCANE_SURGE', sourceFactKind: 'duty_callout' }), 'no_actionable_anomaly');
+  assert.equal(deriveInspectionEvidence({}), 'insufficient_evidence');
+  assert.equal(
+    deriveInspectionEvidence({ sourceType: 'INCIDENT', sourceKind: 'artefact', seed: 'a', actionId: '1' }),
+    deriveInspectionEvidence({ sourceType: 'INCIDENT', sourceKind: 'artefact', seed: 'b', actionId: '2' }),
+  );
+});
+
+test('escalation is deterministic from artefact source facts only', () => {
+  assert.equal(meuEscalationTarget({
+    sourceType: 'INCIDENT', sourceKind: 'artefact', evidence: 'uncertain_unregistered_artefact',
+  }), 'mi6');
+  assert.equal(meuEscalationTarget({
+    sourceType: 'INCIDENT', sourceKind: 'courier', evidence: 'insufficient_evidence',
+  }), null);
+  assert.equal(meuEscalationTarget({
+    sourceType: 'INCIDENT', sourceKind: 'breach', evidence: 'ward_containment_fault',
+  }), null);
+  assert.equal(meuEscalationTarget({
+    sourceType: 'ARCANE_SURGE', sourceFactKind: 'duty_callout', evidence: 'no_actionable_anomaly',
+  }), null);
+});
 
 test('MEU cases: full bounded lifecycle executes from committed incident to close', () => {
   const world = openWorld({ dbPath: ':memory:', startMs: START, seed: SEED });
@@ -178,5 +210,42 @@ test('MEU cases: determinism — same seed reproduces identical cases and digest
   } finally {
     world1.close();
     world2.close();
+  }
+});
+
+test('runtime inspect findings and escalations follow committed source events', () => {
+  const world = openWorld({ dbPath: ':memory:', startMs: START, seed: 'seed-source-evidence' });
+  try {
+    world.advance(START + 30 * 24 * 3600_000);
+    const snap = world.semanticSnapshot();
+    const byId = new Map(snap.events.map(e => [e.id, e]));
+    for (const inspect of snap.events.filter(e => e.type === 'MEU_CASE_INSPECT')) {
+      const opened = snap.events.find(e => e.type === 'MEU_CASE_OPEN' && e.payload.caseId === inspect.payload.caseId);
+      const source = byId.get(opened.payload.sourceEventId);
+      assert.ok(source, 'inspect must cite a committed source event');
+      const expected = deriveInspectionEvidence({
+        sourceType: source.type,
+        sourceKind: source.payload?.kind ?? null,
+        sourceFactKind: source.type === 'INCIDENT' ? 'incident' : source.type === 'ARCANE_SURGE' ? 'duty_callout' : null,
+      });
+      assert.equal(inspect.payload.evidence, expected, `inspect ${inspect.id} must match source ${source.type}:${source.payload?.kind}`);
+    }
+    const artefactOpens = snap.events.filter(e => e.type === 'MEU_CASE_OPEN')
+      .filter(open => byId.get(open.payload.sourceEventId)?.payload?.kind === 'artefact');
+    for (const open of artefactOpens) {
+      assert.ok(snap.events.some(e => e.type === 'MEU_CASE_ESCALATE' && e.payload.caseId === open.payload.caseId && e.payload.target === 'mi6'),
+        `artefact case ${open.payload.caseId} must escalate to MI6`);
+      const meu = snap.meuCases.cases[open.payload.caseId];
+      if (meu?.status === 'active' && meu.escalation === 'mi6') {
+        assert.equal(snap.meuCases.waitingReferralId, open.payload.caseId);
+      }
+    }
+    const escalated = snap.events.filter(e => e.type === 'MEU_CASE_ESCALATE');
+    for (const row of escalated) {
+      const opened = snap.events.find(e => e.type === 'MEU_CASE_OPEN' && e.payload.caseId === row.payload.caseId);
+      assert.equal(byId.get(opened.payload.sourceEventId)?.payload?.kind, 'artefact');
+    }
+  } finally {
+    world.close();
   }
 });

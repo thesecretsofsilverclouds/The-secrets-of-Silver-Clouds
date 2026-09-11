@@ -38,26 +38,77 @@ export const MEU_OUTCOMES = Object.freeze([
 const TYPES = new Set(MEU_EVENT_TYPES);
 const FAMILIES = new Set(MEU_FAMILIES);
 
-const FAMILY_SUPPORTED_FINDINGS = Object.freeze({
-  'meu.magic_misuse': 'dangerous_magic_residue',
-  'meu.artifact_irregularity': 'uncertain_unregistered_artefact',
-  'meu.rogue_creature': 'rogue_creature_involvement',
-  'meu.ward_or_containment': 'ward_containment_fault',
-  'meu.weather_consequence': 'dangerous_magic_residue'
+// Specific findings only when the committed source already encodes that evidence.
+// Family is the inquiry remit; it must not invent a finding the source lacks.
+const FINDING_FROM_INCIDENT_KIND = Object.freeze({
+  artefact: 'uncertain_unregistered_artefact',
+  sighting: 'rogue_creature_involvement',
+  pursuit: 'rogue_creature_involvement',
+  confrontation: 'rogue_creature_involvement',
+  breach: 'ward_containment_fault',
+  surge_incident: 'dangerous_magic_residue',
+  severe_event: 'dangerous_magic_residue',
 });
 
-export function deriveInspectionEvidence(caseFamily, seed, actionId) {
-  const supportedFinding = FAMILY_SUPPORTED_FINDINGS[caseFamily];
-  if (!supportedFinding) return 'insufficient_evidence';
-  const roll = hashInt(`${seed}|meu-inspect-evidence|${actionId}`) % 100;
-  // 60% confirmed supported finding from source incident, 20% no actionable anomaly, 20% insufficient evidence
-  if (roll < 60) return supportedFinding;
-  if (roll < 80) return 'no_actionable_anomaly';
+/**
+ * Derive the inspect finding from already-committed source event/fact state.
+ * Does not roll, and does not create a source fact to justify a finding.
+ */
+export function deriveInspectionEvidence(source = {}) {
+  const { sourceType, sourceKind, sourceFactKind } = source;
+  if (sourceType === 'INCIDENT' || sourceFactKind === 'incident') {
+    return FINDING_FROM_INCIDENT_KIND[sourceKind] ?? 'insufficient_evidence';
+  }
+  // ARCANE_SURGE commits only a duty_callout / standby, not residue at a scene.
+  if (sourceType === 'ARCANE_SURGE' || sourceFactKind === 'duty_callout') {
+    return 'no_actionable_anomaly';
+  }
   return 'insufficient_evidence';
 }
 
+/**
+ * Bible escalate: MI6 for high-risk artefact / Holy Item implications (DC/LSE).
+ * The committed `artefact` incident is an unread sealed case. No other current
+ * source kind encodes Holy Item risk or a required external-domain referral.
+ */
+export function meuEscalationTarget(source = {}) {
+  const evidence = source.evidence ?? deriveInspectionEvidence(source);
+  if (source.sourceType === 'INCIDENT' && source.sourceKind === 'artefact'
+    && evidence === 'uncertain_unregistered_artefact') {
+    return 'mi6';
+  }
+  return null;
+}
+
+export function committedSourceRecord(state, sourceEventId, fallback = {}) {
+  const fact = sourceEventId
+    ? Object.values(state?.facts ?? {}).find(item => item.sourceEventId === sourceEventId)
+    : (fallback.sourceFactKey ? state?.facts?.[fallback.sourceFactKey] : null);
+  if (fact?.kind === 'incident') {
+    return {
+      sourceType: 'INCIDENT',
+      sourceKind: fact.value?.kind ?? fallback.sourceKind ?? null,
+      sourceFactKind: fact.kind,
+      sourceFactKey: fact.key,
+    };
+  }
+  if (fact?.kind === 'duty_callout') {
+    return {
+      sourceType: 'ARCANE_SURGE',
+      sourceKind: fallback.sourceKind ?? null,
+      sourceFactKind: fact.kind,
+      sourceFactKey: fact.key,
+    };
+  }
+  return {
+    sourceType: fallback.sourceType ?? null,
+    sourceKind: fallback.sourceKind ?? null,
+    sourceFactKind: fallback.sourceFactKind ?? null,
+    sourceFactKey: fallback.sourceFactKey ?? null,
+  };
+}
+
 const hash = value => createHash('sha256').update(String(value)).digest('hex').slice(0, 24);
-const hashInt = value => createHash('sha256').update(String(value)).digest().readUInt32BE(0);
 
 export function initialMeuCasesState() {
   return {
@@ -79,6 +130,11 @@ export function assertMeuCases(state) {
   if (typeof current.cases !== 'object' || current.cases === null) throw new Error('Invalid meuCases cases');
   if (current.closedSummaries.length > 24) throw new Error('MEU closedSummaries limit exceeded');
   if (Object.keys(current.issued).length > 128) throw new Error('MEU issued limit exceeded');
+  if (current.waitingReferralId != null) {
+    if (typeof current.waitingReferralId !== 'string' || !current.cases[current.waitingReferralId]) {
+      throw new Error('MEU waitingReferralId must name an existing case');
+    }
+  }
   for (const c of Object.values(current.cases)) {
     if (!MEU_FAMILIES.includes(c.family)) throw new Error(`Invalid MEU family: ${c.family}`);
     if (!['active', 'reported', 'resolved', 'closed'].includes(c.status)) throw new Error(`Invalid MEU case status: ${c.status}`);
@@ -191,10 +247,10 @@ export function meuCaseOpportunityActions({ state, day, now, seed, parentActionI
   if (!parentActionId || !parentEventId || !sourceEvent) return [];
   const current = of(state);
 
-  // Negative gate: active-case cap (max 1 active case)
-  if (current.activeCaseId) return [];
+  // Negative gate: max 1 active case and 1 waiting referral
+  if (current.activeCaseId || current.waitingReferralId) return [];
 
-  // Negative gate: cooldown between openings (≥18h, tuned to 42h to yield 1–3 cases/week)
+  // Negative gate: cooldown between openings (≥18h)
   if (now < current.nextEligibleAt) return [];
 
   // Negative gate: authored arc ownership
@@ -209,6 +265,10 @@ export function meuCaseOpportunityActions({ state, day, now, seed, parentActionI
 
   const dueAt = now + 15 * MIN;
   const caseId = `meu:${hash(`${seed}|meu-open|${parentActionId}|${parentEventId}`)}`;
+  const source = committedSourceRecord(state, parentEventId, {
+    sourceType: sourceEvent.type,
+    sourceKind: sourceEvent.payload?.kind ?? null,
+  });
 
   return [{
     id: `${parentActionId}/meu/open`,
@@ -221,6 +281,9 @@ export function meuCaseOpportunityActions({ state, day, now, seed, parentActionI
     caseId,
     family: remit.family,
     sourceEventId: parentEventId,
+    sourceType: source.sourceType ?? sourceEvent.type,
+    sourceKind: source.sourceKind ?? sourceEvent.payload?.kind ?? null,
+    sourceFactKey: source.sourceFactKey ?? null,
     sourceLocation: remit.location,
     sourceArea: remit.area,
     dedupeKey
@@ -290,7 +353,10 @@ export function resolveMeuCaseAction(ctx) {
       status: 'active',
       openedAt: now,
       sourceEventIds: [a.sourceEventId],
-      sourceFactIds: [],
+      sourceFactIds: a.sourceFactKey ? [a.sourceFactKey] : [],
+      sourceType: a.sourceType ?? null,
+      sourceKind: a.sourceKind ?? null,
+      sourceFactKey: a.sourceFactKey ?? null,
       owner: 'meu',
       participants: [],
       location: a.sourceLocation,
@@ -334,7 +400,8 @@ export function resolveMeuCaseAction(ctx) {
   }
 
   if (a.type === 'MEU_CASE_INSPECT') {
-    const evidence = deriveInspectionEvidence(c.family, ctx.seed, a.id);
+    const source = committedSourceRecord(state, c.sourceEventIds[0], c);
+    const evidence = deriveInspectionEvidence(source);
 
     touchCase(ctx, c, { evidence });
 
@@ -369,15 +436,8 @@ export function resolveMeuCaseAction(ctx) {
     );
 
     const report = { factKey, createdAt: now, factId: reportFact?.id ?? factKey };
-
-    // Serious escalation is rare
-    let target = null;
-    const roll = hashInt(`${ctx.seed}|meu-escalate|${a.id}`) % 100;
-    if (c.evidence === 'uncertain_unregistered_artefact' && roll < 25) {
-      target = 'mi6';
-    } else if (c.evidence === 'ward_containment_fault' && roll < 20) {
-      target = 'external';
-    }
+    const source = committedSourceRecord(state, c.sourceEventIds[0], c);
+    const target = meuEscalationTarget({ ...source, evidence: c.evidence });
 
     touchCase(ctx, c, { report, sourceFactIds: [...c.sourceFactIds, factKey] });
 
@@ -418,6 +478,7 @@ export function resolveMeuCaseAction(ctx) {
 
   if (a.type === 'MEU_CASE_ESCALATE') {
     touchCase(ctx, c, { escalation: a.target });
+    save(ctx, { waitingReferralId: c.caseId });
 
     event.location = c.location;
     event.area = c.area;
@@ -448,7 +509,7 @@ export function resolveMeuCaseAction(ctx) {
     } else if (c.evidence === 'no_actionable_anomaly') {
       outcome = 'no_action';
     } else if (c.evidence === 'insufficient_evidence') {
-      outcome = hashInt(`${ctx.seed}|meu-res|${a.id}`) % 2 === 0 ? 'no_action' : 'advisory_or_monitor';
+      outcome = 'no_action';
     } else if (c.evidence === 'dangerous_magic_residue' || c.evidence === 'rogue_creature_involvement') {
       outcome = 'contained';
     } else if (c.evidence === 'ward_containment_fault') {
@@ -467,6 +528,7 @@ export function resolveMeuCaseAction(ctx) {
     );
 
     touchCase(ctx, c, { status: 'resolved', result: outcome });
+    if (of(ctx.state).waitingReferralId === c.caseId) save(ctx, { waitingReferralId: null });
 
     event.location = c.location;
     event.area = c.area;
@@ -504,6 +566,7 @@ export function resolveMeuCaseAction(ctx) {
     const closedSummaries = [summary, ...current.closedSummaries].slice(0, 24);
     save(ctx, {
       activeCaseId: null,
+      waitingReferralId: of(ctx.state).waitingReferralId === c.caseId ? null : of(ctx.state).waitingReferralId,
       lastResult: c.result,
       closedSummaries
     });

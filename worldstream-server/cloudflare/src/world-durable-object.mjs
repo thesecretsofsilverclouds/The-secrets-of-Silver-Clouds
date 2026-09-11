@@ -16,6 +16,7 @@ import { SqliteAdapter } from './sqlite-adapter.mjs';
 import { ShadowAdapter } from './shadow-adapter.mjs';
 import { CapacityTracker } from './capacity.mjs';
 import { createFixture, RULES_VERSION, DEFAULT_SEED, publicEvents } from '../../src/fixture.mjs';
+import { fixtureIdentity, matchesRulesIdentity, savedEpochStartMs } from '../../src/world-identity.mjs';
 import { atLondon, londonDate } from '../../src/time.mjs';
 import { evaluatePlotClocks } from '../../src/clocks.mjs';
 import {
@@ -179,7 +180,7 @@ export class WorldDurableObject {
 
       this.db.prepare('INSERT INTO world_state VALUES (1, ?, ?, ?, ?)').run(
         seed,
-        this.fixture.rulesVersion,
+        fixtureIdentity(this.fixture),
         effectiveStartMs,
         JSON.stringify(initial)
       );
@@ -189,8 +190,11 @@ export class WorldDurableObject {
         insertAction.run(a.id, a.dueAt, a.priority, JSON.stringify(a));
       }
     } else {
-      const day = londonDate(existing.resolved_through);
-      this.fixture = createFixture({ startMs: atLondon(day, '00:00') });
+      const startMs = savedEpochStartMs(existing.state_json);
+      this.fixture = createFixture({ startMs });
+      if (!matchesRulesIdentity(existing.rules_version, this.fixture)) {
+        throw new Error(`Saved world does not match rules ${RULES_VERSION}; refusing to reinterpret its history. Stop this Durable Object, export its SQLite, run scripts/upgrade-meu-cases.mjs on a pinned copy, then replace storage with the upgraded database.`);
+      }
     }
     this.initialized = true;
   }
