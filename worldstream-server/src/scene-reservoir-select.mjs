@@ -21,6 +21,9 @@ function indexedCandidates(event, catalog) {
   if (eventSatisfiesTrigger(event, 'SANCTUARY_VISIT')) {
     for (const scene of byTrigger.get('SANCTUARY_VISIT') ?? []) found.add(scene);
   }
+  if (eventSatisfiesTrigger(event, 'LEGION_VISIT')) {
+    for (const scene of byTrigger.get('LEGION_VISIT') ?? []) found.add(scene);
+  }
   return [...found];
 }
 
@@ -47,6 +50,9 @@ export function eventSatisfiesTrigger(event, trigger) {
       || (event.type === 'VENUE_SCENE' && event.location === 'sanctuary')
       || (event.type === 'LEGION_VISIT' && event.location === 'sanctuary');
   }
+  if (trigger === 'LEGION_VISIT' && event.type.startsWith('LEGION_JOB_')) {
+    return true;
+  }
   return false;
 }
 
@@ -69,7 +75,7 @@ function locationCompatible(event, scene) {
   const triggers = gate.triggerTypes ?? [];
   if (triggers.includes('WEATHER_CHANGE') && event.type === 'WEATHER_CHANGE') return true;
   if (triggers.includes('INSTITUTION_NOTICE') && event.type === 'INSTITUTION_NOTICE') return true;
-  if (triggers.includes('LEGION_VISIT') && event.type === 'LEGION_VISIT') {
+  if (triggers.includes('LEGION_VISIT') && (event.type === 'LEGION_VISIT' || event.type.startsWith('LEGION_JOB_'))) {
     return scene.location === 'legion_hideout' || String(scene.reservoir?.family ?? '').includes('legion')
       || (event.location === scene.location && (!scene.area || !event.area || scene.area === event.area));
   }
@@ -86,6 +92,16 @@ export function reservoirSurfaceMatches(event, scene, { now, weatherCode, knownE
   if (!event || event.visibility !== 'public' || !gate || SKIP.has(event.type)) return false;
   if (!(gate.triggerTypes ?? []).some(trigger => eventSatisfiesTrigger(event, trigger))) return false;
   if (!locationCompatible(event, scene)) return false;
+  if (scene.reservoir?.family === 'legion_contracts') {
+    const hasJob = Boolean(event.payload?.jobId || event.payload?.activeJobId || event.type?.startsWith('LEGION_JOB_'));
+    if (!hasJob) return false;
+    const text = scene.beats?.find(b => b.kind === 'prose')?.text || '';
+    const isPaymentProse = /counted the payment|hazard pay|invoice|remittance|payment confirmed/i.test(text);
+    if (isPaymentProse) {
+      const isPaymentStage = event.payload?.stage === 'payment' || event.payload?.paymentStatus === 'paid' || event.type === 'LEGION_JOB_PAYMENT';
+      if (!isPaymentStage) return false;
+    }
+  }
   const required = requiredCast(scene);
   const witnesses = reservoirWitnesses(event);
   if (required.some(id => !witnesses.has(id))) return false;

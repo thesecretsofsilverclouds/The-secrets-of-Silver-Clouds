@@ -37,6 +37,8 @@ import { AGENDA_EVENT_TYPES, AGENDA_FACT_KINDS, initialAgendaState, agendaDayAct
   supportingAvailability, agendaFactionOverrides, agendaReportActions, agendaOpportunity } from './faction-agendas.mjs';
 import { MEU_EVENT_TYPES, MEU_FACT_KINDS, initialMeuCasesState, resolveMeuCaseAction,
   issueMeuCaseActions, meuCaseOpportunityActions, meuReportActions, assertMeuCases } from './meu-cases.mjs';
+import { LEGION_JOB_EVENT_TYPES, LEGION_JOB_FACT_KINDS, initialLegionJobsState, resolveLegionJobAction,
+  issueLegionJobActions, legionJobOpportunityActions, assertLegionJobs } from './legion-jobs.mjs';
 import { ABILITY_EVENT_TYPES, ABILITY_FACT_KINDS, GROUND_ACTIVITIES, initialAbilities,
   abilityDayActions, resolveAbilityAction, assertAbilities, canEnterAbilityArea,
   abilityActivityChanged } from './abilities.mjs';
@@ -62,6 +64,9 @@ export function isMeuActive(state) {
     return state.meta.upgrades.some(item => item.to === 'canon-ambient-p183-v24' && item.activatedAt);
   }
   return RULES_VERSION === 'canon-ambient-p183-v24';
+}
+export function isLegionJobsActive(state) {
+  return Boolean(state?.legionJobs);
 }
 // Existing pending actions and memories keep their identities across an explicit
 // rules upgrade. A release number describes semantics, not a new fictional world.
@@ -95,7 +100,7 @@ export const EVENT_TYPES = Object.freeze([
   'UNEASE','INCIDENT','AFTERMATH',
   // An hour at a venue used to be two lines and a gap. This is the hour.
   'VENUE_SCENE', ...INK_EVENT_TYPES, ...THREAD_EVENT_TYPES, ...INTENT_EVENT_TYPES,
-  ...AGENDA_EVENT_TYPES, ...MEU_EVENT_TYPES, ...ABILITY_EVENT_TYPES, ...OUTING_RECOVERY_EVENT_TYPES,
+  ...AGENDA_EVENT_TYPES, ...MEU_EVENT_TYPES, ...LEGION_JOB_EVENT_TYPES, ...ABILITY_EVENT_TYPES, ...OUTING_RECOVERY_EVENT_TYPES,
   ...SUPPORTING_EVENT_TYPES, ...NIGHT_EVENT_TYPES, ...OFFSCREEN_EVENT_TYPES, ...SCENE_BANK_EVENT_TYPES, 'WORLD_DEPTH_ACTIVATE', 'WORLD_LIVES_ACTIVATE', 'WORLD_MEU_ACTIVATE',
 ]);
 const TYPES = new Set(EVENT_TYPES);
@@ -126,7 +131,7 @@ const TOPICS = new Set(['break_preference','quiet_preference','finish_preference
   // Something happened to them. The fact records that and its severity, never
   // what it was or what it meant — there is nothing to be explained.
   'incident', ...INK_FACT_KINDS, ...THREAD_FACT_KINDS, ...INTENT_FACT_KINDS,
-  ...AGENDA_FACT_KINDS, ...MEU_FACT_KINDS, ...ABILITY_FACT_KINDS, ...SUPPORTING_FACT_KINDS, ...NIGHT_FACT_KINDS, ...OFFSCREEN_FACT_KINDS,
+  ...AGENDA_FACT_KINDS, ...MEU_FACT_KINDS, ...LEGION_JOB_FACT_KINDS, ...ABILITY_FACT_KINDS, ...SUPPORTING_FACT_KINDS, ...NIGHT_FACT_KINDS, ...OFFSCREEN_FACT_KINDS,
   ...ARC_FACT_KINDS, ...SCENE_BANK_FACT_KINDS]);
 const ANCHORS = Object.freeze({ checkpoint: 'opening-pdf-p183-before-p184-disclosure',
   relationshipStage: 'friends', ashaiEye: 'existing_bionic_eye', abilities: 'already_taught_only', sanctuary: 'invite_only',
@@ -603,7 +608,7 @@ function initialState(startMs) {
     facts:{}, invitations:{}, arrangements:{}, plans:{}, games:{}, encounter:null,
     storyEffects:initialStoryEffects(),
     threads:initialThreads(),
-    intent:initialIntent(),agendas:initialAgendaState(),meuCases:initialMeuCasesState(),abilities:initialAbilities(),
+    intent:initialIntent(),agendas:initialAgendaState(),meuCases:initialMeuCasesState(),legionJobs:initialLegionJobsState(),abilities:initialAbilities(),
     arcs:initialArcs(),outingRecovery:initialOutingRecovery(),supportingStories:initialSupportingStories(),nightStories:initialNightStories(),
     offscreenLives:initialOffscreenLives(),sceneBank:initialSceneBank(),
     // The director's whole memory. It is four numbers, a short list of families
@@ -984,7 +989,7 @@ export function assertCanonState(state) {
     ||pressure.incidentsToday>PRESSURE_RULES.maxIncidentsPerDay) throw new Error('Incident budget violated');
   assertStoryEffects(state);
   assertThreads(state);
-  assertIntent(state);assertAgendas(state);assertAbilities(state);assertMeuCases(state);
+  assertIntent(state);assertAgendas(state);assertAbilities(state);assertMeuCases(state);assertLegionJobs(state);
   assertOutingRecovery(state);assertSupportingStories(state);assertNightStories(state);assertOffscreenLives(state);assertArcs(state);assertSceneBank(state);
 }
 
@@ -1121,7 +1126,7 @@ function reduceAction(state,a,seed) {
   const storyContext=()=>({state,action:a,now,id,event,followups,seed,ops:{
     setStoryEffects:value=>setWorld('storyEffects',value),
     setThreads:value=>setWorld('threads',value),
-    setIntent:value=>setWorld('intent',value),setAgendas:value=>setWorld('agendas',value),setMeuCases:value=>setWorld('meuCases',value),
+    setIntent:value=>setWorld('intent',value),setAgendas:value=>setWorld('agendas',value),setMeuCases:value=>setWorld('meuCases',value),setLegionJobs:value=>setWorld('legionJobs',value),
     setAbilities:value=>setWorld('abilities',value),
     setOutingRecovery:value=>setStory('outingRecovery',value),
     setSupportingStories:value=>setStory('supportingStories',value),setNightStories:value=>setStory('nightStories',value),
@@ -1193,6 +1198,8 @@ function reduceAction(state,a,seed) {
     resolveAgendaAction(storyContext());
   } else if(MEU_EVENT_TYPES.includes(a.type)) {
     resolveMeuCaseAction(storyContext());
+  } else if(LEGION_JOB_EVENT_TYPES.includes(a.type)) {
+    resolveLegionJobAction(storyContext());
   } else if(ABILITY_EVENT_TYPES.includes(a.type)) {
     resolveAbilityAction(storyContext());
   } else if(THREAD_EVENT_TYPES.includes(a.type)) {
@@ -1753,7 +1760,8 @@ function reduceAction(state,a,seed) {
       if(!scene) skip('The available visitors do not have a scene together');
       else {
         event.participants=['goaden','ashai'];
-        event.payload={mood:scene.mood,lines:scene.lines,visitors:scene.cast};
+        event.payload={mood:scene.mood,lines:scene.lines,visitors:scene.cast,
+          ...(state.legionJobs?.activeJobId ? { activeJobId: state.legionJobs.activeJobId } : {})};
         publish(summariseLegion(scene.mood));
       }
     }
@@ -1817,7 +1825,7 @@ function reduceAction(state,a,seed) {
   // after is the wrong one — it produced "Ashai finished training in the lunch
   // hall", which is where she went, not where she trained.
   const ENDS=a.type==='ACTIVITY_COMPLETE'||a.type==='PRACTICE_END';
-  if(!['UNEASE','INCIDENT',...THREAD_EVENT_TYPES,...INTENT_EVENT_TYPES,...AGENDA_EVENT_TYPES,...MEU_EVENT_TYPES,...ABILITY_EVENT_TYPES,...SUPPORTING_EVENT_TYPES,...NIGHT_EVENT_TYPES,...OFFSCREEN_EVENT_TYPES,...SCENE_BANK_EVENT_TYPES,...ARC_EVENT_TYPES].includes(a.type))
+  if(!['UNEASE','INCIDENT',...THREAD_EVENT_TYPES,...INTENT_EVENT_TYPES,...AGENDA_EVENT_TYPES,...MEU_EVENT_TYPES,...LEGION_JOB_EVENT_TYPES,...ABILITY_EVENT_TYPES,...SUPPORTING_EVENT_TYPES,...NIGHT_EVENT_TYPES,...OFFSCREEN_EVENT_TYPES,...SCENE_BANK_EVENT_TYPES,...ARC_EVENT_TYPES].includes(a.type))
     event.area=(ENDS?areaBefore:state.characters[event.participants[0]]?.area)??areaBefore??null;
   // Authored prose is not the world being eventful at them either. A scene the
   // bank staged put words on the page, not an incident in the room; counting it
@@ -1849,6 +1857,9 @@ function reduceAction(state,a,seed) {
   }
   if(isMeuActive(state)&&['INCIDENT','ARCANE_SURGE'].includes(a.type)) {
     followups.push(...issueMeuCaseActions(storyContext(),meuCaseOpportunityActions({state,day:a.day,now,seed,parentActionId:a.id,parentEventId:id,sourceEvent:event})));
+  }
+  if(isLegionJobsActive(state)&&(a.type==='MEU_CASE_RESOLVE'||a.type==='INCIDENT')) {
+    followups.push(...issueLegionJobActions(storyContext(),legionJobOpportunityActions({state,day:a.day,now,seed,parentActionId:a.id,parentEventId:id,sourceEvent:event})));
   }
   outingRecoveryAfterAction(storyContext());
   if(event.visibility==='public'&&['CROSS_PATHS','TRAVEL_ARRIVE','CITY_ACTIVITY_BEGIN','ACTIVITY_COMPLETE','PRACTICE_END'].includes(a.type))
