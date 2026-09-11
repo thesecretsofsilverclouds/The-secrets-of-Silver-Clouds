@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { daypart } from './sky.mjs';
 import { supportingEditorial } from './editorial-supporting.mjs';
 import { nightEditorial } from './editorial-night.mjs';
 import { livesEditorial } from './editorial-lives.mjs';
@@ -110,12 +111,54 @@ function conversationOpening(event) {
   if (/You've (?:been up since five|had a long night)/.test(first)) return 'Goaden looked Ashai over, his own fatigue doing very little to recommend him as a judge.';
   if (/Long one\./.test(first)) return 'Goaden rubbed a hand over his face and looked across at Ashai.';
   if (/lining|cuff/.test(words) && /jacket/i.test(words)) return 'Ashai’s attention settled on Goaden’s jacket. He noticed the look.';
-  // The barracks common spaces are manuscript setting, not a later world
-  // snapshot. Keep other rooms and unknown speakers free of invented props.
-  if (event.room === 'the lunch hall' || ['common_room', 'lunch_hall'].includes(event.area)) return lines[0]?.who === 'ashai'
-    ? 'Soldiers talked across the lunch hall. Ashai leaned towards Goaden to speak.'
-    : 'Soldiers talked across the lunch hall. Goaden turned towards Ashai to speak.';
-  if (event.room === 'the gaming area' || ['gaming_room', 'gaming_area'].includes(event.area)) return 'Noise from the gaming area filled the pause between Goaden and Ashai.';
+  return composedOpening(event, lines);
+}
+
+// The general opener, composed rather than picked. Two stock sentences used
+// to cover every unmatched conversation in the lunch hall; over 90 days they
+// were the most repeated prose the reader saw, thirty-five and twenty-nine
+// times a world. This builds the opener from what the event already says —
+// the room, the hour, who speaks first, whether they ask or tell, and the
+// mood the world gave the exchange — and chooses within each part from the
+// event's own identity, so the same conversation reads the same on every
+// page and different conversations stop reading the same.
+//
+// The barracks common spaces are manuscript setting, not a later world
+// snapshot: the lunch hall has soldiers in it and the gaming area has noise.
+// Other rooms and unknown speakers get no invented props.
+const openerRoll = (event, salt) => createHash('sha256')
+  .update(`silver-clouds-opener-v1|${salt}|${event.id}`).digest().readUInt32BE(0);
+const openerPick = (event, salt, choices) => choices[openerRoll(event, salt) % choices.length];
+function composedOpening(event, lines) {
+  const first = lines[0] ?? {}, who = first.who === 'ashai' ? 'Ashai' : first.who === 'goaden' ? 'Goaden' : null;
+  const other = who === 'Ashai' ? 'Goaden' : 'Ashai';
+  const part = Number.isSafeInteger(event.occurredAt) ? daypart(event.occurredAt) : null;
+  const question = /\?\s*$/.test(first.text ?? ''), short = (first.text ?? '').trim().split(/\s+/).length <= 4;
+  const mood = event.payload?.mood ?? 'ordinary';
+  const lunch = event.room === 'the lunch hall' || ['common_room', 'lunch_hall'].includes(event.area);
+  const gaming = event.room === 'the gaming area' || ['gaming_room', 'gaming_area'].includes(event.area);
+  const setting = lunch ? openerPick(event, 'setting', {
+    morning: ['The lunch hall was still filling.', 'Breakfast was under way around them.', 'The first shift was eating.', 'Soldiers came and went with trays.'],
+    midday: ['The lunch hall was at its loudest.', 'Soldiers talked across the lunch hall.', 'The midday crowd had the room.', 'Every table in the lunch hall was taken.'],
+    evening: ['The lunch hall had thinned out.', 'The evening crowd was down to the regulars.', 'Trays were going back in ones and twos.', 'The lunch hall was quieter than it had been.'],
+    night: ['The lunch hall was nearly empty.', 'The night shift had the lunch hall to itself.', 'Most of the tables were bare.', 'The lunch hall was down to a few voices.'],
+    small_hours: ['The lunch hall was empty apart from them.', 'Nobody else was in the lunch hall at that hour.'],
+  }[part] ?? ['Soldiers talked across the lunch hall.'])
+    : gaming ? openerPick(event, 'setting', ['Noise from the gaming area filled the pause.', 'A game was running on the far screen.', 'The gaming area was loud with somebody else’s match.', 'The screens in the gaming area lit the two of them.'])
+    : null;
+  const turn = !who ? null : openerPick(event, 'turn', mood === 'repair' ? [
+    `There was something to be said, and ${who} said it first.`, `${who} had been working up to it. ${other} could tell.`, `${who} spoke first. It had cost something to.`,
+  ] : ['strained', 'friction'].includes(mood) ? [
+    `${who} did not look at ${other} to say it.`, `${who} spoke without turning. ${other} heard the edge in it.`, `${who} put it flatly.`,
+  ] : question ? [
+    `${who} had a question, and asked it.`, `${who} asked without much preamble.`, `${who} put the question to ${other} directly.`, `${who} wanted to know, and said so.`,
+  ] : short ? [
+    `${who} said it in passing.`, `${who} spoke first, briefly.`, `${who} said it and left it there.`, `${who} put it in a few words.`,
+  ] : [
+    `${who} leaned towards ${other} to speak.`, `${who} spoke first.`, `${who} said it without looking up.`, `${who} turned to ${other}.`, `${who} started, and ${other} let the rest come.`,
+  ]);
+  if (setting && turn) return `${setting} ${turn}`;
+  if (turn) return turn;
   return lines[0]?.who === 'ashai' ? 'Ashai turned towards Goaden.' : 'Goaden glanced across at Ashai.';
 }
 
