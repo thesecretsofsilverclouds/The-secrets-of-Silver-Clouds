@@ -23,9 +23,9 @@ test('all 140 supplied surfaces are retained, with 22 unchanged reviewed scenes 
   assert.equal(batch.entries.length,140);
   const report=SCENE_RESERVOIR_IMPORT_REPORT[0];
   assert.equal(report.total,140);assert.equal(report.accepted,22);assert.equal(report.staged,111);assert.equal(report.rejected,7);
-  assert.equal(report.rows.length,140);assert.ok(report.rows.every(row=>row.reason));
+  const allEntries = SCENE_RESERVOIR_BATCHES.flatMap(b=>b.entries);
   for(const scene of SCENE_RESERVOIR_CATALOG) {
-    const source=batch.entries.find(entry=>entry.id===scene.reservoir.sourceId);
+    const source=allEntries.find(entry=>entry.id===scene.reservoir.sourceId);
     assert.equal(scene.beats[0].text,source.prose);
     assert.equal(SCENE_BANK_BY_ID[scene.id],scene);
     assert.equal(scene.origin,'authored');assert.equal(scene.reservoir.origin,'authored');

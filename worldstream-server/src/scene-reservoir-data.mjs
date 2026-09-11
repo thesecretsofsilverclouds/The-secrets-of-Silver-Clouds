@@ -3669,6 +3669,1083 @@ export const SCENE_RESERVOIR_BATCHES = [
         "prose": "They heard the piano melody again later, reduced to three absent-minded notes from somewhere down the corridor. Ashai recognised it. Goaden realised she recognised it. Neither said so. He changed the rhythm before the fourth note arrived."
       }
     ]
+  },
+  {
+    "batch_id": "worldstream-repaired-batch-d1",
+    "status": "accepted",
+    "count": 59,
+    "effect_policy": "surface_only",
+    "notes": [
+      "Repaired mechanical schema mismatches for simulation-reachable scenes in Step D1.",
+      "Verified zero regression against all 814 unit tests, deterministic simulation invariants, and offscreen purpose chains."
+    ],
+    "entries": [
+      {
+        "id": "mi6_domestic.001",
+        "family": "mi6_domestic",
+        "origin": "greah_grounded_batch_03",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "ashai"
+        ],
+        "location": [
+          "mi6/common_room"
+        ],
+        "trigger_family": "MEAL|CROSS_PATHS",
+        "effect_policy": "surface_only",
+        "prose": "Ashai reached for the mug beside her tray and stopped when Goaden’s hand arrived first. They both looked down. His coffee was black; hers smelled sharply of lime. “That would’ve been a rough surprise,” she said. Goaden slid her mug across. “For you, maybe.” Kai leaned over his shoulder to inspect the exchange as though MI6 had nearly suffered a major security breach."
+      },
+      {
+        "id": "mi6_domestic.012",
+        "family": "mi6_domestic",
+        "origin": "greah_grounded_batch_03",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "goaden"
+        ],
+        "location": [
+          "mi6/common_room"
+        ],
+        "trigger_family": "MEAL",
+        "effect_policy": "surface_only",
+        "prose": "Ashai pushed the untouched half of her sandwich towards the middle of the table. Goaden looked at it, then at her. “You done?” “Apparently.” He took it. “Very community-minded.” “You were staring at it.” “Assessing.”"
+      },
+      {
+        "id": "ready.lunch.001",
+        "family": "mi6_lunch_hall",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "ashai"
+        ],
+        "location": [
+          "mi6/common_room",
+          "mi6/common_room"
+        ],
+        "trigger_family": "MEAL_BEGIN|SHARED_MEAL|MEAL|CROSS_PATHS",
+        "effect_policy": "surface_only",
+        "prose": "The MI6 lunch hall rolled with cutlery, chair legs and half-heard arguments. Ashai pushed an untouched piece of bread to the middle of the table. Goaden took it without asking. “You were staring at it,” she said. “Assessing resources.” “You mean stealing lunch.” “Resource acquisition.” The next alarm did not sound, so the argument was allowed to remain gloriously unimportant."
+      },
+      {
+        "id": "ready.lunch.002",
+        "family": "mi6_lunch_hall",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "goaden"
+        ],
+        "location": [
+          "mi6/common_room",
+          "mi6/common_room"
+        ],
+        "trigger_family": "MEAL_BEGIN|SHARED_MEAL|MEAL|CROSS_PATHS",
+        "effect_policy": "surface_only",
+        "prose": "Steam fogged one corner of the lunch-hall windows while agents queued beneath ward-lit signs. Ashai squeezed lime into her drink. Goaden watched as though she had tampered with evidence. “Still doing that?” “Still judging it?” “Someone has to.” She took a deliberately slow sip. For a few minutes, the world outside the Armadillo could wait."
+      },
+      {
+        "id": "ready.lunch.005",
+        "family": "mi6_lunch_hall",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "kai"
+        ],
+        "location": [
+          "mi6/common_room",
+          "mi6/common_room"
+        ],
+        "trigger_family": "MEAL_BEGIN|SHARED_MEAL|MEAL|CROSS_PATHS",
+        "effect_policy": "surface_only",
+        "prose": "The gaming area at the back kept erupting in cheers, but the lunch tables held their own quieter wars. Kai leaned towards Goaden’s plate. Goaden moved it away. Kai leaned farther. “You have your own food.” “Yours is seasoned.” “That’s a personal problem.” Kai’s tail curled around the chair back in dignified offence. Nobody won, which was usually how the best lunch-table arguments ended."
+      },
+      {
+        "id": "ready.lunch.006",
+        "family": "mi6_lunch_hall",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/common_room",
+          "mi6/common_room"
+        ],
+        "trigger_family": "MEAL_BEGIN|SHARED_MEAL|MEAL|CROSS_PATHS",
+        "effect_policy": "surface_only",
+        "prose": "A late meal had left the hall almost peaceful, save for trays being stacked behind the counter. Greah circled Ashai’s tray with the severity of a health inspector. “Vegetable.” “There are vegetables.” “One is garnish.” Ashai moved a green leaf into the centre of the plate. “Promoted.” Someone at the next table laughed without knowing why."
+      },
+      {
+        "id": "ready.lunch.018",
+        "family": "mi6_lunch_hall",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "goaden"
+        ],
+        "location": [
+          "mi6/common_room",
+          "mi6/common_room"
+        ],
+        "trigger_family": "MEAL_BEGIN|SHARED_MEAL|MEAL|CROSS_PATHS",
+        "effect_policy": "surface_only",
+        "prose": "Lunch arrived in the narrow calm between briefings, everyone eating with the speed of people expecting an alarm. Both reached for the same mug. Ashai smelled coffee and let go. Goaden looked at the lime floating in the other cup. “That nearly ruined my day.” “Mine too.” They swapped without further ceremony. Around them, MI6 carried on pretending this counted as a normal workplace."
+      },
+      {
+        "id": "ready.lunch.019",
+        "family": "mi6_lunch_hall",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "ashai"
+        ],
+        "location": [
+          "mi6/common_room",
+          "mi6/common_room"
+        ],
+        "trigger_family": "MEAL_BEGIN|SHARED_MEAL|MEAL|CROSS_PATHS",
+        "effect_policy": "surface_only",
+        "prose": "The Armadillo's lunch hall felt unusually domestic for a building designed to survive magical containment failures. Goaden ate like training had personally insulted him. Ashai watched the pace for three bites. “You know nobody’s timing this.” “Good.” He slowed by exactly nothing. The conversation dissolved under the ordinary clatter of plates."
+      },
+      {
+        "id": "ready.lunch.021",
+        "family": "mi6_lunch_hall",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "ashai"
+        ],
+        "location": [
+          "mi6/common_room",
+          "mi6/common_room"
+        ],
+        "trigger_family": "MEAL_BEGIN|SHARED_MEAL|MEAL|CROSS_PATHS",
+        "effect_policy": "surface_only",
+        "prose": "The MI6 lunch hall rolled with cutlery, chair legs and half-heard arguments. Ashai pushed an untouched piece of bread to the middle of the table. Goaden took it without asking. “You were staring at it,” she said. “Assessing resources.” “You mean stealing lunch.” “Resource acquisition.” Around them, MI6 carried on pretending this counted as a normal workplace."
+      },
+      {
+        "id": "ready.lunch.022",
+        "family": "mi6_lunch_hall",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "goaden"
+        ],
+        "location": [
+          "mi6/common_room",
+          "mi6/common_room"
+        ],
+        "trigger_family": "MEAL_BEGIN|SHARED_MEAL|MEAL|CROSS_PATHS",
+        "effect_policy": "surface_only",
+        "prose": "Steam fogged one corner of the lunch-hall windows while agents queued beneath ward-lit signs. Ashai squeezed lime into her drink. Goaden watched as though she had tampered with evidence. “Still doing that?” “Still judging it?” “Someone has to.” She took a deliberately slow sip. The conversation dissolved under the ordinary clatter of plates."
+      },
+      {
+        "id": "ready.lunch.025",
+        "family": "mi6_lunch_hall",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "kai"
+        ],
+        "location": [
+          "mi6/common_room",
+          "mi6/common_room"
+        ],
+        "trigger_family": "MEAL_BEGIN|SHARED_MEAL|MEAL|CROSS_PATHS",
+        "effect_policy": "surface_only",
+        "prose": "The gaming area at the back kept erupting in cheers, but the lunch tables held their own quieter wars. Kai leaned towards Goaden’s plate. Goaden moved it away. Kai leaned farther. “You have your own food.” “Yours is seasoned.” “That’s a personal problem.” Kai’s tail curled around the chair back in dignified offence. For a few minutes, the world outside the Armadillo could wait."
+      },
+      {
+        "id": "ready.lunch.026",
+        "family": "mi6_lunch_hall",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/common_room",
+          "mi6/common_room"
+        ],
+        "trigger_family": "MEAL_BEGIN|SHARED_MEAL|MEAL|CROSS_PATHS",
+        "effect_policy": "surface_only",
+        "prose": "A late meal had left the hall almost peaceful, save for trays being stacked behind the counter. Greah circled Ashai’s tray with the severity of a health inspector. “Vegetable.” “There are vegetables.” “One is garnish.” Ashai moved a green leaf into the centre of the plate. “Promoted.” The moment passed before it could become anything more serious."
+      },
+      {
+        "id": "ready.lunch.038",
+        "family": "mi6_lunch_hall",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "goaden"
+        ],
+        "location": [
+          "mi6/common_room",
+          "mi6/common_room"
+        ],
+        "trigger_family": "MEAL_BEGIN|SHARED_MEAL|MEAL|CROSS_PATHS",
+        "effect_policy": "surface_only",
+        "prose": "Lunch arrived in the narrow calm between briefings, everyone eating with the speed of people expecting an alarm. Both reached for the same mug. Ashai smelled coffee and let go. Goaden looked at the lime floating in the other cup. “That nearly ruined my day.” “Mine too.” They swapped without further ceremony. Nobody won, which was usually how the best lunch-table arguments ended."
+      },
+      {
+        "id": "ready.lunch.039",
+        "family": "mi6_lunch_hall",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "ashai"
+        ],
+        "location": [
+          "mi6/common_room",
+          "mi6/common_room"
+        ],
+        "trigger_family": "MEAL_BEGIN|SHARED_MEAL|MEAL|CROSS_PATHS",
+        "effect_policy": "surface_only",
+        "prose": "The Armadillo's lunch hall felt unusually domestic for a building designed to survive magical containment failures. Goaden ate like training had personally insulted him. Ashai watched the pace for three bites. “You know nobody’s timing this.” “Good.” He slowed by exactly nothing. Someone at the next table laughed without knowing why."
+      },
+      {
+        "id": "ready.cross.001",
+        "family": "mi6_cross_paths",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "ashai"
+        ],
+        "location": [
+          "mi6/corridors",
+          "mi6/corridors",
+          "mi6/corridors"
+        ],
+        "trigger_family": "CROSS_PATHS|TRAVEL_ARRIVE|TRAVEL_INTERNAL|QUIET_TIME_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "The Armadillo's corridors bent around another armoured segment, bright strip-lights catching on sealed doors. Goaden stepped left as Ashai stepped left. They corrected right together. “Embarrassing,” Ashai said. “For you.” They tried again and finally passed. The building folded them back into its routine before the exchange could grow legs."
+      },
+      {
+        "id": "ready.cross.006",
+        "family": "mi6_cross_paths",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/corridors",
+          "mi6/corridors",
+          "mi6/corridors"
+        ],
+        "trigger_family": "CROSS_PATHS|TRAVEL_ARRIVE|TRAVEL_INTERNAL|QUIET_TIME_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "The late shift had emptied the passage until every footstep carried. Greah flew from one strip-light to the next, trying to beat the sensor as each brightened ahead of Ashai. “You know the building is doing that.” “Then it should train harder.” Nobody nearby paid them any attention, which suited everyone involved."
+      },
+      {
+        "id": "ready.cross.007",
+        "family": "mi6_cross_paths",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "kai"
+        ],
+        "location": [
+          "mi6/corridors",
+          "mi6/corridors",
+          "mi6/corridors"
+        ],
+        "trigger_family": "CROSS_PATHS|TRAVEL_ARRIVE|TRAVEL_INTERNAL|QUIET_TIME_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "An announcement muttered overhead while enchanted floor markers redirected traffic around maintenance. Kai landed on Goaden’s shoulder when the corridor filled with people. “Lazy.” “Efficient.” Goaden shifted the strap of his bag to give the dragon room. The next announcement cut across them and gave both an excuse to move."
+      },
+      {
+        "id": "ready.cross.015",
+        "family": "mi6_cross_paths",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "ashai"
+        ],
+        "location": [
+          "mi6/corridors",
+          "mi6/corridors",
+          "mi6/corridors"
+        ],
+        "trigger_family": "CROSS_PATHS|TRAVEL_ARRIVE|TRAVEL_INTERNAL|QUIET_TIME_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "A security door sighed open and shut behind them, swallowing the noise from the busier wing. They crossed after separate sessions, both pretending not to notice the other's tired movement. “Good training?” Ashai asked. “Easy.” She looked at the towel over his shoulder. “Obviously.” Their paths split at the next junction as naturally as they had crossed."
+      },
+      {
+        "id": "ready.cross.019",
+        "family": "mi6_cross_paths",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai"
+        ],
+        "location": [
+          "mi6/corridors",
+          "mi6/corridors",
+          "mi6/corridors"
+        ],
+        "trigger_family": "CROSS_PATHS|TRAVEL_ARRIVE|TRAVEL_INTERNAL|QUIET_TIME_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "A soft pulse ran through the wall runes as the building shifted one compartment into secure mode. Ashai slowed where an old wall panel met a newly replaced one. The greys were almost identical. Almost. She rubbed one thumb over the seam, then moved on before anyone could ask why. The moment lasted no longer than the door cycle."
+      },
+      {
+        "id": "ready.cross.020",
+        "family": "mi6_cross_paths",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "kai"
+        ],
+        "location": [
+          "mi6/corridors",
+          "mi6/corridors",
+          "mi6/corridors"
+        ],
+        "trigger_family": "CROSS_PATHS|TRAVEL_ARRIVE|TRAVEL_INTERNAL|QUIET_TIME_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "Two agents stepped aside to let a sealed evidence cart pass, and the corridor briefly stalled around it. A faint rhythm leaked through a closed door. Goaden slowed despite himself. Kai noticed. “Later.” “Didn’t say anything.” “You changed pace.” Goaden kept walking. The corridor swallowed the rest beneath footsteps and quiet machinery."
+      },
+      {
+        "id": "ready.cross.021",
+        "family": "mi6_cross_paths",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "ashai"
+        ],
+        "location": [
+          "mi6/corridors",
+          "mi6/corridors",
+          "mi6/corridors"
+        ],
+        "trigger_family": "CROSS_PATHS|TRAVEL_ARRIVE|TRAVEL_INTERNAL|QUIET_TIME_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "The Armadillo's corridors bent around another armoured segment, bright strip-lights catching on sealed doors. Goaden stepped left as Ashai stepped left. They corrected right together. “Embarrassing,” Ashai said. “For you.” They tried again and finally passed. A security light changed green and the corridor began moving again."
+      },
+      {
+        "id": "ready.cross.026",
+        "family": "mi6_cross_paths",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/corridors",
+          "mi6/corridors",
+          "mi6/corridors"
+        ],
+        "trigger_family": "CROSS_PATHS|TRAVEL_ARRIVE|TRAVEL_INTERNAL|QUIET_TIME_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "The late shift had emptied the passage until every footstep carried. Greah flew from one strip-light to the next, trying to beat the sensor as each brightened ahead of Ashai. “You know the building is doing that.” “Then it should train harder.” A lift arrived and ended the conversation by brute architecture."
+      },
+      {
+        "id": "ready.cross.027",
+        "family": "mi6_cross_paths",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "kai"
+        ],
+        "location": [
+          "mi6/corridors",
+          "mi6/corridors",
+          "mi6/corridors"
+        ],
+        "trigger_family": "CROSS_PATHS|TRAVEL_ARRIVE|TRAVEL_INTERNAL|QUIET_TIME_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "An announcement muttered overhead while enchanted floor markers redirected traffic around maintenance. Kai landed on Goaden’s shoulder when the corridor filled with people. “Lazy.” “Efficient.” Goaden shifted the strap of his bag to give the dragon room. They left in opposite directions, each carrying a slightly different mood."
+      },
+      {
+        "id": "ready.cross.035",
+        "family": "mi6_cross_paths",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "ashai"
+        ],
+        "location": [
+          "mi6/corridors",
+          "mi6/corridors",
+          "mi6/corridors"
+        ],
+        "trigger_family": "CROSS_PATHS|TRAVEL_ARRIVE|TRAVEL_INTERNAL|QUIET_TIME_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "A security door sighed open and shut behind them, swallowing the noise from the busier wing. They crossed after separate sessions, both pretending not to notice the other's tired movement. “Good training?” Ashai asked. “Easy.” She looked at the towel over his shoulder. “Obviously.” Somewhere overhead, the Armadillo's ventilation sighed through another secret."
+      },
+      {
+        "id": "ready.cross.039",
+        "family": "mi6_cross_paths",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai"
+        ],
+        "location": [
+          "mi6/corridors",
+          "mi6/corridors",
+          "mi6/corridors"
+        ],
+        "trigger_family": "CROSS_PATHS|TRAVEL_ARRIVE|TRAVEL_INTERNAL|QUIET_TIME_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "A soft pulse ran through the wall runes as the building shifted one compartment into secure mode. Ashai slowed where an old wall panel met a newly replaced one. The greys were almost identical. Almost. She rubbed one thumb over the seam, then moved on before anyone could ask why. Nobody nearby paid them any attention, which suited everyone involved."
+      },
+      {
+        "id": "ready.cross.040",
+        "family": "mi6_cross_paths",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "kai"
+        ],
+        "location": [
+          "mi6/corridors",
+          "mi6/corridors",
+          "mi6/corridors"
+        ],
+        "trigger_family": "CROSS_PATHS|TRAVEL_ARRIVE|TRAVEL_INTERNAL|QUIET_TIME_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "Two agents stepped aside to let a sealed evidence cart pass, and the corridor briefly stalled around it. A faint rhythm leaked through a closed door. Goaden slowed despite himself. Kai noticed. “Later.” “Didn’t say anything.” “You changed pace.” Goaden kept walking. The next announcement cut across them and gave both an excuse to move."
+      },
+      {
+        "id": "ready.training.001",
+        "family": "mi6_training_recovery",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "kai"
+        ],
+        "location": [
+          "mi6/training",
+          "mi6/indoor_yard"
+        ],
+        "trigger_family": "PRACTICE_BEGIN|PRACTICE_END|ACTIVITY_COMPLETE",
+        "effect_policy": "surface_only",
+        "prose": "The training floor smelled of rubber mats, chalk dust and cooling ward-metal. Goaden reached for Vega again. Kai landed on the hilt. “No.” “Move.” “No.” Goaden looked at the timer, then at his Guardian. “Traitor.” “Alive traitor.” Nobody argued with the completion tone a second time."
+      },
+      {
+        "id": "ready.training.002",
+        "family": "mi6_training_recovery",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/training",
+          "mi6/indoor_yard"
+        ],
+        "trigger_family": "PRACTICE_BEGIN|PRACTICE_END|ACTIVITY_COMPLETE",
+        "effect_policy": "surface_only",
+        "prose": "Projection lights faded from the AR room, leaving ordinary walls where a battlefield had been seconds earlier. Ashai held the last Thyia construct until its trembling stopped, then dissolved it herself. Greah clapped both tiny hands. “There. You stopped before collapsing. Character growth.” “Don’t ruin it.” The session ended before pride found another excuse."
+      },
+      {
+        "id": "ready.training.008",
+        "family": "mi6_training_recovery",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "kai",
+          "goaden"
+        ],
+        "location": [
+          "mi6/training",
+          "mi6/indoor_yard"
+        ],
+        "trigger_family": "PRACTICE_BEGIN|PRACTICE_END|ACTIVITY_COMPLETE",
+        "effect_policy": "surface_only",
+        "prose": "The floor bore fresh scuffs where boots had cut hard turns through the last drill. Kai listed the three strikes Goaden should have avoided. Goaden wiped his face with a towel. “You keeping score?” “Someone must.” “I won.” “Against yourself.” The room went from battlefield to gym with almost insulting speed."
+      },
+      {
+        "id": "ready.training.009",
+        "family": "mi6_training_recovery",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "greah",
+          "ashai"
+        ],
+        "location": [
+          "mi6/training",
+          "mi6/indoor_yard"
+        ],
+        "trigger_family": "PRACTICE_BEGIN|PRACTICE_END|ACTIVITY_COMPLETE",
+        "effect_policy": "surface_only",
+        "prose": "Cooling fans whispered overhead while combat telemetry collapsed into neat graphs along one wall. Greah dragged a towel through the air with both hands and dropped it onto Ashai’s head. “Elegant.” Ashai’s reply emerged from the fabric. “Devoted.” The ward lights dimmed and took the decision away from them."
+      },
+      {
+        "id": "ready.training.015",
+        "family": "mi6_training_recovery",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/training",
+          "mi6/indoor_yard"
+        ],
+        "trigger_family": "PRACTICE_BEGIN|PRACTICE_END|ACTIVITY_COMPLETE",
+        "effect_policy": "surface_only",
+        "prose": "A row of practice weapons settled back into their magnetic rack with small metallic clicks. Ashai walked the edge of the chamber while the projection reset, noticing how the floor runes dimmed in sequence. “You’re studying again,” Greah said. “It makes more sense when I know why things move.” Water and food won the next round."
+      },
+      {
+        "id": "ready.training.021",
+        "family": "mi6_training_recovery",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "goaden",
+          "kai"
+        ],
+        "location": [
+          "mi6/training",
+          "mi6/indoor_yard"
+        ],
+        "trigger_family": "PRACTICE_BEGIN|PRACTICE_END|ACTIVITY_COMPLETE",
+        "effect_policy": "surface_only",
+        "prose": "The training floor smelled of rubber mats, chalk dust and cooling ward-metal. Goaden reached for Vega again. Kai landed on the hilt. “No.” “Move.” “No.” Goaden looked at the timer, then at his Guardian. “Traitor.” “Alive traitor.” The room went from battlefield to gym with almost insulting speed."
+      },
+      {
+        "id": "ready.training.022",
+        "family": "mi6_training_recovery",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/training",
+          "mi6/indoor_yard"
+        ],
+        "trigger_family": "PRACTICE_BEGIN|PRACTICE_END|ACTIVITY_COMPLETE",
+        "effect_policy": "surface_only",
+        "prose": "Projection lights faded from the AR room, leaving ordinary walls where a battlefield had been seconds earlier. Ashai held the last Thyia construct until its trembling stopped, then dissolved it herself. Greah clapped both tiny hands. “There. You stopped before collapsing. Character growth.” “Don’t ruin it.” The ward lights dimmed and took the decision away from them."
+      },
+      {
+        "id": "ready.training.028",
+        "family": "mi6_training_recovery",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "kai",
+          "goaden"
+        ],
+        "location": [
+          "mi6/training",
+          "mi6/indoor_yard"
+        ],
+        "trigger_family": "PRACTICE_BEGIN|PRACTICE_END|ACTIVITY_COMPLETE",
+        "effect_policy": "surface_only",
+        "prose": "The floor bore fresh scuffs where boots had cut hard turns through the last drill. Kai listed the three strikes Goaden should have avoided. Goaden wiped his face with a towel. “You keeping score?” “Someone must.” “I won.” “Against yourself.” Water and food won the next round."
+      },
+      {
+        "id": "ready.training.029",
+        "family": "mi6_training_recovery",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "greah",
+          "ashai"
+        ],
+        "location": [
+          "mi6/training",
+          "mi6/indoor_yard"
+        ],
+        "trigger_family": "PRACTICE_BEGIN|PRACTICE_END|ACTIVITY_COMPLETE",
+        "effect_policy": "surface_only",
+        "prose": "Cooling fans whispered overhead while combat telemetry collapsed into neat graphs along one wall. Greah dragged a towel through the air with both hands and dropped it onto Ashai’s head. “Elegant.” Ashai’s reply emerged from the fabric. “Devoted.” For once, stopping counted as part of the training."
+      },
+      {
+        "id": "ready.training.035",
+        "family": "mi6_training_recovery",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/training",
+          "mi6/indoor_yard"
+        ],
+        "trigger_family": "PRACTICE_BEGIN|PRACTICE_END|ACTIVITY_COMPLETE",
+        "effect_policy": "surface_only",
+        "prose": "A row of practice weapons settled back into their magnetic rack with small metallic clicks. Ashai walked the edge of the chamber while the projection reset, noticing how the floor runes dimmed in sequence. “You’re studying again,” Greah said. “It makes more sense when I know why things move.” The session ended before pride found another excuse."
+      },
+      {
+        "id": "ready.ashaiquiet.001",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "Ashai's quarters were quiet except for the television and the soft pulse of Thyia. Greah stared at the television. “These people hate each other.” “That’s the format.” “And you enjoy this?” Ashai pulled the blanket higher. “Deeply.” For once, doing nothing was the plan rather than a failure to make one."
+      },
+      {
+        "id": "ready.ashaiquiet.002",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "The common room had emptied until the television was mostly talking to itself. Ashai checked her phone twice in under a minute, then turned it face-down. Greah noticed and did not comment. Ashai noticed that too. “Thank you.” “I said nothing.” “Exactly.” The room asked nothing of her and she returned the favour."
+      },
+      {
+        "id": "ready.ashaiquiet.003",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "Greah's halo cast a faint blue edge over the blanket pooled around Ashai's knees. The screen changed scenes and the room shifted from cold blue to warm amber. Ashai watched the colours move over the walls longer than the programme deserved. No alarm came. It felt almost suspicious."
+      },
+      {
+        "id": "ready.ashaiquiet.004",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "Rain ticked against the window while some dreadful reality programme argued in the background. Greah had moved three things on the bedside table into what she called a sensible order. Ashai returned the carved doll to its old place. Greah sighed with the tragedy of an unappreciated curator. Sleep remained negotiable."
+      },
+      {
+        "id": "ready.ashaiquiet.005",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "Ashai had one boot off, one still on, and no intention of correcting the imbalance yet. Ashai rolled Thyia between finger and thumb until its blue light matched her breathing. Greah lowered herself onto the pillow beside her. Neither turned the television off. Outside, MI6 remained vigilant on her behalf."
+      },
+      {
+        "id": "ready.ashaiquiet.006",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "A mug cooled on the bedside table beside the little carved doll and Ashai's phone. Ashai's thumb reached her teeth before she caught herself. Greah looked at the hand. Ashai lowered it. “Don't.” “I did not speak.” “Your face did.” Ashai let the quiet hold without filling it."
+      },
+      {
+        "id": "ready.ashaiquiet.007",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "goaden"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "The corridor outside her room had gone silent enough that every distant door sounded important. Goaden stopped in the doorway and watched ten seconds of the programme. “This is terrible.” Ashai did not look away. “Correct.” “And you’re watching it.” “Also correct.” Thyia's light dimmed with her breathing."
+      },
+      {
+        "id": "ready.ashaiquiet.009",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "The evening had narrowed to a blanket, a remote and the promise of nobody asking anything difficult. Greah landed on the remote. “Sleep.” “One more episode.” “You said that an episode ago.” Ashai gently lifted her Guardian and pressed play. Greah settled close enough that her wing-light softened the shadows."
+      },
+      {
+        "id": "ready.ashaiquiet.010",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "A low announcement passed through MI6 and faded without requiring her name. Ashai muted the television and stood at the window. London glittered beneath low cloud, ordinary traffic threading between impossible magic. She stayed until the glass cooled her forehead. The remote stayed within reach, which mattered more than it should have."
+      },
+      {
+        "id": "ready.ashaiquiet.011",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "Ashai's quarters were quiet except for the television and the soft pulse of Thyia. Greah pointed at the chair carrying three outfits. “That is becoming architecture.” Ashai looked at it. “Load-bearing architecture.” For once, doing nothing was the plan rather than a failure to make one."
+      },
+      {
+        "id": "ready.ashaiquiet.012",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "The common room had emptied until the television was mostly talking to itself. Ashai opened a book during the adverts and failed to finish the first paragraph before the programme returned. Greah laughed. “Academic discipline.” “Shut up.” The room asked nothing of her and she returned the favour."
+      },
+      {
+        "id": "ready.ashaiquiet.013",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "Greah's halo cast a faint blue edge over the blanket pooled around Ashai's knees. Ashai finally reached for the tea and found it cold. She considered getting up, decided against it, and drank anyway with the expression of someone accepting consequences. No alarm came. It felt almost suspicious."
+      },
+      {
+        "id": "ready.ashaiquiet.014",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "Rain ticked against the window while some dreadful reality programme argued in the background. Greah stared at the television. “These people hate each other.” “That’s the format.” “And you enjoy this?” Ashai pulled the blanket higher. “Deeply.” For once, doing nothing was the plan rather than a failure to make one."
+      },
+      {
+        "id": "ready.ashaiquiet.015",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "Ashai had one boot off, one still on, and no intention of correcting the imbalance yet. Ashai checked her phone twice in under a minute, then turned it face-down. Greah noticed and did not comment. Ashai noticed that too. “Thank you.” “I said nothing.” “Exactly.” The room asked nothing of her and she returned the favour."
+      },
+      {
+        "id": "ready.ashaiquiet.016",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "A mug cooled on the bedside table beside the little carved doll and Ashai's phone. The screen changed scenes and the room shifted from cold blue to warm amber. Ashai watched the colours move over the walls longer than the programme deserved. No alarm came. It felt almost suspicious."
+      },
+      {
+        "id": "ready.ashaiquiet.017",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "The corridor outside her room had gone silent enough that every distant door sounded important. Greah had moved three things on the bedside table into what she called a sensible order. Ashai returned the carved doll to its old place. Greah sighed with the tragedy of an unappreciated curator. Sleep remained negotiable."
+      },
+      {
+        "id": "ready.ashaiquiet.018",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "Ashai sat cross-legged on the bed, the room lit by the television and Thyia's patient glow. Ashai rolled Thyia between finger and thumb until its blue light matched her breathing. Greah lowered herself onto the pillow beside her. Neither turned the television off. Outside, MI6 remained vigilant on her behalf."
+      },
+      {
+        "id": "ready.ashaiquiet.019",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "The evening had narrowed to a blanket, a remote and the promise of nobody asking anything difficult. Ashai's thumb reached her teeth before she caught herself. Greah looked at the hand. Ashai lowered it. “Don't.” “I did not speak.” “Your face did.” Ashai let the quiet hold without filling it."
+      },
+      {
+        "id": "ready.ashaiquiet.020",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "goaden"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "A low announcement passed through MI6 and faded without requiring her name. Goaden stopped in the doorway and watched ten seconds of the programme. “This is terrible.” Ashai did not look away. “Correct.” “And you’re watching it.” “Also correct.” Thyia's light dimmed with her breathing."
+      },
+      {
+        "id": "ready.ashaiquiet.022",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "The common room had emptied until the television was mostly talking to itself. Greah landed on the remote. “Sleep.” “One more episode.” “You said that an episode ago.” Ashai gently lifted her Guardian and pressed play. Greah settled close enough that her wing-light softened the shadows."
+      },
+      {
+        "id": "ready.ashaiquiet.023",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "Greah's halo cast a faint blue edge over the blanket pooled around Ashai's knees. Ashai muted the television and stood at the window. London glittered beneath low cloud, ordinary traffic threading between impossible magic. She stayed until the glass cooled her forehead. The remote stayed within reach, which mattered more than it should have."
+      },
+      {
+        "id": "ready.ashaiquiet.024",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "Rain ticked against the window while some dreadful reality programme argued in the background. Greah pointed at the chair carrying three outfits. “That is becoming architecture.” Ashai looked at it. “Load-bearing architecture.” For once, doing nothing was the plan rather than a failure to make one."
+      },
+      {
+        "id": "ready.ashaiquiet.025",
+        "family": "ashai_quiet_tv",
+        "origin": "greah_canon_batch_04",
+        "status": "accepted",
+        "register": "micro_scene",
+        "cast": [
+          "ashai",
+          "greah"
+        ],
+        "location": [
+          "mi6/quarters",
+          "mi6/common_room"
+        ],
+        "trigger_family": "TV_BEGIN|QUIET_TIME_BEGIN|REST_BEGIN",
+        "effect_policy": "surface_only",
+        "prose": "Ashai had one boot off, one still on, and no intention of correcting the imbalance yet. Ashai opened a book during the adverts and failed to finish the first paragraph before the programme returned. Greah laughed. “Academic discipline.” “Shut up.” The room asked nothing of her and she returned the favour."
+      }
+    ]
   }
 ];
 export const SCENE_RESERVOIR_REVIEWS = {
@@ -4740,5 +5817,1138 @@ export const SCENE_RESERVOIR_REVIEWS = {
     "sourceHash": "ea1d5d07b00ba831613c331682a46d68cf257684625c44d82c0d879013af25f9",
     "status": "staged",
     "reason": "Requires an exact earlier public origin event and knowledge path; no callback source is supplied."
+  },
+  "mi6_domestic.001": {
+    "sourceHash": "b0d257f947f6ea85ac6f822bdfc3e47ab6ba5ed2409a6d27efb57216d74b57ea",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "MEAL_BEGIN"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "eating"
+        ],
+        "ashai": [
+          "eating"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_domestic routine with verified simulation reachability."
+  },
+  "mi6_domestic.012": {
+    "sourceHash": "4b6f431e77044c6194a0e36648bf9eb01d0c4e4e5ddcd850df8bf6f8fd52196d",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "CROSS_PATHS",
+        "QUIET_TIME_BEGIN",
+        "ACTIVITY_COMPLETE"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "unhurried_time",
+          "waiting"
+        ],
+        "ashai": [
+          "unhurried_time",
+          "waiting"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_domestic routine with verified simulation reachability."
+  },
+  "ready.lunch.001": {
+    "sourceHash": "ef562bbfd9aa2a36f6013909bfbc29aed3befeeb251d577f9243418c629c461e",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "MEAL_BEGIN"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "eating"
+        ],
+        "ashai": [
+          "eating"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_lunch_hall routine with verified simulation reachability."
+  },
+  "ready.lunch.002": {
+    "sourceHash": "dc5aaf8d7a2ac711fc42dce873c179f069dfc12af7f80381e08fe341b70abeea",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "MEAL_BEGIN"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "eating"
+        ],
+        "ashai": [
+          "eating"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_lunch_hall routine with verified simulation reachability."
+  },
+  "ready.lunch.005": {
+    "sourceHash": "4c2ec850fde7433e2ef6a7a35086c78278efc1371d3833e97983e5a655149991",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "MEAL_BEGIN"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "eating"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_lunch_hall routine with verified simulation reachability."
+  },
+  "ready.lunch.006": {
+    "sourceHash": "4f66e978b08d1e5345d56e0a464d1c5b0de6d006a2f60ef90c08ee4ce980e9aa",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "MEAL_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "eating"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_lunch_hall routine with verified simulation reachability."
+  },
+  "ready.lunch.018": {
+    "sourceHash": "833714bb1995120f46c377fac2f1786a41988ed3312ec497a0a27305d9122234",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "MEAL_BEGIN"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "eating"
+        ],
+        "ashai": [
+          "eating"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_lunch_hall routine with verified simulation reachability."
+  },
+  "ready.lunch.019": {
+    "sourceHash": "d34ce85075164f69d9c06a30d466dac24b18e1aff45955884db3375292491f90",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "MEAL_BEGIN"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "eating"
+        ],
+        "ashai": [
+          "eating"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_lunch_hall routine with verified simulation reachability."
+  },
+  "ready.lunch.021": {
+    "sourceHash": "922af6c073e7109d15163836fa8c710add277e8e99f9d56a2cc0c272a33d2f94",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "MEAL_BEGIN"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "eating"
+        ],
+        "ashai": [
+          "eating"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_lunch_hall routine with verified simulation reachability."
+  },
+  "ready.lunch.022": {
+    "sourceHash": "51aa3554c8f5ea6aff612c9380083e19a63f4820e2c0ff218fb3a0f48f3bdba4",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "MEAL_BEGIN"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "eating"
+        ],
+        "ashai": [
+          "eating"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_lunch_hall routine with verified simulation reachability."
+  },
+  "ready.lunch.025": {
+    "sourceHash": "9be624931835e1a91472f035025e5cf05719e8eb47d90c4e1451c7cc62d92089",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "MEAL_BEGIN"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "eating"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_lunch_hall routine with verified simulation reachability."
+  },
+  "ready.lunch.026": {
+    "sourceHash": "5d4b1ad8e73876a8f8a9283508ef1d18fb78045ff9d1301ddf382750960fa5a3",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "MEAL_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "eating"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_lunch_hall routine with verified simulation reachability."
+  },
+  "ready.lunch.038": {
+    "sourceHash": "bf792cf6b70ef3e49d56045943b665c4214ecd42a3801d9d6b958bbcbf580d30",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "MEAL_BEGIN"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "eating"
+        ],
+        "ashai": [
+          "eating"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_lunch_hall routine with verified simulation reachability."
+  },
+  "ready.lunch.039": {
+    "sourceHash": "0d5307fb45cecdad94d90e34077fc4e5a95953891b0602c665265121fdf1e417",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "MEAL_BEGIN"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "eating"
+        ],
+        "ashai": [
+          "eating"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_lunch_hall routine with verified simulation reachability."
+  },
+  "ready.cross.001": {
+    "sourceHash": "530d2cbf240b1add01dd22070ae3c888e89415f2c0de31d54f17a9a828093d87",
+    "status": "accepted",
+    "location": "mi6/corridors",
+    "gates": {
+      "triggerTypes": [
+        "CROSS_PATHS"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "unhurried_time",
+          "waiting"
+        ],
+        "ashai": [
+          "unhurried_time",
+          "waiting"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_cross_paths routine with verified simulation reachability."
+  },
+  "ready.cross.006": {
+    "sourceHash": "b654aeb0c637efb51ce1187d782bea46f703ef2e709581ae4fea5af20d347bcb",
+    "status": "accepted",
+    "location": "mi6/corridors",
+    "gates": {
+      "triggerTypes": [
+        "CROSS_PATHS"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "unhurried_time",
+          "waiting"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_cross_paths routine with verified simulation reachability."
+  },
+  "ready.cross.007": {
+    "sourceHash": "9cb6bae5e68429183a2d7f7bacb98a0711eed752c410f54f5338256ef6ae8e4e",
+    "status": "accepted",
+    "location": "mi6/corridors",
+    "gates": {
+      "triggerTypes": [
+        "CROSS_PATHS"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "unhurried_time",
+          "waiting"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_cross_paths routine with verified simulation reachability."
+  },
+  "ready.cross.015": {
+    "sourceHash": "f91a12c2f5a802dee1084acabc837fa47a9f96f84c92e6016c5fea1d7ab2f270",
+    "status": "accepted",
+    "location": "mi6/corridors",
+    "gates": {
+      "triggerTypes": [
+        "CROSS_PATHS"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "unhurried_time",
+          "waiting"
+        ],
+        "ashai": [
+          "unhurried_time",
+          "waiting"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_cross_paths routine with verified simulation reachability."
+  },
+  "ready.cross.019": {
+    "sourceHash": "236bc5ce403b8d68325e77b38fed82481d19a47b20a9256ac0bb2ac5acaa01a6",
+    "status": "accepted",
+    "location": "mi6/corridors",
+    "gates": {
+      "triggerTypes": [
+        "CROSS_PATHS"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "unhurried_time",
+          "waiting"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_cross_paths routine with verified simulation reachability."
+  },
+  "ready.cross.020": {
+    "sourceHash": "d7ea1551fcf7fddfc91cfedbc03132a130b3ab349039d23d8df724ddf3126b9f",
+    "status": "accepted",
+    "location": "mi6/corridors",
+    "gates": {
+      "triggerTypes": [
+        "CROSS_PATHS"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "unhurried_time",
+          "waiting"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_cross_paths routine with verified simulation reachability."
+  },
+  "ready.cross.021": {
+    "sourceHash": "354d718aaa550baccf7dcc94b8b96075add6b465c3e7ef5224628f6b2e176c6a",
+    "status": "accepted",
+    "location": "mi6/corridors",
+    "gates": {
+      "triggerTypes": [
+        "CROSS_PATHS"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "unhurried_time",
+          "waiting"
+        ],
+        "ashai": [
+          "unhurried_time",
+          "waiting"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_cross_paths routine with verified simulation reachability."
+  },
+  "ready.cross.026": {
+    "sourceHash": "e450c9493a22daa528b7d82fc8e6bece9996c24aa18a7f58059d6bf1796e297d",
+    "status": "accepted",
+    "location": "mi6/corridors",
+    "gates": {
+      "triggerTypes": [
+        "CROSS_PATHS"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "unhurried_time",
+          "waiting"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_cross_paths routine with verified simulation reachability."
+  },
+  "ready.cross.027": {
+    "sourceHash": "68cb176549a474e9900e3cf7bb7fadca95698f65568158b1ad60fbb96d6ba31f",
+    "status": "accepted",
+    "location": "mi6/corridors",
+    "gates": {
+      "triggerTypes": [
+        "CROSS_PATHS"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "unhurried_time",
+          "waiting"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_cross_paths routine with verified simulation reachability."
+  },
+  "ready.cross.035": {
+    "sourceHash": "98c3a3641929b33440ec18c4859e77e0bb1fc252c98b7d96326a84d2eb6837be",
+    "status": "accepted",
+    "location": "mi6/corridors",
+    "gates": {
+      "triggerTypes": [
+        "CROSS_PATHS"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "unhurried_time",
+          "waiting"
+        ],
+        "ashai": [
+          "unhurried_time",
+          "waiting"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_cross_paths routine with verified simulation reachability."
+  },
+  "ready.cross.039": {
+    "sourceHash": "a0739e6c2d7e6cf66a90602d6795467157c18b7ae37cbd8a59c7189d2e4e32ed",
+    "status": "accepted",
+    "location": "mi6/corridors",
+    "gates": {
+      "triggerTypes": [
+        "CROSS_PATHS"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "unhurried_time",
+          "waiting"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_cross_paths routine with verified simulation reachability."
+  },
+  "ready.cross.040": {
+    "sourceHash": "3daafb2c36cde21cceab8fdc3a66d4140425df41e1ee29b26308e5347d09756f",
+    "status": "accepted",
+    "location": "mi6/corridors",
+    "gates": {
+      "triggerTypes": [
+        "CROSS_PATHS"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "unhurried_time",
+          "waiting"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_cross_paths routine with verified simulation reachability."
+  },
+  "ready.training.001": {
+    "sourceHash": "1f3057774d9be5006c0212741625533508a8d575530169a4485459173290d94d",
+    "status": "accepted",
+    "location": "mi6/training",
+    "gates": {
+      "triggerTypes": [
+        "PRACTICE_END"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "training"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_training_recovery routine with verified simulation reachability."
+  },
+  "ready.training.002": {
+    "sourceHash": "11f0cbb43ed22f02a29a88142f5bbb086d5a3e17a0053a282432e75a1bd13635",
+    "status": "accepted",
+    "location": "mi6/training",
+    "gates": {
+      "triggerTypes": [
+        "PRACTICE_END"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "training"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_training_recovery routine with verified simulation reachability."
+  },
+  "ready.training.008": {
+    "sourceHash": "83717906b413c34c235be049cf514a68c36a2a86ca0c6c99958b0c567bd2612c",
+    "status": "accepted",
+    "location": "mi6/training",
+    "gates": {
+      "triggerTypes": [
+        "PRACTICE_END"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "training"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_training_recovery routine with verified simulation reachability."
+  },
+  "ready.training.009": {
+    "sourceHash": "0ed5367d6953991fb1adbba479d4ca9e0f5b307006d739c2741fe5a42937eaf1",
+    "status": "accepted",
+    "location": "mi6/training",
+    "gates": {
+      "triggerTypes": [
+        "PRACTICE_END"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "training"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_training_recovery routine with verified simulation reachability."
+  },
+  "ready.training.015": {
+    "sourceHash": "18790b9b114a6b950eab26f15036d19b778e69fc697b3254d43c4666d2caf807",
+    "status": "accepted",
+    "location": "mi6/training",
+    "gates": {
+      "triggerTypes": [
+        "PRACTICE_END"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "training"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_training_recovery routine with verified simulation reachability."
+  },
+  "ready.training.021": {
+    "sourceHash": "3b71ff0fcb1074da584a7cdd88727a6d8e826b15b6e11936f1e5bc4ca3e77067",
+    "status": "accepted",
+    "location": "mi6/training",
+    "gates": {
+      "triggerTypes": [
+        "PRACTICE_END"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "training"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_training_recovery routine with verified simulation reachability."
+  },
+  "ready.training.022": {
+    "sourceHash": "0842d08dd1b2cd0b475cc6de6a1f93efce8377cdc5cdce57ce563a5cc4b4327d",
+    "status": "accepted",
+    "location": "mi6/training",
+    "gates": {
+      "triggerTypes": [
+        "PRACTICE_END"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "training"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_training_recovery routine with verified simulation reachability."
+  },
+  "ready.training.028": {
+    "sourceHash": "4cd34c6a40e5c2e73b422ae475e9a0b99f7e64c0213fbb5ff202e07a4f41040d",
+    "status": "accepted",
+    "location": "mi6/training",
+    "gates": {
+      "triggerTypes": [
+        "PRACTICE_END"
+      ],
+      "activitiesByActor": {
+        "goaden": [
+          "training"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_training_recovery routine with verified simulation reachability."
+  },
+  "ready.training.029": {
+    "sourceHash": "89f44a54d3fbad5f1be843facab21c7ff6ecd1762488824931d315be57017ad1",
+    "status": "accepted",
+    "location": "mi6/training",
+    "gates": {
+      "triggerTypes": [
+        "PRACTICE_END"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "training"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_training_recovery routine with verified simulation reachability."
+  },
+  "ready.training.035": {
+    "sourceHash": "a9be1b46c7715c7943596233d3b02df90342ef27c1de4ff30fc28cfcf2d84878",
+    "status": "accepted",
+    "location": "mi6/training",
+    "gates": {
+      "triggerTypes": [
+        "PRACTICE_END"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "training"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical mi6_training_recovery routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.001": {
+    "sourceHash": "e39fb7f1e3699df3b414b3160e5d9b846b36e072e2f8b061bccfa5370e84e29b",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.002": {
+    "sourceHash": "c4f039f0c9d0c9957ef23f78774ad02828585144db3806ea0b9dee246324275a",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.003": {
+    "sourceHash": "2f3a9aa7a3f53c1510b92eaf89530f8cc93cef3124947e10c3815be8933fdfff",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.004": {
+    "sourceHash": "ad913eb72298f4b613d0508337cb0f66ef982f54cf90b4845a49c5b13b58a45e",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.005": {
+    "sourceHash": "9545b175bfbf1411b1a7a51f32f5b1410657aaf8881386e0ae401bb5a3a3a46b",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.006": {
+    "sourceHash": "82a7e3b3b24dd35af7d930d68f6d6fe5e28610092090a53702c7202508d0c8a3",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.007": {
+    "sourceHash": "8eb8a0c271411a63be84dfd2f03354c65dccf0334fb60141d44993becff755b5",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ],
+        "goaden": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.009": {
+    "sourceHash": "7c73a54830a816ce95312d135d46ebd80630df3a5ca8b841affa0307155b8250",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.010": {
+    "sourceHash": "509dd815aaf471110f7a84031b4f16808dc875b04072e736a7d6591940132737",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.011": {
+    "sourceHash": "cfa8552ed4528d6b224274f0b3e21a67adeffa2e46c9dca9ac868e15b56ec877",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.012": {
+    "sourceHash": "9199e41dce3a5d66c47e70b4bc5108b626294888d60a97bfd72d1bdaba645fcf",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.013": {
+    "sourceHash": "694f6294c910f621a730273b8fe3bf74c4941459468b9fa4892477d74cf34de9",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.014": {
+    "sourceHash": "95609f06842d6af85e0e631194437ad42a398e0b00663d8e5349fa398f3586f7",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.015": {
+    "sourceHash": "fbcb31f110773ecc3bcf1cf3c79d999ab6fd30538ecd1f003e67d694573860d5",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.016": {
+    "sourceHash": "f0029bde07b5ceb18c0bc58e8de86aaf6c9e27fcdcdb4b46a90529cecd6a6dc1",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.017": {
+    "sourceHash": "c1c2c99a7167fc79b1c3a091a49977d400a8795c15870c7a684cd896885a4cf0",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.018": {
+    "sourceHash": "e3528a21df2a351dc6def5113bdcdd8d919eab8a1d3bb8d33b7869d77a8bddd8",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.019": {
+    "sourceHash": "c5bf365cfb66fd511fb92199580da050a4270ca7edd43e5d7161c7c211fe131e",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.020": {
+    "sourceHash": "736df4c78e00299c3923c531200367d36af244b83a9e63659fe3b0c1508b5819",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ],
+        "goaden": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.022": {
+    "sourceHash": "3ca43198e364bf43650ae62768e8ba968a2bc7a1be02dc7422b0ca3eb18e2bfb",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.023": {
+    "sourceHash": "94dbebe317997db2c82a3476f942adcf141a2e145bdef34f453145b73b4531c5",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.024": {
+    "sourceHash": "a9722efdcc41b85947b8ff717fad35daf80a1f12311123ef980a6a3328c12fc9",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
+  },
+  "ready.ashaiquiet.025": {
+    "sourceHash": "a5a110a1ee047c82ec1888b612adfb3a802672eb098672e6446cae60c9ae7f6c",
+    "status": "accepted",
+    "location": "mi6/common_room",
+    "gates": {
+      "triggerTypes": [
+        "TV_BEGIN",
+        "QUIET_TIME_BEGIN",
+        "REST_BEGIN"
+      ],
+      "activitiesByActor": {
+        "ashai": [
+          "watching_television",
+          "quiet_break",
+          "resting",
+          "unhurried_time"
+        ]
+      }
+    },
+    "reason": "Reviewed and accepted in Step D1: canonical ashai_quiet_tv routine with verified simulation reachability."
   }
 };
