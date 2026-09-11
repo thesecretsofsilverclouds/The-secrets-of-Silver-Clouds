@@ -7,6 +7,16 @@ coding model working from `WORLDSTREAM_PROSE_RESERVOIR_SPEC.md`; that session
 ran out of context before it could review or commit. Treated here as an
 incomplete handoff, not as foreign code.
 
+**Status, 2026-09-11 — the repair plan below has landed, by concern:**
+`9ade01c` reader fix on its own · `60396b6` reservoir infrastructure with gates
+wired at offer and commit, presence removed from refill, `decorate()` removed,
+health pair key sorted, CONVERSATION dropped as a source · `914ef2c` domestic v1
+kept with v2's six guards ported, salt and chain order unchanged · `6f287cf`
+arrival and Streamliner prose rewritten from canon. Cinematics default
+untouched. Generation still disabled. Shadow comparison against `82b81a9`
+recorded in the session report; the 90-day run shows 8 of the 22 admitted
+entries never fire (three families), which is the next batch's brief.
+
 **What this review is:** every file read against the current runtime on `main`
 (`82b81a9`), with the thirteen questions from the brief answered per file, then
 a repair plan that keeps what is sound. Nothing in Bucket B has been modified.
@@ -211,7 +221,7 @@ violation in the reader that we had not seen.
   "stained glass threw long pools of violet", "ancient masonry", "flagstones",
   "inner aisle" — where `fixture.mjs` has it as a portal-hall attraction with
   a central hub and nightlife. "The flock of lintels circling near the dial"
-  invents behaviour; "Goaden turned his music down" invents an object;
+  invents behaviour; "Goaden turned his music down" turned out to be canon — his headphones are on the page at [P00164] — and is kept;
   "chalkboard specials" and "roasted beans" are stock café dressing. The
   Streamliner and Ink additions are closer to voice. Keep the mechanism,
   rewrite the lines against canon.
