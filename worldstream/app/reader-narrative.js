@@ -1,6 +1,5 @@
 // Reader presentation only. Inputs are committed public projections, never a
 // scheduler, private memory, inferred motive or generation request.
-import { STATIC_VARIATION_BANK, identifyFamily } from './prose-variation-bank.js';
 const ACTIVE = new Set(['active', 'unfinished', 'promised', 'met', 'interrupting',
   'requested', 'called', 'working', 'recovering', 'offered', 'renegotiating', 'reserved', 'started', 'failed']);
 const VISUAL = new Set(['WEATHER_CHANGE', 'FACTION_STATUS', 'PRACTICE_END', 'ACTIVITY_COMPLETE']);
@@ -156,13 +155,12 @@ export function forwardReadingEvents(events = [], locationLabel = value => value
   const neededOrigins = new Set(ordered.filter(event => dialogue(event) || hasContext(event) || consequence(event))
     .flatMap(origins));
   const lastMundaneBeat = new Map();
-  const familyUseCount = new Map();
   for (let index = 0; index < ordered.length; index++) {
     const event = ordered[index], surface = normalise(authoredSurface(event));
     const repeated = Boolean(surface && surfaces.has(surface));
     let weight = narrativeWeight({ ...event, readerWeight: undefined });
     let prose = event.prose || '', description = event.description || '', omission = null;
-    let cinematic = event.cinematic;
+    const cinematic = event.cinematic;
     if (!dialogue(event)) {
       // Ordinary activity belongs to the living-world layer unless this exact
       // occurrence supplies a scene's setup or a recorded callback's origin.
@@ -223,27 +221,11 @@ export function forwardReadingEvents(events = [], locationLabel = value => value
       }
     }
 
-    // Authoritative single variation boundary: select variant from STATIC_VARIATION_BANK
-    // for shown events. Dialogue lines (event.lines) and cinematic beats (scene.beats) are protected;
-    // only framing prose / description / scene openingNarration are varied.
-    if (weight > 0 && !dialogue(event)) {
-      const famId = identifyFamily(event);
-      const fam = famId ? STATIC_VARIATION_BANK[famId] : null;
-      if (fam && fam.variants && fam.variants.length > 0) {
-        const count = familyUseCount.get(famId) || 0;
-        familyUseCount.set(famId, count + 1);
-
-        // Apply variant when event has no authored prose, or when prose repeats at weight > 1
-        if (!event.prose || (repeated && weight > 1)) {
-          const variant = fam.variants[count % fam.variants.length].text;
-          prose = variant;
-          description = variant;
-          if (cinematic?.scene?.openingNarration) {
-            cinematic = { ...cinematic, scene: { ...cinematic.scene, openingNarration: variant } };
-          }
-        }
-      }
-    }
+    // Keep the committed wording. Event type alone cannot prove a game result,
+    // a lunch-hall encounter or any other variant's prerequisites. Selecting a
+    // stock passage by loaded-family count also rewrote the same event whenever
+    // an older page loaded. Context-validated surfaces arrive from the existing
+    // public projection; this reader only decides how much of them to show.
 
     if (weight > 0 && surface) surfaces.add(surface);
     decisions.set(event.id, { ...event, cinematic, readerWeight: weight, readerProse: prose,
