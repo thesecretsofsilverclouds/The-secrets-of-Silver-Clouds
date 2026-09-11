@@ -20,7 +20,7 @@ import { editorialEvent } from './editorial.mjs';
 import { publicSceneBankPerformance } from './scene-bank-presentation.mjs';
 import { resolveContextBridge } from './context-bridge.mjs';
 import { publicContinuity, isPublicStoryEvent } from './public-story-context.mjs';
-import { downtimeLine, encounterLine, trainingEndLine, homewardLine } from './downtime.mjs';
+import { downtimeLine, encounterLine, trainingEndLine, homewardLine, surfaceLine } from './downtime.mjs';
 import { leadMomentLine, MOMENT_SIGHTS } from './moments.mjs';
 import { ARC_EVENT_TYPES, ARC_FACT_KINDS, initialArcs, arcDayActions, issueArcActions,
   resolveArcAction, assertArcs, activeArcSummary, arcParticipantAvailable,
@@ -298,6 +298,24 @@ const ARRANGEMENT_TEXT = Object.freeze({
   make_up:{next:'The evening they missed',announce:'Goaden and Ashai arranged to take back the evening the callout cost them.'},
 });
 const DEFAULT_ARRANGEMENT_TEXT = Object.freeze({next:'A game together',announce:'Goaden and Ashai arranged to play together later.'});
+// The announcement is one string per arrangement, and the arrangement is
+// made most days. Alternatives for the ones the reader meets most, chosen by
+// the event; the `next` line, which the schedule shows, stays as it is.
+const ANNOUNCE_LINES = Object.freeze({
+  'Goaden and Ashai arranged to play together later.': [
+    'Goaden and Ashai arranged to play together later.', 'A game was agreed for later. Neither said when, exactly.',
+    'Goaden and Ashai settled on a game later on.', 'Later, they agreed, they would play. It was left at that.',
+    'A game later was agreed between them without much discussion.'],
+  'Goaden and Ashai arranged a trip out to the Silver Spoon Cafe.': [
+    'Goaden and Ashai arranged a trip out to the Silver Spoon Cafe.', 'The Silver Spoon was agreed for later. Goaden did not need asking twice.',
+    'Goaden and Ashai settled on the Silver Spoon for the afternoon.', 'A trip out to the Silver Spoon was arranged, which is the easiest thing they ever agree on.'],
+  'Goaden and Ashai arranged a walk to hear the Chimes of Renewal.': [
+    'Goaden and Ashai arranged a walk to hear the Chimes of Renewal.', 'A walk to the plaza was agreed, timed for the Chimes.',
+    'Goaden and Ashai settled on the plaza for the afternoon, and the Chimes with it.'],
+  'Goaden and Ashai arranged a visit to Enchanted Ink, the moving tattoo parlour.': [
+    'Goaden and Ashai arranged a visit to Enchanted Ink, the moving tattoo parlour.', 'Enchanted Ink was agreed for the afternoon.',
+    'Goaden and Ashai settled on a visit to Enchanted Ink.'],
+});
 // Weather is a world input with small causal consequences, not just wallpaper.
 export const WEATHER_CODES = Object.freeze(['clear','cloudy','light_rain','heavy_rain','fog','storm']);
 const WEATHERS = Object.freeze([
@@ -1415,7 +1433,7 @@ function reduceAction(state,a,seed) {
       update('arrangements',a.arrangementKey,{...r,public:true});
       for(const key of r.party) setActor(state.characters[key],'publicNext',{at:r.startAt,description:text.next});
       event.participants=[...r.party];event.causedBy.push(r.sourceEventId,r.acceptanceEventId);
-      publish(text.announce);}
+      publish(surfaceLine(id, ANNOUNCE_LINES[text.announce] ?? [text.announce]));}
   } else if(a.type==='PLAN_CHANGE') {
     const fact=state.facts[a.factKey];
     if(!fact||!useMemory(actor,a.factKey)) skip('Change requires known cause');
@@ -1424,7 +1442,13 @@ function reduceAction(state,a,seed) {
         if(!plan||!plan.optional||plan.actor!==actor.id||plan.startAt<now) throw new Error('Only a future optional activity can be replaced');
         update('plans',a.planKey,{...plan,status:'replaced',replacement:a.activity,decisionEventId:id});}
       activity(actor,a.activity,a.duration,a.activity==='playing_piano'?'music_room':a.activity==='resting'?'quarters':defaultArea(actor.location,now));
-      publish(`${shortName(actor.id)} ${a.activity==='resting'?'took a break':a.activity==='playing_piano'?'sat down at the piano instead':'listened to music'}.`);}
+      const who=shortName(actor.id);
+      publish(surfaceLine(id, a.activity==='resting' ? [
+        `${who} took a break.`, `${who} stopped for a while instead.`, `${who} let the plan go and sat down.`, `${who} took the break instead of the thing planned.`]
+      : a.activity==='playing_piano' ? [
+        `${who} sat down at the piano instead.`, `${who} went to the piano instead.`, `${who} changed the plan for the piano.`,
+        `${who} left the plan where it was and went to the music room.`, `The piano won. ${who} sat down to it instead.`]
+      : [`${who} listened to music.`, `${who} put music on instead.`, `${who} let the plan go and listened to something.`, `${who} traded the plan for music.`]));}
   } else if(a.type==='SMALL_DISAGREEMENT') {
     if(!present()||!['goaden','ashai'].every(w=>useMemory(state.characters[w],a.factKey))) skip('No shared basis for disagreement');
     // Friction now adds to what is already there rather than overwriting it, so
@@ -1435,7 +1459,10 @@ function reduceAction(state,a,seed) {
     else {for(const r of state.relationships) {
         relation(r.from,r.to,'irritation',raiseTo('irritation',pair(r.from,r.to).irritation,1));
         relation(r.from,r.to,'frictionDay',a.day);}
-      event.participants=['goaden','ashai'];publish('Goaden and Ashai briefly disagreed about the timing of a break.');}
+      event.participants=['goaden','ashai'];publish(surfaceLine(id, [
+        'Goaden and Ashai briefly disagreed about the timing of a break.', 'Goaden and Ashai did not agree about when to stop, and said so.',
+        'There was a short difference of opinion about the timing of a break. It stayed short.',
+        'Goaden and Ashai disagreed about when the break should be. Neither won.']));}
   } else if(a.type==='ACKNOWLEDGE_ARRANGEMENT') {
     const r=agreement(), ink=activeInkAppointment(state);
     if(ink?.arrangementKey===a.arrangementKey) {

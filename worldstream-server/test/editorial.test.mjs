@@ -93,10 +93,15 @@ test('a gaming arrangement reads as a later plan rather than an immediate room c
 test('resuming a game cannot narrate its duration or ending before it happens', () => {
   const source = make('GAME_RESUME', {}, { prose: undefined,
     publicDescription: 'A game went on between them for longer than either meant it to.' });
-  const revised = editorialEvent(source);
-  assert.match(revised.publicDescription, /returned to their unfinished game/);
-  assert.doesNotMatch(revised.publicDescription, /longer|finished their|won|lost/);
-  assert.equal(revised.register, source.register);
+  // Four resumption lines now, chosen by the event. Every one says the game
+  // resumed and none says how long it went or how it ended.
+  for (let i = 0; i < 12; i++) {
+    const revised = editorialEvent({ ...source, id: 'resume:' + i });
+    assert.match(revised.publicDescription, /returned to their unfinished game|picked up where they had left it|went back to the game|unfinished game resumed/);
+    assert.doesNotMatch(revised.publicDescription, /longer|finished their|won|lost|ahead|behind|score/);
+    assert.equal(revised.register, source.register);
+  }
+  assert.deepEqual(editorialEvent(source), editorialEvent(source), 'the same event reads the same');
 });
 
 test('editorial reads are stable and retain all canonical effects, identity and original dialogue', () => {

@@ -187,14 +187,22 @@ function generalEditorial(event) {
         'Goaden and Ashai resumed their game.', 'Goaden and Ashai started a game.',
         'A game went on between them for longer than either meant it to.'
       ].includes(event.publicDescription)
-        ? { description: 'Goaden and Ashai returned to their unfinished game. Ashai leaned towards the screen as Goaden settled beside her.' } : null;
+        ? { description: pick(event, [
+          'Goaden and Ashai returned to their unfinished game. Ashai leaned towards the screen as Goaden settled beside her.',
+          'The game was picked up where they had left it. Goaden took his seat; Ashai already had hers.',
+          'Goaden and Ashai went back to the game. Neither had forgotten where it stood.',
+          'The unfinished game resumed, and the gaming area got loud again.']) } : null;
     case 'INCIDENT':
       if (['deployment', 'pursuit', 'hunted', 'sighting', 'followed'].includes(p.kind) && !both) return null;
       if (p.kind === 'deployment') return { description: 'A short-notice readiness alert reached Goaden and Ashai. They put what they were doing aside to read it.', prose: INCIDENT.deployment };
       return Object.hasOwn(INCIDENT, p.kind) ? { prose: INCIDENT[p.kind] } : null;
     case 'INTENT_COMPLETE':
       return both && p.status === 'completed' && INTENT_END[p.activity] ? {
-        description: `Goaden and Ashai finished their ${p.activity === 'practice' ? 'short practice session' : p.activity === 'game' ? 'short game' : 'quiet break'}.`,
+        description: pick(event, [
+          `Goaden and Ashai finished their ${p.activity === 'practice' ? 'short practice session' : p.activity === 'game' ? 'short game' : 'quiet break'}.`,
+          `The ${p.activity === 'practice' ? 'practice session' : p.activity === 'game' ? 'game' : 'quiet break'} ended. Goaden and Ashai had kept to the time.`,
+          `Goaden and Ashai brought the ${p.activity === 'practice' ? 'session' : p.activity === 'game' ? 'game' : 'break'} to an end when they said they would.`,
+          `The agreed ${p.activity === 'practice' ? 'practice' : p.activity === 'game' ? 'game' : 'quiet'} finished on time.`]),
         ...prose(INTENT_END[p.activity]) } : null;
     case 'INTENT_RESPONSE': case 'INTENT_RENEGOTIATE':
       if (/offer lapsed before/.test(event.publicDescription)) return { prose: 'The time for the offer passed before they could agree. Neither had committed to the session.' };
@@ -202,7 +210,13 @@ function generalEditorial(event) {
       // Recorded dialogue carries the answer. Set up the exchange without
       // announcing an acceptance or refusal before the character can give it.
       if ((event.lines ?? p.lines)?.length && ['reserved', 'declined'].includes(p.status)) return { prose:
-        (event.lines ?? p.lines)[0].who === 'ashai' ? 'Ashai held Goaden’s attention for another moment.' : 'Goaden turned towards Ashai. She waited for his answer.' };
+        (event.lines ?? p.lines)[0].who === 'ashai' ? pick(event, [
+          'Ashai held Goaden’s attention for another moment.', 'Ashai waited for Goaden to look up before she went on.',
+          'Ashai kept her eyes on Goaden. He knew what was coming.', 'Ashai did not let the moment go. Goaden noticed.',
+          'Ashai gave Goaden a second to answer, then did not give him a third.']) : pick(event, [
+          'Goaden turned towards Ashai. She waited for his answer.', 'Goaden looked at Ashai. She was waiting.',
+          'Goaden took his time turning. Ashai took hers waiting.', 'Goaden met Ashai’s look. Whatever he said next, she had a reply ready.',
+          'Goaden turned to her. Ashai let him get there.']) };
       if (p.status === 'reserved') return prose(INTENT_YES[p.activity]);
       if (p.status === 'declined') return { prose: event.type === 'INTENT_RENEGOTIATE'
         ? 'Ashai declined the change. Goaden gave a short nod. They would leave that time free.'

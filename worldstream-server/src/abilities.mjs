@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { atLondon, londonDate, MINUTE_MS as MIN } from './time.mjs';
+import { surfaceLine } from './downtime.mjs';
 
 // The training ground closes and reopens about once a week, and each stage of
 // that had exactly one sentence — so across seventy days "began the outdoor
@@ -199,7 +200,11 @@ export function resolveAbilityAction(ctx) {
       restriction: { sourceEventId: id, since: now, factKey, reason: 'routine_safety_check_and_reset' } });
     ops.createFact(factKey, 'training_ground_restriction', 'world',
       { presentationText: 'The outdoor training ground is closed until its safety check and reset are complete.' }, null);
-    ops.publish('The outdoor training ground was taken out of use for a safety check and reset. The covered training floor remained available.');
+    ops.publish(surfaceLine(id, [
+      'The outdoor training ground was taken out of use for a safety check and reset. The covered training floor remained available.',
+      'The outdoor ground was closed for its safety check and reset. The covered floor stayed available.',
+      'The yard went out of use for a check and reset. The covered floor stayed open.',
+      'A safety check took the outdoor training ground out of use. The covered floor was still available.']));
   } else if (a.type === 'GROUND_PREPARATION') {
     if (ground.status !== 'restricted' || ground.preparation?.status === 'in_progress'
       || ground.preparation?.status === 'completed') return refuse('No new ground preparation is needed');

@@ -17,6 +17,13 @@ import { createHash } from 'node:crypto';
 // The first entry is always the plain one — the world can still speak flatly,
 // and should, most of the time.
 const hash = text => createHash('sha256').update(text).digest().readUInt32BE(0);
+/**
+ * A ticker line chosen by the event it describes, so a replay says the same
+ * thing and two events stop saying the same thing. The 90-day census found
+ * one-string tickers to be the most repeated text the reader sees; a bank of
+ * four or five, keyed this way, is the smallest fix that changes that.
+ */
+export const surfaceLine = (key, choices) => choices[hash(`silver-clouds-surface-v1|${key}`) % choices.length];
 
 // Canon the lines lean on, so the texture is the book's rather than invented:
 // Kai rides Goaden's shoulder while he plays [M68]; the melody is his mother's
