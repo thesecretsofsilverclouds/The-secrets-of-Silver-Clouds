@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
-import { daypart } from './sky.mjs';
-import { isShelterWeather } from './fixture.mjs';
+import { daypart, isShelterWeather } from './sky.mjs';
+import { areaOf } from './places.mjs';
 
 // Ordinary life, given a voice.
 //
@@ -57,12 +57,26 @@ const share = (event, numerator, denominator) => roll(event, 'share') % denomina
 // An activity carrying on is not news. The world marks these on the payload;
 // where it does not, a continuation carries no fresh consequence and the
 // canonical line already stands in the ledger.
-const continuing = event => Boolean(event.payload?.continuing ?? event.payload?.resumed
-  ?? event.routineContinuation);
+const continuing = event => Boolean(event.payload?.continuing || event.payload?.resumed
+  || event.routineContinuation || event.payload?.outcome === 'skipped');
+// Going to sleep shares REST_BEGIN with a wakeful pause. Older records only say
+// so in the copy, so both the ledger and the sentence are asked.
+const sleeping = event => event.payload?.sleeping === true
+  || (event.changes ?? []).some(change => change.entity === 'character' && change.field === 'activity'
+    && change.after === 'sleeping' && event.participants?.includes(change.id))
+  || /turned in for the night|went to sleep|fell asleep|sleeping/i.test(event.publicDescription ?? '');
+const text = value => typeof value === 'string' && value.trim().length > 0;
 
 export function domesticEditorial(event) {
   if (event?.visibility !== 'public' || !event.publicDescription || !event.id) return null;
+  // Anything already carrying prose or dialogue has an editor; this one only
+  // ever speaks for the silent.
+  if (text(event.prose) || event.lines?.length || event.payload?.lines?.length) return null;
   if (continuing(event)) return null;
+  // A cast this editor cannot name is not quietly trimmed to the ones it can:
+  // narrating Goaden alone when a stranger was in the room is a false record.
+  const ids = event.participants ?? [];
+  if (new Set(ids).size !== ids.length || ids.some(id => !NAMES[id])) return null;
   const prose = write(event);
   return prose ? { description: event.publicDescription, prose } : null;
 }
@@ -70,23 +84,24 @@ export function domesticEditorial(event) {
 function write(event) {
   const who = listed(cast(event));
   const where = PLACES[event.location] ?? null;
-  const room = typeof event.room === 'string' && event.room ? event.room : null;
+  const room = areaOf(event.location, event.area)?.name ?? (text(event.room) ? event.room : null);
   const when = Number.isSafeInteger(event.occurredAt) ? daypart(event.occurredAt) : null;
 
   switch (event.type) {
     // Two people arriving in the same place without arranging it is a beat by
     // definition. This family is never thinned.
     case 'CROSS_PATHS':
+      if (cast(event).length < 2) return null;
       return who && choose(event, [
         `${who} arrived at the same place from different directions, which happens more often than either of them admits.`,
         `Neither of them had planned to be there at the same time. ${who} were, and neither made anything of it.`,
-        `${who} crossed in the doorway. It cost them a minute they had not set aside, and neither seemed to mind.`,
+        `${who} crossed in passing. It cost them a minute they had not set aside, and neither seemed to mind.`,
         `They met without meaning to. ${who} fell into step as though the afternoon had arranged it for them.`,
         `${who} passed each other going opposite ways, stopped, and went the same way instead.`,
-        `The corridor put ${who} in the same place at the same time. Nobody had asked it to.`,
+        `The building put ${who} in the same place at the same time. Nobody had asked it to.`,
         `${who} ended up walking together for no better reason than direction.`,
         `Two sets of footsteps became one conversation. ${who}, briefly, on the way to elsewhere.`,
-        `${who} found each other in passing. It lasted the length of a landing and was none the worse for it.`,
+        `${who} found each other in passing. It lasted a minute and was none the worse for it.`,
       ]);
 
     // An ending carries a result; a beginning carries only an intention.
@@ -102,6 +117,8 @@ function write(event) {
         `The work ended. What it had been for stayed where ${who} had left it.`,
       ]);
     case 'PRACTICE_BEGIN':
+      if (who && event.payload?.trainingRelocated && event.area === 'indoor_yard')
+        return `The outdoor ground was still closed. ${who} took the covered floor instead.`;
       return who && share(event, 1, 4) ? choose(event, [
         `${who} began without much ceremony, the way people do when the work is habit rather than occasion.`,
         `${who} started. The first few minutes were only finding the shape of it again.`,
@@ -138,6 +155,8 @@ function write(event) {
     }
 
     case 'REST_BEGIN':
+      if (sleeping(event)) return null;
+      // falls through
     case 'QUIET_TIME_BEGIN':
       return who && share(event, 1, 2) ? choose(event, [
         `${who} stopped for a while. Not tiredness exactly — the kind of pause a day asks for around now.`,
@@ -151,6 +170,7 @@ function write(event) {
     // Music and games are character rather than incident: narrated often, never
     // every time.
     case 'PIANO_BEGIN':
+      if (!event.participants?.includes('goaden')) return null;
       return who && share(event, 2, 3) ? choose(event, [
         `${who} played, badly and without apology, which is the only way it ever gets played.`,
         `The piano started up${where ? ` at ${where}` : ''}. ${who} did not appear to be performing for anyone.`,
@@ -170,11 +190,13 @@ function write(event) {
 
     // Weather earns prose only where it changes what people can do. A sky that
     // merely looks different is a line in the conditions panel, not a passage.
+    // The closure is on the notice; what training did about it is on the
+    // PRACTICE_BEGIN that follows, and is narrated there.
     case 'WEATHER_CHANGE':
       return isShelterWeather(event.payload?.weatherCode) ? choose(event, [
-        `The weather closed the outdoor yard. Whatever had been planned for it moved indoors, and the morning rearranged itself around that.`,
-        `It came down hard enough to shut the yard. The building absorbed the change without comment, as it usually does.`,
-        `The yard was closed before anyone had to be told. Training went inside and stayed there.`,
+        `The weather closed the outdoor yard. The building absorbed the change without comment, as it usually does.`,
+        `It came down hard enough to shut the yard.`,
+        `The yard was closed before anyone had to be told.`,
       ]) : null;
 
     default: return null;
