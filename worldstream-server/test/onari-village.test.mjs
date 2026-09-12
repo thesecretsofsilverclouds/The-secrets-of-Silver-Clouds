@@ -18,7 +18,9 @@ import {
   canEnterOnariVillage,
   LOCATION_MODES,
   MODE_PERMITS,
+  createFixture,
 } from '../src/fixture.mjs';
+import { atLondon } from '../src/time.mjs';
 import { VENUE_GUESTS, VENUE_SCENES } from '../src/venues.mjs';
 import { SIDE_CHARACTERS } from '../src/cast.mjs';
 import { BACKGROUND_BY_ID } from '../src/cinematic-assets.mjs';
@@ -131,6 +133,65 @@ test('Travel access guard: ordinary travel is rejected; committed reason allows 
     },
   };
   assert.equal(canEnterOnariVillage(expiredState, atMs, ['goaden', 'ashai']), false);
+});
+
+test('Production TRAVEL_DEPART/ARRIVE require a committed village access fact', () => {
+  const startMs = atLondon('2026-09-08', '00:00');
+  const dueAt = atLondon('2026-09-08', '14:00');
+  const fixture = createFixture({ startMs });
+  const arrangementKey = '2026-09-08:onari-consultation';
+  const accessKey = '2026-09-08:onari-access';
+
+  const denied = fixture.initialState();
+  denied.arrangements[arrangementKey] = {
+    status: 'accepted',
+    party: ['goaden', 'ashai'],
+    activity: 'unhurried_time',
+    startAt: startMs,
+    until: dueAt + 4 * 3600_000,
+    acceptanceEventId: 'seed:village-arr',
+    sourceEventId: 'seed:village-arr-src'
+  };
+  const deniedDepart = {
+    id: 'test/village-denied',
+    type: 'TRAVEL_DEPART',
+    dueAt,
+    priority: 40,
+    day: '2026-09-08',
+    actors: ['goaden', 'ashai'],
+    from: 'mi6',
+    to: 'onari_village',
+    duration: 20,
+    arrangementKey
+  };
+  const skipped = fixture.reduceAction(denied, deniedDepart, 'village-access-test');
+  assert.equal(skipped.event.payload.outcome, 'skipped');
+  assert.match(skipped.event.payload.reason, /Onari village access/);
+
+  const allowed = fixture.initialState();
+  allowed.facts[accessKey] = {
+    key: accessKey,
+    kind: 'onari_consultation_referral',
+    subject: 'onari',
+    value: { locationId: 'onari_village' },
+    validUntil: dueAt + 6 * 3600_000,
+    createdAt: startMs,
+    sourceEventId: 'seed:village-access'
+  };
+  allowed.arrangements[arrangementKey] = denied.arrangements[arrangementKey];
+  const allowedDepart = { ...deniedDepart, id: 'test/village-allowed' };
+  const boarded = fixture.reduceAction(allowed, allowedDepart, 'village-access-test');
+  assert.notEqual(boarded.event.payload.outcome, 'skipped');
+  assert.equal(boarded.event.payload.to, 'onari_village');
+  assert.equal(allowed.characters.goaden.journey.to, 'onari_village');
+  const arrival = boarded.followups.find(action => action.type === 'TRAVEL_ARRIVE');
+  assert.ok(arrival);
+  assert.equal(arrival.to, 'onari_village');
+  const arrived = fixture.reduceAction(allowed, arrival, 'village-access-test');
+  assert.equal(arrived.event.location, 'onari_village');
+  assert.equal(allowed.characters.goaden.location, 'onari_village');
+  assert.equal(allowed.characters.ashai.location, 'onari_village');
+  assert.equal(allowed.characters.goaden.area, 'village_square');
 });
 
 test('Spoiler embargo: doll revelation, information room, and Ashai parentage ties to Onari are blocked', () => {

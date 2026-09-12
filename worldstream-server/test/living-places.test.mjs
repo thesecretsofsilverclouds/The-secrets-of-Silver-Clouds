@@ -1,36 +1,33 @@
 ﻿import test from 'node:test';
 import assert from 'node:assert/strict';
 import { WorldStore } from '../experiment-l/src/world.mjs';
-import { createFixture, RULES_VERSION } from '../src/fixture.mjs';
+import { createFixture, RULES_VERSION, eventId } from '../src/fixture.mjs';
 import { atLondon, londonDate, MINUTE_MS as MIN } from '../src/time.mjs';
+import { AREAS_BY_LOCATION } from '../src/places.mjs';
 import {
-  LIVING_PLACES_VERSION,
-  SITE_EVENT_TYPES,
-  ONARI_ECOLOGY_EVENT_TYPES,
-  LIVING_PLACES_EVENT_TYPES,
   LIVING_PLACES_FACT_KINDS,
-  ECOLOGICAL_CONSEQUENCE_KINDS,
-  REMEDIATION_ACTIONS,
-  SITE_STATUSES,
-  IMPACT_SEVERITIES,
-  ONARI_CASE_STATUSES,
-  RECOVERY_DURATIONS,
-  ONARI_NOTICE_COOLDOWN_MS,
-  ONARI_PROTEST_SPACING_MS,
+  ECOLOGICAL_SOURCE_EVENT_TYPE,
+  ECOLOGICAL_SOURCE_END_TYPE,
+  ECOLOGICAL_SOURCE_FACT_KIND,
+  LIVING_PLACES_STATE_BUDGET,
+  MAX_CLOSED_SUMMARIES,
+  MAX_RECOVERED_SUMMARIES,
+  MAX_ENDED_SOURCE_SUMMARIES,
+  MAX_ISSUED,
   MAX_ACTIVE_ONARI_CASES,
-  MAX_ACTIVE_DISTURBED_SITES,
+  RECOVERY_DURATIONS,
   initialLivingPlacesState,
   assertLivingPlaces,
   isYukonAvailable,
   isQualifyingEcologicalSource,
-  siteOpportunityActions,
-  onariNoticeOpportunityActions,
-  issueLivingPlacesActions,
-  resolveLivingPlacesAction
+  livingPlacesSerializedBytes,
+  onariKnowsEcologicalProblem,
+  consultationAuthority,
 } from '../src/living-places.mjs';
 
 const START = atLondon('2026-09-04', '00:00');
 const SEED = 'test-seed-living-places-v1';
+const DAY = atLondon('2026-09-04', '10:00');
 
 const shape = action => ({
   id: action.id,
@@ -39,6 +36,65 @@ const shape = action => ({
   priority: action.priority,
   day: action.day
 });
+
+function sourceAction({
+  id,
+  dueAt = DAY,
+  locationId = 'big_ben_plaza',
+  areaId = 'gardens',
+  consequenceKind = 'vegetation_damage',
+  impact = 'minor',
+  authorityActor = null,
+  provenance = { path: 'committed_report' },
+} = {}) {
+  return {
+    id,
+    type: ECOLOGICAL_SOURCE_EVENT_TYPE,
+    dueAt,
+    priority: 36,
+    day: londonDate(dueAt),
+    actors: [],
+    version: 1,
+    locationId,
+    areaId,
+    consequenceKind,
+    impact,
+    affectsLivingHabitat: true,
+    provenance,
+    authorityActor
+  };
+}
+
+function sourceEndAction({ id, dueAt, sourceFactKey }) {
+  return {
+    id,
+    type: ECOLOGICAL_SOURCE_END_TYPE,
+    dueAt,
+    priority: 36,
+    day: londonDate(dueAt),
+    actors: [],
+    version: 1,
+    sourceFactKey
+  };
+}
+
+function referralAction({ id, dueAt, locationId, sourceFactKey }) {
+  return {
+    id,
+    type: 'ONARI_ECOLOGY_REFERRAL',
+    dueAt,
+    priority: 37,
+    day: londonDate(dueAt),
+    actors: [],
+    version: 1,
+    locationId,
+    sourceFactKey
+  };
+}
+
+function predictedSourceFactKey(seed, action) {
+  return `${action.day}:eco-source-${eventId(seed, action.id)}`;
+}
 
 function seededWorld({
   seed = SEED,
@@ -67,466 +123,474 @@ test('Living Places rules version is canon-ambient-p183-v27', () => {
   assert.equal(RULES_VERSION, 'canon-ambient-p183-v27');
 });
 
+test('village access fact kinds are canonical Living Places topics', () => {
+  assert.ok(LIVING_PLACES_FACT_KINDS.includes('onari_village_access'));
+  assert.ok(LIVING_PLACES_FACT_KINDS.includes('onari_consultation_referral'));
+  assert.ok(LIVING_PLACES_FACT_KINDS.includes(ECOLOGICAL_SOURCE_FACT_KIND));
+});
+
 test('initialLivingPlacesState adheres to bounded schema', () => {
   const initial = initialLivingPlacesState();
   assert.equal(initial.version, 1);
   assert.deepEqual(initial.sites, {});
+  assert.deepEqual(initial.sources, {});
   assert.deepEqual(initial.cases, {});
   assert.deepEqual(initial.activeCaseIds, []);
-  assert.equal(initial.nextNoticeEligibleAt, 0);
-  assert.equal(initial.nextProtestEligibleAt, 0);
   assert.deepEqual(initial.closedSummaries, []);
   assert.deepEqual(initial.recoveredSummaries, []);
+  assert.deepEqual(initial.endedSourceSummaries, []);
   assert.deepEqual(initial.issued, {});
   assert.doesNotThrow(() => assertLivingPlaces({ livingPlaces: initial }));
 });
 
-test('isQualifyingEcologicalSource strictly filters source events', () => {
-  // Qualifying: explicit consequence, affectsLivingHabitat true, canonical location
+test('isQualifyingEcologicalSource requires the dedicated source contract', () => {
   const qualifying = {
+    type: ECOLOGICAL_SOURCE_EVENT_TYPE,
     location: 'big_ben_plaza',
-    area: 'gardens',
     payload: {
       affectsLivingHabitat: true,
       consequenceKind: 'vegetation_damage',
       impact: 'minor',
-      factKey: 'fact-eco-1'
+      provenance: { path: 'committed_report' },
+      sourceFactKey: '2026-09-04:eco-source-evt1'
     }
   };
   assert.equal(isQualifyingEcologicalSource(qualifying), true);
 
-  // Missing affectsLivingHabitat
   assert.equal(isQualifyingEcologicalSource({
+    type: 'INCIDENT',
     location: 'big_ben_plaza',
-    payload: { consequenceKind: 'vegetation_damage' }
+    payload: {
+      affectsLivingHabitat: true,
+      consequenceKind: 'vegetation_damage',
+      impact: 'minor',
+      provenance: { path: 'committed_report' },
+      sourceFactKey: 'fact-eco-1'
+    }
   }), false);
 
-  // Unknown consequence kind
   assert.equal(isQualifyingEcologicalSource({
-    location: 'big_ben_plaza',
-    payload: { affectsLivingHabitat: true, consequenceKind: 'unknown_disaster' }
-  }), false);
-
-  // Non-canonical invented location
-  assert.equal(isQualifyingEcologicalSource({
-    location: 'london/park',
-    payload: { affectsLivingHabitat: true, consequenceKind: 'vegetation_damage' }
-  }), false);
-
-  // Ordinary routine event (meal, practice)
-  assert.equal(isQualifyingEcologicalSource({
+    type: 'MEU_CASE_RESOLVE',
     location: 'mi6',
-    area: 'canteen',
-    type: 'MEAL_BEGIN',
-    payload: { meal: 'lunch' }
+    payload: { affectsLivingHabitat: true, consequenceKind: 'habitat_damage', impact: 'moderate' }
+  }), false);
+
+  assert.equal(isQualifyingEcologicalSource({
+    type: 'LEGION_JOB_RESOLVE',
+    location: 'legion_hideout',
+    payload: { affectsLivingHabitat: true, consequenceKind: 'vegetation_damage', impact: 'minor' }
+  }), false);
+
+  assert.equal(isQualifyingEcologicalSource({
+    type: 'DUSKKIN_COMPLIANCE_NOTICE',
+    location: 'mi6',
+    payload: { affectsLivingHabitat: true, consequenceKind: 'vegetation_damage', impact: 'minor' }
+  }), false);
+
+  assert.equal(isQualifyingEcologicalSource({
+    type: 'WEATHER_CHANGE',
+    location: 'big_ben_plaza',
+    payload: { affectsLivingHabitat: true, consequenceKind: 'vegetation_damage', impact: 'minor' }
+  }), false);
+
+  assert.equal(isQualifyingEcologicalSource({
+    type: ECOLOGICAL_SOURCE_EVENT_TYPE,
+    location: 'big_ben_plaza',
+    payload: { consequenceKind: 'vegetation_damage', impact: 'minor' }
+  }), false);
+
+  assert.equal(isQualifyingEcologicalSource({
+    type: ECOLOGICAL_SOURCE_EVENT_TYPE,
+    location: 'london/park',
+    payload: {
+      affectsLivingHabitat: true,
+      consequenceKind: 'vegetation_damage',
+      impact: 'minor',
+      provenance: { path: 'committed_report' },
+      sourceFactKey: 'fact-eco-1'
+    }
   }), false);
 });
 
-test('Natural site memory lifecycle: minor disturbance recovers naturally in ~7 days', () => {
-  const impactAction = {
-    id: 'test/site-impact-minor',
-    type: 'SITE_IMPACT_REGISTER',
-    dueAt: START + 75 * MIN,
-    priority: 36,
-    day: londonDate(START + 75 * MIN),
-    actors: [],
-    version: 1,
-    locationId: 'big_ben_plaza',
-    areaId: 'gardens',
-    consequenceKind: 'vegetation_damage',
-    impact: 'minor',
-    affectsLivingHabitat: true,
-    sourceEventId: 'evt-qualifying-1',
-    sourceFactKey: 'fact-qualifying-1'
-  };
-
-  // Cooldown active so Onari notice is suppressed; tests pure physical site consequence memory
-  const { world } = seededWorld({
-    incidents: [impactAction],
-    extraState: { nextNoticeEligibleAt: START + 30 * 24 * 60 * MIN }
-  });
-
-  // Advance past impact
-  world.advance(START + 80 * MIN);
-
-  let snap = world.semanticSnapshot();
-  const site = snap.livingPlaces.sites['big_ben_plaza'];
-  assert.ok(site, 'Site record should be created');
+test('committed source registers site memory without opening an Onari case', () => {
+  const source = sourceAction({ id: 'test/eco-isolated' });
+  const { world } = seededWorld({ incidents: [source] });
+  world.advance(DAY + 20 * MIN);
+  const snap = world.semanticSnapshot();
+  const site = snap.livingPlaces.sites.big_ben_plaza;
+  assert.ok(site);
   assert.equal(site.status, 'disturbed');
   assert.equal(site.impact, 'minor');
-  assert.equal(site.consequenceKind, 'vegetation_damage');
-  assert.ok(site.disturbedAt);
-
-  // Advance 24 hours: SITE_RECOVERY_BEGIN fires
-  world.advance(START + 80 * MIN + 24 * 60 * MIN);
-  snap = world.semanticSnapshot();
-  const recoveringSite = snap.livingPlaces.sites['big_ben_plaza'];
-  assert.equal(recoveringSite.status, 'recovering');
-  assert.ok(recoveringSite.recoveryDueAt, 'Recovery due timestamp must be set');
-  // Natural minor duration is 7 days
-  const expectedDue = recoveringSite.disturbedAt + 24 * 60 * MIN + RECOVERY_DURATIONS.minor_natural;
-  assert.equal(recoveringSite.recoveryDueAt, expectedDue);
-
-  // Advance past recoveryDueAt: SITE_RECOVERY_DUE fires and site becomes stable
-  world.advance(recoveringSite.recoveryDueAt + 10 * MIN);
-  snap = world.semanticSnapshot();
-  const recoveredSite = snap.livingPlaces.sites['big_ben_plaza'];
-  assert.equal(recoveredSite.status, 'stable');
-  assert.ok(recoveredSite.recoveredAt);
-  assert.equal(snap.livingPlaces.recoveredSummaries.length, 1);
-  assert.equal(snap.livingPlaces.recoveredSummaries[0].locationId, 'big_ben_plaza');
-  assert.equal(snap.livingPlaces.recoveredSummaries[0].consequenceKind, 'vegetation_damage');
-
+  assert.equal(snap.livingPlaces.activeCaseIds.length, 0);
+  assert.equal(Object.keys(snap.livingPlaces.cases).length, 0);
+  assert.equal(onariKnowsEcologicalProblem(snap, 'big_ben_plaza', DAY + 20 * MIN), false);
   assert.doesNotThrow(() => assertLivingPlaces(snap));
   world.close();
 });
 
-test('Natural site memory lifecycle: moderate disturbance recovers naturally in ~14 days', () => {
-  const impactAction = {
-    id: 'test/site-impact-mod',
-    type: 'SITE_IMPACT_REGISTER',
-    dueAt: START + 75 * MIN,
-    priority: 36,
-    day: londonDate(START + 75 * MIN),
-    actors: [],
-    version: 1,
+test('active damaging source blocks recovery; source end then schedules natural recovery', () => {
+  const source = sourceAction({ id: 'test/eco-block' });
+  const end = sourceEndAction({
+    id: 'test/eco-block-end',
+    dueAt: DAY + 30 * 60 * MIN,
+    sourceFactKey: predictedSourceFactKey(SEED, source)
+  });
+  const { world } = seededWorld({ incidents: [source, end] });
+
+  world.advance(DAY + 26 * 60 * MIN);
+  let snap = world.semanticSnapshot();
+  assert.equal(snap.livingPlaces.sites.big_ben_plaza.status, 'disturbed');
+  assert.equal(snap.events.some(e => e.type === 'SITE_RECOVERY_BEGIN' && e.payload?.status === 'recovering'), false);
+
+  world.advance(DAY + 31 * 60 * MIN);
+  snap = world.semanticSnapshot();
+  assert.equal(snap.livingPlaces.sites.big_ben_plaza.status, 'recovering');
+  const begin = snap.events.find(e => e.type === 'SITE_RECOVERY_BEGIN' && e.payload?.status === 'recovering');
+  assert.ok(begin);
+  assert.equal(snap.livingPlaces.sites.big_ben_plaza.recoveryDueAt - begin.occurredAt, RECOVERY_DURATIONS.minor_natural);
+
+  world.advance(snap.livingPlaces.sites.big_ben_plaza.recoveryDueAt + 10 * MIN);
+  snap = world.semanticSnapshot();
+  assert.equal(snap.livingPlaces.sites.big_ben_plaza.status, 'stable');
+  assert.equal(snap.livingPlaces.recoveredSummaries[0].locationId, 'big_ben_plaza');
+  assert.equal(snap.livingPlaces.activeCaseIds.length, 0);
+  world.close();
+});
+
+test('later impact invalidates stale recovery while the new source remains active', () => {
+  const first = sourceAction({ id: 'test/eco-stale-1', dueAt: DAY });
+  const second = sourceAction({
+    id: 'test/eco-stale-2',
+    dueAt: DAY + 12 * 60 * MIN,
+    consequenceKind: 'magical_contamination_of_living_area',
+    impact: 'moderate'
+  });
+  const { world } = seededWorld({ incidents: [first, second] });
+  world.advance(DAY + 25 * 60 * MIN);
+  const snap = world.semanticSnapshot();
+  const site = snap.livingPlaces.sites.big_ben_plaza;
+  assert.equal(site.status, 'disturbed');
+  assert.equal(site.impact, 'moderate');
+  assert.equal(site.sourceFactIds.length, 2);
+  assert.ok(site.disturbedAt > DAY);
+  assert.equal(snap.events.filter(e => e.type === 'SITE_RECOVERY_BEGIN' && e.payload?.status === 'recovering').length, 0);
+  world.close();
+});
+
+test('moderate source-ended recovery uses the 14-day natural schedule', () => {
+  const source = sourceAction({
+    id: 'test/eco-moderate',
     locationId: 'mi6',
     areaId: 'training',
     consequenceKind: 'containment_damage_to_living_area',
-    impact: 'moderate',
-    affectsLivingHabitat: true,
-    sourceEventId: 'evt-qualifying-2',
-    sourceFactKey: 'fact-qualifying-2'
-  };
-
-  // Cooldown active so Onari notice is suppressed; tests pure physical site consequence memory
-  const { world } = seededWorld({
-    incidents: [impactAction],
-    extraState: { nextNoticeEligibleAt: START + 30 * 24 * 60 * MIN }
+    impact: 'moderate'
   });
-
-  world.advance(START + 80 * MIN);
-
-  let snap = world.semanticSnapshot();
-  assert.equal(snap.livingPlaces.sites['mi6'].status, 'disturbed');
-  assert.equal(snap.livingPlaces.sites['mi6'].impact, 'moderate');
-
-  // Advance 25 hours: recovery begins
-  world.advance(START + 80 * MIN + 25 * 60 * MIN);
-  snap = world.semanticSnapshot();
-  const recoveringSite = snap.livingPlaces.sites['mi6'];
-  assert.equal(recoveringSite.status, 'recovering');
-  const expectedDue = recoveringSite.disturbedAt + 24 * 60 * MIN + RECOVERY_DURATIONS.moderate_natural;
-  assert.equal(recoveringSite.recoveryDueAt, expectedDue);
-
-  // Advance to recovery due
-  world.advance(expectedDue + 10 * MIN);
-  snap = world.semanticSnapshot();
-  assert.equal(snap.livingPlaces.sites['mi6'].status, 'stable');
-  world.close();
-});
-
-test('Repeated impact on same site updates record without duplicating and extends recovery', () => {
-  const impact1 = {
-    id: 'test/repeat-1',
-    type: 'SITE_IMPACT_REGISTER',
-    dueAt: START + 70 * MIN,
-    priority: 36,
-    day: londonDate(START + 70 * MIN),
-    actors: [],
-    version: 1,
-    locationId: 'big_ben_plaza',
-    areaId: 'gardens',
-    consequenceKind: 'vegetation_damage',
-    impact: 'minor',
-    affectsLivingHabitat: true,
-    sourceEventId: 'evt-r1',
-    sourceFactKey: 'fact-r1'
-  };
-
-  const impact2Time = START + 26 * 60 * MIN;
-  const impact2 = {
-    id: 'test/repeat-2',
-    type: 'SITE_IMPACT_REGISTER',
-    dueAt: impact2Time,
-    priority: 36,
-    day: londonDate(impact2Time),
-    actors: [],
-    version: 1,
-    locationId: 'big_ben_plaza',
-    areaId: 'gardens',
-    consequenceKind: 'magical_contamination_of_living_area',
-    impact: 'moderate',
-    affectsLivingHabitat: true,
-    sourceEventId: 'evt-r2',
-    sourceFactKey: 'fact-r2'
-  };
-
-  const { world } = seededWorld({
-    incidents: [impact1, impact2],
-    extraState: { nextNoticeEligibleAt: START + 30 * 24 * 60 * MIN }
+  const end = sourceEndAction({
+    id: 'test/eco-moderate-end',
+    dueAt: DAY + 40 * MIN,
+    sourceFactKey: predictedSourceFactKey(SEED, source)
   });
-  world.advance(START + 80 * MIN);
-
+  const { world } = seededWorld({ incidents: [source, end] });
+  world.advance(DAY + 60 * MIN);
   let snap = world.semanticSnapshot();
-  assert.equal(snap.livingPlaces.sites['big_ben_plaza'].impact, 'minor');
-  assert.equal(snap.livingPlaces.sites['big_ben_plaza'].activeSourceCount, 1);
-
-  // Advance through impact 2
-  world.advance(impact2Time + 10 * MIN);
-
+  assert.equal(snap.livingPlaces.sites.mi6.status, 'recovering');
+  const begin = snap.events.find(e => e.type === 'SITE_RECOVERY_BEGIN' && e.payload?.status === 'recovering');
+  assert.equal(snap.livingPlaces.sites.mi6.recoveryDueAt - begin.occurredAt, RECOVERY_DURATIONS.moderate_natural);
+  world.advance(snap.livingPlaces.sites.mi6.recoveryDueAt + 10 * MIN);
   snap = world.semanticSnapshot();
-  assert.equal(Object.keys(snap.livingPlaces.sites).length, 1);
-  const site = snap.livingPlaces.sites['big_ben_plaza'];
-  assert.equal(site.impact, 'moderate', 'Severity upgraded to moderate');
-  assert.equal(site.activeSourceCount, 2);
-  assert.equal(site.sourceEventIds.length, 2);
-  assert.equal(site.sourceFactIds.length, 2);
-
+  assert.equal(snap.livingPlaces.sites.mi6.status, 'stable');
   world.close();
 });
 
-test('Separation of systems: site memory operates independently from Onari response', () => {
-  const impactAction = {
-    id: 'test/site-no-onari',
-    type: 'SITE_IMPACT_REGISTER',
-    dueAt: START + 75 * MIN,
-    priority: 36,
-    day: londonDate(START + 75 * MIN),
-    actors: [],
-    version: 1,
+test('Onari notice requires a committed referral/knowledge path', () => {
+  const source = sourceAction({ id: 'test/eco-know' });
+  const key = predictedSourceFactKey(SEED, source);
+  const referral = referralAction({
+    id: 'test/eco-know-ref',
+    dueAt: DAY + 20 * MIN,
     locationId: 'big_ben_plaza',
-    areaId: 'gardens',
-    consequenceKind: 'vegetation_damage',
-    impact: 'minor',
-    affectsLivingHabitat: true,
-    sourceEventId: 'evt-isolated',
-    sourceFactKey: 'fact-isolated'
-  };
-
-  // Pre-fill activeCaseIds to max so Onari cannot respond
-  const { world } = seededWorld({
-    incidents: [impactAction],
-    extraState: { activeCaseIds: ['case-dummy-1', 'case-dummy-2'] }
+    sourceFactKey: key
   });
-
-  world.advance(START + 80 * MIN);
-  let snap = world.semanticSnapshot();
-  assert.equal(snap.livingPlaces.sites['big_ben_plaza'].status, 'disturbed');
-
-  // Advance 9 days: natural recovery proceeds regardless of Onari capacity
-  world.advance(START + 9 * 24 * 60 * MIN);
-  snap = world.semanticSnapshot();
-  assert.equal(snap.livingPlaces.sites['big_ben_plaza'].status, 'stable');
+  const { world } = seededWorld({ incidents: [source, referral] });
+  world.advance(DAY + 50 * MIN);
+  const snap = world.semanticSnapshot();
+  assert.equal(onariKnowsEcologicalProblem(snap, 'big_ben_plaza', DAY + 50 * MIN), true);
+  assert.equal(snap.livingPlaces.activeCaseIds.length, 1);
+  assert.ok(snap.events.some(e => e.type === 'ONARI_ECOLOGY_NOTICE'));
   world.close();
 });
 
-test('Onari response lifecycle with Remediation accelerates recovery to 72 hours for minor impact', () => {
-  const impactAction = {
-    id: 'test/onari-remediate',
-    type: 'SITE_IMPACT_REGISTER',
-    dueAt: START + 75 * MIN,
-    priority: 36,
-    day: londonDate(START + 75 * MIN),
-    actors: [],
-    version: 1,
+test('consultation without present authority does not default to remediation_agreed', () => {
+  const source = sourceAction({ id: 'test/eco-consult' });
+  const referral = referralAction({
+    id: 'test/eco-consult-ref',
+    dueAt: DAY + 20 * MIN,
     locationId: 'big_ben_plaza',
-    areaId: 'gardens',
-    consequenceKind: 'vegetation_damage',
-    impact: 'minor',
-    affectsLivingHabitat: true,
-    sourceEventId: 'evt-onari-1',
-    sourceFactKey: 'fact-onari-1'
-  };
-
-  const { world } = seededWorld({ incidents: [impactAction] });
-
-  // Advance through notice
-  world.advance(START + 75 * MIN + 30 * MIN);
-  let snap = world.semanticSnapshot();
-  const caseId = snap.livingPlaces.activeCaseIds[0];
-  assert.ok(caseId, 'An Onari case should be opened');
-  const onariCase = snap.livingPlaces.cases[caseId];
-  assert.ok(onariCase);
-  assert.equal(onariCase.locationId, 'big_ben_plaza');
-
-  // Advance through consultation window and remediation
-  world.advance(START + 75 * MIN + 3 * 60 * MIN);
-  snap = world.semanticSnapshot();
-  const consultingCase = snap.livingPlaces.cases[caseId];
-  assert.ok(['consulting', 'remediating', 'closed'].includes(consultingCase.status));
-
-  // Advance 5 days (72h remediated recovery + margins)
-  world.advance(START + 75 * MIN + 5 * 24 * 60 * MIN);
-  snap = world.semanticSnapshot();
-  const site = snap.livingPlaces.sites['big_ben_plaza'];
-  assert.equal(site.status, 'stable');
-  assert.ok(snap.livingPlaces.closedSummaries.some(c => c.locationId === 'big_ben_plaza'));
-  assert.equal(snap.livingPlaces.activeCaseIds.length, 0);
-
+    sourceFactKey: predictedSourceFactKey(SEED, source)
+  });
+  const { world } = seededWorld({ incidents: [source, referral] });
+  world.advance(DAY + 3 * 60 * MIN);
+  const snap = world.semanticSnapshot();
+  const consultation = snap.events.find(e => e.type === 'ONARI_CONSULTATION');
+  assert.ok(consultation);
+  assert.notEqual(consultation.payload.outcome, 'remediation_agreed');
+  assert.ok(['referred', 'waiting', 'no_change', 'consultation_unresolved'].includes(consultation.payload.outcome));
   world.close();
 });
 
-test('Onari response lifecycle with peaceful protest when consultation unresolved', () => {
-  const impactAction = {
-    id: 'test/onari-protest',
-    type: 'SITE_IMPACT_REGISTER',
-    dueAt: START + 75 * MIN,
-    priority: 36,
-    day: londonDate(START + 75 * MIN),
-    actors: [],
-    version: 1,
-    locationId: 'big_ben_plaza',
-    areaId: 'gardens',
-    consequenceKind: 'magical_contamination_of_living_area',
-    impact: 'moderate',
-    affectsLivingHabitat: true,
-    sourceEventId: 'evt-protest-src',
-    sourceFactKey: 'fact-protest-src'
-  };
-
-  const { world } = seededWorld({
-    incidents: [impactAction],
-    extraState: {
-      sites: {
-        big_ben_plaza: {
-          locationId: 'big_ben_plaza',
-          areaId: 'gardens',
-          status: 'disturbed',
-          impact: 'moderate',
-          affectsLivingHabitat: true,
-          consequenceKind: 'magical_contamination_of_living_area',
-          sourceEventIds: ['evt-prior-harm'],
-          sourceFactIds: ['fact-prior-harm'],
-          disturbedAt: START,
-          recoveryDueAt: null,
-          remediatedAt: null,
-          recoveredAt: null,
-          activeSourceCount: 2, // Active recurring harm causes unresolved consultation
-          lastEventId: 'evt-prior'
-        }
+test('named authority away from the damage yields waiting, not invented agreement', () => {
+  const empty = createFixture({ startMs: START }).initialState();
+  empty.livingPlaces = {
+    ...initialLivingPlacesState(),
+    sources: {
+      'src-plaza': {
+        sourceFactKey: 'src-plaza',
+        locationId: 'big_ben_plaza',
+        sourceActive: true,
+        authorityActor: 'goaden'
       }
     }
+  };
+  const decision = consultationAuthority(empty, 'big_ben_plaza', DAY, SEED);
+  assert.equal(decision.outcome, 'waiting');
+  assert.equal(decision.authorityActor, 'goaden');
+});
+
+test('present Goaden authority at the damaged site can agree remediation', () => {
+  const source = sourceAction({
+    id: 'test/eco-authority',
+    locationId: 'mi6',
+    areaId: 'training',
+    authorityActor: 'goaden'
   });
-
-  // Advance through notice
-  world.advance(START + 75 * MIN + 30 * MIN);
+  const referral = referralAction({
+    id: 'test/eco-authority-ref',
+    dueAt: DAY + 20 * MIN,
+    locationId: 'mi6',
+    sourceFactKey: predictedSourceFactKey(SEED, source)
+  });
+  const { world } = seededWorld({ incidents: [source, referral] });
+  world.advance(DAY + 3 * 60 * MIN);
   let snap = world.semanticSnapshot();
-  const caseId = snap.livingPlaces.activeCaseIds[0];
-  assert.ok(caseId);
-
-  // Advance through consultation to protest
-  world.advance(START + 75 * MIN + 3 * 60 * MIN);
+  const consultation = snap.events.find(e => e.type === 'ONARI_CONSULTATION');
+  assert.equal(consultation.payload.outcome, 'remediation_agreed');
+  assert.equal(consultation.payload.authorityActor, 'goaden');
+  world.advance(DAY + 5 * 24 * 60 * MIN);
   snap = world.semanticSnapshot();
-  const events = snap.events.filter(e => e.type.startsWith('ONARI_'));
-  assert.ok(events.some(e => e.type === 'ONARI_PROTEST_BEGIN'), 'Peaceful protest should be initiated');
-  const protestEvent = events.find(e => e.type === 'ONARI_PROTEST_BEGIN');
-  assert.equal(protestEvent.payload.peaceful, true);
-
-  // Advance through protest end and resolution
-  world.advance(START + 75 * MIN + 6 * 60 * MIN);
-  snap = world.semanticSnapshot();
-  const laterEvents = snap.events.filter(e => e.type.startsWith('ONARI_'));
-  assert.ok(laterEvents.some(e => e.type === 'ONARI_PROTEST_END'), 'Protest ends peacefully');
-  assert.ok(laterEvents.some(e => e.type === 'ONARI_REMEDIATION'), 'Concludes with remediation');
-
+  assert.equal(snap.livingPlaces.sites.mi6.status, 'stable');
+  assert.ok(snap.livingPlaces.closedSummaries.some(row => row.locationId === 'mi6'));
+  assert.equal(snap.livingPlaces.activeCaseIds.length, 0);
+  assert.equal(Object.values(snap.livingPlaces.cases).some(c => c.status === 'closed'), false);
   world.close();
+});
+
+test('protest requires an ecology case, consultation, unresolved harm, and Yukon', () => {
+  const source = sourceAction({
+    id: 'test/eco-protest',
+    consequenceKind: 'magical_contamination_of_living_area',
+    impact: 'moderate'
+  });
+  const referral = referralAction({
+    id: 'test/eco-protest-ref',
+    dueAt: DAY + 20 * MIN,
+    locationId: 'big_ben_plaza',
+    sourceFactKey: predictedSourceFactKey(SEED, source)
+  });
+  const { world } = seededWorld({ incidents: [source, referral] });
+  world.advance(DAY + 5 * 60 * MIN);
+  const snap = world.semanticSnapshot();
+  const protest = snap.events.find(e => e.type === 'ONARI_PROTEST_BEGIN');
+  assert.ok(protest, 'Daytime referred consultation may protest');
+  assert.equal(protest.payload.peaceful, true);
+  assert.deepEqual(protest.participants, ['yukon']);
+  assert.ok(!snap.events.some(e => e.type === 'ONARI_REMEDIATION'));
+  world.close();
+});
+
+test('protest is refused at performance time when Yukon is unavailable', () => {
+  const source = sourceAction({ id: 'test/eco-night-protest', dueAt: atLondon('2026-09-04', '17:30') });
+  const referral = referralAction({
+    id: 'test/eco-night-protest-ref',
+    dueAt: atLondon('2026-09-04', '17:50'),
+    locationId: 'big_ben_plaza',
+    sourceFactKey: predictedSourceFactKey(SEED, source)
+  });
+  const { world } = seededWorld({ incidents: [source, referral] });
+  world.advance(atLondon('2026-09-04', '20:30'));
+  const snap = world.semanticSnapshot();
+  assert.ok(snap.events.some(e => e.type === 'ONARI_CONSULTATION'));
+  assert.equal(snap.events.some(e => e.type === 'ONARI_PROTEST_BEGIN' && e.participants?.length), false);
+  world.close();
+});
+
+test('three committed site impacts remain after the two-case Onari cap', () => {
+  const plaza = sourceAction({ id: 'test/eco-cap-plaza', dueAt: DAY, locationId: 'big_ben_plaza', areaId: 'gardens' });
+  const cafe = sourceAction({
+    id: 'test/eco-cap-cafe',
+    dueAt: DAY + 5 * MIN,
+    locationId: 'cafe',
+    areaId: 'venue',
+    consequenceKind: 'habitat_damage'
+  });
+  const ink = sourceAction({
+    id: 'test/eco-cap-ink',
+    dueAt: DAY + 10 * MIN,
+    locationId: 'enchanted_ink',
+    areaId: 'venue',
+    consequenceKind: 'ward_damage_affecting_living_environment',
+    impact: 'moderate'
+  });
+  const referrals = [
+    referralAction({
+      id: 'test/eco-cap-plaza-ref',
+      dueAt: DAY + 25 * MIN,
+      locationId: 'big_ben_plaza',
+      sourceFactKey: predictedSourceFactKey(SEED, plaza)
+    }),
+    referralAction({
+      id: 'test/eco-cap-cafe-ref',
+      dueAt: DAY + 30 * MIN,
+      locationId: 'cafe',
+      sourceFactKey: predictedSourceFactKey(SEED, cafe)
+    }),
+    referralAction({
+      id: 'test/eco-cap-ink-ref',
+      dueAt: DAY + 35 * MIN,
+      locationId: 'enchanted_ink',
+      sourceFactKey: predictedSourceFactKey(SEED, ink)
+    })
+  ];
+  const { world } = seededWorld({ incidents: [plaza, cafe, ink, ...referrals] });
+  world.advance(DAY + 90 * MIN);
+  const snap = world.semanticSnapshot();
+  assert.ok(snap.livingPlaces.sites.big_ben_plaza);
+  assert.ok(snap.livingPlaces.sites.cafe);
+  assert.ok(snap.livingPlaces.sites.enchanted_ink);
+  assert.equal(Object.keys(snap.livingPlaces.sites).length, 3);
+  assert.equal(snap.livingPlaces.activeCaseIds.length, MAX_ACTIVE_ONARI_CASES);
+  const openedNotices = snap.events.filter(e => e.type === 'ONARI_ECOLOGY_NOTICE' && e.payload?.outcome !== 'skipped');
+  assert.equal(openedNotices.length, 2);
+  assert.doesNotThrow(() => assertLivingPlaces(snap));
+  world.close();
+});
+
+test('closed cases stay in the bounded summary ring and serialized state stays within 16 KiB', () => {
+  const locations = Object.keys(AREAS_BY_LOCATION);
+  const fat = initialLivingPlacesState();
+  for (let i = 0; i < Math.min(8, locations.length); i += 1) {
+    const locationId = locations[i];
+    fat.sites[locationId] = {
+      locationId, areaId: null, status: 'disturbed', impact: i % 2 ? 'moderate' : 'minor',
+      affectsLivingHabitat: true, consequenceKind: 'habitat_damage',
+      sourceEventIds: [`evt-${i}`], sourceFactIds: [`fact-${i}`],
+      disturbedAt: DAY, recoveryDueAt: null, remediatedAt: null, recoveredAt: null, lastEventId: `evt-${i}`
+    };
+  }
+  fat.cases = {
+    'onari:one': { caseId: 'onari:one', status: 'consulting', locationId: 'mi6', participants: ['yukon'] },
+    'onari:two': { caseId: 'onari:two', status: 'noticed', locationId: 'cafe', participants: [] }
+  };
+  fat.activeCaseIds = ['onari:one', 'onari:two'];
+  fat.closedSummaries = Array.from({ length: MAX_CLOSED_SUMMARIES }, (_, i) => ({
+    caseId: `closed-${i}`, locationId: 'mi6', protested: false, outcome: 'no_change',
+    closedAt: DAY + i, sourceFactIds: [`f-${i}`], sourceEventIds: [`e-${i}`]
+  }));
+  fat.recoveredSummaries = Array.from({ length: MAX_RECOVERED_SUMMARIES }, (_, i) => ({
+    locationId: 'cafe', recoveredAt: DAY + i, remediated: false, sourceFactIds: [`rf-${i}`]
+  }));
+  fat.endedSourceSummaries = Array.from({ length: MAX_ENDED_SOURCE_SUMMARIES }, (_, i) => ({
+    sourceFactKey: `ended-${i}`, locationId: 'mi6', sourceEventId: `es-${i}`, endedAt: DAY + i
+  }));
+  fat.issued = Object.fromEntries(Array.from({ length: MAX_ISSUED }, (_, i) => [`issued-${i}`, {
+    shape: { id: `issued-${i}`, type: 'SITE_IMPACT_REGISTER', dueAt: DAY + i, priority: 36, day: '2026-09-04' },
+    sourceEventId: `src-${i}`, consumed: i % 2 === 0
+  }]));
+  assert.doesNotThrow(() => assertLivingPlaces({ livingPlaces: fat }));
+  const bytes = livingPlacesSerializedBytes({ livingPlaces: fat });
+  assert.ok(bytes <= LIVING_PLACES_STATE_BUDGET, `serialized livingPlaces was ${bytes} bytes; budget ${LIVING_PLACES_STATE_BUDGET}`);
+  process.stdout.write(`Living Places max measured serialized bytes: ${bytes}\n`);
 });
 
 test('Yukon optionality: joins only if available and awake without error or blocking', () => {
-  const current = createFixture({ startMs: START });
-  const state = current.initialState();
-
-  // Test at day time (awake)
-  const dayTime = atLondon('2026-09-04', '14:00');
-  const dayAvail = isYukonAvailable(state, dayTime, 'seed-yukon-test');
+  const state = createFixture({ startMs: START }).initialState();
+  const dayAvail = isYukonAvailable(state, atLondon('2026-09-04', '14:00'), 'seed-yukon-test');
+  const nightAvail = isYukonAvailable(state, atLondon('2026-09-04', '04:00'), 'seed-yukon-test');
   assert.equal(typeof dayAvail, 'boolean');
-
-  // Test during night small hours (asleep)
-  const nightTime = atLondon('2026-09-04', '04:00');
-  const nightAvail = isYukonAvailable(state, nightTime, 'seed-yukon-test');
   assert.equal(typeof nightAvail, 'boolean');
+  assert.equal(nightAvail, false);
 });
 
-test('Strict invariants: zero prose in state, bounded ring buffers, no continuous meters', () => {
+test('Strict invariants: zero prose, no placeholders, discrete states only', () => {
   const initial = initialLivingPlacesState();
-  const state = { livingPlaces: initial };
-  assertLivingPlaces(state);
+  assertLivingPlaces({ livingPlaces: initial });
 
-  // Check invalid site status throws
   assert.throws(() => {
     assertLivingPlaces({
       livingPlaces: {
         ...initial,
         sites: {
           big_ben_plaza: {
-            locationId: 'big_ben_plaza',
-            status: 'invalid_status',
-            impact: 'minor',
-            affectsLivingHabitat: true,
-            consequenceKind: 'vegetation_damage',
-            sourceEventIds: ['e1'],
-            sourceFactIds: ['f1'],
-            disturbedAt: START
+            locationId: 'big_ben_plaza', status: 'invalid_status', impact: 'minor',
+            affectsLivingHabitat: true, consequenceKind: 'vegetation_damage',
+            sourceEventIds: ['e1'], sourceFactIds: ['f1'], disturbedAt: START
           }
         }
       }
     });
   }, /Invalid site status/);
 
-  // Check continuous meter (non-discrete impact) throws
   assert.throws(() => {
     assertLivingPlaces({
       livingPlaces: {
         ...initial,
         sites: {
           big_ben_plaza: {
-            locationId: 'big_ben_plaza',
-            status: 'disturbed',
-            impact: 0.75, // float meter forbidden!
-            affectsLivingHabitat: true,
-            consequenceKind: 'vegetation_damage',
-            sourceEventIds: ['e1'],
-            sourceFactIds: ['f1'],
-            disturbedAt: START
+            locationId: 'big_ben_plaza', status: 'disturbed', impact: 0.75,
+            affectsLivingHabitat: true, consequenceKind: 'vegetation_damage',
+            sourceEventIds: ['e1'], sourceFactIds: ['f1'], disturbedAt: START
           }
         }
       }
     });
   }, /Invalid site impact/);
 
-  // Check generic actor throws
   assert.throws(() => {
     assertLivingPlaces({
       livingPlaces: {
         ...initial,
         cases: {
           'onari:bad': {
-            caseId: 'onari:bad',
-            locationId: 'big_ben_plaza',
-            status: 'consulting',
-            participants: ['onari_protester'] // generic actor forbidden!
+            caseId: 'onari:bad', locationId: 'big_ben_plaza', status: 'consulting',
+            participants: ['onari_protester']
           }
         }
       }
     });
   }, /Generic onari placeholder actors are forbidden/);
 
-  // Check invalid location throws
+  assert.throws(() => {
+    assertLivingPlaces({
+      livingPlaces: {
+        ...initial,
+        cases: {
+          'onari:bad': {
+            caseId: 'onari:bad', locationId: 'big_ben_plaza', status: 'consulting',
+            participants: ['contractor']
+          }
+        }
+      }
+    });
+  }, /Invented bureaucratic actors are forbidden/);
+
   assert.throws(() => {
     assertLivingPlaces({
       livingPlaces: {
         ...initial,
         sites: {
-          'london/park': { // invented location forbidden!
-            locationId: 'london/park',
-            status: 'disturbed',
-            impact: 'minor',
-            affectsLivingHabitat: true,
-            consequenceKind: 'vegetation_damage',
-            sourceEventIds: ['e1'],
-            sourceFactIds: ['f1'],
-            disturbedAt: START
+          'london/park': {
+            locationId: 'london/park', status: 'disturbed', impact: 'minor',
+            affectsLivingHabitat: true, consequenceKind: 'vegetation_damage',
+            sourceEventIds: ['e1'], sourceFactIds: ['f1'], disturbedAt: START
           }
         }
       }

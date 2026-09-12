@@ -6,7 +6,7 @@ import { DAYPARTS, daypart, dayPhase, daylightFraction, sunEvents, isShelterWeat
 import { moodFor, selectExchange, summarise, correctLegacyWakeDialogue } from './dialogue.mjs';
 import { nextVeil, phaseFor, VEIL_PRESSURE, VEIL_NOTICES } from './veil.mjs';
 import { AREAS_BY_LOCATION, areaOf, permitsArea, defaultArea, encounterEligibility,
-  ENCOUNTER_REASONS, SEALED_AREAS, MI6_SECTIONS } from './places.mjs';
+  ENCOUNTER_REASONS, SEALED_AREAS, MI6_SECTIONS, placePhrase } from './places.mjs';
 import { presentableIn, SIDE_CHARACTERS, LEGION_CAST, LEGION_IDS, guardianOf } from './cast.mjs';
 import { selectLegionScene, summariseLegion } from './legion.mjs';
 import { baselinePressure, pressureValue, pressureLevel, chooseIncident, wantsIncident,
@@ -1631,6 +1631,7 @@ function reduceAction(state,a,seed) {
       &&ink?.arrangementKey===a.arrangementKey&&now<ink.returnAt) skip('Return postponed for the booked appointment');
     else if(!r||!['accepted','started'].includes(r.status)||actors.some(w=>w.location!==a.from||w.journey)) skip('No valid agreed departure');
     else if(a.to==='sanctuary'&&(!canEnterSanctuary(state,arrivalAt,actors.map(w=>w.id),a.invitationKey)||!inv)) skip('No valid invitation for arrival');
+    else if(a.to==='onari_village'&&!canEnterOnariVillage(state,arrivalAt,actors.map(w=>w.id),a.accessFactKey||a.reasonKey)) skip('No valid Onari village access');
     else {
       if(a.from==='sanctuary'&&(!inv||now>inv.exitBy)) throw new Error('Visit exceeded permission');
       if(actors.some(w=>w.id==='goaden')&&activeInkAppointment(state))
@@ -1644,23 +1645,28 @@ function reduceAction(state,a,seed) {
         setActor(who,'activityUntil',arrivalAt);setActor(who,'activityId',id);setActor(who,'publicNext',null);
         setActor(who,'journey',{from:a.from,to:a.to,departedAt:now,arrivesAt:arrivalAt,departureEventId:id,invitationKey:a.invitationKey});}
       followups.push({id:`${a.id}/arrival`,dueAt:arrivalAt,priority:10,type:'TRAVEL_ARRIVE',actors:actors.map(w=>w.id),
-        from:a.from,to:a.to,departureEventId:id,invitationKey:a.invitationKey,day:a.day});event.location='streamliner';
+        from:a.from,to:a.to,departureEventId:id,invitationKey:a.invitationKey,
+        accessFactKey:a.accessFactKey||a.reasonKey,day:a.day});event.location='streamliner';
       event.payload={...event.payload,to:a.to,from:a.from};
       publish(a.to==='mi6'
         ? homewardLine('boarded',seed,`${a.day}/${a.id}`)
-        : `Goaden and Ashai boarded the Streamliner ${a.to==='sanctuary'?'on their way to Sanctuary'
-          :`on their way to ${CITY_LOCATIONS[a.to].name}`}.`);
+        : a.to==='sanctuary' ? 'Goaden and Ashai boarded the Streamliner on their way to Sanctuary.'
+        : a.to==='onari_village' ? `Goaden and Ashai boarded the Streamliner on their way to ${placePhrase('onari_village', null)}.`
+        : `Goaden and Ashai boarded the Streamliner on their way to ${CITY_LOCATIONS[a.to].name}.`);
     }
   } else if(a.type==='TRAVEL_ARRIVE') {
     // A replayed arrival is recognised by its own event id and repeats harmlessly.
     const arrivedHere=actors.every(w=>w.location===a.to&&!w.journey&&w.activityId===id);
     if(!arrivedHere&&actors.some(w=>w.location!=='streamliner'||w.journey?.departureEventId!==a.departureEventId||w.journey.arrivesAt!==now)) throw new Error('Arrival without matching journey');
     if(a.to==='sanctuary'&&!canEnterSanctuary(state,now,actors.map(w=>w.id),a.invitationKey)) throw new Error('Sanctuary admission denied');
+    if(a.to==='onari_village'&&!canEnterOnariVillage(state,now,actors.map(w=>w.id),a.accessFactKey||a.reasonKey)) throw new Error('Onari village admission denied');
     for(const who of actors) {setActor(who,'location',a.to);setActor(who,'journey',null);activity(who,'unhurried_time',null,defaultArea(a.to,now));}
     event.location=a.to;event.causedBy.push(a.departureEventId);
     event.payload={...event.payload,to:a.to,from:a.from};
     publish(a.to==='sanctuary'?'Goaden and Ashai entered the Sanctuary using their guest invitation.':
-      a.to==='mi6'?homewardLine('arrived',seed,`${a.day}/${a.id}`):`Goaden and Ashai arrived at ${CITY_LOCATIONS[a.to].name}.`);
+      a.to==='mi6'?homewardLine('arrived',seed,`${a.day}/${a.id}`):
+      a.to==='onari_village'?`Goaden and Ashai arrived at ${placePhrase('onari_village', null)}.`:
+      `Goaden and Ashai arrived at ${CITY_LOCATIONS[a.to].name}.`);
   } else if(a.type==='CITY_ACTIVITY_BEGIN') {
     const venue=CITY_LOCATIONS[a.location], plan=CITY_ACTIVITY[a.kind], r=agreement();
     if(!venue||!plan) throw new Error('Unknown city venue or activity');
@@ -1895,7 +1901,7 @@ function reduceAction(state,a,seed) {
   // after is the wrong one — it produced "Ashai finished training in the lunch
   // hall", which is where she went, not where she trained.
   const ENDS=a.type==='ACTIVITY_COMPLETE'||a.type==='PRACTICE_END';
-  if(!['UNEASE','INCIDENT',...THREAD_EVENT_TYPES,...INTENT_EVENT_TYPES,...AGENDA_EVENT_TYPES,...MEU_EVENT_TYPES,...LEGION_JOB_EVENT_TYPES,...DUSKKIN_COMPLIANCE_EVENT_TYPES,...ABILITY_EVENT_TYPES,...SUPPORTING_EVENT_TYPES,...NIGHT_EVENT_TYPES,...OFFSCREEN_EVENT_TYPES,...SCENE_BANK_EVENT_TYPES,...ARC_EVENT_TYPES].includes(a.type))
+  if(!['UNEASE','INCIDENT',...THREAD_EVENT_TYPES,...INTENT_EVENT_TYPES,...AGENDA_EVENT_TYPES,...MEU_EVENT_TYPES,...LEGION_JOB_EVENT_TYPES,...DUSKKIN_COMPLIANCE_EVENT_TYPES,...LIVING_PLACES_EVENT_TYPES,...ABILITY_EVENT_TYPES,...SUPPORTING_EVENT_TYPES,...NIGHT_EVENT_TYPES,...OFFSCREEN_EVENT_TYPES,...SCENE_BANK_EVENT_TYPES,...ARC_EVENT_TYPES].includes(a.type))
     event.area=(ENDS?areaBefore:state.characters[event.participants[0]]?.area)??areaBefore??null;
   // Authored prose is not the world being eventful at them either. A scene the
   // bank staged put words on the page, not an incident in the room; counting it
@@ -1973,6 +1979,7 @@ const SCENE_ASSETS = Object.freeze({
   'legion_hideout:rehearsal':'legion_hideout_day','legion_hideout:dark':'legion_hideout_night',
   'cafe:open':'cafe_day','cafe:last_orders':'cafe_evening','cafe:closed':'cafe_closed',
   'big_ben_plaza:open_air':'big_ben_plaza_day','big_ben_plaza:quiet_streets':'big_ben_plaza_night',
+  'onari_village:daylight':'onari_village','onari_village:dusk':'onari_village','onari_village:quiet_night':'onari_village',
 });
 // "Ashai noticed a few lintels floating above magic-infused buildings, feeding
 // off ambient energies." A quiet day has one or two drifting over; a day the MEU
@@ -1990,6 +1997,8 @@ const MODE_STATUS = Object.freeze({
   'cafe:open':'A visit to the Silver Spoon Cafe','cafe:last_orders':'A late table at the Silver Spoon Cafe',
   'cafe:closed':'The Silver Spoon Cafe, closed',
   'big_ben_plaza:open_air':'A walk beneath New Big Ben','big_ben_plaza:quiet_streets':'The plaza after dark',
+  'onari_village:daylight':'A daylight hour in the Onari village','onari_village:dusk':'Dusk in the Onari village',
+  'onari_village:quiet_night':'A quiet night in the Onari village',
 });
 
 // What a viewer may know about the hours ahead. An ordinary personal routine is

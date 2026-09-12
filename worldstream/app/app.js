@@ -191,6 +191,7 @@ const WORLD_BACKDROPS = Object.freeze({
   cafe_closed: '/worldstream/app/scene/world-london-night.jpg',
   big_ben_plaza_day: '/worldstream/app/scene/world-london-day.jpg',
   big_ben_plaza_night: '/worldstream/app/scene/world-london-night.jpg',
+  onari_village: '/worldstream/app/scene/world-onari-village.png',
   mi6_lunch_hall: '/worldstream/app/scene/world-mi6-lunch-hall.jpg',
   mi6_gaming: '/worldstream/app/scene/world-mi6-gaming.jpg',
   mi6_ops: '/worldstream/app/scene/world-mi6-ops.jpg',
@@ -303,6 +304,7 @@ function placeArtwork(place, phase, sceneState) {
   if (place === 'enchanted_ink') return WORLD_BACKDROPS.enchanted_ink_day;
   if (place === 'big_ben_plaza') return WORLD_BACKDROPS[afterDark ? 'london_night' : 'london_day'];
   if (place === 'cafe' && !afterDark) return WORLD_BACKDROPS.cafe_day;
+  if (place === 'onari_village') return WORLD_BACKDROPS.onari_village;
   return '/worldstream/app/scene/place-cafe.jpg';
 }
 // The four solar phases, and the operating mode each place is currently running.

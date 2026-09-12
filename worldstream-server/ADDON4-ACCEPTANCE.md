@@ -1,6 +1,6 @@
 # Addon 4 acceptance — canon-ambient-p183-v27
 
-Generated: 2026-09-12T01:19:20.694Z
+Generated: 2026-09-12T02:29:32.754Z
 
 ## Bar
 
@@ -63,9 +63,9 @@ Generated: 2026-09-12T01:19:20.694Z
 
 ## Digests
 
-30d: silver-clouds-now-v1 `62288ec75ca52b95c7846fe81a13aa03d8e2771a1e58cea39f3411e8a3588c82`; seed-beta `9af74cc24eba799c327a10d55ca6b45203d3145803f8c347b234dac0ede7c439`; seed-gamma `b9751ebb0d123d1b108b056a395b13838a2a3bff4a209b6316393c1ac27610fd`
+30d: silver-clouds-now-v1 `754c0d39a38ece36d99f7a0790becdfd5238b2a573f6e38da92fd5424380f9b6`; seed-beta `8df9611727ec7cf75c923d16987994608e900c11e33fa4b4855a6c91ea872259`; seed-gamma `400fa24e89764e91416cf6c8c2b6e2f680ad44d30c95a2d8e99eead0e0751f23`
 
-90d: silver-clouds-now-v1 `ca5fec4ebadebd8727c6f4d11d4f2282e59b45bcb622c6128d73b747e90fba48`; seed-beta `0119c81ff81db55de31840921393b78dd994086f389e0559b2037f217f58b9d1`; seed-gamma `6a7c3bd7da60f33683e857970d36264b9601e39e673d1c412e230c29a0c52e89`
+90d: silver-clouds-now-v1 `85dd61bcb2ddf4f3fd08b0214476673f719da3a4ef89e42758c5f72fa684465e`; seed-beta `857920d2a0447c1bb8143fb1adf21c94dc62568f6adb7b77bbf7c6644c971056`; seed-gamma `81bf80fbbead98a28f3eff27731f9030adc1475ab4e1219421e46589e1e3c518`
 
 ## Deliberately dormant paths
 
@@ -77,4 +77,4 @@ Generated: 2026-09-12T01:19:20.694Z
 - Onari remediation — expedited recovery dormant when no damage is committed
 - onari_village travel — natural travel volume is 0 without qualifying committed access facts
 
-Natural site consequence and Onari case volume is zero on canonical seeds because no qualifying ecological consequence event occurs naturally without dedicated incident injection. This is an honest invariant, not a missing generator. Lifecycle proof, natural recovery (7d minor / 14d moderate), Onari consultation, expedited remediation (72h minor / 7d moderate), peaceful protest, Yukon optionality, and clean closure are proven through the Worldstream reducer in production-path tests.
+Natural site consequence and Onari case volume is zero on canonical seeds because no dedicated ECOLOGICAL_IMPACT_SOURCE is authored on those seeds. That is an honest invariant. Lifecycle proof injects committed sources through WorldStore: active sources block recovery, source-ended sites recover on the natural schedule, referral-gated Onari notice, authority-present remediation, and protest only when Yukon can participate.
