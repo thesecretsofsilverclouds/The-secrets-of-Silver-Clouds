@@ -10,6 +10,7 @@ import { createFixture, eventId, RULES_VERSION } from '../src/fixture.mjs';
 import { initialDuskkinComplianceState } from '../src/duskkin-compliance.mjs';
 import { openPinnedWorld } from '../src/world-operations.mjs';
 import { upgradeDuskkinCompliance } from '../src/duskkin-upgrade.mjs';
+import { upgradeLivingPlaces } from '../src/living-places-upgrade.mjs';
 import { atLondon } from '../src/time.mjs';
 
 const OLD = 'canon-ambient-p183-v25', NEXT = 'canon-ambient-p183-v26';
@@ -84,7 +85,7 @@ function liveV25Pinned(t, { days = 3, seed = 'live-duskkin-upgrade-copy' } = {})
 
 test('v25 to v26 preserves old ledger bytes, memories, clock, seed and every existing pending action', t => {
   const f = legacy(t), before = snapshot(f);
-  assert.equal(RULES_VERSION, NEXT);
+  assert.ok([NEXT, 'canon-ambient-p183-v27'].includes(RULES_VERSION));
   assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
   const result = upgradeDuskkinCompliance(f), after = snapshot(f);
   assert.equal(result.status, 'upgraded'); assert.equal(result.rulesVersion, NEXT);
@@ -112,6 +113,11 @@ test('v26 upgrade is idempotent and activation is prospective', t => {
   assert.equal(second.rulesVersion, NEXT);
   assert.equal(second.cutoverAt, result.cutoverAt);
   assert.ok(existsSync(result.backupPath));
+
+  if (RULES_VERSION === 'canon-ambient-p183-v27') {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeLivingPlaces({ directory: f.directory, backupPath: join(f.directory, 'before-v27.sqlite') });
+  }
 
   const world = openPinnedWorld({ directory: f.directory });
   world.advance(cutover + 2 * 60 * 60000);
@@ -142,9 +148,14 @@ test('copied live v25 world activates v26 prospectively without reseed, backfill
   assert.equal(after.pending.length, before.pending.length + 1);
   assert.deepEqual(after.pending.filter(row => row.id !== result.activationActionId), before.pending);
 
+  if (RULES_VERSION === 'canon-ambient-p183-v27') {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeLivingPlaces({ directory: f.directory, backupPath: join(f.directory, 'before-v27.sqlite') });
+  }
+
   const world = openPinnedWorld({ directory: f.directory });
   try {
-    assert.equal(world.semanticSnapshot().world.rulesVersion, NEXT);
+    assert.equal(world.semanticSnapshot().world.rulesVersion, RULES_VERSION);
     world.advance(before.row.resolved_through + 1);
     const activated = world.semanticSnapshot();
     assert.equal(activated.events.filter(e => e.type === 'WORLD_DUSKKIN_ACTIVATE').length, 1);

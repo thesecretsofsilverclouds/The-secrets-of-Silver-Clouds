@@ -1,4 +1,4 @@
-import test from 'node:test';
+﻿import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -7,14 +7,12 @@ import { DatabaseSync } from 'node:sqlite';
 import { WorldStore } from '../../experiment-l/src/world.mjs';
 import { createFixture, RULES_VERSION } from '../../src/fixture.mjs';
 import { fixtureIdentity } from '../../src/world-identity.mjs';
-import { upgradeLegionJobs } from '../../src/legion-upgrade.mjs';
-import { upgradeDuskkinCompliance } from '../../src/duskkin-upgrade.mjs';
 import { upgradeLivingPlaces } from '../../src/living-places-upgrade.mjs';
 import { WorldDurableObject } from '../src/world-durable-object.mjs';
 import { createMockSqlStorage } from '../src/sqlite-adapter.mjs';
 import { atLondon } from '../../src/time.mjs';
 
-const OLD = 'canon-ambient-p183-v24';
+const OLD = 'canon-ambient-p183-v26';
 const start = atLondon('2026-09-05', '00:00');
 
 function mockDo(nodeDb, env) {
@@ -38,16 +36,20 @@ function rewriteBareRules(dbPath, version) {
   finally { db.close(); }
 }
 
-function v24Sqlite(seed = 'cf-legion-live-copy', { bareRules = false } = {}) {
-  const directory = mkdtempSync(join(tmpdir(), 'sc-legion-cf-'));
+function v26Sqlite(seed = 'cf-living-places-live-copy', { bareRules = false } = {}) {
+  const directory = mkdtempSync(join(tmpdir(), 'sc-living-places-cf-'));
   const dbPath = join(directory, 'world.sqlite');
   const current = createFixture({ startMs: start }), initial = current.initialState();
-  delete initial.legionJobs;
+  delete initial.livingPlaces;
   initial.meta.upgrades = [
     { from: 'canon-ambient-p183-v22', to: 'canon-ambient-p183-v23', cutoverAt: start,
       activatedAt: start + 1, activationActionId: `lives-v23/activate/${start}` },
-    { from: 'canon-ambient-p183-v23', to: OLD, cutoverAt: start,
+    { from: 'canon-ambient-p183-v23', to: 'canon-ambient-p183-v24', cutoverAt: start,
       activatedAt: start + 1, activationActionId: `meu-v24/activate/${start}` },
+    { from: 'canon-ambient-p183-v24', to: 'canon-ambient-p183-v25', cutoverAt: start,
+      activatedAt: start + 1, activationActionId: `legion-v25/activate/${start}` },
+    { from: 'canon-ambient-p183-v25', to: OLD, cutoverAt: start,
+      activatedAt: start + 1, activationActionId: `duskkin-v26/activate/${start}` },
   ];
   const fixture = {
     ...current,
@@ -60,22 +62,22 @@ function v24Sqlite(seed = 'cf-legion-live-copy', { bareRules = false } = {}) {
   world.advance(start + 2 * 24 * 3600_000);
   world.close();
   writeFileSync(join(directory, 'active-world.json'), JSON.stringify({
-    format: 1, database: 'world.sqlite', rulesVersion: OLD,
-  }, null, 2) + '\n');
+    format: 1, database: 'world.sqlite', rulesVersion: OLD, note: 'v26 test fixture'
+  }));
   if (bareRules) rewriteBareRules(dbPath, OLD);
-  return { directory, dbPath, backupPath: join(directory, 'before-v25.sqlite'), seed };
+  return { directory, dbPath, backupPath: join(directory, 'before-v27.sqlite'), seed, startMs: start };
 }
 
-function loadRow(path) {
-  const db = new DatabaseSync(path, { readOnly: true });
-  try { return db.prepare('SELECT * FROM world_state WHERE id=1').get(); }
+function loadRow(dbPath) {
+  const db = new DatabaseSync(dbPath);
+  try { return db.prepare('SELECT seed, rules_version, resolved_through, state_json FROM world_state WHERE id = 1').get(); }
   finally { db.close(); }
 }
 
-test('Cloudflare DO refuses an unupgraded v24 sqlite under v25 rules', () => {
-  const live = v24Sqlite();
+test('Cloudflare DO refuses an unupgraded v26 sqlite under v27 rules', () => {
+  const live = v26Sqlite();
   const row = loadRow(live.dbPath);
-  assert.match(row.rules_version, /canon-ambient-p183-v24/);
+  assert.equal(row.rules_version, fixtureIdentity(createFixture({ startMs: start }), OLD));
   const nodeDb = new DatabaseSync(':memory:');
   nodeDb.exec(`CREATE TABLE world_state (
     id INTEGER PRIMARY KEY CHECK(id = 1), seed TEXT NOT NULL, rules_version TEXT NOT NULL,
@@ -86,25 +88,10 @@ test('Cloudflare DO refuses an unupgraded v24 sqlite under v25 rules', () => {
     /refusing to reinterpret its history/);
 });
 
-test('after the documented v24→v25 copy-upgrade, Cloudflare DO accepts the same epoch and seed', () => {
-  const live = v24Sqlite();
+test('after the documented v26→v27 copy-upgrade, Cloudflare DO accepts the same epoch and seed', () => {
+  const live = v26Sqlite();
   const before = loadRow(live.dbPath);
-  upgradeLegionJobs(live);
-  const afterLegion = loadRow(live.dbPath);
-  assert.equal(afterLegion.seed, before.seed);
-  assert.equal(afterLegion.resolved_through, before.resolved_through);
-  assert.equal(afterLegion.rules_version, fixtureIdentity(createFixture({ startMs: start }), 'canon-ambient-p183-v25'));
-  const refusedV25 = new DatabaseSync(':memory:');
-  refusedV25.exec(`CREATE TABLE world_state (
-    id INTEGER PRIMARY KEY CHECK(id = 1), seed TEXT NOT NULL, rules_version TEXT NOT NULL,
-    resolved_through INTEGER NOT NULL, state_json TEXT NOT NULL)`);
-  refusedV25.prepare('INSERT INTO world_state VALUES (1, ?, ?, ?, ?)').run(
-    afterLegion.seed, afterLegion.rules_version, afterLegion.resolved_through, afterLegion.state_json);
-  assert.throws(() => mockDo(refusedV25, { WORLD_SEED: live.seed, START_MS: start }),
-    /refusing to reinterpret its history/);
-
-  upgradeDuskkinCompliance({ directory: live.directory, backupPath: join(live.directory, 'before-v26.sqlite') });
-  upgradeLivingPlaces({ directory: live.directory, backupPath: join(live.directory, 'before-v27.sqlite') });
+  upgradeLivingPlaces(live);
   const after = loadRow(live.dbPath);
   assert.equal(after.seed, before.seed);
   assert.equal(after.resolved_through, before.resolved_through);
@@ -121,8 +108,8 @@ test('after the documented v24→v25 copy-upgrade, Cloudflare DO accepts the sam
   assert.equal(doObj.getResolvedThrough(), before.resolved_through);
 });
 
-test('Cloudflare-shaped bare v24 export is refused, then accepted after copy-upgrade', () => {
-  const live = v24Sqlite('cf-bare-legion-copy', { bareRules: true });
+test('Cloudflare-shaped bare v26 export is refused, then accepted after copy-upgrade', () => {
+  const live = v26Sqlite('cf-bare-living-places-copy', { bareRules: true });
   const before = loadRow(live.dbPath);
   assert.equal(before.rules_version, OLD);
   const refused = new DatabaseSync(':memory:');
@@ -134,20 +121,7 @@ test('Cloudflare-shaped bare v24 export is refused, then accepted after copy-upg
   assert.throws(() => mockDo(refused, { WORLD_SEED: live.seed, START_MS: start }),
     /refusing to reinterpret its history/);
 
-  upgradeLegionJobs(live);
-  const afterLegion = loadRow(live.dbPath);
-  assert.equal(afterLegion.rules_version, fixtureIdentity(createFixture({ startMs: start }), 'canon-ambient-p183-v25'));
-  const stillRefusedV25 = new DatabaseSync(':memory:');
-  stillRefusedV25.exec(`CREATE TABLE world_state (
-    id INTEGER PRIMARY KEY CHECK(id = 1), seed TEXT NOT NULL, rules_version TEXT NOT NULL,
-    resolved_through INTEGER NOT NULL, state_json TEXT NOT NULL)`);
-  stillRefusedV25.prepare('INSERT INTO world_state VALUES (1, ?, ?, ?, ?)').run(
-    afterLegion.seed, afterLegion.rules_version, afterLegion.resolved_through, afterLegion.state_json);
-  assert.throws(() => mockDo(stillRefusedV25, { WORLD_SEED: live.seed, START_MS: start }),
-    /refusing to reinterpret its history/);
-
-  upgradeDuskkinCompliance({ directory: live.directory, backupPath: join(live.directory, 'before-v26.sqlite') });
-  upgradeLivingPlaces({ directory: live.directory, backupPath: join(live.directory, 'before-v27.sqlite') });
+  upgradeLivingPlaces(live);
   const after = loadRow(live.dbPath);
   assert.equal(after.seed, before.seed);
   assert.equal(after.resolved_through, before.resolved_through);

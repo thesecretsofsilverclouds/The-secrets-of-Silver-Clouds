@@ -17,7 +17,7 @@ const pending = db => db.prepare('SELECT id,due_at,priority,action_json FROM sch
 // Does not fold into the v23→v24 MEU upgrade. Does not backfill Legion jobs.
 export function upgradeLegionJobs({ directory, backupPath } = {}) {
   if (typeof directory !== 'string' || !directory.trim()) throw new TypeError('An existing pinned directory is required');
-  if (![TO, 'canon-ambient-p183-v26'].includes(RULES_VERSION)) throw new Error('This upgrade belongs to release v25 or later');
+  if (![TO, 'canon-ambient-p183-v26', 'canon-ambient-p183-v27'].includes(RULES_VERSION)) throw new Error('This upgrade belongs to release v25 or later');
   directory = resolve(directory);
   const manifestPath = join(directory, 'active-world.json'), databasePath = join(directory, 'world.sqlite');
   if (!existsSync(manifestPath) || !existsSync(databasePath)) throw new Error('An existing pinned world is required');

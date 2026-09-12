@@ -1,0 +1,359 @@
+{
+  "generatedAt": "2026-09-12T00:15:53.911Z",
+  "rulesVersion": "canon-ambient-p183-v27",
+  "modelCalls": 0,
+  "requestTimeAuthoring": 0,
+  "refillReservations": 0,
+  "activeScenes": 874,
+  "activeQuips": 673,
+  "inactiveProduction": 91,
+  "futureInactive": 200,
+  "futureDuskkin": 30,
+  "futureOnari": 30,
+  "dormantPaths": [
+    "site_impact — no uncommitted/random physical damage manufactured on canonical seeds",
+    "onari_ecology_notice — natural case volume is 0 without qualifying committed source facts",
+    "onari_protest — rare escalation path dormant when no ongoing unresolved habitat harm occurs",
+    "future_onari_environment — 30 staged scenes remain quarantined in batch library",
+    "Yukon Onari participation — dormant when no ecological cases arise; strictly optional when active",
+    "Onari remediation — expedited recovery dormant when no damage is committed"
+  ],
+  "determinism": {
+    "silver-clouds-now-v1": {
+      "matched": true,
+      "digest": "62288ec75ca52b95c7846fe81a13aa03d8e2771a1e58cea39f3411e8a3588c82"
+    },
+    "seed-beta": {
+      "matched": true,
+      "digest": "9af74cc24eba799c327a10d55ca6b45203d3145803f8c347b234dac0ede7c439"
+    },
+    "seed-gamma": {
+      "matched": true,
+      "digest": "b9751ebb0d123d1b108b056a395b13838a2a3bff4a209b6316393c1ac27610fd"
+    }
+  },
+  "restart": {
+    "silver-clouds-now-v1": {
+      "matched": true,
+      "digest": "62288ec75ca52b95c7846fe81a13aa03d8e2771a1e58cea39f3411e8a3588c82"
+    },
+    "seed-beta": {
+      "matched": true,
+      "digest": "9af74cc24eba799c327a10d55ca6b45203d3145803f8c347b234dac0ede7c439"
+    },
+    "seed-gamma": {
+      "matched": true,
+      "digest": "b9751ebb0d123d1b108b056a395b13838a2a3bff4a209b6316393c1ac27610fd"
+    }
+  },
+  "observers": {
+    "silver-clouds-now-v1": {
+      "matched": true,
+      "digest": "62288ec75ca52b95c7846fe81a13aa03d8e2771a1e58cea39f3411e8a3588c82"
+    },
+    "seed-beta": {
+      "matched": true,
+      "digest": "9af74cc24eba799c327a10d55ca6b45203d3145803f8c347b234dac0ede7c439"
+    },
+    "seed-gamma": {
+      "matched": true,
+      "digest": "b9751ebb0d123d1b108b056a395b13838a2a3bff4a209b6316393c1ac27610fd"
+    }
+  },
+  "ninetyRestart": {
+    "silver-clouds-now-v1": {
+      "matched": true,
+      "digest": "ca5fec4ebadebd8727c6f4d11d4f2282e59b45bcb622c6128d73b747e90fba48"
+    },
+    "seed-beta": {
+      "matched": true,
+      "digest": "0119c81ff81db55de31840921393b78dd994086f389e0559b2037f217f58b9d1"
+    },
+    "seed-gamma": {
+      "matched": true,
+      "digest": "6a7c3bd7da60f33683e857970d36264b9601e39e673d1c412e230c29a0c52e89"
+    }
+  },
+  "ninetyObservers": {
+    "silver-clouds-now-v1": {
+      "matched": true,
+      "digest": "ca5fec4ebadebd8727c6f4d11d4f2282e59b45bcb622c6128d73b747e90fba48"
+    },
+    "seed-beta": {
+      "matched": true,
+      "digest": "0119c81ff81db55de31840921393b78dd994086f389e0559b2037f217f58b9d1"
+    },
+    "seed-gamma": {
+      "matched": true,
+      "digest": "6a7c3bd7da60f33683e857970d36264b9601e39e673d1c412e230c29a0c52e89"
+    }
+  },
+  "thirtyDays": {
+    "silver-clouds-now-v1": {
+      "digest": "62288ec75ca52b95c7846fe81a13aa03d8e2771a1e58cea39f3411e8a3588c82",
+      "stats": {
+        "meuOpened": 6,
+        "meuResolved": 6,
+        "meuPerWeek": 1.4,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "duskkin": {
+          "sources": 0,
+          "notices": 0,
+          "evidence": 0,
+          "transfers": 0,
+          "notifies": 0,
+          "responses": 0,
+          "contains": 0,
+          "closes": 0
+        },
+        "livingPlaces": {
+          "siteImpacts": 0,
+          "siteRecoveryBegins": 0,
+          "siteRecoveriesDue": 0,
+          "siteRecovereds": 0,
+          "onariNotices": 0,
+          "onariConsultations": 0,
+          "onariProtestsBegin": 0,
+          "onariProtestsEnd": 0,
+          "onariRemediations": 0,
+          "onariNoChanges": 0,
+          "onariCloses": 0
+        },
+        "lifeBalance": {
+          "meals": 178,
+          "practices": 78,
+          "sleep": 60,
+          "travel": 32,
+          "legionVisits": 2
+        }
+      }
+    },
+    "seed-beta": {
+      "digest": "9af74cc24eba799c327a10d55ca6b45203d3145803f8c347b234dac0ede7c439",
+      "stats": {
+        "meuOpened": 6,
+        "meuResolved": 6,
+        "meuPerWeek": 1.4,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "duskkin": {
+          "sources": 0,
+          "notices": 0,
+          "evidence": 0,
+          "transfers": 0,
+          "notifies": 0,
+          "responses": 0,
+          "contains": 0,
+          "closes": 0
+        },
+        "livingPlaces": {
+          "siteImpacts": 0,
+          "siteRecoveryBegins": 0,
+          "siteRecoveriesDue": 0,
+          "siteRecovereds": 0,
+          "onariNotices": 0,
+          "onariConsultations": 0,
+          "onariProtestsBegin": 0,
+          "onariProtestsEnd": 0,
+          "onariRemediations": 0,
+          "onariNoChanges": 0,
+          "onariCloses": 0
+        },
+        "lifeBalance": {
+          "meals": 178,
+          "practices": 81,
+          "sleep": 60,
+          "travel": 32,
+          "legionVisits": 3
+        }
+      }
+    },
+    "seed-gamma": {
+      "digest": "b9751ebb0d123d1b108b056a395b13838a2a3bff4a209b6316393c1ac27610fd",
+      "stats": {
+        "meuOpened": 7,
+        "meuResolved": 7,
+        "meuPerWeek": 1.63,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "duskkin": {
+          "sources": 0,
+          "notices": 0,
+          "evidence": 0,
+          "transfers": 0,
+          "notifies": 0,
+          "responses": 0,
+          "contains": 0,
+          "closes": 0
+        },
+        "livingPlaces": {
+          "siteImpacts": 0,
+          "siteRecoveryBegins": 0,
+          "siteRecoveriesDue": 0,
+          "siteRecovereds": 0,
+          "onariNotices": 0,
+          "onariConsultations": 0,
+          "onariProtestsBegin": 0,
+          "onariProtestsEnd": 0,
+          "onariRemediations": 0,
+          "onariNoChanges": 0,
+          "onariCloses": 0
+        },
+        "lifeBalance": {
+          "meals": 177,
+          "practices": 79,
+          "sleep": 60,
+          "travel": 30,
+          "legionVisits": 1
+        }
+      }
+    }
+  },
+  "ninetyDays": {
+    "silver-clouds-now-v1": {
+      "digest": "ca5fec4ebadebd8727c6f4d11d4f2282e59b45bcb622c6128d73b747e90fba48",
+      "stats": {
+        "meuOpened": 18,
+        "meuResolved": 18,
+        "meuPerWeek": 1.4,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "duskkin": {
+          "sources": 0,
+          "notices": 0,
+          "evidence": 0,
+          "transfers": 0,
+          "notifies": 0,
+          "responses": 0,
+          "contains": 0,
+          "closes": 0
+        },
+        "livingPlaces": {
+          "siteImpacts": 0,
+          "siteRecoveryBegins": 0,
+          "siteRecoveriesDue": 0,
+          "siteRecovereds": 0,
+          "onariNotices": 0,
+          "onariConsultations": 0,
+          "onariProtestsBegin": 0,
+          "onariProtestsEnd": 0,
+          "onariRemediations": 0,
+          "onariNoChanges": 0,
+          "onariCloses": 0
+        },
+        "lifeBalance": {
+          "meals": 534,
+          "practices": 237,
+          "sleep": 180,
+          "travel": 93,
+          "legionVisits": 6
+        }
+      }
+    },
+    "seed-beta": {
+      "digest": "0119c81ff81db55de31840921393b78dd994086f389e0559b2037f217f58b9d1",
+      "stats": {
+        "meuOpened": 20,
+        "meuResolved": 20,
+        "meuPerWeek": 1.56,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "duskkin": {
+          "sources": 0,
+          "notices": 0,
+          "evidence": 0,
+          "transfers": 0,
+          "notifies": 0,
+          "responses": 0,
+          "contains": 0,
+          "closes": 0
+        },
+        "livingPlaces": {
+          "siteImpacts": 0,
+          "siteRecoveryBegins": 0,
+          "siteRecoveriesDue": 0,
+          "siteRecovereds": 0,
+          "onariNotices": 0,
+          "onariConsultations": 0,
+          "onariProtestsBegin": 0,
+          "onariProtestsEnd": 0,
+          "onariRemediations": 0,
+          "onariNoChanges": 0,
+          "onariCloses": 0
+        },
+        "lifeBalance": {
+          "meals": 533,
+          "practices": 236,
+          "sleep": 180,
+          "travel": 97,
+          "legionVisits": 7
+        }
+      }
+    },
+    "seed-gamma": {
+      "digest": "6a7c3bd7da60f33683e857970d36264b9601e39e673d1c412e230c29a0c52e89",
+      "stats": {
+        "meuOpened": 14,
+        "meuResolved": 14,
+        "meuPerWeek": 1.09,
+        "referrals": 0,
+        "offers": 0,
+        "accepts": 0,
+        "declines": 0,
+        "payments": 0,
+        "closes": 0,
+        "duskkin": {
+          "sources": 0,
+          "notices": 0,
+          "evidence": 0,
+          "transfers": 0,
+          "notifies": 0,
+          "responses": 0,
+          "contains": 0,
+          "closes": 0
+        },
+        "livingPlaces": {
+          "siteImpacts": 0,
+          "siteRecoveryBegins": 0,
+          "siteRecoveriesDue": 0,
+          "siteRecovereds": 0,
+          "onariNotices": 0,
+          "onariConsultations": 0,
+          "onariProtestsBegin": 0,
+          "onariProtestsEnd": 0,
+          "onariRemediations": 0,
+          "onariNoChanges": 0,
+          "onariCloses": 0
+        },
+        "lifeBalance": {
+          "meals": 534,
+          "practices": 236,
+          "sleep": 178,
+          "travel": 94,
+          "legionVisits": 4
+        }
+      }
+    }
+  }
+}

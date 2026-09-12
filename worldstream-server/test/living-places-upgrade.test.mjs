@@ -1,4 +1,4 @@
-import test from 'node:test';
+﻿import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -7,14 +7,12 @@ import { createHash } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
 import { WorldStore } from '../experiment-l/src/world.mjs';
 import { createFixture, eventId, RULES_VERSION } from '../src/fixture.mjs';
-import { initialLegionJobsState } from '../src/legion-jobs.mjs';
+import { initialLivingPlacesState } from '../src/living-places.mjs';
 import { openPinnedWorld } from '../src/world-operations.mjs';
-import { upgradeLegionJobs } from '../src/legion-upgrade.mjs';
-import { upgradeDuskkinCompliance } from '../src/duskkin-upgrade.mjs';
 import { upgradeLivingPlaces } from '../src/living-places-upgrade.mjs';
 import { atLondon } from '../src/time.mjs';
 
-const OLD = 'canon-ambient-p183-v24', NEXT = 'canon-ambient-p183-v25';
+const OLD = 'canon-ambient-p183-v26', NEXT = 'canon-ambient-p183-v27';
 const day = '2026-09-05', start = atLondon(day, '00:00'), cutover = atLondon(day, '12:00');
 const hash = value => createHash('sha256').update(value).digest('hex');
 const events = db => db.prepare('SELECT * FROM events ORDER BY seq').all();
@@ -27,15 +25,19 @@ const setManifest = (f, version) => writeFileSync(manifestPath(f), JSON.stringif
 const snapshot = f => ({ row: stateRow(f.db), events: events(f.db), pending: pending(f.db), manifest: readManifest(f) });
 
 function legacy(t) {
-  const directory = mkdtempSync(join(tmpdir(), 'sc-legion-upgrade-'));
-  const dbPath = join(directory, 'world.sqlite'), backupPath = join(directory, 'before-v25.sqlite');
+  const directory = mkdtempSync(join(tmpdir(), 'sc-living-places-upgrade-'));
+  const dbPath = join(directory, 'world.sqlite'), backupPath = join(directory, 'before-v27.sqlite');
   const current = createFixture({ startMs: start }), initial = current.initialState();
-  delete initial.legionJobs;
+  delete initial.livingPlaces;
   initial.meta.upgrades = [
     { from: 'canon-ambient-p183-v22', to: 'canon-ambient-p183-v23', cutoverAt: start,
       activatedAt: start + 1, activationActionId: `lives-v23/activate/${start}` },
-    { from: 'canon-ambient-p183-v23', to: OLD, cutoverAt: start,
+    { from: 'canon-ambient-p183-v23', to: 'canon-ambient-p183-v24', cutoverAt: start,
       activatedAt: start + 1, activationActionId: `meu-v24/activate/${start}` },
+    { from: 'canon-ambient-p183-v24', to: 'canon-ambient-p183-v25', cutoverAt: start,
+      activatedAt: start + 1, activationActionId: `legion-v25/activate/${start}` },
+    { from: 'canon-ambient-p183-v25', to: OLD, cutoverAt: start,
+      activatedAt: start + 1, activationActionId: `duskkin-v26/activate/${start}` },
   ];
   const fixture = { ...current, rulesVersion: OLD, initialState: () => structuredClone(initial),
     initialActions: () => [
@@ -47,23 +49,27 @@ function legacy(t) {
         location: 'mi6', participants: [], causedBy: [], payload: {}, changes: [], visibility: 'public',
         publicDescription: 'A previously recorded test notice.' }, followups: [] };
     } };
-  const world = new WorldStore({ dbPath, seed: 'legion-migration-test', fixture });
+  const world = new WorldStore({ dbPath, seed: 'living-places-migration-test', fixture });
   world.advance(cutover); world.close();
   const db = new DatabaseSync(dbPath); t.after(() => db.close());
   const f = { directory, dbPath, backupPath, db }; setManifest(f, OLD);
   return f;
 }
 
-function liveV24Pinned(t, { days = 3, seed = 'live-legion-upgrade-copy' } = {}) {
-  const directory = mkdtempSync(join(tmpdir(), 'sc-legion-live-'));
-  const dbPath = join(directory, 'world.sqlite'), backupPath = join(directory, 'before-v25.sqlite');
+function liveV26Pinned(t, { days = 3, seed = 'live-living-places-upgrade-copy' } = {}) {
+  const directory = mkdtempSync(join(tmpdir(), 'sc-living-places-live-'));
+  const dbPath = join(directory, 'world.sqlite'), backupPath = join(directory, 'before-v27.sqlite');
   const current = createFixture({ startMs: start }), initial = current.initialState();
-  delete initial.legionJobs;
+  delete initial.livingPlaces;
   initial.meta.upgrades = [
     { from: 'canon-ambient-p183-v22', to: 'canon-ambient-p183-v23', cutoverAt: start,
       activatedAt: start + 1, activationActionId: `lives-v23/activate/${start}` },
-    { from: 'canon-ambient-p183-v23', to: OLD, cutoverAt: start,
+    { from: 'canon-ambient-p183-v23', to: 'canon-ambient-p183-v24', cutoverAt: start,
       activatedAt: start + 1, activationActionId: `meu-v24/activate/${start}` },
+    { from: 'canon-ambient-p183-v24', to: 'canon-ambient-p183-v25', cutoverAt: start,
+      activatedAt: start + 1, activationActionId: `legion-v25/activate/${start}` },
+    { from: 'canon-ambient-p183-v25', to: OLD, cutoverAt: start,
+      activatedAt: start + 1, activationActionId: `duskkin-v26/activate/${start}` },
   ];
   const fixture = {
     ...current,
@@ -80,11 +86,11 @@ function liveV24Pinned(t, { days = 3, seed = 'live-legion-upgrade-copy' } = {}) 
   return f;
 }
 
-test('v24 to v25 preserves old ledger bytes, memories, clock, seed and every existing pending action', t => {
+test('v26 to v27 preserves old ledger bytes, memories, clock, seed and every existing pending action', t => {
   const f = legacy(t), before = snapshot(f);
-  assert.ok([NEXT, 'canon-ambient-p183-v26', 'canon-ambient-p183-v27'].includes(RULES_VERSION));
+  assert.equal(RULES_VERSION, NEXT);
   assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
-  const result = upgradeLegionJobs(f), after = snapshot(f);
+  const result = upgradeLivingPlaces(f), after = snapshot(f);
   assert.equal(result.status, 'upgraded'); assert.equal(result.rulesVersion, NEXT);
   assert.equal(result.cutoverAt, cutover); assert.equal(result.historicalEvents, before.events.length);
   assert.deepEqual(after.events, before.events);
@@ -93,51 +99,42 @@ test('v24 to v25 preserves old ledger bytes, memories, clock, seed and every exi
   for (const [key, value] of Object.entries(original)) if (key !== 'meta') assert.deepEqual(state[key], value, key);
   for (const [key, value] of Object.entries(original.meta)) if (key !== 'upgrades') assert.deepEqual(state.meta[key], value, key);
   assert.deepEqual(state.meta.upgrades.slice(0, -1), original.meta.upgrades);
-  assert.deepEqual(state.legionJobs, initialLegionJobsState());
+  assert.deepEqual(state.livingPlaces, initialLivingPlacesState());
   assert.equal(after.pending.length, before.pending.length + 1);
   assert.deepEqual(after.pending.filter(row => row.id !== result.activationActionId), before.pending);
   const activation = JSON.parse(after.pending.find(row => row.id === result.activationActionId).action_json);
-  assert.deepEqual(activation, { id: `legion-v25/activate/${cutover}`, type: 'WORLD_LEGION_ACTIVATE',
+  assert.deepEqual(activation, { id: `living-places-v27/activate/${cutover}`, type: 'WORLD_LIVING_PLACES_ACTIVATE',
     day, dueAt: cutover + 1, priority: 1 });
 });
 
-test('v25 upgrade is idempotent and activation is prospective', t => {
+test('v27 upgrade is idempotent and activation is prospective', t => {
   const f = legacy(t);
-  const result = upgradeLegionJobs(f);
+  const result = upgradeLivingPlaces(f);
   assert.equal(result.status, 'upgraded');
-  const second = upgradeLegionJobs(f);
+  const second = upgradeLivingPlaces(f);
   assert.equal(second.status, 'already_upgraded');
   assert.equal(second.rulesVersion, NEXT);
   assert.equal(second.cutoverAt, result.cutoverAt);
   assert.ok(existsSync(result.backupPath));
 
-  if (RULES_VERSION === 'canon-ambient-p183-v26' || RULES_VERSION === 'canon-ambient-p183-v27') {
-    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
-    upgradeDuskkinCompliance({ directory: f.directory, backupPath: join(f.directory, 'before-v26.sqlite') });
-  }
-  if (RULES_VERSION === 'canon-ambient-p183-v27') {
-    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
-    upgradeLivingPlaces({ directory: f.directory, backupPath: join(f.directory, 'before-v27.sqlite') });
-  }
-
   const world = openPinnedWorld({ directory: f.directory });
   world.advance(cutover + 2 * 60 * 60000);
   const snap = world.semanticSnapshot();
   world.close();
-  assert.ok(snap.events.some(e => e.type === 'WORLD_LEGION_ACTIVATE'), 'Activation action must execute');
+  assert.ok(snap.events.some(e => e.type === 'WORLD_LIVING_PLACES_ACTIVATE'), 'Activation action must execute');
   assert.ok(snap.meta.upgrades.some(u => u.to === NEXT && u.activatedAt), 'Upgrade receipt must record activation time');
 });
 
-test('copied live v24 world activates v25 prospectively without reseed, backfill, or lost continuity', t => {
-  const f = liveV24Pinned(t);
+test('copied live v26 world activates v27 prospectively without reseed, backfill, or lost continuity', t => {
+  const f = liveV26Pinned(t, { days: 3 });
   const before = snapshot(f);
   const beforeState = JSON.parse(before.row.state_json);
   const history = events(f.db);
   const priorSources = history.map(row => JSON.parse(row.semantic_json))
-    .filter(e => e.type === 'INCIDENT' || e.type === 'ARCANE_SURGE' || e.type === 'MEU_CASE_RESOLVE').map(e => e.id);
+    .filter(e => e.type === 'INCIDENT' || e.type === 'ARCANE_SURGE').map(e => e.id);
   assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
 
-  const result = upgradeLegionJobs(f), after = snapshot(f);
+  const result = upgradeLivingPlaces(f), after = snapshot(f);
   assert.equal(result.status, 'upgraded');
   assert.equal(after.row.seed, before.row.seed);
   assert.equal(after.row.id, before.row.id);
@@ -145,65 +142,52 @@ test('copied live v24 world activates v25 prospectively without reseed, backfill
   assert.deepEqual(after.events, before.events);
   const afterState = JSON.parse(after.row.state_json);
   assert.equal(afterState.meta.startMs, beforeState.meta.startMs);
-  assert.deepEqual(afterState.legionJobs, initialLegionJobsState());
+  assert.deepEqual(afterState.livingPlaces, initialLivingPlacesState());
   assert.equal(after.pending.length, before.pending.length + 1);
   assert.deepEqual(after.pending.filter(row => row.id !== result.activationActionId), before.pending);
 
-  if (RULES_VERSION === 'canon-ambient-p183-v26' || RULES_VERSION === 'canon-ambient-p183-v27') {
-    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
-    upgradeDuskkinCompliance({ directory: f.directory, backupPath: join(f.directory, 'before-v26.sqlite') });
-  }
-  if (RULES_VERSION === 'canon-ambient-p183-v27') {
-    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
-    upgradeLivingPlaces({ directory: f.directory, backupPath: join(f.directory, 'before-v27.sqlite') });
-  }
-
   const world = openPinnedWorld({ directory: f.directory });
   try {
-    assert.equal(world.semanticSnapshot().world.rulesVersion, RULES_VERSION);
+    assert.equal(world.semanticSnapshot().world.rulesVersion, NEXT);
     world.advance(before.row.resolved_through + 1);
     const activated = world.semanticSnapshot();
-    assert.equal(activated.events.filter(e => e.type === 'WORLD_LEGION_ACTIVATE').length, 1);
-    assert.equal(activated.events.filter(e => e.type.startsWith('LEGION_JOB_') || e.type === 'MI6_LEGION_REFERRAL').length, 0,
-      'activation must not backfill jobs from historical incidents or MEU cases');
+    assert.equal(activated.events.filter(e => e.type === 'WORLD_LIVING_PLACES_ACTIVATE').length, 1);
+    assert.equal(activated.events.filter(e => e.type.startsWith('SITE_') || e.type.startsWith('ONARI_')).length, 0,
+      'activation must not backfill site disturbances from historical incidents');
     world.advance(before.row.resolved_through + 14 * 24 * 3600_000);
     const later = world.semanticSnapshot();
     assert.equal(later.world.seed ?? f.seed, f.seed);
-    for (const open of later.events.filter(e => e.type === 'LEGION_JOB_OFFER')) {
-      assert.ok(!priorSources.includes(open.payload.sourceEventId),
-        'historical incidents must not become Legion job sources after upgrade');
+    for (const siteEvent of later.events.filter(e => e.type === 'SITE_IMPACT_REGISTER')) {
+      assert.ok(!priorSources.includes(siteEvent.payload.sourceEventId),
+        'historical incidents must not become site disturbance sources after upgrade');
     }
   } finally {
     world.close();
   }
 });
 
-test('Cloudflare-shaped v24 (bare rules_version) upgrades without losing epoch, seed, watermark or pending', t => {
-  const f = liveV24Pinned(t, { seed: 'cf-bare-legion-copy' });
+test('Cloudflare-shaped v26 (bare rules_version) upgrades without losing epoch, seed, watermark or pending', t => {
+  const f = legacy(t);
   f.db.prepare('UPDATE world_state SET rules_version=? WHERE id=1').run(OLD);
   const before = snapshot(f);
-  assert.equal(before.row.rules_version, OLD);
-  const result = upgradeLegionJobs(f), after = snapshot(f);
-  assert.equal(result.status, 'upgraded');
+
+  const report = upgradeLivingPlaces(f);
+  assert.equal(report.status, 'upgraded');
+  const after = snapshot(f);
   assert.equal(after.row.seed, before.row.seed);
   assert.equal(after.row.resolved_through, before.row.resolved_through);
   assert.deepEqual(after.events, before.events);
-  assert.deepEqual(after.pending.filter(row => row.id !== result.activationActionId), before.pending);
-  assert.equal(JSON.parse(after.row.state_json).meta.startMs, JSON.parse(before.row.state_json).meta.startMs);
-  assert.equal(after.row.rules_version, `fixture:${JSON.stringify([
-    'silver-clouds-now', NEXT, start, Date.parse('2100-01-01T00:00:00Z'), 100000,
-  ])}`);
 });
 
-test('v25 upgrade does not rewrite existing Legion job state if already present', t => {
+test('v27 upgrade does not rewrite existing Living Places state if already present', t => {
   const f = legacy(t);
-  const before = JSON.parse(stateRow(f.db).state_json);
-  const kept = initialLegionJobsState();
-  kept.nextEligibleAt = start + 99;
-  before.legionJobs = kept;
-  f.db.prepare('UPDATE world_state SET state_json=? WHERE id=1').run(JSON.stringify(before));
-  const result = upgradeLegionJobs(f);
-  assert.equal(result.status, 'upgraded');
-  const after = JSON.parse(stateRow(f.db).state_json);
-  assert.equal(after.legionJobs.nextEligibleAt, start + 99);
+  const customPlaces = { ...initialLivingPlacesState(), nextNoticeEligibleAt: 999999 };
+  const original = JSON.parse(stateRow(f.db).state_json);
+  original.livingPlaces = customPlaces;
+  f.db.prepare('UPDATE world_state SET state_json=? WHERE id=1').run(JSON.stringify(original));
+
+  const report = upgradeLivingPlaces(f);
+  assert.equal(report.status, 'upgraded');
+  const afterState = JSON.parse(stateRow(f.db).state_json);
+  assert.equal(afterState.livingPlaces.nextNoticeEligibleAt, 999999);
 });

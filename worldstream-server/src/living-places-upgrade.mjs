@@ -1,24 +1,23 @@
-import { existsSync, readFileSync, writeFileSync, renameSync } from 'node:fs';
+﻿import { existsSync, readFileSync, writeFileSync, renameSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
 import { createFixture, RULES_VERSION, assertCanonState } from './fixture.mjs';
-import { initialMeuCasesState } from './meu-cases.mjs';
+import { initialLivingPlacesState } from './living-places.mjs';
 import { backupWorld } from './world-operations.mjs';
 import { londonDate } from './time.mjs';
 import { fixtureIdentity, matchesRulesIdentity } from './world-identity.mjs';
 
-const FROM = 'canon-ambient-p183-v23', TO = 'canon-ambient-p183-v24';
+const FROM = 'canon-ambient-p183-v26', TO = 'canon-ambient-p183-v27';
 const digest = rows => createHash('sha256').update(JSON.stringify(rows)).digest('hex');
 const ledger = db => db.prepare('SELECT seq,id,occurred_at,semantic_json,recorded_at FROM events ORDER BY seq').all();
 const pending = db => db.prepare('SELECT id,due_at,priority,action_json FROM scheduled_actions ORDER BY id').all();
 
 // Explicit, offline prospective release boundary.
-// None of the new MEU cases is reconstructed in already recorded time,
-// and no existing event, memory or pending action is rewritten.
-export function upgradeMeuCases({ directory, backupPath } = {}) {
+// Does not fold into prior upgrades. Does not backfill historical site disturbances.
+export function upgradeLivingPlaces({ directory, backupPath } = {}) {
   if (typeof directory !== 'string' || !directory.trim()) throw new TypeError('An existing pinned directory is required');
-  if (![TO, 'canon-ambient-p183-v25', 'canon-ambient-p183-v26', 'canon-ambient-p183-v27'].includes(RULES_VERSION)) throw new Error('This upgrade belongs to release v24 or later');
+  if (RULES_VERSION !== TO) throw new Error('This upgrade belongs to release v27 only');
   directory = resolve(directory);
   const manifestPath = join(directory, 'active-world.json'), databasePath = join(directory, 'world.sqlite');
   if (!existsSync(manifestPath) || !existsSync(databasePath)) throw new Error('An existing pinned world is required');
@@ -37,29 +36,29 @@ export function upgradeMeuCases({ directory, backupPath } = {}) {
       if (![FROM, TO].includes(manifest.rulesVersion) || receipts.length !== 1
         || !Number.isSafeInteger(receipt?.cutoverAt) || receipt.cutoverAt < fixture.startMs
         || receipt.cutoverAt > before.resolved_through
-        || receipt.activationActionId !== `meu-v24/activate/${receipt.cutoverAt}`
+        || receipt.activationActionId !== `living-places-v27/activate/${receipt.cutoverAt}`
         || !/^[a-f0-9]{64}$/.test(receipt.historicalLedgerDigest ?? '')
         || !/^[a-f0-9]{64}$/.test(receipt.backupSha256 ?? '')
-        || !Object.hasOwn(original, 'meuCases')) throw new Error('No matching committed upgrade receipt');
+        || !Object.hasOwn(original, 'livingPlaces')) throw new Error('No matching committed upgrade receipt');
       assertCanonState(original);
       if (manifest.rulesVersion !== TO) saveManifest();
       return { status: 'already_upgraded', rulesVersion: TO, cutoverAt: receipt.cutoverAt,
         activationActionId: receipt.activationActionId };
     }
     if (manifest.rulesVersion !== FROM || !matchesRulesIdentity(before.rules_version, fixture, FROM))
-      throw new Error('Only the pinned v23 release can be upgraded');
-    if ((original.meta.upgrades ?? []).some(item => item.to === TO)) throw new Error('Unexpected prior meu upgrade receipt');
+      throw new Error('Only the pinned v26 release can be upgraded');
+    if ((original.meta.upgrades ?? []).some(item => item.to === TO)) throw new Error('Unexpected prior living places upgrade receipt');
     if (!Number.isSafeInteger(before.resolved_through) || before.resolved_through < fixture.startMs
       || before.resolved_through + 1 >= fixture.endMs) throw new Error('Invalid release cutover');
     const state = structuredClone(original);
-    state.meuCases = initialMeuCasesState();
+    if (!Object.hasOwn(state, 'livingPlaces')) state.livingPlaces = initialLivingPlacesState();
     assertCanonState(state);
     if (typeof backupPath !== 'string' || !backupPath.trim()) throw new Error('Choose a new backup path before upgrading');
     const historyBefore = digest(ledger(db)), pendingBefore = pending(db), cutoverAt = before.resolved_through;
-    const action = { id: `meu-v24/activate/${cutoverAt}`, type: 'WORLD_MEU_ACTIVATE',
+    const action = { id: `living-places-v27/activate/${cutoverAt}`, type: 'WORLD_LIVING_PLACES_ACTIVATE',
       day: londonDate(cutoverAt + 1), dueAt: cutoverAt + 1, priority: 1 };
     if (pendingBefore.some(row => row.id === action.id || JSON.parse(row.action_json).type === action.type))
-      throw new Error('Unexpected prior meu activation');
+      throw new Error('Unexpected prior living places activation');
     const backup = backupWorld({ db }, backupPath);
     db.exec('BEGIN IMMEDIATE');
     let report;
@@ -89,7 +88,7 @@ export function upgradeMeuCases({ directory, backupPath } = {}) {
   } finally { db.close(); }
 
   function saveManifest() {
-    const temporary = `${manifestPath}.v24.tmp`;
+    const temporary = `${manifestPath}.v27.tmp`;
     writeFileSync(temporary, JSON.stringify({ ...manifest, rulesVersion: TO }, null, 2) + '\n');
     renameSync(temporary, manifestPath);
   }

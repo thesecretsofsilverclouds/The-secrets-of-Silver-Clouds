@@ -8,6 +8,7 @@ import { WorldStore } from '../../experiment-l/src/world.mjs';
 import { createFixture, RULES_VERSION } from '../../src/fixture.mjs';
 import { fixtureIdentity } from '../../src/world-identity.mjs';
 import { upgradeDuskkinCompliance } from '../../src/duskkin-upgrade.mjs';
+import { upgradeLivingPlaces } from '../../src/living-places-upgrade.mjs';
 import { WorldDurableObject } from '../src/world-durable-object.mjs';
 import { createMockSqlStorage } from '../src/sqlite-adapter.mjs';
 import { atLondon } from '../../src/time.mjs';
@@ -90,11 +91,12 @@ test('after the documented v25→v26 copy-upgrade, Cloudflare DO accepts the sam
   const live = v25Sqlite();
   const before = loadRow(live.dbPath);
   upgradeDuskkinCompliance(live);
+  upgradeLivingPlaces({ directory: live.directory, backupPath: join(live.directory, 'before-v27.sqlite') });
   const after = loadRow(live.dbPath);
   assert.equal(after.seed, before.seed);
   assert.equal(after.resolved_through, before.resolved_through);
   assert.equal(after.rules_version, fixtureIdentity(createFixture({ startMs: start })));
-  assert.equal(RULES_VERSION, 'canon-ambient-p183-v26');
+  assert.equal(RULES_VERSION, 'canon-ambient-p183-v27');
   const nodeDb = new DatabaseSync(':memory:');
   nodeDb.exec(`CREATE TABLE world_state (
     id INTEGER PRIMARY KEY CHECK(id = 1), seed TEXT NOT NULL, rules_version TEXT NOT NULL,
@@ -120,6 +122,7 @@ test('Cloudflare-shaped bare v25 export is refused, then accepted after copy-upg
     /refusing to reinterpret its history/);
 
   upgradeDuskkinCompliance(live);
+  upgradeLivingPlaces({ directory: live.directory, backupPath: join(live.directory, 'before-v27.sqlite') });
   const after = loadRow(live.dbPath);
   assert.equal(after.seed, before.seed);
   assert.equal(after.resolved_through, before.resolved_through);
