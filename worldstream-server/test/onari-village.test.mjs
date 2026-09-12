@@ -12,6 +12,8 @@ import {
   permitsArea,
   encounterEligibility,
 } from '../src/places.mjs';
+import { normalizeReservoirLocation, SCENE_RESERVOIR_CATALOG } from '../src/scene-reservoir-catalog.mjs';
+import { reservoirEventPlace } from '../src/scene-reservoir-select.mjs';
 import {
   CITY_LOCATIONS,
   THEME_NAMES,
@@ -71,6 +73,15 @@ test('Information room fails closed and cannot be entered or staged', () => {
   const result = encounterEligibility(people, { location: 'onari_village', area: 'information_room', atMs });
   assert.equal(result.ok, false);
   assert.equal(result.reason, 'sealed');
+
+  assert.equal(normalizeReservoirLocation('onari_village/information_room'), null);
+  assert.equal(normalizeReservoirLocation('mi6/basement'), null);
+  assert.deepEqual(normalizeReservoirLocation('onari_village/village_square'), {
+    location: 'onari_village', area: 'village_square'
+  });
+  assert.equal(reservoirEventPlace({
+    type: 'REST_BEGIN', location: 'onari_village', area: 'information_room'
+  }), null);
 });
 
 test('Onari Village default area and place phrase formatting', () => {
@@ -210,6 +221,29 @@ test('Spoiler embargo: doll revelation, information room, and Ashai parentage ti
   assert.doesNotThrow(() => assertNoSpoiler('Yukon sat by the communal hearth in the village square.'));
   assert.doesNotThrow(() => assertNoSpoiler('The Life Tree perimeter was quiet in the afternoon sun.'));
   assert.doesNotThrow(() => assertNoSpoiler('Stalls in the village market were packing away woven baskets.'));
+});
+
+test('active carved-doll bedside prose is ambient and does not leak the parentage reveal', () => {
+  // Reviewed 2026-09-12. These five surfaces name a small bedside object Greah
+  // tidies. They do not name the Onari doll, Ashai's mother/father, heritage,
+  // journal, Proctor, or the information room. Ordinary "doll" stays legal.
+  const ids = [
+    'R:domestic.ashai_greah.quiet.09',
+    'R:ready.ashaiquiet.004',
+    'R:ready.ashaiquiet.006',
+    'R:ready.ashaiquiet.016',
+    'R:ready.ashaiquiet.017',
+  ];
+  const leak = /onari|mother|father|parentage|heritage|journal|proctor|information room|ashai-doll|ashai doll|the doll/i;
+  for (const id of ids) {
+    const scene = SCENE_RESERVOIR_CATALOG.find(entry => entry.id === id);
+    assert.ok(scene, `${id} must remain an active reservoir surface`);
+    const prose = scene.beats?.[0]?.text ?? '';
+    assert.match(prose, /carved doll/i);
+    assert.doesNotThrow(() => assertNoSpoiler(prose, id));
+    assert.equal(findSpoilers(prose).length, 0);
+    assert.equal(leak.test(prose), false, `${id} must not carry the later doll/parentage reveal`);
+  }
 });
 
 test('Cinematic backdrop world-onari-village.png is registered and exists on disk', () => {

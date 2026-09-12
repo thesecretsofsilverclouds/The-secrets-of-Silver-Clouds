@@ -96,7 +96,6 @@ export const RECOVERY_DURATIONS = Object.freeze({
 export const ONARI_NOTICE_COOLDOWN_MS = 14 * 24 * 60 * MIN;
 export const ONARI_PROTEST_SPACING_MS = 7 * 24 * 60 * MIN;
 export const MAX_ACTIVE_ONARI_CASES = 2;
-export const MAX_ACTIVE_DISTURBED_SITES = 8;
 export const MAX_CLOSED_SUMMARIES = 16;
 export const MAX_RECOVERED_SUMMARIES = 16;
 export const MAX_ENDED_SOURCE_SUMMARIES = 16;
@@ -186,6 +185,11 @@ export function assertLivingPlaces(state) {
       throw new Error('Invented bureaucratic actors are forbidden');
     }
     if (c.prose != null) throw new Error('No prose allowed in canonical Onari case state');
+  }
+
+  const bytes = livingPlacesSerializedBytes(state);
+  if (bytes > LIVING_PLACES_STATE_BUDGET) {
+    throw new Error(`Living Places serialized state ${bytes} exceeded ${LIVING_PLACES_STATE_BUDGET}`);
   }
 }
 

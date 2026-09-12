@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { SCENE_RESERVOIR_BATCHES, SCENE_RESERVOIR_REVIEWS } from './scene-reservoir-data.mjs';
-import { areaOf } from './places.mjs';
+import { areaOf, SEALED_AREAS } from './places.mjs';
 import { daypart } from './sky.mjs';
 import { SIDE_CHARACTERS, LEGION_CAST, OUTSIDE_CAST, STREET_FAUNA } from './cast.mjs';
 
@@ -52,7 +52,7 @@ export function normalizeReservoirLocation(value) {
   const resolved = aliases[value] ?? value;
   if (!text(resolved)) return null;
   const [location,area,...rest] = resolved.split('/');
-  return !rest.length && areaOf(location,area) && area !== 'basement' ? {location,area} : null;
+  return !rest.length && areaOf(location,area) && !SEALED_AREAS.includes(area) ? {location,area} : null;
 }
 function gateError(gates,cast) {
   if (!plain(gates) || Object.keys(gates).some(key=>!GATE_KEYS.has(key))) return 'unsupported eligibility gate';
@@ -159,6 +159,7 @@ export function normalizeReservoirBatch(batch,{reviews=SCENE_RESERVOIR_REVIEWS,e
 export function reservoirSceneEligible(ctx,scene,{checkTrigger=true}={}) {
   const gate=scene?.reservoir;
   if(!gate) return true;
+  if(SEALED_AREAS.includes(scene.area) || SEALED_AREAS.includes(ctx.event?.area)) return false;
   if(gate.schemaVersion!==RESERVOIR_SCHEMA_VERSION||gateError(gateForValidation(gate),scene.cast)) return false;
   if(checkTrigger && (!gate.triggerTypes.includes(ctx.event?.type)||ctx.event?.visibility!=='public'
     ||ctx.event?.location!==scene.location||ctx.event?.area!==scene.area)) return false;

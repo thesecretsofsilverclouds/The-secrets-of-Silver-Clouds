@@ -54,6 +54,12 @@ test('unsupported fact gates, inaccessible locations and actor placeholders fail
   assert.deepEqual(normalizeReservoirLocation('mi6/lunch_hall'),{location:'mi6',area:'common_room'});
   assert.deepEqual(normalizeReservoirLocation('mi6/corridor'),{location:'mi6',area:'corridors'});
   assert.equal(normalizeReservoirLocation('mi6/new-room'),null);
+  assert.equal(normalizeReservoirLocation('mi6/basement'),null);
+  assert.equal(normalizeReservoirLocation('onari_village/information_room'),null);
+  assert.deepEqual(normalizeReservoirLocation('onari_village/village_square'),{location:'onari_village',area:'village_square'});
+  const meal=byId('domestic.shared_meal.02');
+  assert.equal(reservoirSceneEligible(sceneContext({...meal,area:'information_room'}),{...meal,area:'information_room'}),false);
+  assert.equal(reservoirSceneEligible(sceneContext({...meal,area:'basement'}),{...meal,area:'basement'}),false);
 });
 test('duplicate ids and punctuation-only duplicate prose cannot enter another batch',()=>{
   const result=normalizeReservoirBatch({...batch,entries:[accepted,{...accepted,id:'different-id',prose:accepted.prose.replaceAll('.', '!')}]});

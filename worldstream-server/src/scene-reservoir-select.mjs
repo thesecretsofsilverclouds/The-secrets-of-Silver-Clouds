@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { SCENE_RESERVOIR_CATALOG, actorAlias, normalizeReservoirLocation } from './scene-reservoir-catalog.mjs';
+import { SEALED_AREAS } from './places.mjs';
 import { LEGION_CONTRACT_BINDINGS } from './legion-job-bindings.mjs';
 import { daypart } from './sky.mjs';
 
@@ -39,6 +40,7 @@ export function reservoirEventPlace(event) {
   if (location === 'enchanted_ink' && !area) area = 'venue';
   if (location === 'legion_hideout' && !area) area = 'venue';
   if (event.type === 'SIDE_PRESENCE') area = event.payload?.area || area;
+  if (SEALED_AREAS.includes(area)) return null;
   const resolved = normalizeReservoirLocation(area ? `${location}/${area}` : location);
   return resolved ?? (location ? { location, area: area ?? null } : null);
 }

@@ -477,15 +477,19 @@ test('three committed site impacts remain after the two-case Onari cap', () => {
 test('closed cases stay in the bounded summary ring and serialized state stays within 16 KiB', () => {
   const locations = Object.keys(AREAS_BY_LOCATION);
   const fat = initialLivingPlacesState();
-  for (let i = 0; i < Math.min(8, locations.length); i += 1) {
-    const locationId = locations[i];
+  locations.forEach((locationId, i) => {
     fat.sites[locationId] = {
       locationId, areaId: null, status: 'disturbed', impact: i % 2 ? 'moderate' : 'minor',
       affectsLivingHabitat: true, consequenceKind: 'habitat_damage',
       sourceEventIds: [`evt-${i}`], sourceFactIds: [`fact-${i}`],
       disturbedAt: DAY, recoveryDueAt: null, remediatedAt: null, recoveredAt: null, lastEventId: `evt-${i}`
     };
-  }
+    fat.sources[`fact-${i}`] = {
+      sourceFactKey: `fact-${i}`, sourceEventId: `evt-${i}`, locationId, areaId: null,
+      consequenceKind: 'habitat_damage', impact: i % 2 ? 'moderate' : 'minor',
+      provenance: { path: 'committed_report' }, sourceActive: true, endedAt: null, authorityActor: 'goaden'
+    };
+  });
   fat.cases = {
     'onari:one': { caseId: 'onari:one', status: 'consulting', locationId: 'mi6', participants: ['yukon'] },
     'onari:two': { caseId: 'onari:two', status: 'noticed', locationId: 'cafe', participants: [] }
@@ -507,8 +511,13 @@ test('closed cases stay in the bounded summary ring and serialized state stays w
   }]));
   assert.doesNotThrow(() => assertLivingPlaces({ livingPlaces: fat }));
   const bytes = livingPlacesSerializedBytes({ livingPlaces: fat });
+  assert.equal(LIVING_PLACES_STATE_BUDGET, 16 * 1024);
   assert.ok(bytes <= LIVING_PLACES_STATE_BUDGET, `serialized livingPlaces was ${bytes} bytes; budget ${LIVING_PLACES_STATE_BUDGET}`);
+  assert.ok(bytes >= 12_000, `max bounded state should exercise the real budget; measured ${bytes}`);
   process.stdout.write(`Living Places max measured serialized bytes: ${bytes}\n`);
+
+  const over = { livingPlaces: { ...fat, padding: 'x'.repeat(LIVING_PLACES_STATE_BUDGET) } };
+  assert.throws(() => assertLivingPlaces(over), /exceeded/);
 });
 
 test('Yukon optionality: joins only if available and awake without error or blocking', () => {

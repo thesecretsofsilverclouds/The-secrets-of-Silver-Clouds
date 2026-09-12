@@ -2,11 +2,19 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { SCENE_RESERVOIR_CATALOG } from '../src/scene-reservoir-catalog.mjs';
 import { SCENE_RESERVOIR_BATCHES } from '../src/scene-reservoir-data.mjs';
 import { CAST } from '../lab/grammar/cast.mjs';
 import { VALIDATED_MOMENT_GRAMMAR_REPORT } from '../lab/grammar/validated-lines.mjs';
+
+const FUTURE_LIBRARY_PATH = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '..', '..', '..', '..',
+  'WORLDSTREAM_CANON_CONTENT_MEGA_BATCH_04',
+  'WORLDSTREAM_FUTURE_SIMULATION_LIBRARY_BATCH_04.json'
+);
 
 test('reservoir baseline identity: exact catalog size, quip counts, quarantined future scenes, and content digest', () => {
   // 1. Active current-world reservoir surfaces
@@ -53,14 +61,14 @@ test('reservoir baseline identity: exact catalog size, quip counts, quarantined 
   const inactiveProductionRows = allEntries.filter(e => !catalogIds.has(e.id));
   assert.equal(inactiveProductionRows.length, 91, 'Must have exactly 91 production rows legitimately inactive');
 
-  // Check Batch 04 Future Simulation library exists and contains exactly 200 scenes
-  const b04Path = resolve('..', '..', 'WORLDSTREAM_CANON_CONTENT_MEGA_BATCH_04', 'WORLDSTREAM_FUTURE_SIMULATION_LIBRARY_BATCH_04.json');
-  if (existsSync(b04Path)) {
-    const b04 = JSON.parse(readFileSync(b04Path, 'utf8'));
-    assert.equal(b04.scenes.length, 200, 'Batch 04 Future Simulation library must have 200 scenes');
-    for (const s of b04.scenes) {
-      assert.ok(!catalogIds.has(s.id), `Future simulation scene ${s.id} must not be in active catalog`);
-    }
+  // Check Batch 04 Future Simulation library from this file's location, not cwd.
+  assert.equal(existsSync(FUTURE_LIBRARY_PATH), true,
+    `Future Simulation library must resolve from the test file: ${FUTURE_LIBRARY_PATH}`);
+  const b04 = JSON.parse(readFileSync(FUTURE_LIBRARY_PATH, 'utf8'));
+  assert.equal(b04.scenes.length, 200, 'Batch 04 Future Simulation library must have 200 scenes');
+  for (const s of b04.scenes) {
+    assert.ok(!catalogIds.has(s.id), `Future simulation scene ${s.id} must not be in active catalog`);
+    assert.equal(s.status, 'staged_future', `Future simulation scene ${s.id} must remain staged`);
   }
 
   // 4. Deterministic SHA-256 digests
