@@ -1,6 +1,6 @@
 # Addon 4 acceptance — canon-ambient-p183-v27
 
-Generated: 2026-09-12T00:15:53.911Z
+Generated: 2026-09-12T01:19:20.694Z
 
 ## Bar
 
@@ -14,6 +14,7 @@ Generated: 2026-09-12T00:15:53.911Z
 - Addon 3 Duskkin compliance behaviour unchanged
 - ordinary sleep / meals / training / travel remain healthy
 - zero manufactured disturbance or Onari events (natural volume is 0)
+- zero natural travel to onari_village on canonical seeds (access requires committed fact)
 - site memory operates independently from Onari response
 - discrete states only (stable | disturbed | recovering; minor | moderate); 0 continuous meters
 - existing canonical locations only (src/places.mjs); no invented london/park or embankment
@@ -74,5 +75,6 @@ Generated: 2026-09-12T00:15:53.911Z
 - future_onari_environment — 30 staged scenes remain quarantined in batch library
 - Yukon Onari participation — dormant when no ecological cases arise; strictly optional when active
 - Onari remediation — expedited recovery dormant when no damage is committed
+- onari_village travel — natural travel volume is 0 without qualifying committed access facts
 
 Natural site consequence and Onari case volume is zero on canonical seeds because no qualifying ecological consequence event occurs naturally without dedicated incident injection. This is an honest invariant, not a missing generator. Lifecycle proof, natural recovery (7d minor / 14d moderate), Onari consultation, expedited remediation (72h minor / 7d moderate), peaceful protest, Yukon optionality, and clean closure are proven through the Worldstream reducer in production-path tests.

@@ -131,6 +131,7 @@ export const CINEMATIC_BACKGROUNDS = Object.freeze([
   background('london_night', 'big_ben_plaza', '/scene/world-london-night.jpg', { dayparts: ['night', 'small_hours'], suitableFor: ['city', 'danger', 'mystery'] }),
   background('legion_hideout_day', 'legion_hideout', '/scene/world-legion-hideout-day.jpg', { dayparts: ['morning', 'midday', 'evening'], suitableFor: ['social', 'banter', 'conversation'] }),
   background('legion_hideout_night', 'legion_hideout', '/scene/world-legion-hideout-night.jpg', { dayparts: ['night', 'small_hours'], suitableFor: ['social', 'mystery', 'quiet'] }),
+  background('onari_village', 'onari_village', '/scene/world-onari-village.png', { suitableFor: ['nature', 'quiet', 'community', 'wonder', 'social'] }),
 ]);
 
 export const BACKGROUND_BY_ID = Object.freeze(Object.fromEntries(CINEMATIC_BACKGROUNDS.map((item) => [item.id, item])));

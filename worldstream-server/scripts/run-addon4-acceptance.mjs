@@ -137,6 +137,14 @@ function analyze(snap, days) {
     }
   }
 
+  // Invariant: Zero travel departures/arrivals to onari_village on canonical seeds
+  for (const e of events) {
+    if ((e.type === 'TRAVEL_DEPART' || e.type === 'TRAVEL_ARRIVE') &&
+        (e.location === 'onari_village' || e.payload?.to === 'onari_village' || e.payload?.from === 'onari_village')) {
+      throw new Error(`Forbidden travel event to/from onari_village on canonical seed: ${e.type} at ${e.at}`);
+    }
+  }
+
   // Invariant: Bounded compliance collections
   if ((snap.duskkinCompliance?.closedSummaries?.length ?? 0) > 24) {
     throw new Error('Duskkin closedSummaries exceeded 24');
@@ -565,6 +573,7 @@ async function main() {
       'future_onari_environment — 30 staged scenes remain quarantined in batch library',
       'Yukon Onari participation — dormant when no ecological cases arise; strictly optional when active',
       'Onari remediation — expedited recovery dormant when no damage is committed',
+      'onari_village travel — natural travel volume is 0 without qualifying committed access facts',
     ],
     determinism: {},
     restart: {},
@@ -680,6 +689,7 @@ Generated: ${report.generatedAt}
 - Addon 3 Duskkin compliance behaviour unchanged
 - ordinary sleep / meals / training / travel remain healthy
 - zero manufactured disturbance or Onari events (natural volume is 0)
+- zero natural travel to onari_village on canonical seeds (access requires committed fact)
 - site memory operates independently from Onari response
 - discrete states only (stable | disturbed | recovering; minor | moderate); 0 continuous meters
 - existing canonical locations only (src/places.mjs); no invented london/park or embankment

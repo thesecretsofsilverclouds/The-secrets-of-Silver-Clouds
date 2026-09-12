@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-12T00:15:53.911Z",
+  "generatedAt": "2026-09-12T01:19:20.694Z",
   "rulesVersion": "canon-ambient-p183-v27",
   "modelCalls": 0,
   "requestTimeAuthoring": 0,
@@ -16,7 +16,8 @@
     "onari_protest — rare escalation path dormant when no ongoing unresolved habitat harm occurs",
     "future_onari_environment — 30 staged scenes remain quarantined in batch library",
     "Yukon Onari participation — dormant when no ecological cases arise; strictly optional when active",
-    "Onari remediation — expedited recovery dormant when no damage is committed"
+    "Onari remediation — expedited recovery dormant when no damage is committed",
+    "onari_village travel — natural travel volume is 0 without qualifying committed access facts"
   ],
   "determinism": {
     "silver-clouds-now-v1": {

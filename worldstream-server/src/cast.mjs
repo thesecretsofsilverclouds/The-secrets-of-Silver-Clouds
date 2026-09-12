@@ -11,7 +11,7 @@ export const SIDE_CHARACTERS = Object.freeze({
   // "That's Yukon and Whisper. Yukon joined after a rather... creative bank
   // heist. His Onari heritage lets him shape-shift" [M65]. Already the stated
   // cause of this world's gaming nights since v9; this gives him a room.
-  yukon:{name:'Yukon',role:'special unit',page:65,attachedTo:null,
+  yukon:{name:'Yukon',role:'special unit',page:65,attachedTo:null,homeLocation:'onari_village',
     plates:['smile','happy','laugh','irritated','angry','shocked'],
     areas:['gaming_room','common_room'],dayparts:['midday','evening','night'],
     lines:['Yukon had the gaming area to himself and was losing loudly to it.',

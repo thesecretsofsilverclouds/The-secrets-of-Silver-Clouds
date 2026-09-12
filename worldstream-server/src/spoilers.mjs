@@ -36,9 +36,9 @@ export const REVEALS = Object.freeze({
   ashai_parentage: {
     id: 'ashai_parentage',
     // Her father is talked about well before the checkpoint [M120], and the
-    // letters at [M195] and [M205] are where it turns. The man may be referred
-    // to; who he is may not.
-    summary: "Who Ashai's father is.",
+    // letters at [M195] and [M205] are where it turns. The doll revelation,
+    // the village information room, and parents' Onari ties are strictly phase-locked.
+    summary: "Who Ashai's father is, her mother, the Onari doll, and parental ties to Onari.",
     firstRevealed: 195,
   },
   whisper_identity: {
@@ -62,6 +62,11 @@ export const FORBIDDEN_TERMS = Object.freeze([
   { term: 'chosen one', reveal: null },
   // The chained door at [M63] and the voice behind it.
   { term: 'basement', reveal: null },
+  // The archival room in Onari Village where parents/doll records are discovered.
+  { term: 'information room', reveal: 'ashai_parentage' },
+  { term: 'ashai-doll', reveal: 'ashai_parentage' },
+  { term: 'ashai doll', reveal: 'ashai_parentage' },
+  { term: 'doll revelation', reveal: 'ashai_parentage' },
 ]);
 
 // Tier two: pairs. A link fires when a subject term and a reveal term both
@@ -95,6 +100,21 @@ export const FORBIDDEN_LINKS = Object.freeze([
     note: "Ashai and the question of her father.",
   },
   {
+    reveal: 'ashai_parentage',
+    subject: ['ashai'],
+    tell: ['onari parents', 'onari parent', 'onari mother', 'mother from onari',
+      'ties to onari', 'onari ties', 'onari heritage', 'onari blood', 'born in onari',
+      'onari doll', 'the doll'],
+    note: "Ashai's doll and her parents' ties to the Onari.",
+  },
+  {
+    reveal: 'ashai_parentage',
+    subject: ['onari village', 'the village', 'onari'],
+    tell: ['information room', 'her mother', 'ashai doll', 'ashai-doll',
+      'doll revelation', 'parental history', 'parents history', 'mother history'],
+    note: "Onari village tied to Ashai's doll, information room, or maternal parentage.",
+  },
+  {
     reveal: 'whisper_identity',
     subject: ['whisper'],
     tell: ['alter ego', 'true name', 'real name', 'really is', 'behind the bandage',
@@ -105,7 +125,7 @@ export const FORBIDDEN_LINKS = Object.freeze([
 
 // Generic post-checkpoint vocabulary. Not tied to a named reveal, but nothing
 // in this world should be reaching for any of it.
-export const FORBIDDEN_TONE = Object.freeze(['parentage', 'birth mother', 'birth father', 'bloodline']);
+export const FORBIDDEN_TONE = Object.freeze(['parentage', 'birth mother', 'birth father', 'bloodline', 'doll revelation']);
 
 const escape = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 // Whole-word-ish: a phrase must not be matched inside a longer word, but may sit

@@ -137,7 +137,7 @@ export const CITY_LOCATIONS = Object.freeze({
   cafe:{name:'the Silver Spoon Cafe',travelMinutes:10},
   big_ben_plaza:{name:'the New Big Ben plaza',travelMinutes:10},
 });
-const LOCATIONS = new Set(['mi6','sanctuary','streamliner',...Object.keys(CITY_LOCATIONS)]);
+const LOCATIONS = new Set(['mi6','sanctuary','streamliner','legion_hideout','onari_village',...Object.keys(CITY_LOCATIONS)]);
 // Committed actions where Goaden actively crosses a boundary (intentional
 // concealment of danger, broken agreement, or consequential deception).
 // An autonomy breach is never inferred from passive knowledge asymmetry (such
@@ -496,12 +496,13 @@ export const LOCATION_MODES = Object.freeze({
   legion_hideout:{small_hours:'dark',morning:'dark',midday:'rehearsal',evening:'rehearsal',night:'rehearsal'},
   cafe:{small_hours:'closed',morning:'open',midday:'open',evening:'open',night:'last_orders'},
   big_ben_plaza:{small_hours:'quiet_streets',morning:'open_air',midday:'open_air',evening:'open_air',night:'quiet_streets'},
+  onari_village:{small_hours:'quiet_night',morning:'daylight',midday:'daylight',evening:'dusk',night:'quiet_night'},
 });
 // Being somewhere is not an activity, so these labels are always available.
 const AMBIENT_LABELS = Object.freeze(['unhurried_time','travelling']);
 // Everything a mode permits, stated explicitly. Anything absent is forbidden
 // there: a mode's forbidden set is the complement of this list.
-const MODE_PERMITS = Object.freeze({
+export const MODE_PERMITS = Object.freeze({
   'mi6:day_watch':['training','eating','playing_piano','listening_to_music','gaming','quiet_break','watching_television','resting','waiting','in_a_briefing','on_call','sleeping'],
   'mi6:night_shift':['eating','gaming','listening_to_music','quiet_break','watching_television','resting','waiting','on_call','sleeping'],
   'legion_hideout:rehearsal':['unhurried_time','listening_to_music','quiet_break'],
@@ -519,6 +520,9 @@ const MODE_PERMITS = Object.freeze({
   'big_ben_plaza:open_air':['walking_the_city'],
   'big_ben_plaza:quiet_streets':[],
   'streamliner:frequent_service':[],'streamliner:reduced_service':[],'streamliner:sparse_service':[],
+  'onari_village:daylight':['unhurried_time','eating','quiet_break','waiting'],
+  'onari_village:dusk':['unhurried_time','quiet_break','waiting'],
+  'onari_village:quiet_night':['quiet_break','resting','sleeping'],
 });
 // The civil dayparts in which each activity may begin. Gaming late at night is
 // ordinary; training at two in the morning is not.
@@ -611,6 +615,19 @@ export function canEnterSanctuary(state, atMs, party = ['goaden','ashai'], invit
   const invitations = invitationKey ? [state.invitations[invitationKey]] : Object.values(state.invitations);
   return invitations.some(i => i && i.acceptedAt !== null && i.acceptedAt <= atMs && atMs >= i.entryFrom
     && atMs < i.entryUntil && party.every(id => i.party.includes(id) && knowsFact(state.characters[id], i.factKey, atMs)));
+}
+export function canEnterOnariVillage(state, atMs, party = ['goaden','ashai'], reasonKey) {
+  if (party.length === 1 && party[0] === 'yukon') return true;
+  if (!state || !state.facts) return false;
+  const factKeys = reasonKey ? [reasonKey] : Object.keys(state.facts);
+  return factKeys.some(k => {
+    const fact = state.facts[k];
+    if (!fact) return false;
+    if (fact.kind === 'onari_village_access' || fact.kind === 'onari_consultation_referral') {
+      return (fact.validUntil === null || atMs < fact.validUntil);
+    }
+    return false;
+  });
 }
 
 function initialState(startMs) {

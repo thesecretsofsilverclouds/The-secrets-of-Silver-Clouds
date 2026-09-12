@@ -51,7 +51,8 @@ test('the sealed basement keeps its artwork and still cannot be walked into', ()
   // if the area is ever opened, and the area is still sealed, so it will not
   // appear on its own before then.
   assert.ok(block('MI6_ROOM_ART').includes("'the basement'"));
-  assert.deepEqual([...SEALED_AREAS], ['basement']);
+  assert.ok(SEALED_AREAS.includes('basement'));
+  assert.deepEqual([...SEALED_AREAS].sort(), ['basement', 'information_room']);
 });
 
 test('every plate the page declares has art, and every plated character is cast', () => {

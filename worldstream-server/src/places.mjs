@@ -67,12 +67,31 @@ export const MI6_ZONES = Object.freeze({
   indoor_yard:{name:'the covered training floor',page:87,indoors:true,social:false,within:'training',
     permits:['unhurried_time','training','checking_training_ground'],dayparts:['morning','midday','evening']},
 });
-// The chained door with the warning signs [M63]. It is the one place this world
-// may never open: what is behind it is the manuscript's business and sits on
-// the far side of the knowledge boundary. Modelling it as a sealed section
-// rather than leaving it off the map means an action that ever tried to put
+// The chained door with the warning signs [M63] and the Onari information room.
+// Both exist to be refused: what is behind them sits on the far side of the
+// knowledge and spoiler boundary. Modelling them as sealed sections rather
+// than leaving them off the map means an action that ever tries to put
 // somebody there fails loudly instead of quietly working.
-export const SEALED_AREAS = Object.freeze(['basement']);
+export const SEALED_AREAS = Object.freeze(['basement', 'information_room']);
+
+// Onari Village safe public areas and sealed archival storage.
+// Early-unlocked as a home/faction location; later doll and parental revelations remain locked.
+export const ONARI_VILLAGE_AREAS = Object.freeze({
+  village_square: { name: 'the village square', indoors: false, social: true,
+    permits: ['unhurried_time', 'waiting', 'eating'], dayparts: [...DAYPARTS] },
+  market: { name: 'the village market', indoors: false, social: true,
+    permits: ['unhurried_time', 'waiting'], dayparts: ['morning', 'midday', 'evening'] },
+  communal_grounds: { name: 'the communal grounds', indoors: false, social: true,
+    permits: ['unhurried_time', 'quiet_break'], dayparts: [...DAYPARTS] },
+  life_tree_perimeter: { name: 'the Life Tree perimeter', indoors: false, social: false,
+    permits: ['unhurried_time', 'quiet_break'], dayparts: [...DAYPARTS] },
+  trails: { name: 'the village trails', indoors: false, social: false,
+    permits: ['unhurried_time', 'walking_the_city', 'quiet_break'], dayparts: ['morning', 'midday', 'evening'] },
+  // Archival room where manuscript parents/doll materials reside. Sealed before checkpoint.
+  information_room: { name: 'the information room', indoors: true, social: false,
+    permits: [], dayparts: [] },
+});
+
 // Sanctuary already named two of its own rooms in the venue phrasing this
 // engine has published since v10 — the portal halls and the central hub.
 export const SANCTUARY_AREAS = Object.freeze({
@@ -102,6 +121,7 @@ export const AREAS_BY_LOCATION = Object.freeze({
   big_ben_plaza:{...SINGLE('venue','the plaza',['unhurried_time','walking_the_city'],false),
     gardens:{name:'the plaza gardens',indoors:false,social:false,
       permits:['unhurried_time','walking_the_city'],dayparts:[...DAYPARTS]}},
+  onari_village: ONARI_VILLAGE_AREAS,
 });
 export const areaNames = location => Object.keys(AREAS_BY_LOCATION[location] ?? {});
 // Where somebody stands when nothing has put them anywhere in particular. Until
@@ -111,6 +131,7 @@ export const areaNames = location => Object.keys(AREAS_BY_LOCATION[location] ?? 
 export function defaultArea(location,atMs) {
   if(location==='mi6') return 'common_room';
   if(location==='streamliner') return 'transit';
+  if(location==='onari_village') return 'village_square';
   if(location!=='sanctuary') return 'venue';
   // Sanctuary's own rooms open on the same clock its modes do: the hub is a
   // middle-of-the-day-onward room, the halls are open whenever it is.
@@ -130,9 +151,10 @@ export const areaOf = (location,area) => AREAS_BY_LOCATION[location]?.[area] ?? 
 const PLACE_LABELS = Object.freeze({
   streamliner:'the carriage', enchanted_ink:'Enchanted Ink',
   cafe:'the Silver Spoon', big_ben_plaza:'the plaza', legion_hideout:'the Legion warehouse',
+  onari_village:'the Onari village',
 });
 export function placePhrase(location,area) {
-  if(location==='mi6'||location==='sanctuary') return areaOf(location,area)?.name ?? PLACE_LABELS[location] ?? 'the barracks';
+  if(location==='mi6'||location==='sanctuary'||location==='onari_village') return areaOf(location,area)?.name ?? PLACE_LABELS[location] ?? 'the barracks';
   return PLACE_LABELS[location] ?? areaOf(location,area)?.name ?? 'the borough';
 }
 // A room is a third gate under the two the world already applies. The venue's
