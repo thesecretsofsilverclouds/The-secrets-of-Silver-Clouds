@@ -69,11 +69,25 @@ export const CHARACTER_PLATES = Object.freeze({
     plate('davis_closeup', 'davis', 'intense', '/scene/davis-closeup.png',
       { intensity: 3, suitableFor: ['reveal', 'conversation', 'deflection'] }),
   ]),
-  // **One plate only**, and he now has six practices. Flagged rather than
-  // worked around: `yukon-irritated` will be doing every register he has,
-  // including the ones canon describes as bubbly.
+  // Yukon's approved set maps onto existing expression categories. Smile is
+  // the resting face for idle/neutral/cheeky/thoughtful; irritated.png stays
+  // on the annoyed path. No new simulation emotions are invented here.
   yukon: Object.freeze([
+    plate('yukon_smile', 'yukon', 'idle', '/scene/yukon-smile.png',
+      { intensity: 1, energy: 'open', suitableFor: ['conversation', 'social'] }),
+    plate('yukon_happy', 'yukon', 'happy', '/scene/yukon-happy.png'),
+    plate('yukon_laugh', 'yukon', 'laughing', '/scene/yukon-laugh.png'),
     plate('yukon_irritated', 'yukon', 'annoyed', '/scene/yukon-irritated.png'),
+    plate('yukon_angry', 'yukon', 'angry', '/scene/yukon-angry.png',
+      { intensity: 3, suitableFor: ['friction', 'banter'] }),
+    plate('yukon_shocked', 'yukon', 'surprised', '/scene/yukon-shocked.png'),
+  ]),
+  // Presentation extras only. Exact delivered filenames. Not runtime actors.
+  onari_contractor: Object.freeze([
+    plate('onari_contractor_idle', 'onari_contractor', 'idle', '/scene/onari_contractor.png'),
+  ]),
+  onari_protester: Object.freeze([
+    plate('onari_protester_idle', 'onari_protester', 'idle', '/scene/onari_protester.png'),
   ]),
   // Cliff Henderson. Canon has him as Ashai's mentor and the reason Goaden
   // joined MI6 at all; the world already walks him through as a SIDE_PRESENCE.
@@ -124,6 +138,12 @@ export const PLATE_BY_ID = Object.freeze(Object.fromEntries(Object.values(CHARAC
 
 const EXPRESSION_ALIASES = Object.freeze({
   goaden: Object.freeze({ smirk: 'goaden_smirk', amused: 'goaden_smirk', deflect: 'goaden_idle', guarded: 'goaden_idle', concerned: 'goaden_idle', tired: 'goaden_idle' }),
+  yukon: Object.freeze({
+    irritated: 'yukon_irritated', laugh: 'yukon_laugh', shocked: 'yukon_shocked',
+    smile: 'yukon_smile', neutral: 'yukon_smile', cheeky: 'yukon_smile',
+    amused: 'yukon_smile', chilling: 'yukon_smile', relaxed: 'yukon_smile',
+    thoughtful: 'yukon_smile', concerned: 'yukon_smile',
+  }),
 });
 
 export function plateForExpression(character, expression) {

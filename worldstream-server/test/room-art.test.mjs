@@ -59,10 +59,21 @@ test('every plate the page declares has art, and every plated character is cast'
   const rows = [...sets.matchAll(/^\s*([a-z_]+):\{\s*has:(?:new Set\(\[([^\]]*)\]\)|([A-Z_]+))/gm)];
   assert.ok(rows.length >= 14, `only ${rows.length} plate sets parsed`);
   const rosters = { ...LEGION_CAST, ...OUTSIDE_CAST, ...STREET_FAUNA, ...SIDE_CHARACTERS };
+  // Approved extras may sit on the page without becoming simulation actors.
+  const presentationExtras = new Set(['onari_contractor', 'onari_protester']);
+  for (const extra of presentationExtras) {
+    assert.ok(!rosters[extra], `${extra} must stay a presentation extra, not a runtime actor`);
+  }
   for (const [, who, inline] of rows) {
     if (['goaden', 'ashai'].includes(who)) continue;
-    assert.ok(rosters[who] || SCENE_BANK_CATALOG.some(entry => entry.status === 'enabled' && entry.cast.includes(who)),
+    assert.ok(rosters[who] || presentationExtras.has(who)
+      || SCENE_BANK_CATALOG.some(entry => entry.status === 'enabled' && entry.cast.includes(who)),
       `${who} has plates on the page but is in no cast roster or enabled authored scene`);
+    const fileOverride = sets.match(new RegExp(`${who}:\\{[\\s\\S]*?file:'([^']+)'`));
+    if (fileOverride && presentationExtras.has(who)) {
+      assert.ok(existsSync(scene(fileOverride[1])), `missing plate art: ${fileOverride[1]}`);
+      continue;
+    }
     for (const expression of (inline ?? '').split(',').map(part => part.trim().replace(/'/g, '')).filter(Boolean))
       assert.ok(existsSync(scene(`${who}-${expression}.png`)), `missing plate art: ${who}-${expression}.png`);
   }

@@ -779,7 +779,8 @@ const speakerNames = { goaden: 'Goaden', ashai: 'Ashai',
   truth: 'Truth', emily: 'Emily', zara: 'Zara',
   damien: 'Damien', davis: 'Agent Davis', henderson: 'General Henderson',
   sprite_orange: 'Orange', sprite_shades: 'Shades', sprite_purple: 'Purple', sprite_blue: 'Blue',
-  lintel: 'The lintel', nimbus: 'Nimbus', yukon: 'Yukon', greah: 'Greah', kai: 'Kai' };
+  lintel: 'The lintel', nimbus: 'Nimbus', yukon: 'Yukon', greah: 'Greah', kai: 'Kai',
+  onari_contractor: 'Onari contractor', onari_protester: 'Onari protester' };
 
 function cinematicRecordForEvent(event) {
   const value = event?.cinematic;
@@ -880,7 +881,22 @@ const scene = (() => {
     sprite_blue:{ has:new Set(['idle']), fallback:'idle' },
     lintel:{ has:new Set(['idle','curious','bright','content']), fallback:'idle' },
     nimbus:{ has:new Set(['angry','happy','showoff','smile','surprised','wink']), fallback:'smile' },
-    yukon:{ has:new Set(['irritated']), fallback:'irritated' },
+    yukon:{ has:new Set(['angry','happy','irritated','laugh','shocked','smile']),
+      map:{
+        angry:'angry', happy:'happy',
+        irritated:'irritated', annoyed:'irritated',
+        laugh:'laugh', laughing:'laugh',
+        shocked:'shocked', surprised:'shocked',
+        smile:'smile', idle:'smile', neutral:'smile',
+        cheeky:'smile', amused:'smile',
+        chilling:'smile', relaxed:'smile',
+        thoughtful:'smile', concerned:'smile',
+      }, fallback:'smile' },
+    // Presentation extras only. Not runtime actors: Addon 4 forbids contractor
+    // and onari_protester as simulation participants. Single approved files
+    // keep their delivered names (no who-expression suffix).
+    onari_contractor:{ has:new Set(['idle']), fallback:'idle', file:'onari_contractor.png' },
+    onari_protester:{ has:new Set(['idle']), fallback:'idle', file:'onari_protester.png' },
     // Guardians already attached to the pair; the plates were in /scene unused.
     greah:{ has:new Set(['annoyed','cheeky','happy','sad','surprised','warm-greeting']), fallback:'happy' },
     kai:{ has:new Set(['annoyed','greeting','happy','sad','surprised']), fallback:'greeting' },
@@ -954,6 +970,7 @@ const scene = (() => {
     if (supplied) return supplied;
     const spec = PLATE_SETS[who];
     if (!spec) return null;
+    if (spec.file) return `/worldstream/app/scene/${spec.file}`;
     const wanted = spec.map ? (spec.map[expression] || spec.fallback) : expression;
     return `/worldstream/app/scene/${who}-${spec.has.has(wanted) ? wanted : spec.fallback}.png`;
   };

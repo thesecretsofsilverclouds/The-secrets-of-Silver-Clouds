@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import {
   CHARACTER_PLATES, CINEMATIC_BACKGROUNDS, plateForExpression, selectVisualVocabulary,
 } from '../src/cinematic-assets.mjs';
+import { LEGION_CAST, OUTSIDE_CAST, SIDE_CHARACTERS, STREET_FAUNA } from '../src/cast.mjs';
 import { buildScenePacket, deterministicFallbackScene } from '../src/cinematics.mjs';
 
 const sceneFile = url => join(dirname(fileURLToPath(import.meta.url)),
@@ -34,6 +35,18 @@ test('recovered presentation plates and location art resolve on disk', () => {
   assert.equal(plateForExpression('kai', 'greeting'), 'kai_greeting');
   assert.equal(plateForExpression('damien', 'idle'), 'damien_idle');
   assert.equal(plateForExpression('truth', 'idle'), 'truth_idle');
+  assert.equal(plateForExpression('yukon', 'idle'), 'yukon_smile');
+  assert.equal(plateForExpression('yukon', 'annoyed'), 'yukon_irritated');
+  assert.equal(plateForExpression('yukon', 'irritated'), 'yukon_irritated');
+  assert.equal(plateForExpression('yukon', 'laughing'), 'yukon_laugh');
+  assert.equal(plateForExpression('yukon', 'surprised'), 'yukon_shocked');
+  assert.equal(plateForExpression('yukon', 'thoughtful'), 'yukon_smile');
+  assert.equal(plateForExpression('onari_contractor', 'idle'), 'onari_contractor_idle');
+  assert.equal(plateForExpression('onari_protester', 'idle'), 'onari_protester_idle');
+  const runtimeCast = { ...SIDE_CHARACTERS, ...LEGION_CAST, ...OUTSIDE_CAST, ...STREET_FAUNA };
+  assert.ok(!runtimeCast.onari_contractor && !runtimeCast.onari_protester
+    && !runtimeCast.contractor,
+    'Onari extras stay out of every runtime cast roster');
   for (const plate of Object.values(CHARACTER_PLATES).flat()) {
     assert.ok(existsSync(sceneFile(plate.file)), `missing cinematic plate: ${plate.file}`);
   }

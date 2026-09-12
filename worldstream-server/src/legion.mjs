@@ -169,9 +169,9 @@ export const LEGION_EXCHANGES = Object.freeze({
      g('smirk','It\'s not a desk job.'),
      t('stern','You have a lanyard.'),
      g('amused','Play the bloody song, Truth.')],
-    // Treatment 74, "The Borrowed Bass". Yukon has no plates, so he is talked
-    // about rather than shown, which is also how the manuscript treats a man
-    // who is not currently in the room and would rather stay that way.
+    // Treatment 74, "The Borrowed Bass". Yukon now has plates, but this
+    // treatment still talks about him rather than showing him: he is not in
+    // the room, and the manuscript treats him the same way.
     [n('surprised','So the neck\'s cracked.'),
      x('surprised','WHAT.'),
      n('idle','Hairline. Behind the fifth. He\'s had it three weeks.'),
