@@ -1,20 +1,35 @@
-# llms.txt
+# The Secrets of Silver Clouds
 
-# Summary
-The Secrets of Silver Clouds is a multimedia project by Silent Silver, blending urban fantasy with anime aesthetics.
-It features a novel, a world codex, an interactive 3D map, and a virtual pet game.
+> The official world of Silent Silver: British urban fantasy shaped by anime, street culture and music.
 
-# Navigation
-- /: Home page
-- /animantasy: About the "Animantasy" genre (Anime + Fantasy)
-- /world-map: Interactive 3D map of the universe
-- /faction-quiz: Interactive assessment to discover your faction, guardian, and holy gift
-- /history: Detailed timeline of events
-- /codex: Encyclopedia of characters, factions, and items
+The Secrets of Silver Clouds includes a published novel, a free illustrated first episode, the World Codex, browser games and Worldstream, an ongoing fiction experiment. The main action RPG with Xtended Realities is in development. Comics and animation are ambitions for the future, not currently released adaptations.
 
-# Content
-The site contains detailed lore about:
-- Characters: Ashai Bennet, Goaden Reeves, Shonen Kartia, etc.
-- Factions: MI6, The Church, The Order, Demon's Legion, Ragnorir, Onari.
-- Locations: London, Ragnorir, Wooburn Forest, Neutral Zones.
-- Concepts: Presence (magic system), Holy Items, Infernal Items.
+## Start here
+- [Home](https://thesecretsofsilverclouds.com/): Meet the world and find the novel, trailers and reader reviews.
+- [Read Episode One](https://thesecretsofsilverclouds.com/episode-one/): Free illustrated fiction with novel, webtoon and cinematic reading modes; audio is optional.
+- [Read and play](https://thesecretsofsilverclouds.com/read-play/): The directory of available stories, games and other experiences.
+- [World Codex](https://thesecretsofsilverclouds.com/#codex): Browse and search characters, factions, creatures, locations, items and concepts.
+
+## Explore and play
+- [Worldstream](https://thesecretsofsilverclouds.com/worldstream/): A public experiment in ongoing fiction set in magical London.
+- [Soul Sips](https://thesecretsofsilverclouds.com/soulsip/): Play a shift at the Sanctuary Bar in the browser game.
+- [Lintelgotchi](https://thesecretsofsilverclouds.github.io/Lintelgotchi/): The original Lintel virtual-pet game.
+- [Your Holy Gift](https://thesecretsofsilverclouds.com/holy-gift): Discover your faction, guardian and Holy Item, or revisit your saved gift.
+- [Faction assessment](https://thesecretsofsilverclouds.com/faction-quiz): Begin the interactive assessment.
+- [World map](https://thesecretsofsilverclouds.com/world-map): Explore the interactive 3D map.
+- [History](https://thesecretsofsilverclouds.com/history): Explore the world's timeline.
+- [Animantasy](https://thesecretsofsilverclouds.com/animantasy): Silent Silver's blend of anime and fantasy.
+
+## A few doors into the lore
+- [Duskkin](https://thesecretsofsilverclouds.com/duskkin): Cybernetic vampires powered by mythical blood.
+- [Sanctuary in the Sky](https://thesecretsofsilverclouds.com/sanctuary-in-the-sky): The floating nightclub above London.
+- [Demon's Legion](https://thesecretsofsilverclouds.com/demons-legion): A gang turned band and found family.
+- [Lintels](https://thesecretsofsilverclouds.com/lintels): Cloud-like creatures of the world.
+- [Road Sprites](https://thesecretsofsilverclouds.com/road-sprites): Small city creatures finding treasure in discarded things.
+
+## Behind the world
+- [Silent's story](https://thesecretsofsilverclouds.com/story/): The creator's early drawings, audience, crowdfunding and published book.
+- [Partners](https://thesecretsofsilverclouds.com/partners/): Current work, audience evidence and the action RPG in development with Xtended Realities.
+- [Updates](https://thesecretsofsilverclouds.com/updates/): Project news, creator films and the legacy update archive.
+- [Press and contact](https://thesecretsofsilverclouds.com/press/): Public background, book details and contact information.
+- [Sitemap](https://thesecretsofsilverclouds.com/sitemap.xml): Public page URLs.

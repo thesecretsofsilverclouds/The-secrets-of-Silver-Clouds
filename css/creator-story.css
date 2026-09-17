@@ -1,0 +1,13 @@
+/* Original drawings are presented as complete sheets, without cropping. */
+.early-art-intro{max-width:720px;margin-bottom:34px}
+.early-art-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+.early-art-grid figure{margin:0;min-width:0}
+.early-art-sheet{display:flex;align-items:center;justify-content:center;background:#fff;border-radius:5px;overflow:hidden;min-height:420px}
+.early-art-sheet img{width:100%;height:auto;max-height:620px;object-fit:contain}
+.early-art-grid figcaption{padding:19px 0 0;font-size:13px;color:var(--text-dim)}
+.early-art-grid figcaption strong{display:block;font-family:Cinzel,Georgia,serif;font-size:22px;color:var(--text-hi);margin-bottom:4px;font-weight:400}
+.early-art-grid figcaption a{display:inline-block;margin-top:12px}
+.early-review{margin-top:32px;display:grid;grid-template-columns:1.25fr 1fr;gap:40px;align-items:center}
+.early-review blockquote{margin:0;font-family:Cinzel,Georgia,serif;font-size:clamp(24px,3vw,36px);line-height:1.5;color:var(--text-hi)}
+.early-review .eyebrow{margin-bottom:14px}.early-review .actions{margin-top:20px}
+@media(max-width:800px){.early-art-grid,.early-review{grid-template-columns:1fr}.early-art-sheet{min-height:0}.early-art-sheet img{max-height:560px}.early-review{gap:24px}}

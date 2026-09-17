@@ -1,3 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /worldstream-server/
+Disallow: /handoff/
+Disallow: /node_modules/
+
 Sitemap: https://thesecretsofsilverclouds.com/sitemap.xml

@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "updated": "2026-09-16",
+  "records": [
+    {
+      "claim_id": "early-reader-linkedin-review",
+      "public_text": "This book made me laugh, cry, scream",
+      "source": "https://www.linkedin.com/posts/silent-silver-3b8312137_animantasy-bookreview-activity-7328524089600413696-vNOZ/",
+      "as_of_date": "2026-09-16",
+      "scope": "One early beta-reader video review, shared by Silent Silver"
+    },
+    {
+      "claim_id": "creator-original-drawings",
+      "public_text": "Goaden and Chill: early digital drawings by Silent Silver.",
+      "source": "Original digital drawings by Silent Silver",
+      "as_of_date": "2026-09-16",
+      "scope": "Two early original drawings displayed in the creator story"
+    },
+    {
+      "claim_id": "review-reaction-300k",
+      "public_text": "300k-view review · creator-reported milestone, 16 September 2026",
+      "source": "https://vm.tiktok.com/ZN86N2WyR/",
+      "resolved_url": "https://www.tiktok.com/@secretsofsilverclouds/video/7388094326892432672",
+      "as_of_date": "2026-09-16",
+      "metric_definition": "Approximately 300,000 views, reported by the creator, for the linked TikTok review-reaction duet. Not a live counter, original-review audience total, unique-reader count or sales measure.",
+      "scope": "One review-reaction video",
+      "original_review_url": "https://www.tiktok.com/@heatherchristinelynch/video/7387930131932663071"
+    },
+    {
+      "claim_id": "main-arpg",
+      "public_text": "The main Silver Clouds action RPG is in development with Xtended Realities.",
+      "source": "Silent Silver",
+      "as_of_date": "2026-09-16",
+      "metric_definition": null,
+      "scope": "Main action RPG development relationship"
+    },
+    {
+      "claim_id": "author-story-film",
+      "public_text": "The Silent Silver Story · 15 October 2025",
+      "source": "https://vm.tiktok.com/ZNd7c5dmT/",
+      "resolved_url": "https://www.tiktok.com/@secretsofsilverclouds/video/7561501047701753110",
+      "as_of_date": "2026-09-16",
+      "scope": "Existing creator film and archive post"
+    },
+    {
+      "claim_id": "creator-profile",
+      "public_text": "Silent Silver on LinkedIn",
+      "source": "https://www.linkedin.com/in/silent-silver-3b8312137/",
+      "as_of_date": "2026-09-16",
+      "scope": "Official creator profile link"
+    },
+    {
+      "claim_id": "founder-story",
+      "public_text": "Silent began sharing the world online before publishing the first book; audience encouragement and crowdfunding helped bring the first release into existence.",
+      "source": "Silent Silver's first-person account",
+      "as_of_date": "2026-09-16",
+      "scope": "First-person creator history"
+    }
+  ]
+}

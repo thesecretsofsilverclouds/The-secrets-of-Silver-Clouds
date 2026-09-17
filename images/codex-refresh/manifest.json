@@ -1,0 +1,1780 @@
+{
+  "goaden-reeves": {
+    "hero": "images/codex-refresh/goaden-and-kai.webp",
+    "thumb": "images/codex-refresh/goaden-and-kai-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/goaden-and-kai-cutout.webp",
+        "thumb": "images/codex-refresh/goaden-and-kai-cutout-thumb.webp",
+        "alt": "Goaden, with long dark curls, a red jacket and headphones, sits on a stone balcony beside the dark dragon Kai.",
+        "caption": "Goaden and Kai."
+      },
+      {
+        "src": "images/codex-refresh/goaden-and-kai.webp",
+        "thumb": "images/codex-refresh/goaden-and-kai-thumb.webp",
+        "alt": "Goaden in a red jacket sits beside Kai, a dark dragon, with the Sanctuary floating over London behind them.",
+        "caption": "Goaden and Kai — Different Skies, Same Soul."
+      },
+      {
+        "src": "images/gallery-refresh/goaden-streamliner.webp",
+        "thumb": "images/gallery-refresh/goaden-streamliner-thumb.webp",
+        "caption": "Goaden on the Streamliner.",
+        "alt": "Goaden sits by a blue-lit train window in a red jacket and headphones, with dark curls framing his face."
+      }
+    ],
+    "type": "character",
+    "name": "Goaden Reeves"
+  },
+  "rose": {
+    "hero": "images/codex-refresh/rose.webp",
+    "thumb": "images/codex-refresh/rose-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/rose.webp",
+        "thumb": "images/codex-refresh/rose-thumb.webp",
+        "alt": "Existing illustration of Rose.",
+        "caption": "Rose."
+      },
+      {
+        "src": "images/codex-refresh/gallery-rose1.webp",
+        "thumb": "images/codex-refresh/gallery-rose1-thumb.webp",
+        "alt": "Rose on a London rooftop.",
+        "caption": "Rose on a London rooftop."
+      },
+      {
+        "src": "images/codex-refresh/gallery-rose2.webp",
+        "thumb": "images/codex-refresh/gallery-rose2-thumb.webp",
+        "alt": "Rose performing.",
+        "caption": "Rose performing."
+      }
+    ],
+    "type": "character",
+    "name": "Rose"
+  },
+  "demons-legion": {
+    "hero": "images/asset-injection-20260916/legion-hideout-approved.webp",
+    "thumb": "images/asset-injection-20260916/legion-hideout-approved-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/asset-injection-20260916/legion-hideout-approved.webp",
+        "thumb": "images/asset-injection-20260916/legion-hideout-approved-thumb.webp",
+        "caption": "Rose, Truth Hughes and Gabriel at the hideout.",
+        "alt": "Rose, Truth Hughes and Gabriel sit together on a crimson sofa in their candlelit Gothic studio, with guitars and stained glass behind them."
+      },
+      {
+        "src": "images/gallery-refresh/legion-hideout-exterior.webp",
+        "thumb": "images/gallery-refresh/legion-hideout-exterior-thumb.webp",
+        "caption": "Demon's Legion — hideout exterior concept.",
+        "alt": "A red-lit Gothic building with Demon's Legion banners stands on a wet London street."
+      },
+      {
+        "src": "images/gallery-refresh/legion-hideout-interior.webp",
+        "thumb": "images/gallery-refresh/legion-hideout-interior-thumb.webp",
+        "caption": "Demon's Legion — hideout interior concept.",
+        "alt": "Red leather seating, candles and stained glass fill a Gothic lounge beneath Demon's Legion banners."
+      }
+    ],
+    "type": "faction",
+    "name": "Demon's Legion"
+  },
+  "vega": {
+    "hero": "images/codex-refresh/vega.webp",
+    "thumb": "images/codex-refresh/vega-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/vega.webp",
+        "thumb": "images/codex-refresh/vega-thumb.webp",
+        "alt": "Existing illustration of Vega.",
+        "caption": "Vega."
+      }
+    ],
+    "type": "item",
+    "name": "Vega"
+  },
+  "lintels": {
+    "hero": "images/codex-refresh/lintel-cloud.webp",
+    "thumb": "images/codex-refresh/lintel-cloud-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/lintel-cloud.webp",
+        "thumb": "images/codex-refresh/lintel-cloud-thumb.webp",
+        "alt": "A small blue-eyed cloud creature with a curled white beard, leafy flowers and pointed ears floats in a pastel sky.",
+        "caption": "Lintel floating among the clouds."
+      },
+      {
+        "src": "images/codex-refresh/lintel-drift.webp",
+        "thumb": "images/codex-refresh/lintel-drift-thumb.webp",
+        "alt": "A small round Lintel with white cloud fur, blue eyes and tiny flowers.",
+        "caption": "Lintel portrait."
+      },
+      {
+        "src": "images/gallery-refresh/lintel-window.webp",
+        "thumb": "images/gallery-refresh/lintel-window-thumb.webp",
+        "caption": "A Lintel by the window.",
+        "alt": "A fluffy white Lintel with blue eyes, pointed ears and small flowers rests beside a window opening onto a pastel sky."
+      }
+    ],
+    "type": "creature",
+    "name": "Lintels"
+  },
+  "soul-sips": {
+    "hero": "images/codex-refresh/soul-sips.webp",
+    "thumb": "images/codex-refresh/soul-sips-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/soul-sips.webp",
+        "thumb": "images/codex-refresh/soul-sips-thumb.webp",
+        "alt": "Existing illustration of Soul Sips.",
+        "caption": "Soul Sips."
+      },
+      {
+        "src": "images/codex-refresh/gallery-soul-sips0.webp",
+        "thumb": "images/codex-refresh/gallery-soul-sips0-thumb.webp",
+        "alt": "Soul Sips at the Sanctuary bar.",
+        "caption": "Soul Sips at the Sanctuary bar."
+      },
+      {
+        "src": "images/codex-refresh/gallery-soul-sips1.webp",
+        "thumb": "images/codex-refresh/gallery-soul-sips1-thumb.webp",
+        "alt": "Glowing drinks beneath stained glass.",
+        "caption": "Glowing drinks beneath stained glass."
+      }
+    ],
+    "type": "concept",
+    "name": "Soul Sips"
+  },
+  "technomagic": {
+    "hero": "images/codex-refresh/technomagic-approved.webp",
+    "thumb": "images/codex-refresh/technomagic-approved-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/technomagic-approved.webp",
+        "thumb": "images/codex-refresh/technomagic-approved-thumb.webp",
+        "alt": "A phone projects a blue holographic caller beside an engraved bookmark, with London beyond the window.",
+        "caption": "Technomagic — an ordinary call in an extraordinary city."
+      }
+    ],
+    "type": "concept",
+    "name": "Technomagic"
+  },
+  "ashai-bennet": {
+    "hero": "images/codex-refresh/ashai-and-greah-cutout.webp",
+    "thumb": "images/codex-refresh/ashai-and-greah-cutout-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/ashai-and-greah-cutout.webp",
+        "thumb": "images/codex-refresh/ashai-and-greah-cutout-thumb.webp",
+        "alt": "Ashai draws a celestial bow, with her long dark braids in motion and the white-haired, halo-crowned Greah flying beside her.",
+        "caption": "Ashai and Greah."
+      },
+      {
+        "src": "images/codex-refresh/ashai-and-greah.webp",
+        "thumb": "images/codex-refresh/ashai-and-greah-thumb.webp",
+        "alt": "Ashai draws a luminous celestial bow while the small white-haired, halo-crowned Greah flies beside her above London.",
+        "caption": "Ashai and Greah above London."
+      }
+    ],
+    "type": "character",
+    "name": "Ashai Bennet"
+  },
+  "truth-hughes": {
+    "hero": "images/codex-refresh/truth-throne.webp",
+    "thumb": "images/codex-refresh/truth-throne-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/truth-throne.webp",
+        "thumb": "images/codex-refresh/truth-throne-thumb.webp",
+        "alt": "Truth Hughes, tattooed and wearing a black cap, sits on a stone throne surrounded by golden light.",
+        "caption": "Truth Hughes."
+      },
+      {
+        "src": "images/gallery-refresh/truth-golden-sigils.webp",
+        "thumb": "images/gallery-refresh/truth-golden-sigils-thumb.webp",
+        "caption": "Truth — golden sigils.",
+        "alt": "Truth stands bare-chested in a black cap and dark trousers, his torso covered in golden tattoos."
+      }
+    ],
+    "type": "character",
+    "name": "Truth Hughes"
+  },
+  "greah": {
+    "hero": "images/guardian-gallery-20260917/greah-hero.webp",
+    "thumb": "images/guardian-gallery-20260917/greah-portrait-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/guardian-gallery-20260917/greah-hero.webp",
+        "thumb": "images/guardian-gallery-20260917/greah-hero-thumb.webp",
+        "alt": "Greah stands on a London chimney brick, with white hair, crimson eyes, a luminous halo, a blue embroidered dress and four iridescent wings.",
+        "caption": "Rooftop guardian."
+      },
+      {
+        "src": "images/guardian-gallery-20260917/greah-portrait.webp",
+        "thumb": "images/guardian-gallery-20260917/greah-portrait-thumb.webp",
+        "alt": "A close portrait of Greah, her crimson eyes and knowing smile framed by white hair, a luminous halo and iridescent wings.",
+        "caption": "A knowing smile."
+      },
+      {
+        "src": "images/guardian-gallery-20260917/greah-airborne.webp",
+        "thumb": "images/guardian-gallery-20260917/greah-airborne-thumb.webp",
+        "alt": "Greah hovers beside a London chimney with one hand outstretched, four iridescent wings and both feet visible against the night sky.",
+        "caption": "Above the rooftops."
+      },
+      {
+        "src": "images/codex-refresh/ashai-and-greah-cutout.webp",
+        "thumb": "images/codex-refresh/ashai-and-greah-cutout-thumb.webp",
+        "alt": "Ashai draws a celestial bow, with her long dark braids in motion and the white-haired, halo-crowned Greah flying beside her.",
+        "caption": "Ashai and Greah."
+      },
+      {
+        "src": "images/codex-refresh/ashai-and-greah.webp",
+        "thumb": "images/codex-refresh/ashai-and-greah-thumb.webp",
+        "alt": "Ashai draws a luminous celestial bow while the small white-haired, halo-crowned Greah flies beside her above London.",
+        "caption": "Ashai and Greah above London."
+      }
+    ],
+    "type": "creature",
+    "name": "Greah"
+  },
+  "kai": {
+    "hero": "images/codex-refresh/kai-rooftop-approved.webp",
+    "thumb": "images/codex-refresh/kai-rooftop-approved-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/kai-rooftop-approved.webp",
+        "thumb": "images/codex-refresh/kai-rooftop-approved-thumb.webp",
+        "alt": "Kai, an obsidian-and-ivory dragon with green eyes, perches on a brick chimney above moonlit London, his wings open and silver smoke curling from his muzzle.",
+        "caption": "Kai above London."
+      },
+      {
+        "src": "images/codex-refresh/goaden-and-kai-cutout.webp",
+        "thumb": "images/codex-refresh/goaden-and-kai-cutout-thumb.webp",
+        "alt": "Goaden, with long dark curls, a red jacket and headphones, sits on a stone balcony beside the dark dragon Kai.",
+        "caption": "Goaden and Kai."
+      },
+      {
+        "src": "images/codex-refresh/goaden-and-kai.webp",
+        "thumb": "images/codex-refresh/goaden-and-kai-thumb.webp",
+        "alt": "Goaden in a red jacket sits beside Kai, a dark dragon, with the Sanctuary floating over London behind them.",
+        "caption": "Goaden and Kai — Different Skies, Same Soul."
+      }
+    ],
+    "type": "creature",
+    "name": "Kai"
+  },
+  "yukon": {
+    "hero": "images/codex-refresh/yukon.webp",
+    "thumb": "images/codex-refresh/yukon-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/yukon.webp",
+        "thumb": "images/codex-refresh/yukon-thumb.webp",
+        "alt": "Existing illustration of Yukon.",
+        "caption": "Yukon."
+      },
+      {
+        "src": "images/codex-refresh/gallery-yukon1.webp",
+        "thumb": "images/codex-refresh/gallery-yukon1-thumb.webp",
+        "alt": "Yukon character illustration.",
+        "caption": "Yukon character illustration."
+      },
+      {
+        "src": "images/codex-refresh/gallery-yukon5.webp",
+        "thumb": "images/codex-refresh/gallery-yukon5-thumb.webp",
+        "alt": "Yukon with a spectral creature.",
+        "caption": "Yukon with a spectral creature."
+      },
+      {
+        "src": "images/gallery-refresh/yukon-gaming.webp",
+        "thumb": "images/gallery-refresh/yukon-gaming-thumb.webp",
+        "caption": "Yukon between missions.",
+        "alt": "Yukon sits with a handheld game in a wood-panelled room, his blue skin and pale luminous markings visible."
+      }
+    ],
+    "type": "character",
+    "name": "Yukon"
+  },
+  "mi6": {
+    "hero": "images/gallery-refresh/mi6-armadillo-hub.webp",
+    "thumb": "images/gallery-refresh/mi6-armadillo-hub-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/mi6.webp",
+        "thumb": "images/codex-refresh/mi6-thumb.webp",
+        "alt": "Existing illustration of MI6.",
+        "caption": "MI6."
+      },
+      {
+        "src": "images/codex-refresh/gallery-mi62.webp",
+        "thumb": "images/codex-refresh/gallery-mi62-thumb.webp",
+        "alt": "MI6 intelligence briefing.",
+        "caption": "MI6 intelligence briefing."
+      },
+      {
+        "src": "images/codex-refresh/gallery-mi66.webp",
+        "thumb": "images/codex-refresh/gallery-mi66-thumb.webp",
+        "alt": "MI6 field operatives.",
+        "caption": "MI6 field operatives."
+      },
+      {
+        "src": "images/gallery-refresh/mi6-armadillo-hub.webp",
+        "thumb": "images/gallery-refresh/mi6-armadillo-hub-thumb.webp",
+        "caption": "MI6 — the Armoured-dillo.",
+        "alt": "A broad, segmented metallic headquarters sits beside the Thames, its armoured roof curving over illuminated floors."
+      }
+    ],
+    "type": "faction",
+    "name": "MI6"
+  },
+  "the-church": {
+    "hero": "images/codex-refresh/the-church.webp",
+    "thumb": "images/codex-refresh/the-church-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/the-church.webp",
+        "thumb": "images/codex-refresh/the-church-thumb.webp",
+        "alt": "Existing illustration of The Church.",
+        "caption": "The Church."
+      },
+      {
+        "src": "images/codex-refresh/gallery-church1.webp",
+        "thumb": "images/codex-refresh/gallery-church1-thumb.webp",
+        "alt": "The Church — nave and stained glass.",
+        "caption": "The Church — nave and stained glass."
+      },
+      {
+        "src": "images/codex-refresh/gallery-church3.webp",
+        "thumb": "images/codex-refresh/gallery-church3-thumb.webp",
+        "alt": "Light through the Church windows.",
+        "caption": "Light through the Church windows."
+      }
+    ],
+    "type": "faction",
+    "name": "The Church"
+  },
+  "the-order": {
+    "hero": "images/codex-refresh/the-order.webp",
+    "thumb": "images/codex-refresh/the-order-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/the-order.webp",
+        "thumb": "images/codex-refresh/the-order-thumb.webp",
+        "alt": "Existing illustration of The Order.",
+        "caption": "The Order."
+      },
+      {
+        "src": "images/codex-refresh/gallery-the-order1.webp",
+        "thumb": "images/codex-refresh/gallery-the-order1-thumb.webp",
+        "alt": "The Order — ritual chamber.",
+        "caption": "The Order — ritual chamber."
+      },
+      {
+        "src": "images/codex-refresh/gallery-the-order3.webp",
+        "thumb": "images/codex-refresh/gallery-the-order3-thumb.webp",
+        "alt": "A gathering beneath an astral projection.",
+        "caption": "A gathering beneath an astral projection."
+      }
+    ],
+    "type": "faction",
+    "name": "The Order"
+  },
+  "celestial-shattering": {
+    "hero": "images/codex-refresh/celestial-shattering.webp",
+    "thumb": "images/codex-refresh/celestial-shattering-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/celestial-shattering.webp",
+        "thumb": "images/codex-refresh/celestial-shattering-thumb.webp",
+        "alt": "Existing illustration of The Celestial Shattering.",
+        "caption": "The Celestial Shattering."
+      },
+      {
+        "src": "images/codex-refresh/gallery-celestial-shattering3.webp",
+        "thumb": "images/codex-refresh/gallery-celestial-shattering3-thumb.webp",
+        "alt": "A celestial fragment falls.",
+        "caption": "A celestial fragment falls."
+      },
+      {
+        "src": "images/codex-refresh/gallery-celestial-shattering5.webp",
+        "thumb": "images/codex-refresh/gallery-celestial-shattering5-thumb.webp",
+        "alt": "Radiant fragments scatter across the sky.",
+        "caption": "Radiant fragments scatter across the sky."
+      }
+    ],
+    "type": "concept",
+    "name": "The Celestial Shattering"
+  },
+  "the-merging": {
+    "hero": "images/codex-refresh/the-merging.webp",
+    "thumb": "images/codex-refresh/the-merging-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/the-merging.webp",
+        "thumb": "images/codex-refresh/the-merging-thumb.webp",
+        "alt": "Existing illustration of The Merging.",
+        "caption": "The Merging."
+      }
+    ],
+    "type": "concept",
+    "name": "The Merging"
+  },
+  "duskkin": {
+    "hero": "images/asset-injection-20260916/duskkin-zara-portrait.webp",
+    "thumb": "images/asset-injection-20260916/duskkin-zara-portrait-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/asset-injection-20260916/duskkin-zara-portrait.webp",
+        "thumb": "images/asset-injection-20260916/duskkin-zara-portrait-thumb.webp",
+        "alt": "Zara, a red-haired Duskkin warrior with pointed ears, facial circuitry and fitted dark armour with a glowing crimson core.",
+        "caption": "Zara — Duskkin armour and blood circuitry."
+      },
+      {
+        "src": "images/asset-injection-20260916/duskkin-character-creator.webp",
+        "thumb": "images/asset-injection-20260916/duskkin-character-creator-thumb.webp",
+        "alt": "An adult Duskkin avatar with a cybernetic arm in an illustrated character-creator concept above London.",
+        "caption": "Duskkin character-creator concept — visual development for the action RPG, not actual gameplay."
+      },
+      {
+        "src": "images/asset-injection-20260916/duskkin-hunt-hand-fixed.webp",
+        "thumb": "images/asset-injection-20260916/duskkin-hunt-hand-fixed-thumb.webp",
+        "caption": "Zara faces the Iron Bloom Behemoth.",
+        "alt": "Zara braces with her sword and a crimson blood-magic charge in her free hand, facing the armoured Iron Bloom Behemoth in an overgrown city."
+      }
+    ],
+    "type": "concept",
+    "name": "Duskkin"
+  },
+  "sanctuary-in-the-sky": {
+    "hero": "images/codex-refresh/sanctuary-london.webp",
+    "thumb": "images/codex-refresh/sanctuary-london-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/sanctuary-london.webp",
+        "thumb": "images/codex-refresh/sanctuary-london-thumb.webp",
+        "alt": "A luminous cathedral-like nightclub floats on clouds above the London skyline at sunset.",
+        "caption": "Sanctuary in the Sky above London."
+      },
+      {
+        "src": "images/codex-refresh/gallery-sanctuary-in-the-sky1.webp",
+        "thumb": "images/codex-refresh/gallery-sanctuary-in-the-sky1-thumb.webp",
+        "alt": "The Sanctuary bar beneath stained glass.",
+        "caption": "The Sanctuary bar beneath stained glass."
+      },
+      {
+        "src": "images/codex-refresh/gallery-sanctuary-in-the-sky2.webp",
+        "thumb": "images/codex-refresh/gallery-sanctuary-in-the-sky2-thumb.webp",
+        "alt": "The Sanctuary interior.",
+        "caption": "The Sanctuary interior."
+      },
+      {
+        "src": "images/codex-refresh/gallery-sanctuary-in-the-sky3.webp",
+        "thumb": "images/codex-refresh/gallery-sanctuary-in-the-sky3-thumb.webp",
+        "alt": "Technomagic mixing desk at the Sanctuary.",
+        "caption": "Technomagic mixing desk at the Sanctuary."
+      }
+    ],
+    "type": "location",
+    "name": "Sanctuary in the Sky"
+  },
+  "thyia": {
+    "hero": "images/codex-refresh/thyia.webp",
+    "thumb": "images/codex-refresh/thyia-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/thyia.webp",
+        "thumb": "images/codex-refresh/thyia-thumb.webp",
+        "alt": "Existing illustration of Thyia.",
+        "caption": "Thyia."
+      },
+      {
+        "src": "images/codex-refresh/gallery-thyia2.webp",
+        "thumb": "images/codex-refresh/gallery-thyia2-thumb.webp",
+        "alt": "Thyia, the star-shaped pendant.",
+        "caption": "Thyia, the star-shaped pendant."
+      }
+    ],
+    "type": "item",
+    "name": "Thyia"
+  },
+  "streamliner": {
+    "hero": "images/codex-refresh/streamliner.webp",
+    "thumb": "images/codex-refresh/streamliner-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/streamliner.webp",
+        "thumb": "images/codex-refresh/streamliner-thumb.webp",
+        "alt": "Existing illustration of The Streamliner.",
+        "caption": "The Streamliner."
+      },
+      {
+        "src": "images/gallery-refresh/streamliner-station.webp",
+        "thumb": "images/gallery-refresh/streamliner-station-thumb.webp",
+        "caption": "The Streamliner at its station.",
+        "alt": "A sleek silver train waits beside a platform illuminated by blue runes."
+      },
+      {
+        "src": "images/gallery-refresh/streamliner-carriage-day.webp",
+        "thumb": "images/gallery-refresh/streamliner-carriage-day-thumb.webp",
+        "caption": "Inside the Streamliner — daylight.",
+        "alt": "Sunlight fills an ornate silver train carriage with curved windows and upholstered seating."
+      },
+      {
+        "src": "images/gallery-refresh/streamliner-carriage-night.webp",
+        "thumb": "images/gallery-refresh/streamliner-carriage-night-thumb.webp",
+        "caption": "Inside the Streamliner — night.",
+        "alt": "A quiet train carriage at night, its curved windows filled with moonlit clouds."
+      }
+    ],
+    "type": "concept",
+    "name": "The Streamliner"
+  },
+  "road-sprites": {
+    "hero": "images/codex-refresh/road-sprites-orange.webp",
+    "thumb": "images/codex-refresh/road-sprites-orange-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/road-sprites-orange.webp",
+        "thumb": "images/codex-refresh/road-sprites-orange-thumb.webp",
+        "alt": "An orange-clad Road Sprite winks and flashes a peace sign.",
+        "caption": "A little mischief in orange."
+      },
+      {
+        "src": "images/codex-refresh/road-sprites-lineup.webp",
+        "thumb": "images/codex-refresh/road-sprites-lineup-thumb.webp",
+        "alt": "Four small Road Sprites in grey, purple, orange and blue streetwear stand together.",
+        "caption": "Road Sprites — the whole crew."
+      },
+      {
+        "src": "images/codex-refresh/road-sprites-shades.webp",
+        "thumb": "images/codex-refresh/road-sprites-shades-thumb.webp",
+        "alt": "A black-clad Road Sprite in a grey beanie and round sunglasses is shown in three poses.",
+        "caption": "Never without the shades."
+      },
+      {
+        "src": "images/codex-refresh/road-sprites-blue.webp",
+        "thumb": "images/codex-refresh/road-sprites-blue-thumb.webp",
+        "alt": "A blue-clad Road Sprite in a beanie is shown standing, walking and sleeping.",
+        "caption": "A day in blue."
+      }
+    ],
+    "type": "creature",
+    "name": "Road Sprites"
+  },
+  "rune-rider": {
+    "hero": "images/codex-refresh/rune-rider.webp",
+    "thumb": "images/codex-refresh/rune-rider-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/rune-rider.webp",
+        "thumb": "images/codex-refresh/rune-rider-thumb.webp",
+        "alt": "Existing illustration of Rune Rider.",
+        "caption": "Rune Rider."
+      },
+      {
+        "src": "images/codex-refresh/gallery-rune-rider3.webp",
+        "thumb": "images/codex-refresh/gallery-rune-rider3-thumb.webp",
+        "alt": "Rune Rider on a rain-slick London street.",
+        "caption": "Rune Rider on a rain-slick London street."
+      },
+      {
+        "src": "images/codex-refresh/gallery-rune-rider4.webp",
+        "thumb": "images/codex-refresh/gallery-rune-rider4-thumb.webp",
+        "alt": "Rune-lit wheel detail.",
+        "caption": "Rune-lit wheel detail."
+      },
+      {
+        "src": "images/codex-refresh/gallery-rune-rider5.webp",
+        "thumb": "images/codex-refresh/gallery-rune-rider5-thumb.webp",
+        "alt": "Green-lit Rune Rider.",
+        "caption": "Green-lit Rune Rider."
+      }
+    ],
+    "type": "concept",
+    "name": "Rune Rider"
+  },
+  "fade": {
+    "hero": "images/asset-injection-20260916/fade-emily-garden.webp",
+    "thumb": "images/asset-injection-20260916/fade-emily-garden-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/asset-injection-20260916/fade-emily-garden.webp",
+        "thumb": "images/asset-injection-20260916/fade-emily-garden-thumb.webp",
+        "alt": "Emily Grimm in a moonlit garden, her black bob and red-bow school uniform visible as one side of her body dissolves into flowing shadows.",
+        "caption": "Emily Grimm — the Fade technique."
+      },
+      {
+        "src": "images/asset-injection-20260916/emily-shadow-power.webp",
+        "thumb": "images/asset-injection-20260916/emily-shadow-power-thumb.webp",
+        "alt": "Emily Grimm with a black bob and glowing violet eyes, her school uniform surrounded by curling purple-black shadows.",
+        "caption": "Emily Grimm — shadow manipulation."
+      }
+    ],
+    "type": "concept",
+    "name": "Fade (Soul Stealing Protocol)"
+  },
+  "emily-grimm": {
+    "hero": "images/codex-refresh/emily-curious.webp",
+    "thumb": "images/codex-refresh/emily-curious-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/asset-injection-20260916/emily-shadow-power.webp",
+        "thumb": "images/asset-injection-20260916/emily-shadow-power-thumb.webp",
+        "alt": "Emily Grimm with a black bob and glowing violet eyes, her school uniform surrounded by curling purple-black shadows.",
+        "caption": "Emily Grimm — shadow power."
+      },
+      {
+        "src": "images/asset-injection-20260916/fade-emily-garden.webp",
+        "thumb": "images/asset-injection-20260916/fade-emily-garden-thumb.webp",
+        "alt": "Emily Grimm in a moonlit garden, her black bob and red-bow school uniform visible as one side of her body dissolves into flowing shadows.",
+        "caption": "Emily Grimm — the Fade technique."
+      },
+      {
+        "src": "images/codex-refresh/emily-curious.webp",
+        "caption": "Emily Grimm — curious.",
+        "thumb": "images/codex-refresh/emily-curious-thumb.webp",
+        "alt": "Emily Grimm with violet eyes and short dark hair, curious expression, framed by purple shadow magic."
+      },
+      {
+        "src": "images/codex-refresh/emily-laughing.webp",
+        "caption": "Emily Grimm — laughing.",
+        "thumb": "images/codex-refresh/emily-laughing-thumb.webp",
+        "alt": "Emily Grimm with violet eyes and short dark hair, laughing expression, framed by purple shadow magic."
+      },
+      {
+        "src": "images/codex-refresh/emily-mocking.webp",
+        "caption": "Emily Grimm — mocking.",
+        "thumb": "images/codex-refresh/emily-mocking-thumb.webp",
+        "alt": "Emily Grimm with violet eyes and short dark hair, mocking expression, framed by purple shadow magic."
+      },
+      {
+        "src": "images/codex-refresh/emily-thinking.webp",
+        "caption": "Emily Grimm — thinking.",
+        "thumb": "images/codex-refresh/emily-thinking-thumb.webp",
+        "alt": "Emily Grimm with violet eyes and short dark hair, thinking expression, framed by purple shadow magic."
+      },
+      {
+        "src": "images/codex-refresh/emily-impressed.webp",
+        "caption": "Emily Grimm — impressed.",
+        "thumb": "images/codex-refresh/emily-impressed-thumb.webp",
+        "alt": "Emily Grimm with violet eyes and short dark hair, impressed expression, framed by purple shadow magic."
+      },
+      {
+        "src": "images/codex-refresh/emily-combat.webp",
+        "caption": "Emily Grimm — combat.",
+        "thumb": "images/codex-refresh/emily-combat-thumb.webp",
+        "alt": "Emily Grimm with violet eyes and short dark hair, combat expression, framed by purple shadow magic."
+      }
+    ],
+    "type": "character",
+    "name": "Emily Grimm"
+  },
+  "iron-glyph": {
+    "hero": "images/gallery-refresh/iron-glyph-workshop.webp",
+    "thumb": "images/gallery-refresh/iron-glyph-workshop-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/iron-glyph.webp",
+        "thumb": "images/codex-refresh/iron-glyph-thumb.webp",
+        "alt": "Existing illustration of Iron Glyph.",
+        "caption": "Iron Glyph."
+      },
+      {
+        "src": "images/gallery-refresh/iron-glyph-workshop.webp",
+        "thumb": "images/gallery-refresh/iron-glyph-workshop-thumb.webp",
+        "caption": "Inside Iron Glyph.",
+        "alt": "A warm, firelit workshop with rune-marked equipment, metalwork and illuminated workstations."
+      }
+    ],
+    "type": "location",
+    "name": "Iron Glyph"
+  },
+  "shonen-kartia": {
+    "hero": "images/codex-refresh/shonen-kartia.webp",
+    "thumb": "images/codex-refresh/shonen-kartia-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/shonen-kartia.webp",
+        "thumb": "images/codex-refresh/shonen-kartia-thumb.webp",
+        "alt": "Existing illustration of Shonen Kartia (The Singularity).",
+        "caption": "Shonen Kartia (The Singularity)."
+      }
+    ],
+    "type": "character",
+    "name": "Shonen Kartia (The Singularity)"
+  },
+  "duskkin-shadow-beasts": {
+    "hero": "images/asset-injection-20260916/shadow-beast-approved.webp",
+    "thumb": "images/asset-injection-20260916/shadow-beast-approved-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/asset-injection-20260916/shadow-beast-approved.webp",
+        "thumb": "images/asset-injection-20260916/shadow-beast-approved-thumb.webp",
+        "caption": "A Duskkin Shadow Beast.",
+        "alt": "A red-eyed, fanged Shadow Beast with four paws and a long curling tail, its dark body threaded with rolling smoke."
+      },
+      {
+        "src": "images/asset-injection-20260916/shadow-beast-london-approved.webp",
+        "thumb": "images/asset-injection-20260916/shadow-beast-london-approved-thumb.webp",
+        "caption": "The shadows move.",
+        "alt": "A red-eyed Shadow Beast strides across wet London cobbles, its four-legged body and curling tail trailing ribbons of smoke."
+      }
+    ],
+    "type": "creature",
+    "name": "Duskkin Shadow Beasts"
+  },
+  "typhon": {
+    "hero": "images/codex-refresh/typhon.webp",
+    "thumb": "images/codex-refresh/typhon-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/typhon.webp",
+        "thumb": "images/codex-refresh/typhon-thumb.webp",
+        "alt": "Existing illustration of Typhon.",
+        "caption": "Typhon."
+      }
+    ],
+    "type": "creature",
+    "name": "Typhon"
+  },
+  "holy-item-radiation": {
+    "hero": "images/codex-refresh/holy-item-radiation.webp",
+    "thumb": "images/codex-refresh/holy-item-radiation-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/holy-item-radiation.webp",
+        "thumb": "images/codex-refresh/holy-item-radiation-thumb.webp",
+        "alt": "Existing illustration of Holy Item Radiation.",
+        "caption": "Holy Item Radiation."
+      }
+    ],
+    "type": "concept",
+    "name": "Holy Item Radiation"
+  },
+  "the-all-seeing-eye": {
+    "hero": "images/codex-refresh/the-all-seeing-eye.webp",
+    "thumb": "images/codex-refresh/the-all-seeing-eye-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/the-all-seeing-eye.webp",
+        "thumb": "images/codex-refresh/the-all-seeing-eye-thumb.webp",
+        "alt": "Existing illustration of The All-Seeing Eye.",
+        "caption": "The All-Seeing Eye."
+      }
+    ],
+    "type": "item",
+    "name": "The All-Seeing Eye"
+  },
+  "onari": {
+    "hero": "images/codex-refresh/onari.webp",
+    "thumb": "images/codex-refresh/onari-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/onari.webp",
+        "thumb": "images/codex-refresh/onari-thumb.webp",
+        "alt": "Existing illustration of Onari.",
+        "caption": "Onari."
+      },
+      {
+        "src": "images/asset-injection-20260916/onari-village-yaluma.webp",
+        "thumb": "images/asset-injection-20260916/onari-village-yaluma-thumb.webp",
+        "alt": "The Onari village among enormous living trees, with homes in the branches and bridges over streams.",
+        "caption": "The Onari village, Yaluma."
+      },
+      {
+        "src": "images/asset-injection-20260916/cliff-onari-illustrated-approved.webp",
+        "thumb": "images/asset-injection-20260916/cliff-onari-illustrated-approved-thumb.webp",
+        "caption": "Cliff among the Onari.",
+        "alt": "Cliff Henderson in a dark greatcoat walks beside a grey-skinned Onari with pale markings through Yaluma’s tree village."
+      }
+    ],
+    "type": "concept",
+    "name": "Onari"
+  },
+  "magical-enforcement-unit": {
+    "hero": "images/codex-refresh/magical-enforcement-unit.webp",
+    "thumb": "images/codex-refresh/magical-enforcement-unit-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/magical-enforcement-unit.webp",
+        "thumb": "images/codex-refresh/magical-enforcement-unit-thumb.webp",
+        "alt": "Existing illustration of Magical Enforcement Unit.",
+        "caption": "Magical Enforcement Unit."
+      }
+    ],
+    "type": "concept",
+    "name": "Magical Enforcement Unit"
+  },
+  "presence": {
+    "hero": "images/codex-refresh/presence.webp",
+    "thumb": "images/codex-refresh/presence-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/presence.webp",
+        "thumb": "images/codex-refresh/presence-thumb.webp",
+        "alt": "Existing illustration of Presence.",
+        "caption": "Presence."
+      }
+    ],
+    "type": "concept",
+    "name": "Presence"
+  },
+  "chill": {
+    "hero": "images/asset-injection-20260916/chill-cirrus-approved.webp",
+    "thumb": "images/asset-injection-20260916/chill-cirrus-approved-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/asset-injection-20260916/chill-cirrus-approved.webp",
+        "thumb": "images/asset-injection-20260916/chill-cirrus-approved-thumb.webp",
+        "caption": "Chill and Cirrus.",
+        "alt": "Blue-skinned, white-haired Chill sits beside his cloud companion Cirrus among glowing ice formations."
+      },
+      {
+        "src": "images/codex-refresh/chill.webp",
+        "thumb": "images/codex-refresh/chill-thumb.webp",
+        "alt": "Existing illustration of Chill.",
+        "caption": "Chill."
+      }
+    ],
+    "type": "character",
+    "name": "Chill"
+  },
+  "max-prison": {
+    "hero": "images/gallery-refresh/max-prison-fortress.webp",
+    "thumb": "images/gallery-refresh/max-prison-fortress-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/max-prison.webp",
+        "thumb": "images/codex-refresh/max-prison-thumb.webp",
+        "alt": "Existing illustration of Max Prison.",
+        "caption": "Max Prison."
+      },
+      {
+        "src": "images/gallery-refresh/max-prison-fortress.webp",
+        "thumb": "images/gallery-refresh/max-prison-fortress-thumb.webp",
+        "caption": "Max Prison — fortress concept.",
+        "alt": "A fortified prison complex stands above dark water, ringed by walls, lights and blue-lit towers."
+      }
+    ],
+    "type": "location",
+    "name": "Max Prison"
+  },
+  "nameless": {
+    "hero": "images/codex-refresh/nameless.webp",
+    "thumb": "images/codex-refresh/nameless-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/nameless.webp",
+        "thumb": "images/codex-refresh/nameless-thumb.webp",
+        "alt": "Existing illustration of ???.",
+        "caption": "???."
+      }
+    ],
+    "type": "character",
+    "name": "???"
+  },
+  "mistwraith-stags": {
+    "hero": "images/asset-injection-20260916/mistwraith-stags-glade-approved.webp",
+    "thumb": "images/asset-injection-20260916/mistwraith-stags-glade-approved-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/asset-injection-20260916/mistwraith-stags-glade-approved.webp",
+        "thumb": "images/asset-injection-20260916/mistwraith-stags-glade-approved-thumb.webp",
+        "caption": "Mistwraith Stags in Wooburn.",
+        "alt": "Luminous Mistwraith Stags stand and graze beside a stream among Wooburn’s glowing trees."
+      },
+      {
+        "src": "images/codex-refresh/mistwraith-stags.webp",
+        "thumb": "images/codex-refresh/mistwraith-stags-thumb.webp",
+        "alt": "Existing illustration of Mistwraith Stags.",
+        "caption": "Mistwraith Stags."
+      }
+    ],
+    "type": "creature",
+    "name": "Mistwraith Stags"
+  },
+  "wooburn-forest": {
+    "hero": "images/gallery-refresh/wooburn-memory-trees.webp",
+    "thumb": "images/gallery-refresh/wooburn-memory-trees-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/wooburn-forest.webp",
+        "thumb": "images/codex-refresh/wooburn-forest-thumb.webp",
+        "alt": "Existing illustration of Wooburn Forest.",
+        "caption": "Wooburn Forest."
+      },
+      {
+        "src": "images/gallery-refresh/wooburn-memory-trees.webp",
+        "thumb": "images/gallery-refresh/wooburn-memory-trees-thumb.webp",
+        "caption": "Wooburn — among the memory trees.",
+        "alt": "A path winds through enormous trees with luminous markings and doorways, beneath a blue forest canopy."
+      }
+    ],
+    "type": "location",
+    "name": "Wooburn Forest"
+  },
+  "new-big-ben": {
+    "hero": "images/codex-refresh/new-big-ben.webp",
+    "thumb": "images/codex-refresh/new-big-ben-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/new-big-ben.webp",
+        "thumb": "images/codex-refresh/new-big-ben-thumb.webp",
+        "alt": "Existing illustration of New Big Ben.",
+        "caption": "New Big Ben."
+      },
+      {
+        "src": "images/gallery-refresh/new-big-ben-plaza.webp",
+        "thumb": "images/gallery-refresh/new-big-ben-plaza-thumb.webp",
+        "caption": "New Big Ben — the plaza.",
+        "alt": "Big Ben towers over a wet London plaza, with golden clockwork patterns glowing around the tower."
+      }
+    ],
+    "type": "location",
+    "name": "New Big Ben"
+  },
+  "akri": {
+    "hero": "images/codex-refresh/akri.webp",
+    "thumb": "images/codex-refresh/akri-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/akri.webp",
+        "thumb": "images/codex-refresh/akri-thumb.webp",
+        "alt": "Existing illustration of Akri - The Wingless Wonder.",
+        "caption": "Akri - The Wingless Wonder."
+      }
+    ],
+    "type": "creature",
+    "name": "Akri - The Wingless Wonder"
+  },
+  "gabriel": {
+    "hero": "images/codex-refresh/gabriel-portrait-approved.webp",
+    "thumb": "images/codex-refresh/gabriel-portrait-approved-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/gabriel-portrait-approved.webp",
+        "thumb": "images/codex-refresh/gabriel-portrait-approved-thumb.webp",
+        "alt": "Gabriel beneath a crimson halo, with red eyes, silver hair and intricate tattoos.",
+        "caption": "Gabriel — the Blood Angel."
+      },
+      {
+        "src": "images/codex-refresh/gabriel-performance-approved.webp",
+        "thumb": "images/codex-refresh/gabriel-performance-approved-thumb.webp",
+        "alt": "Gabriel performs with a microphone, surrounded by crimson wings and light.",
+        "caption": "Gabriel on stage."
+      },
+      {
+        "src": "images/asset-injection-20260916/gabriel-recording-approved.webp",
+        "thumb": "images/asset-injection-20260916/gabriel-recording-approved-thumb.webp",
+        "caption": "Gabriel in the recording booth.",
+        "alt": "Gabriel wears headphones at a studio microphone, his arms folded beneath silver hair, a crimson halo and feathered red wings."
+      },
+      {
+        "src": "images/asset-injection-20260916/gabriel-paparazzi-approved.webp",
+        "thumb": "images/asset-injection-20260916/gabriel-paparazzi-approved-thumb.webp",
+        "caption": "Gabriel in the spotlight.",
+        "alt": "Silver-haired Gabriel walks between flashing cameras, wearing black leather and a red hoodie beneath his crimson wings and halo."
+      },
+      {
+        "src": "images/asset-injection-20260916/gabriel-throne-approved.webp",
+        "thumb": "images/asset-injection-20260916/gabriel-throne-approved-thumb.webp",
+        "caption": "Gabriel on the crimson throne.",
+        "alt": "Gabriel lounges on an ornate throne beneath a floating crimson crown, with blood-red wings spread behind him."
+      },
+      {
+        "src": "images/asset-injection-20260916/legion-hideout-approved.webp",
+        "thumb": "images/asset-injection-20260916/legion-hideout-approved-thumb.webp",
+        "caption": "Rose, Truth Hughes and Gabriel at the hideout.",
+        "alt": "Rose, Truth Hughes and Gabriel sit together on a crimson sofa in their candlelit Gothic studio, with guitars and stained glass behind them."
+      }
+    ],
+    "type": "character",
+    "name": "Gabriel - The Blood Angel"
+  },
+  "flicker": {
+    "hero": "images/codex-refresh/flicker.webp",
+    "thumb": "images/codex-refresh/flicker-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/flicker.webp",
+        "thumb": "images/codex-refresh/flicker-thumb.webp",
+        "alt": "Existing illustration of Flicker.",
+        "caption": "Flicker."
+      }
+    ],
+    "type": "concept",
+    "name": "Flicker"
+  },
+  "prowlers": {
+    "hero": "images/codex-refresh/prowlers.webp",
+    "thumb": "images/codex-refresh/prowlers-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/prowlers.webp",
+        "thumb": "images/codex-refresh/prowlers-thumb.webp",
+        "alt": "Existing illustration of Prowlers.",
+        "caption": "Prowlers."
+      }
+    ],
+    "type": "creature",
+    "name": "Prowlers"
+  },
+  "silver-cloud-grimoire": {
+    "hero": "images/codex-refresh/silver-cloud-grimoire.webp",
+    "thumb": "images/codex-refresh/silver-cloud-grimoire-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/silver-cloud-grimoire.webp",
+        "thumb": "images/codex-refresh/silver-cloud-grimoire-thumb.webp",
+        "alt": "Existing illustration of The Silver Cloud Grimoire.",
+        "caption": "The Silver Cloud Grimoire."
+      }
+    ],
+    "type": "concept",
+    "name": "The Silver Cloud Grimoire"
+  },
+  "mind-melters": {
+    "hero": "images/codex-refresh/mind-melters.webp",
+    "thumb": "images/codex-refresh/mind-melters-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/mind-melters.webp",
+        "thumb": "images/codex-refresh/mind-melters-thumb.webp",
+        "alt": "Existing illustration of Mind Melters.",
+        "caption": "Mind Melters."
+      },
+      {
+        "src": "images/gallery-refresh/mind-melter-box.webp",
+        "thumb": "images/gallery-refresh/mind-melter-box-thumb.webp",
+        "caption": "Mind Melters at the Sanctuary.",
+        "alt": "A bartender presents an open box of four glowing coloured sweets over a polished bar."
+      }
+    ],
+    "type": "concept",
+    "name": "Mind Melters"
+  },
+  "nimbus": {
+    "hero": "images/codex-refresh/nimbus.webp",
+    "thumb": "images/codex-refresh/nimbus-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/nimbus.webp",
+        "thumb": "images/codex-refresh/nimbus-thumb.webp",
+        "alt": "Existing illustration of Nimbus - The Cloud Rat.",
+        "caption": "Nimbus - The Cloud Rat."
+      },
+      {
+        "src": "images/codex-refresh/gallery-nimbus2.webp",
+        "thumb": "images/codex-refresh/gallery-nimbus2-thumb.webp",
+        "alt": "Nimbus beneath New Big Ben.",
+        "caption": "Nimbus beneath New Big Ben."
+      },
+      {
+        "src": "images/asset-injection-20260916/nimbus-spell-snack-approved.webp",
+        "thumb": "images/asset-injection-20260916/nimbus-spell-snack-approved-thumb.webp",
+        "caption": "A taste of magic.",
+        "alt": "Nimbus happily draws a ribbon of blue-violet magic from a warm street lantern, his white cloud fur and fluffy tail lit against London rooftops."
+      },
+      {
+        "src": "images/asset-injection-20260916/nimbus-showoff.webp",
+        "thumb": "images/asset-injection-20260916/nimbus-showoff-thumb.webp",
+        "caption": "Nimbus, pleased with himself.",
+        "alt": "Nimbus tilts his head with a knowing grin, one paw raised, white cloud curls and a leafy flower crown."
+      },
+      {
+        "src": "images/asset-injection-20260916/nimbus-angry.webp",
+        "thumb": "images/asset-injection-20260916/nimbus-angry-thumb.webp",
+        "caption": "A storm brewing.",
+        "alt": "Nimbus pouts with narrowed blue eyes, his white cloud fur, forehead jewel, tiny flowers and fluffy tail clearly visible."
+      }
+    ],
+    "type": "creature",
+    "name": "Nimbus - The Cloud Rat"
+  },
+  "whisper": {
+    "hero": "images/codex-refresh/whisper.webp",
+    "thumb": "images/codex-refresh/whisper-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/whisper.webp",
+        "thumb": "images/codex-refresh/whisper-thumb.webp",
+        "alt": "Existing illustration of Whisper.",
+        "caption": "Whisper."
+      },
+      {
+        "src": "images/gallery-refresh/whisper-london-rooftop.webp",
+        "thumb": "images/gallery-refresh/whisper-london-rooftop-thumb.webp",
+        "caption": "Whisper above London.",
+        "alt": "Whisper crouches on a wet rooftop in a black beanie, dark face wrappings and layered black clothing, with Big Ben behind him."
+      }
+    ],
+    "type": "character",
+    "name": "Whisper"
+  },
+  "dread-twins": {
+    "hero": "images/codex-refresh/dread-twins.webp",
+    "thumb": "images/codex-refresh/dread-twins-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/dread-twins.webp",
+        "thumb": "images/codex-refresh/dread-twins-thumb.webp",
+        "alt": "Existing illustration of The Dread Twins.",
+        "caption": "The Dread Twins."
+      },
+      {
+        "src": "images/codex-refresh/gallery-dread-twins3.webp",
+        "thumb": "images/codex-refresh/gallery-dread-twins3-thumb.webp",
+        "alt": "The twins above the city.",
+        "caption": "The twins above the city."
+      },
+      {
+        "src": "images/codex-refresh/gallery-dread-twins4.webp",
+        "thumb": "images/codex-refresh/gallery-dread-twins4-thumb.webp",
+        "alt": "The twins in action.",
+        "caption": "The twins in action."
+      }
+    ],
+    "type": "character",
+    "name": "The Dread Twins"
+  },
+  "anarchy-balthazar": {
+    "hero": "images/codex-refresh/anarchy-balthazar.webp",
+    "thumb": "images/codex-refresh/anarchy-balthazar-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/anarchy-balthazar.webp",
+        "thumb": "images/codex-refresh/anarchy-balthazar-thumb.webp",
+        "alt": "Existing illustration of Anarchy & Balthazar.",
+        "caption": "Anarchy & Balthazar."
+      },
+      {
+        "src": "images/gallery-refresh/anarchy-meets-balthazar.webp",
+        "thumb": "images/gallery-refresh/anarchy-meets-balthazar-thumb.webp",
+        "caption": "When Anarchy met Balthazar.",
+        "alt": "Anarchy faces a green spectral figure above a rain-soaked basketball court in London."
+      },
+      {
+        "src": "images/gallery-refresh/anarchy-basketball.webp",
+        "thumb": "images/gallery-refresh/anarchy-basketball-thumb.webp",
+        "caption": "Anarchy — above the court.",
+        "alt": "Anarchy rises towards a basketball hoop beneath storm clouds and a green spectral presence."
+      }
+    ],
+    "type": "character",
+    "name": "Anarchy & Balthazar"
+  },
+  "tait-iren": {
+    "hero": "images/codex-refresh/tait-iren.webp",
+    "thumb": "images/codex-refresh/tait-iren-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/tait-iren.webp",
+        "thumb": "images/codex-refresh/tait-iren-thumb.webp",
+        "alt": "Existing illustration of Tait Iren.",
+        "caption": "Tait Iren."
+      }
+    ],
+    "type": "character",
+    "name": "Tait Iren"
+  },
+  "alchemical-society": {
+    "hero": "images/codex-refresh/alchemical-society.webp",
+    "thumb": "images/codex-refresh/alchemical-society-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/alchemical-society.webp",
+        "thumb": "images/codex-refresh/alchemical-society-thumb.webp",
+        "alt": "Existing illustration of The Alchemical Society.",
+        "caption": "The Alchemical Society."
+      },
+      {
+        "src": "images/gallery-refresh/alchemical-society-ruins.webp",
+        "thumb": "images/gallery-refresh/alchemical-society-ruins-thumb.webp",
+        "caption": "The Alchemical Society — ruins.",
+        "alt": "Broken domes and stone chambers surround the dark remains of an alchemical complex."
+      }
+    ],
+    "type": "location",
+    "name": "The Alchemical Society"
+  },
+  "cliff-henderson": {
+    "hero": "images/asset-injection-20260916/cliff-earth-powers-approved.webp",
+    "thumb": "images/asset-injection-20260916/cliff-earth-powers-approved-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/asset-injection-20260916/cliff-earth-powers-approved.webp",
+        "thumb": "images/asset-injection-20260916/cliff-earth-powers-approved-thumb.webp",
+        "caption": "Might — the earth answers.",
+        "alt": "Cliff Henderson stomps with his Holy Item boots, Might, sending a shockwave through the ground and lifting boulders around him."
+      },
+      {
+        "src": "images/asset-injection-20260916/cliff-mi6-approved.webp",
+        "thumb": "images/asset-injection-20260916/cliff-mi6-approved-thumb.webp",
+        "caption": "Cliff Henderson at MI6.",
+        "alt": "Cliff Henderson stands beside a three-dimensional display of London in an MI6 briefing room."
+      },
+      {
+        "src": "images/asset-injection-20260916/cliff-current-plate.webp",
+        "thumb": "images/asset-injection-20260916/cliff-current-plate-thumb.webp",
+        "alt": "Cliff Henderson in a dark military greatcoat with brass details.",
+        "caption": "Cliff Henderson."
+      },
+      {
+        "src": "images/codex-refresh/cliff-henderson.webp",
+        "thumb": "images/codex-refresh/cliff-henderson-thumb.webp",
+        "alt": "Cliff Henderson with his black panther guardian, Sasha.",
+        "caption": "Cliff and Sasha."
+      },
+      {
+        "src": "images/gallery-refresh/cliff-confronts-titan.webp",
+        "thumb": "images/gallery-refresh/cliff-confronts-titan-thumb.webp",
+        "caption": "Cliff beneath a titan.",
+        "alt": "An older man in a long coat raises a hand beneath a towering stone-like figure and branching canopy."
+      },
+      {
+        "src": "images/asset-injection-20260916/cliff-onari-illustrated-approved.webp",
+        "thumb": "images/asset-injection-20260916/cliff-onari-illustrated-approved-thumb.webp",
+        "caption": "Cliff among the Onari.",
+        "alt": "Cliff Henderson in a dark greatcoat walks beside a grey-skinned Onari with pale markings through Yaluma’s tree village."
+      }
+    ],
+    "type": "character",
+    "name": "Cliff Henderson"
+  },
+  "silver-wings": {
+    "hero": "images/asset-injection-20260916/silver-wing-nickel-approved.webp",
+    "thumb": "images/asset-injection-20260916/silver-wing-nickel-approved-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/asset-injection-20260916/silver-wing-nickel-approved.webp",
+        "thumb": "images/asset-injection-20260916/silver-wing-nickel-approved-thumb.webp",
+        "caption": "A Silver Wing in the Sanctuary.",
+        "alt": "An ageless violet-eyed Silver Wing in flowing dark robes, with two immense wings of polished nickel feathers."
+      },
+      {
+        "src": "images/asset-injection-20260916/silver-wing-streetwear-approved.webp",
+        "thumb": "images/asset-injection-20260916/silver-wing-streetwear-approved-thumb.webp",
+        "caption": "A Silver Wing on the streets of London.",
+        "alt": "A violet-eyed Silver Wing wears black streetwear and high-top boots beneath two immense metallic silver wings on a lantern-lit London street."
+      },
+      {
+        "src": "images/codex-refresh/silver-wings.webp",
+        "thumb": "images/codex-refresh/silver-wings-thumb.webp",
+        "alt": "Existing illustration of Silver Wings.",
+        "caption": "Silver Wings."
+      }
+    ],
+    "type": "concept",
+    "name": "Silver Wings"
+  },
+  "kira": {
+    "hero": "images/codex-refresh/kira.webp",
+    "thumb": "images/codex-refresh/kira-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/kira.webp",
+        "thumb": "images/codex-refresh/kira-thumb.webp",
+        "alt": "Existing illustration of Kira, The Spirit.",
+        "caption": "Kira, The Spirit."
+      }
+    ],
+    "type": "character",
+    "name": "Kira, The Spirit"
+  },
+  "isolde-thorn": {
+    "hero": "images/codex-refresh/isolde-thorn.webp",
+    "thumb": "images/codex-refresh/isolde-thorn-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/isolde-thorn.webp",
+        "thumb": "images/codex-refresh/isolde-thorn-thumb.webp",
+        "alt": "Existing illustration of Isolde Thorne.",
+        "caption": "Isolde Thorne."
+      }
+    ],
+    "type": "character",
+    "name": "Isolde Thorne"
+  },
+  "kartel-hammond": {
+    "hero": "images/codex-refresh/kartel-hammond.webp",
+    "thumb": "images/codex-refresh/kartel-hammond-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/kartel-hammond.webp",
+        "thumb": "images/codex-refresh/kartel-hammond-thumb.webp",
+        "alt": "Existing illustration of Kartel Hammond.",
+        "caption": "Kartel Hammond."
+      }
+    ],
+    "type": "character",
+    "name": "Kartel Hammond"
+  },
+  "fairy-realm": {
+    "hero": "images/codex-refresh/fairy-realm.webp",
+    "thumb": "images/codex-refresh/fairy-realm-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/fairy-realm.webp",
+        "thumb": "images/codex-refresh/fairy-realm-thumb.webp",
+        "alt": "Existing illustration of The Fairy Realm.",
+        "caption": "The Fairy Realm."
+      },
+      {
+        "src": "images/gallery-refresh/fairy-realm-threshold.webp",
+        "thumb": "images/gallery-refresh/fairy-realm-threshold-thumb.webp",
+        "caption": "A threshold into the Fairy Realm.",
+        "alt": "A luminous portal stands beneath flowering trees beside moonlit water and glowing plants."
+      }
+    ],
+    "type": "location",
+    "name": "The Fairy Realm"
+  },
+  "urban-jungle": {
+    "hero": "images/codex-refresh/urban-jungle.webp",
+    "thumb": "images/codex-refresh/urban-jungle-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/urban-jungle.webp",
+        "thumb": "images/codex-refresh/urban-jungle-thumb.webp",
+        "alt": "Existing illustration of The Urban Jungle.",
+        "caption": "The Urban Jungle."
+      },
+      {
+        "src": "images/gallery-refresh/urban-jungle-hunt.webp",
+        "thumb": "images/gallery-refresh/urban-jungle-hunt-thumb.webp",
+        "caption": "The Urban Jungle — the hunt grounds.",
+        "alt": "A dark city district of ruined towers, industrial walkways and luminous vegetation."
+      }
+    ],
+    "type": "location",
+    "name": "The Urban Jungle"
+  },
+  "demon-realm": {
+    "hero": "images/codex-refresh/demon-realm.webp",
+    "thumb": "images/codex-refresh/demon-realm-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/demon-realm.webp",
+        "thumb": "images/codex-refresh/demon-realm-thumb.webp",
+        "alt": "Existing illustration of The Demon Realm.",
+        "caption": "The Demon Realm."
+      },
+      {
+        "src": "images/gallery-refresh/demon-realm-threshold.webp",
+        "thumb": "images/gallery-refresh/demon-realm-threshold-thumb.webp",
+        "caption": "A threshold into the Demon Realm.",
+        "alt": "A red, molten-looking portal towers above a blackened stone platform and broken city walls."
+      }
+    ],
+    "type": "location",
+    "name": "The Demon Realm"
+  },
+  "slate-bennet": {
+    "hero": "images/codex-refresh/slate-bennet.webp",
+    "thumb": "images/codex-refresh/slate-bennet-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/slate-bennet.webp",
+        "thumb": "images/codex-refresh/slate-bennet-thumb.webp",
+        "alt": "Existing illustration of Slate Bennet.",
+        "caption": "Slate Bennet."
+      }
+    ],
+    "type": "character",
+    "name": "Slate Bennet"
+  },
+  "amy": {
+    "hero": "images/codex-refresh/amy.webp",
+    "thumb": "images/codex-refresh/amy-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/amy.webp",
+        "thumb": "images/codex-refresh/amy-thumb.webp",
+        "alt": "Existing illustration of Amy.",
+        "caption": "Amy."
+      }
+    ],
+    "type": "character",
+    "name": "Amy"
+  },
+  "lad-ragnorir": {
+    "hero": "images/codex-refresh/lad-ragnorir.webp",
+    "thumb": "images/codex-refresh/lad-ragnorir-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/lad-ragnorir.webp",
+        "thumb": "images/codex-refresh/lad-ragnorir-thumb.webp",
+        "alt": "Existing illustration of Lad of Ragnorir.",
+        "caption": "Lad of Ragnorir."
+      }
+    ],
+    "type": "character",
+    "name": "Lad of Ragnorir"
+  },
+  "ten-lightning-serpent": {
+    "hero": "images/codex-refresh/ten-lightning-serpent.webp",
+    "thumb": "images/codex-refresh/ten-lightning-serpent-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/ten-lightning-serpent.webp",
+        "thumb": "images/codex-refresh/ten-lightning-serpent-thumb.webp",
+        "alt": "Existing illustration of Ten - The Lightning Serpent.",
+        "caption": "Ten - The Lightning Serpent."
+      }
+    ],
+    "type": "creature",
+    "name": "Ten - The Lightning Serpent"
+  },
+  "ragnorir": {
+    "hero": "images/gallery-refresh/ragnorir-fortress.webp",
+    "thumb": "images/gallery-refresh/ragnorir-fortress-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/ragnorir.webp",
+        "thumb": "images/codex-refresh/ragnorir-thumb.webp",
+        "alt": "Existing illustration of Ragnorir.",
+        "caption": "Ragnorir."
+      },
+      {
+        "src": "images/gallery-refresh/ragnorir-fortress.webp",
+        "thumb": "images/gallery-refresh/ragnorir-fortress-thumb.webp",
+        "caption": "Ragnorir — the frozen fortress.",
+        "alt": "A blue-lit fortress rises among snowbound cliffs, bridges and frozen stone battlements."
+      }
+    ],
+    "type": "faction",
+    "name": "Ragnorir"
+  },
+  "stormcleaver": {
+    "hero": "images/codex-refresh/stormcleaver.webp",
+    "thumb": "images/codex-refresh/stormcleaver-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/stormcleaver.webp",
+        "thumb": "images/codex-refresh/stormcleaver-thumb.webp",
+        "alt": "Existing illustration of Stormcleaver.",
+        "caption": "Stormcleaver."
+      }
+    ],
+    "type": "item",
+    "name": "Stormcleaver"
+  },
+  "might": {
+    "hero": "images/codex-refresh/might.webp",
+    "thumb": "images/codex-refresh/might-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/might.webp",
+        "thumb": "images/codex-refresh/might-thumb.webp",
+        "alt": "Existing illustration of Might.",
+        "caption": "Might."
+      }
+    ],
+    "type": "item",
+    "name": "Might"
+  },
+  "oblivion": {
+    "hero": "images/codex-refresh/oblivion.webp",
+    "thumb": "images/codex-refresh/oblivion-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/oblivion.webp",
+        "thumb": "images/codex-refresh/oblivion-thumb.webp",
+        "alt": "Existing illustration of Oblivion.",
+        "caption": "Oblivion."
+      }
+    ],
+    "type": "item",
+    "name": "Oblivion"
+  },
+  "fogblade": {
+    "hero": "images/codex-refresh/fogblade.webp",
+    "thumb": "images/codex-refresh/fogblade-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/fogblade.webp",
+        "thumb": "images/codex-refresh/fogblade-thumb.webp",
+        "alt": "Existing illustration of Fog Blade.",
+        "caption": "Fog Blade."
+      }
+    ],
+    "type": "item",
+    "name": "Fog Blade"
+  },
+  "braum": {
+    "hero": "images/codex-refresh/braum.webp",
+    "thumb": "images/codex-refresh/braum-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/braum.webp",
+        "thumb": "images/codex-refresh/braum-thumb.webp",
+        "alt": "Existing illustration of Fairy King Braum.",
+        "caption": "Fairy King Braum."
+      }
+    ],
+    "type": "character",
+    "name": "Fairy King Braum"
+  },
+  "onari-titans": {
+    "hero": "images/codex-refresh/onari-titans.webp",
+    "thumb": "images/codex-refresh/onari-titans-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/onari-titans.webp",
+        "thumb": "images/codex-refresh/onari-titans-thumb.webp",
+        "alt": "Existing illustration of Onari Titans.",
+        "caption": "Onari Titans."
+      }
+    ],
+    "type": "creature",
+    "name": "Onari Titans"
+  },
+  "grove-guardians": {
+    "hero": "images/codex-refresh/grove-guardians.webp",
+    "thumb": "images/codex-refresh/grove-guardians-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/grove-guardians.webp",
+        "thumb": "images/codex-refresh/grove-guardians-thumb.webp",
+        "alt": "Existing illustration of Grove Guardians.",
+        "caption": "Grove Guardians."
+      }
+    ],
+    "type": "creature",
+    "name": "Grove Guardians"
+  },
+  "enchanted-ink": {
+    "hero": "images/codex-refresh/enchanted-ink.webp",
+    "thumb": "images/codex-refresh/enchanted-ink-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/enchanted-ink.webp",
+        "thumb": "images/codex-refresh/enchanted-ink-thumb.webp",
+        "alt": "Existing illustration of Enchanted Ink.",
+        "caption": "Enchanted Ink."
+      },
+      {
+        "src": "images/gallery-refresh/enchanted-ink-day.webp",
+        "thumb": "images/gallery-refresh/enchanted-ink-day-thumb.webp",
+        "caption": "Enchanted Ink — the studio.",
+        "alt": "An ornate tattoo studio with a reclining chair, violet designs on the walls and daylight through a large window."
+      },
+      {
+        "src": "images/gallery-refresh/enchanted-ink-night.webp",
+        "thumb": "images/gallery-refresh/enchanted-ink-night-thumb.webp",
+        "caption": "Enchanted Ink — after dark.",
+        "alt": "A dark tattoo studio with bottles, leather chairs and luminous violet sigils."
+      }
+    ],
+    "type": "location",
+    "name": "Enchanted Ink"
+  },
+  "infinitys-quill": {
+    "hero": "images/codex-refresh/infinitys-quill.webp",
+    "thumb": "images/codex-refresh/infinitys-quill-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/infinitys-quill.webp",
+        "thumb": "images/codex-refresh/infinitys-quill-thumb.webp",
+        "alt": "Existing illustration of Infinity's Quill.",
+        "caption": "Infinity's Quill."
+      },
+      {
+        "src": "images/gallery-refresh/infinitys-quill-interior.webp",
+        "thumb": "images/gallery-refresh/infinitys-quill-interior-thumb.webp",
+        "caption": "Inside Infinity's Quill.",
+        "alt": "Books float between towering shelves and violet portals in an immense magical library."
+      }
+    ],
+    "type": "location",
+    "name": "Infinity's Quill"
+  },
+  "head-captain": {
+    "hero": "images/codex-refresh/head-captain.webp",
+    "thumb": "images/codex-refresh/head-captain-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/head-captain.webp",
+        "thumb": "images/codex-refresh/head-captain-thumb.webp",
+        "alt": "Existing illustration of Head Captain of The Order.",
+        "caption": "Head Captain of The Order."
+      }
+    ],
+    "type": "character",
+    "name": "Head Captain of The Order"
+  },
+  "titan-seedlings": {
+    "hero": "images/codex-refresh/titan-seedlings.webp",
+    "thumb": "images/codex-refresh/titan-seedlings-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/titan-seedlings.webp",
+        "thumb": "images/codex-refresh/titan-seedlings-thumb.webp",
+        "alt": "Existing illustration of Titan Seedlings.",
+        "caption": "Titan Seedlings."
+      }
+    ],
+    "type": "creature",
+    "name": "Titan Seedlings"
+  },
+  "captain-ash": {
+    "hero": "images/codex-refresh/captain-ash.webp",
+    "thumb": "images/codex-refresh/captain-ash-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/captain-ash.webp",
+        "thumb": "images/codex-refresh/captain-ash-thumb.webp",
+        "alt": "Existing illustration of Captain Ash.",
+        "caption": "Captain Ash."
+      }
+    ],
+    "type": "character",
+    "name": "Captain Ash"
+  },
+  "gunta": {
+    "hero": "images/codex-refresh/gunta.webp",
+    "thumb": "images/codex-refresh/gunta-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/gunta.webp",
+        "thumb": "images/codex-refresh/gunta-thumb.webp",
+        "alt": "Existing illustration of Gunta.",
+        "caption": "Gunta."
+      }
+    ],
+    "type": "character",
+    "name": "Gunta"
+  },
+  "zara": {
+    "hero": "images/codex-refresh/zara-mi6-portrait.webp",
+    "thumb": "images/codex-refresh/zara-mi6-portrait-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/zara-mi6-portrait.webp",
+        "thumb": "images/codex-refresh/zara-mi6-portrait-thumb.webp",
+        "alt": "A red-haired, pointed-eared woman in black armour with a crimson chest core stands beside an MI6 banner.",
+        "caption": "Zara — the Duskkin hunter."
+      },
+      {
+        "src": "images/gallery-refresh/zara-hunt-walk.webp",
+        "thumb": "images/gallery-refresh/zara-hunt-walk-thumb.webp",
+        "caption": "Zara on the hunt.",
+        "alt": "Zara, with a short crimson bob and a glowing red core in dark armour, walks through a blue-lit city overgrown with vegetation."
+      },
+      {
+        "src": "images/gallery-refresh/zara-extraction.webp",
+        "thumb": "images/gallery-refresh/zara-extraction-thumb.webp",
+        "caption": "Zara — the extraction.",
+        "alt": "Zara works with luminous strands of energy, wearing dark red-veined armour against a blue-lit city backdrop."
+      },
+      {
+        "src": "images/asset-injection-20260916/duskkin-hunt-hand-fixed.webp",
+        "thumb": "images/asset-injection-20260916/duskkin-hunt-hand-fixed-thumb.webp",
+        "caption": "Zara faces the Iron Bloom Behemoth.",
+        "alt": "Zara braces with her sword and a crimson blood-magic charge in her free hand, facing the armoured Iron Bloom Behemoth in an overgrown city."
+      }
+    ],
+    "type": "character",
+    "name": "Zara"
+  },
+  "kobu": {
+    "hero": "images/codex-refresh/kobu.webp",
+    "thumb": "images/codex-refresh/kobu-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/kobu.webp",
+        "thumb": "images/codex-refresh/kobu-thumb.webp",
+        "alt": "Existing illustration of Kobu.",
+        "caption": "Kobu."
+      }
+    ],
+    "type": "creature",
+    "name": "Kobu"
+  },
+  "eirik": {
+    "hero": "images/codex-refresh/eirik.webp",
+    "thumb": "images/codex-refresh/eirik-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/eirik.webp",
+        "thumb": "images/codex-refresh/eirik-thumb.webp",
+        "alt": "Existing illustration of Eirik.",
+        "caption": "Eirik."
+      }
+    ],
+    "type": "character",
+    "name": "Eirik"
+  },
+  "iron-bloom-behemoth": {
+    "hero": "images/codex-refresh/iron-bloom-behemoth.webp",
+    "thumb": "images/codex-refresh/iron-bloom-behemoth-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/iron-bloom-behemoth.webp",
+        "thumb": "images/codex-refresh/iron-bloom-behemoth-thumb.webp",
+        "alt": "Existing illustration of Iron Bloom Behemoth.",
+        "caption": "Iron Bloom Behemoth."
+      },
+      {
+        "src": "images/asset-injection-20260916/duskkin-hunt-hand-fixed.webp",
+        "thumb": "images/asset-injection-20260916/duskkin-hunt-hand-fixed-thumb.webp",
+        "caption": "Zara faces the Iron Bloom Behemoth.",
+        "alt": "Zara braces with her sword and a crimson blood-magic charge in her free hand, facing the armoured Iron Bloom Behemoth in an overgrown city."
+      }
+    ],
+    "type": "creature",
+    "name": "Iron Bloom Behemoth"
+  },
+  "fate": {
+    "hero": "images/codex-refresh/fate.webp",
+    "thumb": "images/codex-refresh/fate-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/fate.webp",
+        "thumb": "images/codex-refresh/fate-thumb.webp",
+        "alt": "Existing illustration of Fate.",
+        "caption": "Fate."
+      },
+      {
+        "src": "images/codex-refresh/gallery-fate4.webp",
+        "thumb": "images/codex-refresh/gallery-fate4-thumb.webp",
+        "alt": "Fate and the star-lit paths.",
+        "caption": "Fate and the star-lit paths."
+      },
+      {
+        "src": "images/codex-refresh/gallery-fate7.webp",
+        "thumb": "images/codex-refresh/gallery-fate7-thumb.webp",
+        "alt": "Fate across the cosmos.",
+        "caption": "Fate across the cosmos."
+      }
+    ],
+    "type": "concept",
+    "name": "Fate"
+  },
+  "demons-legion-bandana": {
+    "hero": "images/codex-refresh/legion-bandanna-approved.webp",
+    "thumb": "images/codex-refresh/legion-bandanna-approved-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/legion-bandanna-approved.webp",
+        "thumb": "images/codex-refresh/legion-bandanna-approved-thumb.webp",
+        "alt": "A light-grey Legion bandanna covered in black floral sigils and silver star-thread.",
+        "caption": "The Demon’s Legion bandanna."
+      }
+    ],
+    "type": "item",
+    "name": "Demon's Legion Bandana"
+  },
+  "history": {
+    "hero": "images/codex-refresh/history.webp",
+    "thumb": "images/codex-refresh/history-thumb.webp",
+    "gallery": [
+      {
+        "src": "images/codex-refresh/history.webp",
+        "thumb": "images/codex-refresh/history-thumb.webp",
+        "alt": "Existing illustration of History.",
+        "caption": "History."
+      }
+    ],
+    "type": "concept",
+    "name": "History"
+  }
+}
