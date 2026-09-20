@@ -78,7 +78,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visi
 .lightbox-content{display:flex;flex-direction:column;align-items:center;justify-content:center;width:min(1100px,92vw);max-width:92vw;max-height:94dvh}
 .lightbox-content .sc-gallery-caption{flex:none;margin:12px 0 4px;max-width:72ch;line-height:1.5}
 .lightbox-content .sc-gallery-controls{flex:none;margin-top:8px;white-space:nowrap}
-.sc-lore-opening .sc-emily-trailer video{display:block;width:100%;height:auto;aspect-ratio:16/9;max-height:none;object-fit:contain}
+.sc-lore-opening .sc-emily-trailer video,.sc-lore-opening .sc-lore-trailer video{display:block;width:100%;height:auto;aspect-ratio:16/9;max-height:none;object-fit:contain}
 .sc-trailer-caption{padding:18px 20px;border-top:1px solid var(--sc-line)}
 .sc-trailer-caption .sc-trailer-title{font-family:'Cinzel',Georgia,serif;font-size:18px;color:#eef3f9;margin:0 0 6px}
 .sc-trailer-caption p{font-size:12px;line-height:1.65;color:#9db0c5;margin:0}
