@@ -1,4 +1,4 @@
-﻿import test from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -8,6 +8,9 @@ import { WorldStore } from '../../experiment-l/src/world.mjs';
 import { createFixture, RULES_VERSION } from '../../src/fixture.mjs';
 import { fixtureIdentity } from '../../src/world-identity.mjs';
 import { upgradeLivingPlaces } from '../../src/living-places-upgrade.mjs';
+import { upgradeV28 } from '../../src/v28-upgrade.mjs';
+import { upgradeRhythm } from '../../src/rhythm-upgrade.mjs';
+import { upgradeNarrativeSystems } from '../../src/narrative-upgrade.mjs';
 import { WorldDurableObject } from '../src/world-durable-object.mjs';
 import { createMockSqlStorage } from '../src/sqlite-adapter.mjs';
 import { atLondon } from '../../src/time.mjs';
@@ -41,6 +44,8 @@ function v26Sqlite(seed = 'cf-living-places-live-copy', { bareRules = false } = 
   const dbPath = join(directory, 'world.sqlite');
   const current = createFixture({ startMs: start }), initial = current.initialState();
   delete initial.livingPlaces;
+  delete initial.narrativeSignals;
+  delete initial.rhythm;
   initial.meta.upgrades = [
     { from: 'canon-ambient-p183-v22', to: 'canon-ambient-p183-v23', cutoverAt: start,
       activatedAt: start + 1, activationActionId: `lives-v23/activate/${start}` },
@@ -92,11 +97,12 @@ test('after the documented v26→v27 copy-upgrade, Cloudflare DO accepts the sam
   const live = v26Sqlite();
   const before = loadRow(live.dbPath);
   upgradeLivingPlaces(live);
+  completeCurrentUpgrade(live);
   const after = loadRow(live.dbPath);
   assert.equal(after.seed, before.seed);
   assert.equal(after.resolved_through, before.resolved_through);
-  assert.equal(after.rules_version, fixtureIdentity(createFixture({ startMs: start })));
-  assert.equal(RULES_VERSION, 'canon-ambient-p183-v27');
+  assert.equal(after.rules_version, fixtureIdentity(createFixture({ startMs: start }), RULES_VERSION));
+  assert.ok(['canon-ambient-p183-v27', 'canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION));
   const nodeDb = new DatabaseSync(':memory:');
   nodeDb.exec(`CREATE TABLE world_state (
     id INTEGER PRIMARY KEY CHECK(id = 1), seed TEXT NOT NULL, rules_version TEXT NOT NULL,
@@ -122,10 +128,11 @@ test('Cloudflare-shaped bare v26 export is refused, then accepted after copy-upg
     /refusing to reinterpret its history/);
 
   upgradeLivingPlaces(live);
+  completeCurrentUpgrade(live);
   const after = loadRow(live.dbPath);
   assert.equal(after.seed, before.seed);
   assert.equal(after.resolved_through, before.resolved_through);
-  assert.equal(after.rules_version, fixtureIdentity(createFixture({ startMs: start })));
+  assert.equal(after.rules_version, fixtureIdentity(createFixture({ startMs: start }), RULES_VERSION));
   const accepted = new DatabaseSync(':memory:');
   accepted.exec(`CREATE TABLE world_state (
     id INTEGER PRIMARY KEY CHECK(id = 1), seed TEXT NOT NULL, rules_version TEXT NOT NULL,
@@ -136,3 +143,16 @@ test('Cloudflare-shaped bare v26 export is refused, then accepted after copy-upg
   assert.equal(doObj.getSeed(), live.seed);
   assert.equal(doObj.getResolvedThrough(), before.resolved_through);
 });
+
+function completeCurrentUpgrade(live) {
+  for (const [version, upgrade] of [['v28', upgradeV28], ['v29', upgradeNarrativeSystems], ['v30', upgradeRhythm]]) {
+    const row = loadRow(live.dbPath);
+    const intermediate = new DatabaseSync(':memory:');
+    intermediate.exec('CREATE TABLE world_state (id INTEGER PRIMARY KEY, seed TEXT NOT NULL, rules_version TEXT NOT NULL, resolved_through INTEGER NOT NULL, state_json TEXT NOT NULL)');
+    intermediate.prepare('INSERT INTO world_state VALUES (1, ?, ?, ?, ?)').run(row.seed, row.rules_version, row.resolved_through, row.state_json);
+    try {
+      assert.throws(() => mockDo(intermediate, { WORLD_SEED: live.seed, START_MS: start }), /refusing to reinterpret its history/);
+    } finally { intermediate.close(); }
+    upgrade({ directory: live.directory, backupPath: join(live.directory, 'before-' + version + '.sqlite') });
+  }
+}

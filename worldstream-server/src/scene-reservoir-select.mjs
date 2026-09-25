@@ -1,12 +1,13 @@
-import { createHash } from 'node:crypto';
-import { SCENE_RESERVOIR_CATALOG, actorAlias, normalizeReservoirLocation } from './scene-reservoir-catalog.mjs';
-import { SEALED_AREAS } from './places.mjs';
-import { LEGION_CONTRACT_BINDINGS } from './legion-job-bindings.mjs';
-import { daypart } from './sky.mjs';
+import { rankNarrativeScenes } from './narrative-selection.mjs';
+import { SCENE_RESERVOIR_CATALOG } from './scene-reservoir-catalog.mjs';
+import { eventSatisfiesTrigger, reservoirSurfaceMatches } from './scene-reservoir-matches.mjs';
+export { eventSatisfiesTrigger, reservoirEventPlace, reservoirWitnesses, reservoirSurfaceMatches } from './scene-reservoir-matches.mjs';
+
+
+
 
 const SKIP = new Set(['CONVERSATION','SCENE_BANK_BEAT','SCENE_BANK_GATHER','SCENE_BANK_REJOIN']);
 const MIN = 60_000, HOUR = 60 * MIN, DAY = 24 * HOUR;
-const hash = text => createHash('sha256').update(text).digest('hex');
 const byTrigger = new Map();
 for (const scene of SCENE_RESERVOIR_CATALOG) {
   if (scene.status !== 'enabled' || scene.effectPolicy !== 'surface_only') continue;
@@ -27,90 +28,6 @@ function indexedCandidates(event, catalog) {
     for (const scene of byTrigger.get('LEGION_VISIT') ?? []) found.add(scene);
   }
   return [...found];
-}
-
-export function reservoirEventPlace(event) {
-  if (!event) return null;
-  let location = event.location, area = event.area;
-  if (event.type === 'TRAVEL_DEPART') { location = location || 'streamliner'; area = area || 'transit'; }
-  if (location === 'streamliner') area = area || 'transit';
-  if (location === 'sanctuary' && (area === 'venue' || !area)) area = 'central_hub';
-  if (location === 'big_ben_plaza' && !area) area = 'venue';
-  if (location === 'cafe' && !area) area = 'venue';
-  if (location === 'enchanted_ink' && !area) area = 'venue';
-  if (location === 'legion_hideout' && !area) area = 'venue';
-  if (event.type === 'SIDE_PRESENCE') area = event.payload?.area || area;
-  if (SEALED_AREAS.includes(area)) return null;
-  const resolved = normalizeReservoirLocation(area ? `${location}/${area}` : location);
-  return resolved ?? (location ? { location, area: area ?? null } : null);
-}
-
-export function eventSatisfiesTrigger(event, trigger) {
-  if (!event?.type || !trigger) return false;
-  if (event.type === trigger) return true;
-  if (trigger === 'SANCTUARY_VISIT') {
-    return (event.type === 'TRAVEL_ARRIVE' && (event.location === 'sanctuary' || event.payload?.to === 'sanctuary'))
-      || (event.type === 'VENUE_SCENE' && event.location === 'sanctuary')
-      || (event.type === 'LEGION_VISIT' && event.location === 'sanctuary');
-  }
-  if (trigger === 'LEGION_VISIT' && event.type.startsWith('LEGION_JOB_')) {
-    return true;
-  }
-  return false;
-}
-
-export function reservoirWitnesses(event) {
-  const ids = new Set([...(event.participants ?? []), ...(event.payload?.cast ?? []),
-    ...(event.payload?.visitors ?? []), event.payload?.who, event.payload?.guest]
-    .filter(Boolean).map(actorAlias));
-  if (ids.has('goaden')) ids.add('kai');
-  if (ids.has('ashai')) ids.add('greah');
-  return ids;
-}
-
-function requiredCast(scene) {
-  const named = scene.reservoir?.requiredCast ?? scene.cast ?? [];
-  return named.map(actorAlias).filter(id => id && id !== 'world');
-}
-
-function locationCompatible(event, scene) {
-  const gate = scene.reservoir ?? {};
-  const triggers = gate.triggerTypes ?? [];
-  if (triggers.includes('WEATHER_CHANGE') && event.type === 'WEATHER_CHANGE') return true;
-  if (triggers.includes('INSTITUTION_NOTICE') && event.type === 'INSTITUTION_NOTICE') return true;
-  if (triggers.includes('LEGION_VISIT') && (event.type === 'LEGION_VISIT' || event.type.startsWith('LEGION_JOB_'))) {
-    return scene.location === 'legion_hideout' || String(scene.reservoir?.family ?? '').includes('legion')
-      || (event.location === scene.location && (!scene.area || !event.area || scene.area === event.area));
-  }
-  if (triggers.includes('SANCTUARY_VISIT') && eventSatisfiesTrigger(event, 'SANCTUARY_VISIT')) {
-    return event.location === 'sanctuary' || event.payload?.to === 'sanctuary';
-  }
-  const place = reservoirEventPlace(event);
-  if (!place) return gate.lane === 'world';
-  return place.location === scene.location && (!scene.area || !place.area || place.area === scene.area);
-}
-
-export function reservoirSurfaceMatches(event, scene, { now, weatherCode, knownEventIds } = {}) {
-  const gate = scene?.reservoir;
-  if (!event || event.visibility !== 'public' || !gate || SKIP.has(event.type)) return false;
-  if (!(gate.triggerTypes ?? []).some(trigger => eventSatisfiesTrigger(event, trigger))) return false;
-  if (!locationCompatible(event, scene)) return false;
-  if (scene.reservoir?.family === 'legion_contracts') {
-    const bind = LEGION_CONTRACT_BINDINGS[scene.reservoir.sourceId];
-    if (!bind || !event.type?.startsWith('LEGION_JOB_')) return false;
-    if (!bind.stages.includes(event.payload?.stage)) return false;
-    if (bind.requirePaid && event.payload?.paymentStatus !== 'paid' && event.type !== 'LEGION_JOB_PAYMENT') return false;
-  }
-  const required = requiredCast(scene);
-  const witnesses = reservoirWitnesses(event);
-  if (required.some(id => !witnesses.has(id))) return false;
-  if (gate.dayparts && !gate.dayparts.includes(daypart(now ?? event.occurredAt))) return false;
-  if (gate.weatherCodes && weatherCode && !gate.weatherCodes.includes(weatherCode)) return false;
-  if (gate.originTypes?.length) {
-    if (!knownEventIds || ![...knownEventIds].length) return false;
-  }
-  if (scene.reservoir.family === 'callback.shared_recent' && !(knownEventIds && knownEventIds.size)) return false;
-  return true;
 }
 
 function cooling(scene, event, memory) {
@@ -142,19 +59,20 @@ export function createReservoirMemory() {
  * Request time and viewer count are never consulted.
  */
 export function selectReservoirSurface(event, {
-  catalog = SCENE_RESERVOIR_CATALOG, memory = null, seed = '', weatherCode = null, knownEventIds = null, now = null,
+  catalog = SCENE_RESERVOIR_CATALOG, memory = null, seed = '', weatherCode = null, knownEventIds = null, now = null, state = null, hasDavisBetrayal = null,
 } = {}) {
   if (!event || SKIP.has(event.type) || event.visibility !== 'public') return null;
   const eligible = indexedCandidates(event, catalog).filter(scene =>
-    reservoirSurfaceMatches(event, scene, { now: now ?? event.occurredAt, weatherCode, knownEventIds }));
+    reservoirSurfaceMatches(event, scene, { now: now ?? event.occurredAt, weatherCode, knownEventIds, state, hasDavisBetrayal }));
   const available = memory ? eligible.filter(scene => !cooling(scene, event, memory)) : eligible;
   const pool = available.length ? available : [];
   if (!pool.length) return null;
   const fewest = memory ? Math.min(...pool.map(scene => memory.plays.get(scene.id) ?? 0)) : 0;
   const fresh = memory ? pool.filter(scene => (memory.plays.get(scene.id) ?? 0) === fewest) : pool;
-  fresh.sort((a, b) => hash(`${seed}|reservoir-select-v1|${event.id}|${a.id}`)
-    .localeCompare(hash(`${seed}|reservoir-select-v1|${event.id}|${b.id}`)));
-  const choice = fresh[0];
+  const ranked = rankNarrativeScenes(fresh, {now: event.occurredAt,
+    snapshot: event.payload?.narrativeSelection ?? {version: 1, at: event.occurredAt, weights: []},
+    key: scene => `${seed}|reservoir-select-v1|${event.id}|${scene.id}`});
+  const choice = ranked[0]?.scene;
   if (memory && choice) remember(memory, choice, event);
   return choice;
 }

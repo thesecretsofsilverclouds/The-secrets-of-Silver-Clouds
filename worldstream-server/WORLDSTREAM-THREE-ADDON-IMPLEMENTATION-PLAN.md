@@ -1,5 +1,7 @@
 # Worldstream: three bounded upgrades to the existing simulation
 
+**2026-09-20 implementation update:** The user's subsequent instruction authorized implementation. SPECTRA, MORPHOS and CSV are now integrated in the v29 runtime, with Onari environmental-response integration and a production no-LLM boundary. See [NARRATIVE-SYSTEMS-V29.md](NARRATIVE-SYSTEMS-V29.md) for actual mechanisms, limits, validation and prospective save activation. The planning status and freeze below are historical, not the current implementation status.
+
 Date: 2026-09-11. Revision 2: checked against runtime admission, scheduling and numerical limitations. Status: implementation handoff, not implemented runtime functionality.
 
 **Final direction — takes precedence over this document's implementation steps:** first follow [WORLDSTREAM-ADDON-BIBLE-BRIEF.md](WORLDSTREAM-ADDON-BIBLE-BRIEF.md). Read the complete primary canon and produce `WORLDSTREAM_ADDON_BIBLE.md` for the six grounded world systems. No addon implementation until Silent has reviewed the complete bible. Once Grok's reservoir acceptance is verified, treat the existing core and presentation as frozen. SPECTRA, MORPHOS and CSV remain optional research proposals; they are not prerequisites for the canon-grounded addons and must not delay or expand them. The experiments below do not authorize coding or certify the new systems.

@@ -49,9 +49,18 @@ tag = "v1"
 new_sqlite_classes = ["WorldDurableObject"]
 
 [env.production]
+main = "src/production-worker.mjs"
 [env.production.vars]
 ENVIRONMENT = "production"
-WORLD_ID = "worldstream-production"
+# Verified copy of the existing world: same seed, epoch, ledger and queue.
+# The original object stays paused and is retained for rollback.
+WORLD_ID = "worldstream-v30-preserved-20260920"
+WORLD_MIGRATION_SOURCE_ID = "worldstream-v29-preserved-20260920"
+WORLD_OPS_TOKEN_SHA256 = "11e7fa13749737e01cb12e62a8caf1d4d09c757fc08d9ec7207ced4a5ac68b88"
+WORLD_WRITER_PAUSED = "true"
+WORLD_OPS_READ_WHILE_PAUSED = "true"
+WORLD_OPS_ALLOW_ADVANCE = "true"
+WORLD_OPS_ALLOW_RESUME = "true"
 CORS_ORIGINS = "https://thesecretsofsilverclouds.com,https://www.thesecretsofsilverclouds.com"
 
 # ---------------------------------------------------------------- the launch
@@ -99,3 +108,7 @@ bindings = [
 [[env.production.migrations]]
 tag = "v1"
 new_sqlite_classes = ["WorldDurableObject"]
+
+[env.production.observability]
+enabled = true
+head_sampling_rate = 1

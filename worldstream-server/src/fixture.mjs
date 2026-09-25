@@ -1,4 +1,11 @@
 import { createHash } from 'node:crypto';
+import { initialNarrativeSignals, narrativeSignalsActive, advanceMorphos, commitMorphos, assertNarrativeSignals } from './morphos.mjs';
+import { narrativeSelectionSnapshot } from './narrative-selection.mjs';
+import { initialRhythm, rhythmActive, chooseRoutine, commitCompletion, commitSleep, commitTraces, assertRhythm,
+  RHYTHM_TEMPLATES, RHYTHM_SLOT_FAMILIES } from './rhythm.mjs';
+import { evaluateIntentAlternatives } from './counterfactual-value.mjs';
+import { boundedCounterfactualState } from './canonical-fork.mjs';
+import { isMaterialWeatherChange } from './weather-provider.mjs';
 import { SCENE_BANK_EVENT_TYPES, SCENE_BANK_FACT_KINDS, SCENE_BANK_RULES, initialSceneBank, sceneBankAfterAction,
   resolveSceneBankAction, assertSceneBank, sceneBankAvailable, guardSceneBankAction, interruptSceneBankSession } from './scene-bank.mjs';
 import { atLondon, londonDate, nextLondonDay, prevLondonDay, MINUTE_MS as MIN } from './time.mjs';
@@ -31,7 +38,7 @@ import { INK_ACTIVITY, INK_EVENT_TYPES, INK_FACT_KINDS, initialStoryEffects,
 import { THREAD_EVENT_TYPES, THREAD_FACT_KINDS, initialThreads, threadVisitActions,
   threadEncounterActions, issueThreadActions, resolveThreadAction, assertThreads, publicThreadSummaries } from './threads.mjs';
 import { INTENT_EVENT_TYPES, INTENT_FACT_KINDS, initialIntent, intentEncounterActions,
-  issueIntentActions, resolveIntentAction, interruptIntent, assertIntent, publicIntentSummaries } from './intent.mjs';
+  issueIntentActions, resolveIntentAction, interruptIntent, assertIntent, publicIntentSummaries, competingCommitments } from './intent.mjs';
 import { AGENDA_EVENT_TYPES, AGENDA_FACT_KINDS, initialAgendaState, agendaDayActions,
   issueAgendaActions, resolveAgendaAction, assertAgendas, publicAgendaSummaries,
   supportingAvailability, agendaFactionOverrides, agendaReportActions, agendaOpportunity } from './faction-agendas.mjs';
@@ -45,7 +52,7 @@ import { DUSKKIN_COMPLIANCE_EVENT_TYPES, DUSKKIN_COMPLIANCE_FACT_KINDS, initialD
   isQualifyingDuskkinSource, assertDuskkinCompliance } from './duskkin-compliance.mjs';
 import { LIVING_PLACES_EVENT_TYPES, LIVING_PLACES_FACT_KINDS, initialLivingPlacesState,
   resolveLivingPlacesAction, issueLivingPlacesActions, siteOpportunityActions,
-  isQualifyingEcologicalSource, assertLivingPlaces } from './living-places.mjs';
+  isQualifyingEcologicalSource, assertLivingPlaces, habitatAfterAction, livingPlacesAfterAction } from './living-places.mjs';
 import { ABILITY_EVENT_TYPES, ABILITY_FACT_KINDS, GROUND_ACTIVITIES, initialAbilities,
   abilityDayActions, resolveAbilityAction, assertAbilities, canEnterAbilityArea,
   abilityActivityChanged } from './abilities.mjs';
@@ -64,34 +71,57 @@ import { OFFSCREEN_EVENT_TYPES, OFFSCREEN_FACT_KINDS, initialOffscreenLives,
   offscreenWitnessActions,
   offscreenAvailable, noteOffscreenPresence, assertOffscreenLives, publicOffscreenSummaries } from './offscreen-lives.mjs';
 
-export const RULES_VERSION = 'canon-ambient-p183-v27';
+export const RULES_VERSION = 'canon-ambient-p183-v30';
 export function isMeuActive(state) {
   if (!state?.meuCases) return false;
   if (state.meta?.upgrades?.some(item => item.to === 'canon-ambient-p183-v24')) {
     return state.meta.upgrades.some(item => item.to === 'canon-ambient-p183-v24' && item.activatedAt);
   }
-  return ['canon-ambient-p183-v24', 'canon-ambient-p183-v25', 'canon-ambient-p183-v26', 'canon-ambient-p183-v27'].includes(RULES_VERSION);
+  return ['canon-ambient-p183-v24', 'canon-ambient-p183-v25', 'canon-ambient-p183-v26', 'canon-ambient-p183-v27', 'canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION);
 }
 export function isLegionJobsActive(state) {
   if (!state?.legionJobs) return false;
   if (state.meta?.upgrades?.some(item => item.to === 'canon-ambient-p183-v25')) {
     return state.meta.upgrades.some(item => item.to === 'canon-ambient-p183-v25' && item.activatedAt);
   }
-  return ['canon-ambient-p183-v25', 'canon-ambient-p183-v26', 'canon-ambient-p183-v27'].includes(RULES_VERSION);
+  return ['canon-ambient-p183-v25', 'canon-ambient-p183-v26', 'canon-ambient-p183-v27', 'canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION);
 }
 export function isDuskkinActive(state) {
   if (!state?.duskkinCompliance) return false;
   if (state.meta?.upgrades?.some(item => item.to === 'canon-ambient-p183-v26')) {
     return state.meta.upgrades.some(item => item.to === 'canon-ambient-p183-v26' && item.activatedAt);
   }
-  return ['canon-ambient-p183-v26', 'canon-ambient-p183-v27'].includes(RULES_VERSION);
+  return ['canon-ambient-p183-v26', 'canon-ambient-p183-v27', 'canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION);
 }
 export function isLivingPlacesActive(state) {
   if (!state?.livingPlaces) return false;
   if (state.meta?.upgrades?.some(item => item.to === 'canon-ambient-p183-v27')) {
     return state.meta.upgrades.some(item => item.to === 'canon-ambient-p183-v27' && item.activatedAt);
   }
-  return RULES_VERSION === 'canon-ambient-p183-v27';
+  return ['canon-ambient-p183-v27', 'canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION);
+}
+
+export function hasDavisBetrayal(state, atMs) {
+  if (!state) return false;
+  if (state.facts?.['canon.davis_betrayal_overheard'] || state.facts?.['davis_betrayal_overheard']) {
+    const fact = state.facts['canon.davis_betrayal_overheard'] || state.facts['davis_betrayal_overheard'];
+    if (atMs === undefined || atMs === null || fact.createdAt <= atMs) return true;
+  }
+  const ashai = state.characters?.ashai;
+  if (ashai?.knowledge) {
+    return ashai.knowledge.some(k =>
+      (k.factKey === 'canon.davis_betrayal_overheard' || k.factKey === 'davis_betrayal_overheard') &&
+      (atMs === undefined || atMs === null || k.learnedAt <= atMs)
+    );
+  }
+  return false;
+}
+
+export function hasDavisWarmthPrerequisite(state) {
+  if (!state) return false;
+  if ((state.supportingStories?.appearances?.['davis']?.count ?? 0) >= 1) return true;
+  if (Object.values(state.supportingStories?.instances ?? {}).some(s => s.guest === 'davis')) return true;
+  return false;
 }
 // Existing pending actions and memories keep their identities across an explicit
 // rules upgrade. A release number describes semantics, not a new fictional world.
@@ -126,7 +156,11 @@ export const EVENT_TYPES = Object.freeze([
   // An hour at a venue used to be two lines and a gap. This is the hour.
   'VENUE_SCENE', ...INK_EVENT_TYPES, ...THREAD_EVENT_TYPES, ...INTENT_EVENT_TYPES,
   ...AGENDA_EVENT_TYPES, ...MEU_EVENT_TYPES, ...LEGION_JOB_EVENT_TYPES, ...DUSKKIN_COMPLIANCE_EVENT_TYPES, ...LIVING_PLACES_EVENT_TYPES, ...ABILITY_EVENT_TYPES, ...OUTING_RECOVERY_EVENT_TYPES,
-  ...SUPPORTING_EVENT_TYPES, ...NIGHT_EVENT_TYPES, ...OFFSCREEN_EVENT_TYPES, ...SCENE_BANK_EVENT_TYPES, 'WORLD_DEPTH_ACTIVATE', 'WORLD_LIVES_ACTIVATE', 'WORLD_MEU_ACTIVATE', 'WORLD_LEGION_ACTIVATE', 'WORLD_DUSKKIN_ACTIVATE', 'WORLD_LIVING_PLACES_ACTIVATE',
+  ...SUPPORTING_EVENT_TYPES, ...NIGHT_EVENT_TYPES, ...OFFSCREEN_EVENT_TYPES, ...SCENE_BANK_EVENT_TYPES, 'WORLD_DEPTH_ACTIVATE', 'WORLD_LIVES_ACTIVATE', 'WORLD_MEU_ACTIVATE', 'WORLD_LEGION_ACTIVATE', 'WORLD_DUSKKIN_ACTIVATE', 'WORLD_LIVING_PLACES_ACTIVATE', 'WORLD_NARRATIVE_ACTIVATE',
+  'WEATHER_OBSERVATION', 'DAVIS_BETRAYAL_DISCOVERY',
+  // RHYTHM. A private decision about which legal routine fills a free slot the
+  // day plan already declared; the routine it schedules is an ordinary event.
+  'RHYTHM_CHOOSE', 'WORLD_RHYTHM_ACTIVATE',
 ]);
 const TYPES = new Set(EVENT_TYPES);
 // City venues are a creator-approved v3 expansion. The cafe is manuscript canon (p.37);
@@ -150,6 +184,7 @@ const INTENTIONAL_BREACH_TYPES = new Set([
   'UNILATERAL_DECISION',
 ]);
 const TOPICS = new Set(['break_preference','quiet_preference','finish_preference','unfinished_game','practice_slot','invitation','unfinished_visit',
+  'davis_betrayal',
   // Pressure from outside. A callout and a plan it broke are both ordinary
   // operational facts: they say the world intruded, never why or on what.
   'duty_callout','broken_plan',
@@ -549,6 +584,9 @@ export const ACTIVITY_DAYPARTS = Object.freeze({
   // The director's own beats. Ticks run all day because deciding to do nothing
   // is free; what they may stage is what the windows below allow.
   DIRECTOR_TICK:[...DAYPARTS],
+  // Deciding is free at any hour; what it may schedule is what the windows
+  // above allow, checked against the slot's own time.
+  RHYTHM_CHOOSE:[...DAYPARTS],
   SIDE_PRESENCE:['morning','midday','evening'],
   LEGION_VISIT:['midday','evening','night'],
   VENUE_SCENE:['morning','midday','evening','night'],
@@ -652,7 +690,8 @@ function initialState(startMs) {
     threads:initialThreads(),
     intent:initialIntent(),agendas:initialAgendaState(),meuCases:initialMeuCasesState(),legionJobs:initialLegionJobsState(),duskkinCompliance:initialDuskkinComplianceState(),livingPlaces:initialLivingPlacesState(),abilities:initialAbilities(),
     arcs:initialArcs(),outingRecovery:initialOutingRecovery(),supportingStories:initialSupportingStories(),nightStories:initialNightStories(),
-    offscreenLives:initialOffscreenLives(),sceneBank:initialSceneBank(),
+    offscreenLives:initialOffscreenLives(),sceneBank:initialSceneBank(),narrativeSignals:initialNarrativeSignals(startMs),
+    rhythm:initialRhythm(startMs),
     // The director's whole memory. It is four numbers, a short list of families
     // and today's colour — deliberately the smallest thing that can pace a day
     // and still refuse to repeat itself. `lastNotableAt` starts at the epoch, so
@@ -693,6 +732,16 @@ function dayActions(date, seed, weather = weatherForDay(date, seed), factions = 
   const share = (id,time,from,to,slug) => add(id,time,'SHARE_PRACTICAL_FACT',{actor:from,recipient:to,factKey:key(slug)});
   const startShared = (id,time,type,arrangement,extra={}) => add(id,time,type,{actors:['goaden','ashai'],arrangementKey:key(arrangement),...extra});
   const acknowledge = (id,time,arrangement) => add(id,time,'ACKNOWLEDGE_ARRANGEMENT',{arrangementKey:key(arrangement)});
+  // A free routine slot. The plan still declares the slot and still draws the
+  // routine it would have scheduled; the reducer decides one minute before
+  // whether the character's lived history has anything else to say about it.
+  // The routine itself keeps its old id and time, so a world with RHYTHM off
+  // commits exactly the events it always did.
+  const slot = (id,time,actor,duration,family,bank) => {
+    const when=loosen(id,time), baseline=bank.length===1?bank[0]:pick(seed,`${date}/${bank.key}`,bank);
+    add(`${id}/choose`,minute(when,-1),'RHYTHM_CHOOSE',{actor,duration,family,slot:id,baseline,slotAt:at(when),legacyId:`${date}/${id}`});
+  };
+  const bank = (key,...types) => Object.assign(types,{key});
 
   // Yesterday's unfinished business is a known input to today's schedule.
   const prev=prevLondonDay(date), prevTheme=themeForDay(prev,seed), prevWeather=weatherForDay(prev,seed);
@@ -840,7 +889,7 @@ function dayActions(date, seed, weather = weatherForDay(date, seed), factions = 
   activity('morning-goaden',sheltered?'09:20':'09:00','PRACTICE_BEGIN','goaden',45);
   activity('morning-ashai',sheltered?'09:30':'09:10','PRACTICE_BEGIN','ashai',35);
   activity('goaden-music','10:15','PIANO_BEGIN','goaden',50);
-  activity('ashai-downtime','10:20',pick(seed,`${date}/ashai-leisure`,['TV_BEGIN','QUIET_TIME_BEGIN']),'ashai',45);
+  slot('ashai-downtime','10:20','ashai',45,'daytime_leisure',bank('ashai-leisure','TV_BEGIN','QUIET_TIME_BEGIN'));
   if(theme!=='meal_deferral') for(const actor of ['goaden','ashai']) activity(`lunch-${actor}`,'12:00','MEAL_BEGIN',actor,30);
 
   if(theme==='invitation') {
@@ -948,13 +997,19 @@ function dayActions(date, seed, weather = weatherForDay(date, seed), factions = 
 
   // A made-up evening is the evening, so the solo routine stands down for it.
   if(!gamingNight&&!finishMatch&&!sanctuaryNight&&!makeUpDay) {
-    activity('evening-goaden','19:30',pick(seed,`${date}/evening`,['PIANO_BEGIN','MUSIC_LISTEN_BEGIN','GAME_BEGIN']),'goaden',65);
-    activity('evening-ashai','19:45','TV_BEGIN','ashai',55);
+    slot('evening-goaden','19:30','goaden',65,'evening_leisure',bank('evening','PIANO_BEGIN','MUSIC_LISTEN_BEGIN','GAME_BEGIN'));
+    slot('evening-ashai','19:45','ashai',55,'evening_leisure',bank('evening-ashai','TV_BEGIN'));
   }
   for(const actor of ['goaden','ashai']) {const id=`night-${actor}`;
     add(id,loosen(id,sanctuaryNight?'23:30':'22:30'),'REST_BEGIN',{actor,sleeping:true});}
   return assertScheduleWindows(actions);
 }
+// The routine a free slot would schedule with RHYTHM off. Planners that read the
+// day's shape (arc staging) see this rather than the decision action, so a world
+// with RHYTHM absent plans exactly as before; the reducer rechecks presence.
+const plannedRoutine = item => item.type==='RHYTHM_CHOOSE'
+  ? {id:item.legacyId,day:item.day,dueAt:item.slotAt,priority:40,type:item.baseline,actor:item.actor,duration:item.duration}
+  : item;
 
 // The day's strangeness, as its own plan.
 //
@@ -997,7 +1052,7 @@ export function incidentActions(date, seed, weather, factions, carried = 0, rece
   return assertScheduleWindows(actions);
 }
 
-export function assertCanonState(state) {
+export function assertCanonState(state, atMs) {
   if(JSON.stringify(state.meta.canonAnchors)!==JSON.stringify(ANCHORS)) throw new Error('Canon anchor changed');
   if(Object.keys(state.characters).sort().join(',')!=='ashai,goaden') throw new Error('Only two characters are permitted');
   if(state.characters.ashai.body.eye!=='existing_bionic_eye') throw new Error('Body continuity violated');
@@ -1032,11 +1087,16 @@ export function assertCanonState(state) {
   assertStoryEffects(state);
   assertThreads(state);
   assertIntent(state);assertAgendas(state);assertAbilities(state);assertMeuCases(state);assertLegionJobs(state);assertDuskkinCompliance(state);assertLivingPlaces(state);
-  assertOutingRecovery(state);assertSupportingStories(state);assertNightStories(state);assertOffscreenLives(state);assertArcs(state);assertSceneBank(state);
+  assertOutingRecovery(state);assertSupportingStories(state);assertNightStories(state);assertOffscreenLives(state);assertArcs(state);assertSceneBank(state);assertNarrativeSignals(state);assertRhythm(state,atMs);
 }
 
-function reduceAction(state,a,seed) {
+function reduceAction(state,a,seed,runtimeContext={}) {
   if(!TYPES.has(a.type)) throw new Error('Unapproved event type');
+  const csvReady=a.type==='INTENT_RESPONSE' && narrativeSignalsActive(state)
+    && !runtimeContext.disableCounterfactual && Array.isArray(runtimeContext.pendingActions)
+    && (state.narrativeSignals.csv.lastEvaluatedAt===null || a.dueAt-state.narrativeSignals.csv.lastEvaluatedAt>=6*60*MIN);
+  const beforeDecision=csvReady?boundedCounterfactualState(state):null;
+  let csvEvaluation=null, rhythmCompletion=null;
   const id=eventId(seed,a.id), now=a.dueAt, changes=[],followups=[];
   const actors=(a.actors || (a.actor?[a.actor]:[])).map(key=>state.characters[key]);
   if(actors.some(x=>!x)) throw new Error('Unknown character');
@@ -1062,10 +1122,21 @@ function reduceAction(state,a,seed) {
     if(sameValue(current,value)) return;
     const leaves=diffLeaves(current,value);
     if(leaves) for(const leaf of leaves) record({entity,id:targetId,field,...structuredClone(leaf)});
-    else record({entity,id:targetId,field,before:structuredClone(current),after:structuredClone(value)});
+    else record({entity,id:targetId,field,
+      // The prospective v29 field did not exist in old saves. Preserve that
+      // absence so reversing activation restores the exact historical shape;
+      // every legacy whole-value change keeps its existing null convention.
+      ...(!(entity==='story'&&['narrativeSignals','rhythm'].includes(field)&&!Object.hasOwn(target,field))
+        ?{before:structuredClone(current)}:{}),after:structuredClone(value)});
     target[field]=value;
   };
-  const setActor=(who,field,value)=>set('character',who.id,who,field,value);
+  const setActor=(who,field,value)=>{
+    // Settle only sleep that actually occurred, before losing its activity
+    // clock. This also covers a real interruption or departure, not just wake.
+    if(field==='activity'&&who.activity==='sleeping'&&value!=='sleeping'&&rhythmActive(state,now))
+      setStory('rhythm',commitSleep(state.rhythm,state,now));
+    return set('character',who.id,who,field,value);
+  };
   const setWorld=(field,value)=>set('world','shared',state,field,value);
   // The director's own bookkeeping is recorded under its own ledger entity. It
   // is genuinely persisted state and genuinely audited, but it is pacing
@@ -1144,7 +1215,11 @@ function reduceAction(state,a,seed) {
     setActor(who,'activityUntil',duration?now+duration*MIN:null);setActor(who,'area',area);
     if(who.publicNext?.at<=now) setActor(who,'publicNext',null);
     if(duration&&!INTENT_EVENT_TYPES.includes(a.type)&&!ABILITY_EVENT_TYPES.includes(a.type)&&!NIGHT_EVENT_TYPES.includes(a.type)) followups.push({id:`${a.id}/complete/${who.id}`,dueAt:now+duration*MIN,priority:20,type:a.type==='PRACTICE_BEGIN'?'PRACTICE_END':'ACTIVITY_COMPLETE',
-      actor:who.id,activityId:id,fatigueFact:a.fatigueFact,preferenceUntil:a.preferenceUntil,day:a.day});
+      actor:who.id,activityId:id,fatigueFact:a.fatigueFact,preferenceUntil:a.preferenceUntil,day:a.day,
+      // Which free slot this routine filled, if any. Only its completion may
+      // build a leisure habit; duty and shared plans carry no tag.
+      ...(a.rhythm?{rhythm:{slot:a.rhythm.slot,family:a.rhythm.family}}:{}),
+      ...(rhythmActive(state,now)&&actors.length>1?{rhythmShared:true}:{})});
     if(publicText) publish(publicText);
   };
   const skip=reason=>{event.payload={outcome:'skipped',reason};};
@@ -1166,7 +1241,16 @@ function reduceAction(state,a,seed) {
       .map(who=>({id:`${id}/moment/${who}`,type:'MOMENT_NOTICED',dueAt:at,priority:31,day:a.day,
         actors:[who],moment,who}));
   };
-  const storyContext=()=>({state,action:a,now,id,event,followups,seed,ops:{
+  const counterfactualDecision=csvReady?({key,baselineMotive})=>{
+    const result=evaluateIntentAlternatives({state:beforeDecision,pendingActions:runtimeContext.pendingActions,
+      action:a,seed,rulesVersion:RULES_VERSION,startMs:state.meta.startMs,
+      resolvedThrough:runtimeContext.resolvedThrough,sequence:runtimeContext.sequence,
+      reduceAction,key,baselineMotive});
+    csvEvaluation=result;
+    return result;
+  }:undefined;
+  const storyContext=()=>({state,action:a,now,id,event,followups,seed,counterfactualDecision,
+    intentOverride:runtimeContext.intentOverride,disableNarrativeSignals:runtimeContext.disableNarrativeSignals,ops:{
     setStoryEffects:value=>setWorld('storyEffects',value),
     setThreads:value=>setWorld('threads',value),
     setIntent:value=>setWorld('intent',value),setAgendas:value=>setWorld('agendas',value),setMeuCases:value=>setWorld('meuCases',value),setLegionJobs:value=>setWorld('legionJobs',value),setDuskkinCompliance:value=>setWorld('duskkinCompliance',value),setLivingPlaces:value=>setWorld('livingPlaces',value),
@@ -1187,6 +1271,45 @@ function reduceAction(state,a,seed) {
     setArrangement:(key,value)=>update('arrangements',key,value),publish,skip,
   }});
 
+  // A RHYTHM action owns exactly one existing calendar slot. Neither a forged
+  // tag nor a deferred choice may create another slot, extend it, or interrupt
+  // accepted work. Check before scene/arc guards can defer an ordinary routine.
+  const rhythmChoice=a.type==='RHYTHM_CHOOSE';
+  const rhythmRoutine=Boolean(a.rhythm)&&ROUTINE_TYPES.has(a.type);
+  const rhythmFinished=Boolean(a.rhythm)&&['ACTIVITY_COMPLETE','PRACTICE_END'].includes(a.type);
+  if(rhythmFinished) {
+    const planned=typeof a.day==='string'?dayActions(a.day,seed).find(item=>item.type==='RHYTHM_CHOOSE'
+      &&a.id===`${item.legacyId}/complete/${item.actor}`):null;
+    if(!planned||a.actor!==planned.actor||a.rhythm.slot!==planned.slot||a.rhythm.family!==planned.family
+      ||a.activityId!==eventId(seed,planned.legacyId)||a.dueAt!==planned.slotAt+planned.duration*MIN
+      ||actor.activitySince!==planned.slotAt||actor.activityUntil!==a.dueAt) {
+      skip('No matching completed leisure slot');assertCanonState(state);return {event,followups};
+    }
+  }
+  if(rhythmChoice||rhythmRoutine) {
+    const planned=typeof a.day==='string'?dayActions(a.day,seed).find(item=>item.type==='RHYTHM_CHOOSE'
+      &&(rhythmChoice?item.id===a.id:item.legacyId===a.id)):null;
+    const valid=planned&&a.actor===planned.actor&&a.duration===planned.duration&&a.priority===40
+      &&(rhythmChoice?a.dueAt===planned.dueAt&&a.slotAt===planned.slotAt&&a.legacyId===planned.legacyId
+        &&a.family===planned.family&&a.slot===planned.slot&&a.baseline===planned.baseline
+        :a.dueAt===planned.slotAt&&a.rhythm.slot===planned.slot&&a.rhythm.family===planned.family
+          &&a.rhythm.decisionEventId===eventId(seed,planned.id)
+          &&RHYTHM_SLOT_FAMILIES[planned.family][planned.actor].some(label=>RHYTHM_TEMPLATES[label].type===a.type)
+          &&(a.type!=='REST_BEGIN'||a.sleeping===false));
+    const slotAt=planned?.slotAt,until=slotAt+(planned?.duration??0)*MIN;
+    const free=valid&&actor.location==='mi6'&&!actor.journey
+      &&['unhurried_time','waiting','quiet_break','watching_television','listening_to_music','gaming','playing_piano','resting'].includes(actor.activity)
+      &&(actor.activityUntil==null||actor.activityUntil<=slotAt)
+      &&storyContext().ops.actorAvailable(actor.id,now)&&storyContext().ops.actorAvailable(actor.id,slotAt)
+      &&supportingLeadAvailable(state,actor.id,{atMs:slotAt})
+      &&!(actor.id==='goaden'&&activeInkAppointment(state))
+      &&competingCommitments(state,actor.id,slotAt,until).length===0
+      &&!(runtimeContext.pendingActions??[]).some(item=>DUTY_TYPES.has(item.type)
+        &&(item.actors??[item.actor]).includes(actor.id)&&item.dueAt>=slotAt&&item.dueAt<until);
+    if(!free) {skip(valid?'The declared leisure slot is no longer free':'No matching owned leisure slot');
+      assertCanonState(state);return {event,followups};}
+  }
+
   if(!guardSceneBankAction(storyContext())) {
     // An authored scene has retained its cast and recorded the deferred action.
   } else if(!guardArcAction(storyContext())) {
@@ -1196,7 +1319,9 @@ function reduceAction(state,a,seed) {
   } else if(!guardOutingRecoveryAction(storyContext())) {
     // Exact owned retry validation has already recorded the refusal.
   } else if(!NIGHT_EVENT_TYPES.includes(a.type)&&!SUPPORTING_EVENT_TYPES.includes(a.type)&&a.type!=='ABILITY_ACTIVITY_SETTLED'
-    &&actors.some(who=>!nightStoryAvailable(state,who.id,{atMs:now}))) {
+    // A RHYTHM decision is not a physical action; the routine it schedules is
+    // the thing this gate judges, one minute later, exactly as it always has.
+    &&a.type!=='RHYTHM_CHOOSE'&&actors.some(who=>!nightStoryAvailable(state,who.id,{atMs:now}))) {
     skip('An owned night response or its recovery still occupies this character');
   } else if(['CROSS_PATHS','CONVERSATION','LEGION_VISIT','VENUE_SCENE'].includes(a.type)
     &&actors.some(who=>!supportingLeadAvailable(state,who.id,{atMs:now}))) {
@@ -1211,6 +1336,51 @@ function reduceAction(state,a,seed) {
     resolveOffscreenAction(storyContext());
   } else if(ARC_EVENT_TYPES.includes(a.type)) {
     resolveArcAction(storyContext());
+  } else if(a.type==='RHYTHM_CHOOSE') {
+    // The slot is already free and already legal for its baseline routine. With
+    // RHYTHM off, or before its activation, the baseline is scheduled unchanged.
+    // With it on, the character's needs, habits, satiety, traces and the hour
+    // rank every reviewed template this slot may consider; the reducer's own
+    // permit, daypart, room and ownership rules are the filter, so an illegal
+    // label never enters the scored set and the winner still faces every gate
+    // when its own action runs. Nothing here writes RHYTHM state: a decision is
+    // not a behaviour, and only a completed routine leaves a trace.
+    if(!Number.isSafeInteger(a.slotAt)||a.slotAt<=now||!a.legacyId||!TYPES.has(a.baseline)) throw new Error('Malformed rhythm slot');
+    let chosen=a.baseline, scores=null;
+    if(rhythmActive(state,now)&&actor.location==='mi6'&&!actor.journey) {
+      const slotMode=locationMode(actor.location,a.slotAt);
+      const legal=(template,label)=>permitsDaypart(template.type,a.slotAt)
+        &&permitsActivity(actor.location,slotMode,label)
+        &&permitsArea(actor.location,template.area??defaultArea(actor.location,a.slotAt),label,a.slotAt)
+        &&(label!=='training'||canEnterAbilityArea(state,actor.id,actor.location,template.area,{activity:label}));
+      const result=chooseRoutine({state,who:actor.id,family:a.family,slotAt:a.slotAt,now,minutes:a.duration,legal,seed,key:a.id,
+        narrative:!runtimeContext.disableNarrativeSignals});
+      if(result) {chosen=result.type;scores=result.scores;}
+      else {skip('No legal routine fits the declared slot');assertCanonState(state);return {event,followups};}
+    }
+    followups.push({id:a.legacyId,day:a.day,dueAt:a.slotAt,priority:40,type:chosen,actor:actor.id,duration:a.duration,
+      ...(chosen==='REST_BEGIN'?{sleeping:false}:{}),
+      ...(scores?{rhythm:{slot:a.slot,family:a.family,decisionEventId:id}}:{})});
+    event.payload={slot:a.slot,family:a.family,baseline:a.baseline,chosen,...(scores?{scores}:{})};
+  } else if(a.type==='WORLD_RHYTHM_ACTIVATE') {
+    const receipt=state.meta.upgrades?.find(item=>item.to==='canon-ambient-p183-v30'
+      &&a.id===`rhythm-v30/activate/${item.cutoverAt}`&&now===item.cutoverAt+1);
+    if(!receipt||receipt.activatedAt||state.rhythm) skip('No pending rhythm activation');
+    else {
+      setWorld('meta',{...state.meta,upgrades:state.meta.upgrades.map(item=>item===receipt?{...item,activatedAt:now}:item)});
+      // Authored priors only. Old history is never rescored into habit.
+      setStory('rhythm',initialRhythm(now));
+      event.payload={version:1,activatedAt:now};
+    }
+  } else if(a.type==='WORLD_NARRATIVE_ACTIVATE') {
+    const receipt=state.meta.upgrades?.find(item=>item.to==='canon-ambient-p183-v29'
+      &&a.id===`narrative-v29/activate/${item.cutoverAt}`&&now===item.cutoverAt+1);
+    if(!receipt||receipt.activatedAt||state.narrativeSignals) skip('No pending narrative systems activation');
+    else {
+      setWorld('meta',{...state.meta,upgrades:state.meta.upgrades.map(item=>item===receipt?{...item,activatedAt:now}:item)});
+      setStory('narrativeSignals',initialNarrativeSignals(now));
+      event.payload={version:1,activatedAt:now};
+    }
   } else if(a.type==='WORLD_LIVING_PLACES_ACTIVATE') {
     const receipt=state.meta.upgrades?.find(item=>item.to==='canon-ambient-p183-v27'
       &&a.id===`living-places-v27/activate/${item.cutoverAt}`&&now===item.cutoverAt+1);
@@ -1277,14 +1447,68 @@ function reduceAction(state,a,seed) {
     resolveThreadAction(storyContext());
   } else if(INK_EVENT_TYPES.includes(a.type)) {
     resolveInkAction(storyContext());
+  } else if(a.type==='WEATHER_OBSERVATION') {
+    const obs = a.observation;
+    if (!obs || !obs.code) throw new Error('Invalid weather observation');
+    const effectiveTime = obs.observedAt ?? a.dueAt ?? now;
+    if (effectiveTime > now) {
+      skip('Weather observation effective time is in the future');
+    } else {
+      const prevWeather = state.weather || {};
+      const slot = obs.slotTime || a.slotTime;
+      if (state.weather?.slotTime === slot && state.weather?.external) {
+        event.visibility = 'private';
+        event.payload = { slotTime: slot, skipped: true, reason: 'slot_already_applied' };
+      } else {
+        const material = isMaterialWeatherChange(prevWeather, obs);
+        setWorld('weather', {
+          ...prevWeather,
+          ...obs,
+          observedAt: Math.min(obs.observedAt ?? now, now),
+          simulated: false,
+          external: true,
+          slotTime: slot,
+        });
+      if (material) {
+        event.payload = {
+          weatherCode: obs.code,
+          temperatureC: obs.temperatureC,
+          precipitationMm: obs.precipitationMm,
+          windSpeedKph: obs.windSpeedKph,
+          slotTime: slot,
+          material: true,
+        };
+        const notes = {
+          heavy_rain: ' The outdoor yard is closed; morning training moves indoors.',
+          storm: ' The outdoor yard is closed and Streamliner services expect minor delays.',
+          fog: ' Streamliner services expect minor delays.'
+        };
+        const desc = obs.description ? obs.description.toLowerCase() : obs.code.replace(/_/g, ' ');
+        publish(`World weather: ${desc}, ${obs.temperatureC}°C.${notes[obs.code] || ''}`);
+      } else {
+        event.visibility = 'private';
+        event.payload = {
+          weatherCode: obs.code,
+          temperatureC: obs.temperatureC,
+          slotTime: slot,
+          suppressed: true,
+        };
+      }
+    }
+  }
   } else if(a.type==='WEATHER_CHANGE') {
     const date=a.day;
-    const weather=weatherForDay(date,seed);
-    setWorld('weather',{...weather,simulated:true});event.payload={calendarDay:date,theme:themeForDay(date,seed),weatherCode:weather.code};
+    const weather = (state.weather?.external && state.weather?.code)
+      ? state.weather
+      : weatherForDay(date,seed);
+    if (!state.weather?.external) {
+      setWorld('weather',{...weather,simulated:true});
+    }
+    event.payload={calendarDay:date,theme:themeForDay(date,seed),weatherCode:weather.code};
     const notes={heavy_rain:' The outdoor yard is closed; morning training moves indoors.',
       storm:' The outdoor yard is closed and Streamliner services expect minor delays.',
       fog:' Streamliner services expect minor delays.'};
-    publish(`World weather: ${weather.description.toLowerCase()}, ${weather.temperatureC}°C.${notes[weather.code]||''}`);
+    publish(`World weather: ${(weather.description ? weather.description : weather.code).toLowerCase()}, ${weather.temperatureC}°C.${notes[weather.code]||''}`);
     for(const who of Object.values(state.characters)) {
       setActor(who,'conditions',nightRecoveryFor(state,who.id,now)?who.conditions.filter(condition=>condition.kind==='ordinary_fatigue'&&condition.nightStoryId):[]);
       setActor(who,'publicNext',null);
@@ -1303,7 +1527,11 @@ function reduceAction(state,a,seed) {
     const baseline=baselinePressure({factions:factionsForDay(date,seed,weather),veilPhase:veilForDate(date,seed).phase});
     const value=pressureValue(baseline,carried);
     setPressure({day:date,carried:value,level:pressureLevel(value),incidentsToday:0,pending:null});
-    const scheduled=dayActions(date,seed,weather);
+    // Inactive worlds keep the original concrete queue. Even a private no-op
+    // decision would otherwise consume CSV's real action/clone budgets and
+    // change its persisted evaluation. dayActions itself stays calendar-pure.
+    const planned=dayActions(date,seed,weather);
+    const scheduled=rhythmActive(state,now)?planned:planned.map(plannedRoutine);
     followups.push(...incidentActions(date,seed,weather,factionsForDay(date,seed,weather),value,
       state.pressure?.recent??[]));
     for(const item of scheduled.filter(item=>item.type==='PRACTICE_BEGIN'&&item.planKey)) update('plans',item.planKey,
@@ -1317,7 +1545,10 @@ function reduceAction(state,a,seed) {
     // An arc is a consequence of the world's condition rather than its calendar,
     // so it is scheduled here beside the pressure incidents and reads the same
     // carried value they do.
-    followups.push(...issueArcActions(storyContext(),arcDayActions({state,day:date,now,seed,carried:value,scheduled})));
+    followups.push(...issueArcActions(storyContext(),arcDayActions({state,day:date,now,seed,carried:value,scheduled:scheduled.map(plannedRoutine)})));
+    // A partial checkpoint of actual sleep. Awake actors receive no sleep
+    // credit; any remaining sleep is settled when they wake or are interrupted.
+    if(rhythmActive(state,now)) setStory('rhythm',commitSleep(state.rhythm,state,now));
     const next=nextLondonDay(date);
     followups.push({id:`${next}/day`,dueAt:atLondon(next,'00:00')+1,priority:0,type:'WEATHER_CHANGE',day:next});
   } else if(a.type==='FACTION_STATUS') {
@@ -1362,6 +1593,7 @@ function reduceAction(state,a,seed) {
       for(const who of actors) activity(who,label,a.sleeping?null:(a.duration??r?.duration??30),
         a.area??AREAS[a.type]??defaultArea(who.location,now));
       event.participants=actors.map(w=>w.id);event.location=actors[0]?.location||'mi6';
+      if(a.rhythm?.decisionEventId) event.causedBy.push(a.rhythm.decisionEventId);
       const who=actors.length===2?'Goaden and Ashai':shortName(actor.id);
       const phrases={training:'began training',resting:'settled down to rest',sleeping:'turned in for the night',eating:'stopped for a meal',playing_piano:'began playing piano',
         listening_to_music:'settled down to listen to music',gaming:a.type==='GAME_RESUME'?'resumed their game':'started a game',quiet_break:'took a quiet break',watching_television:'settled down to watch television',waiting:'waited for their agreed break',
@@ -1384,7 +1616,18 @@ function reduceAction(state,a,seed) {
   } else if(a.type==='ACTIVITY_COMPLETE'||a.type==='PRACTICE_END') {
     if(actor.activityId!==a.activityId) skip('Activity already replaced');
     else {
-      const wasResting=actor.activity==='resting';activity(actor,'unhurried_time',null,defaultArea(actor.location,now));
+      const wasResting=actor.activity==='resting';
+      // What actually finished, for how long, and whether a free slot chose it.
+      // A concrete routine already queued before the prospective activation is
+      // still its original slot. Recognize it by its exact owned clock and ID;
+      // no past completion is revisited and other routines gain no leisure tag.
+      const legacySlot=rhythmActive(state,now)&&!a.rhythm&&a.day?dayActions(a.day,seed).find(item=>
+        item.type==='RHYTHM_CHOOSE'&&a.id===`${item.legacyId}/complete/${item.actor}`&&a.actor===item.actor
+        &&a.activityId===eventId(seed,item.legacyId)&&actor.activitySince===item.slotAt
+        &&a.dueAt===item.slotAt+item.duration*MIN):null;
+      rhythmCompletion={who:actor.id,label:actor.activity,minutes:(now-actor.activitySince)/MIN,
+        family:a.rhythm?.family??legacySlot?.family??null,shared:a.rhythmShared===true};
+      activity(actor,'unhurried_time',null,defaultArea(actor.location,now));
       if(wasResting) setActor(actor,'conditions',[]);
       if(a.type==='PRACTICE_END') {
         publish(trainingEndLine({who:shortName(actor.id),spent:Boolean(a.fatigueFact),seed,key:`${a.day}/${a.id}`}));
@@ -1405,7 +1648,19 @@ function reduceAction(state,a,seed) {
       {location:'mi6',area:a.area,atMs:now});
     if(!verdict.ok) skip(ENCOUNTER_REASONS[verdict.reason]);
     else {for(const who of actors) setActor(who,'area',a.area);setWorld('encounter',{area:a.area,until:now+25*MIN,eventId:id});
-      publish(encounterLine({room:MI6_SECTIONS[a.area].name,area:a.area,seed,key:`${a.day}/${a.id}`}));}
+      publish(encounterLine({room:MI6_SECTIONS[a.area].name,area:a.area,seed,key:`${a.day}/${a.id}`}));
+      if (a.area === 'corridors' && !hasDavisBetrayal(state, now) && hasDavisWarmthPrerequisite(state) && castAvailable('davis', {location:'mi6', area:'corridors'})) {
+        followups.push({
+          id: `${a.id}/betrayal-discovery`,
+          day: a.day,
+          dueAt: now + 3 * MIN,
+          priority: 15,
+          type: 'DAVIS_BETRAYAL_DISCOVERY',
+          actors: ['ashai'],
+          area: 'corridors',
+        });
+      }
+    }
   } else if(a.type==='CONVERSATION') {
     // A scene needs both of them actually in the room. Whatever they are
     // carrying by now — a broken plan, a worried week, friction, the weather —
@@ -1850,7 +2105,53 @@ function reduceAction(state,a,seed) {
     if(!castAvailable(a.who,{location:'mi6',area:a.area})) skip('Colleague occupied by an existing commitment');
     else if(actors.some(w=>w.location!=='mi6'||w.journey||w.activity==='sleeping')) skip('Nobody here to notice');
     else {event.participants=actors.map(w=>w.id);event.payload={who:a.who,area:a.area};
-      publish(colleague.lines[a.line%colleague.lines.length]);}
+      publish(colleague.lines[a.line%colleague.lines.length]);
+      if (a.who === 'davis' && a.area === 'corridors' && !hasDavisBetrayal(state, now) && hasDavisWarmthPrerequisite(state)) {
+        followups.push({
+          id: `${a.id}/betrayal-discovery`,
+          day: a.day,
+          dueAt: now + 2 * MIN,
+          priority: 15,
+          type: 'DAVIS_BETRAYAL_DISCOVERY',
+          actors: ['ashai'],
+          area: 'corridors',
+        });
+      }
+    }
+  } else if(a.type==='DAVIS_BETRAYAL_DISCOVERY') {
+    const ashai = state.characters.ashai;
+    if (hasDavisBetrayal(state, now)) {
+      skip('Betrayal already discovered');
+    } else if (!hasDavisWarmthPrerequisite(state)) {
+      skip('Warmth prerequisite not established');
+    } else if (ashai.location !== 'mi6' || ashai.journey || ashai.activity === 'sleeping') {
+      skip('Ashai not available in MI6 corridors');
+    } else if (!castAvailable('davis', { location: 'mi6', area: 'corridors' })) {
+      skip('Davis not available');
+    } else {
+      const fact = createFact('canon.davis_betrayal_overheard', 'davis_betrayal', 'davis', {
+        description: 'Ashai overheard Agent Davis mocking her and her charm in the MI6 corridors.',
+        overheardAt: now,
+      });
+      learn(ashai, fact, 'overheard');
+      setActor(ashai, 'area', 'corridors');
+      event.location = 'mi6';
+      event.area = 'corridors';
+      event.participants = ['ashai'];
+      event.payload = {
+        who: 'davis',
+        spokenTo: 'another_agent',
+        overheard: true,
+        counselBy: 'greah',
+        lines: [
+          { who: 'davis', expression: 'dismissive', text: 'Ashai? She’s not cut out for this. Too naïve, too... emotional. And that charm she gave me? Please, as if such trinkets could influence fate.' },
+          { who: 'greah', expression: 'cautious', text: 'Let it go, hun. People like Davis thrive on this. Best not to make enemies in MI6.' }
+        ]
+      };
+      publish('In the MI6 corridor, Ashai overheard Agent Davis speaking to another agent: "Ashai? She’s not cut out for this. Too naïve, too... emotional. And that charm she gave me? Please, as if such trinkets could influence fate." Greah cautioned Ashai: "Let it go, hun. People like Davis thrive on this. Best not to make enemies in MI6."');
+      event.register = 'prose';
+      event.prose = 'Pausing outside the corridor junction, Ashai stopped in the dim wash of the fluorescent strip. Concealed in the shadows, she caught Davis speaking to another agent around the turn, her words dripping with scorn: “Ashai? She’s not cut out for this. Too naïve, too... emotional. And that charm she gave me? Please, as if such trinkets could influence fate.” Ashai’s hands clenched into fists, but before she could step forward to confront Davis, Greah caught her shoulder, murmuring low and cautious: “Let it go, hun. People like Davis thrive on this. Don’t give her the satisfaction... Best not to make enemies in MI6.” Ashai held back, her jaw set with cold clarity.';
+    }
   } else if(a.type==='MINOR_ANOMALY') {
     // Scenery, and strictly scenery. It creates no fact, teaches nobody
     // anything and leaves no memory, so nothing downstream can ever come to
@@ -1870,7 +2171,7 @@ function reduceAction(state,a,seed) {
   // Which voice this moment gets. A property of the type rather than a
   // judgement per event, so an ordinary meal can never become a set piece and a
   // confrontation can never be reduced to a ticker line.
-  event.register=registerFor(a.type);
+  event.register=event.register??registerFor(a.type);
   if(event.visibility==='public'&&event.register==='prose') {
     const written=proseFor(event,{seed,key:`${a.day}/${a.id}`});
     if(written&&written!==event.publicDescription) event.prose=written;
@@ -1962,9 +2263,50 @@ function reduceAction(state,a,seed) {
   if(event.visibility==='public') noteSupportingAppearance(storyContext(),[...(event.payload.cast??[]),...(event.payload.visitors??[]),...(event.payload.who?[event.payload.who]:[])]);
   if(event.visibility==='public') noteOffscreenPresence(storyContext());
   recordNightCause(storyContext());
+  // The version marks the prospective physical-rules cutover. Turning off
+  // narrative weighting cannot turn environmental causes on or off.
+  if(state.narrativeSignals?.version===1 && state.narrativeSignals.activatedAt<=now) {
+    habitatAfterAction(storyContext());
+    livingPlacesAfterAction(storyContext());
+  }
+  // Rejected actions and private no-ops have no bookkeeping effects either.
+  // Defer all signal writes until the authoritative resolver has succeeded;
+  // an exception must not leave an advanced motif clock in its input state.
+  const narrativeStep=event.payload?.outcome!=='skipped' && !event.payload?.skipped
+    && (event.visibility==='public' || changes.length>0);
+  if(narrativeSignalsActive(state) && narrativeStep) {
+    if(!runtimeContext.disableNarrativeSignals) {
+      let signals=advanceMorphos(state.narrativeSignals,now);
+      if(csvEvaluation) signals={...signals,csv:{lastEvaluatedAt:now,lastEvaluation:csvEvaluation}};
+      setStory('narrativeSignals',commitMorphos(signals,state,event,a));
+      if(event.visibility==='public' && event.type!=='CONVERSATION') {
+        const selection=narrativeSelectionSnapshot(state,event);
+        if(selection) event.payload.narrativeSelection=selection;
+      }
+    }
+  }
+  // RHYTHM bookkeeping, on the same footing: only after the authoritative
+  // resolver succeeded, and never for a refused action. A completed routine
+  // moves needs, history and (for a free slot) habit; a fact learned in this
+  // very event by this very actor may leave a trace. The world knowing that
+  // something happened is not enough — the character has to know it.
+  if(rhythmActive(state,now) && event.payload?.outcome!=='skipped' && !event.payload?.skipped) {
+    let rhythm=state.rhythm;
+    if(rhythmCompletion) rhythm=commitCompletion(rhythm,state,{...rhythmCompletion,now});
+    if(event.type==='INTENT_COMPLETE'&&event.payload?.activity) {
+      const label={game:'gaming',practice:'training',quiet:'quiet_break'}[event.payload.activity];
+      const session=state.intent.instances[event.payload.intentId];
+      if(session?.status==='completed') for(const who of session.party) if(label)
+        rhythm=commitCompletion(rhythm,state,{who,label,minutes:(session.endAt-session.startAt)/MIN,family:null,shared:true,now});
+    }
+    rhythm=commitTraces(rhythm,state,event,now);
+    if(rhythm!==state.rhythm) setStory('rhythm',rhythm);
+  }
   sceneBankAfterAction(storyContext());
   event.causedBy=[...new Set(event.causedBy)].filter(c=>typeof c==='string'&&c.length>0&&c!==id);
-  assertCanonState(state);
+  // A refused forged/repeated action may carry an old timestamp. It does not
+  // establish the current clock and must remain a state-preserving no-op.
+  assertCanonState(state,event.payload?.outcome==='skipped'||event.payload?.skipped?undefined:now);
   return {event,followups};
 }
 
@@ -2027,7 +2369,7 @@ function upcomingFor(snapshot, actorId, now) {
   for(const action of snapshot.pendingActions ?? []) {
     if(action.dueAt<=now||action.dueAt>horizon) continue;
     const party = action.actors ?? (action.actor?[action.actor]:[]);
-    if(!party.includes(actorId)||action.planKey) continue;
+    if(!party.includes(actorId)||action.planKey||action.rhythm) continue;
     if(!nightStoryAvailable(snapshot,actorId,{atMs:action.dueAt})) continue;
     let description;
     if(action.arrangementKey) {
@@ -2068,7 +2410,15 @@ export function publicProjection(snapshot) {
     storyResults:inkResult&&inkResult.completedAt<=now?[{kind:'cosmetic_tattoo',owner:'goaden',design:'prowler',
       completedAt:inkResult.completedAt,eventId:inkResult.sourceEventId,
       description:'A completed moving prowler design from Enchanted Ink.'}]:[],
-    weather:{code:snapshot.weather.code||'cloudy',description:snapshot.weather.description,temperatureC:snapshot.weather.temperatureC,simulated:true},
+    weather:{
+      code:snapshot.weather.code||'cloudy',
+      description:snapshot.weather.description,
+      temperatureC:snapshot.weather.temperatureC,
+      simulated:snapshot.weather?.external ? false : Boolean(snapshot.weather?.simulated ?? true),
+      ...(snapshot.weather?.precipitationMm !== undefined ? {precipitationMm: snapshot.weather.precipitationMm} : {}),
+      ...(snapshot.weather?.windSpeedKph !== undefined ? {windSpeedKph: snapshot.weather.windSpeedKph} : {}),
+      ...(snapshot.weather?.observedAt ? {observedAt: Math.min(snapshot.weather.observedAt, now)} : {}),
+    },
     // Daylight comes from the real London sun, never from the weather.
     time:{daypart:daypart(now),dayPhase:dayPhase(now),daylight:daylightFraction(now),
       dawn:sun.dawn,sunrise:sun.sunrise,sunset:sun.sunset,dusk:sun.dusk},
@@ -2116,7 +2466,7 @@ export function publicEvents(snapshot, limit = 40) {
   return snapshot.events.filter(e=>e.visibility==='public'&&e.publicDescription).slice(-limit)
     .map(e=>correctLegacyWakeDialogue(e, () => typeof snapshot.publicSourcesForEvent === 'function'
       ? snapshot.publicSourcesForEvent(e) : snapshot.events))
-    .map(e=>editorialEvent(e)).map(e=>{
+    .map(e=>editorialEvent(e, { state: snapshot })).map(e=>{
     const bridge = resolveContextBridge(e, id => {
       const source = lookup(id);
       return isPublicStoryEvent(source) && source.occurredAt <= e.occurredAt ? source : null;

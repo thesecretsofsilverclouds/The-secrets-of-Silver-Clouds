@@ -1,0 +1,6010 @@
+{
+  "version": 1,
+  "rulesVersion": "canon-ambient-p183-v30",
+  "startedAt": "2026-09-20T19:53:28.551Z",
+  "sources": {
+    "src/fixture.mjs": "a85dceb9a540efeff8db7ea63af7765b28fde8d1c7bd7d7f5a0bf62483c7023c",
+    "src/rhythm.mjs": "0c30f1c730c0f4cb5ce820c4fd0be81e256df3337f5defe1690dc963c4513477",
+    "src/morphos.mjs": "9cedbc097043ead70406a89bbb547a9cf884271c8b91879bc4129c0fc3588c29",
+    "src/intent.mjs": "2bfb158cec7fcd153eb1b5b8ee321bf5fed42962be00d9d033b863c2811e72ff",
+    "src/canonical-fork.mjs": "6569af7ad6b4ba7f8d2ae7e6c0073a650bbd44b129b6ce4b2ee9857cafbe80c1",
+    "experiment-l/src/world.mjs": "4ca7ec15c8a97635509cc8b14cde26ed946efd2421f68d6ac81f30493d165262"
+  },
+  "parameters": {
+    "startMs": 1788562800000,
+    "seeds": 30,
+    "days": 14,
+    "longDays": 90
+  },
+  "worlds": [
+    {
+      "seed": "rhythm-acceptance-00",
+      "days": 14,
+      "events": 1505,
+      "rhythmEvents": 146,
+      "habitIncrements": 35,
+      "skippedDecisions": 1,
+      "maxActorBytes": {
+        "ashai": 1672,
+        "goaden": 1982
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "b51f46d38b537e457363b56b67727fb30580cd272bfb1b193fbd216a93ecdde2",
+      "ledgerDigest": "7fc012cec15ce4e0cf8920a18a545041e2374d1dc258e298edf9b40c4e26100a",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 13,
+          "started": 13,
+          "completed": 13,
+          "labels": {
+            "watching_television": {
+              "eligible": 13,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.230769,
+              "completedShare": 0.230769,
+              "chosenWhenEligible": 0.230769,
+              "completedWhenEligible": 0.230769
+            },
+            "quiet_break": {
+              "eligible": 13,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.307692,
+              "completedShare": 0.307692,
+              "chosenWhenEligible": 0.307692,
+              "completedWhenEligible": 0.307692
+            },
+            "listening_to_music": {
+              "eligible": 13,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.384615,
+              "completedShare": 0.384615,
+              "chosenWhenEligible": 0.384615,
+              "completedWhenEligible": 0.384615
+            },
+            "gaming": {
+              "eligible": 13,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.076923,
+              "completedShare": 0.076923,
+              "chosenWhenEligible": 0.076923,
+              "completedWhenEligible": 0.076923
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 10,
+          "labels": {
+            "gaming": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 1,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.166667,
+              "completedShare": 0.1,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.1
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.25,
+              "completedShare": 0.3,
+              "chosenWhenEligible": 0.25,
+              "completedWhenEligible": 0.3
+            },
+            "playing_piano": {
+              "eligible": 12,
+              "chosen": 3,
+              "started": 3,
+              "completed": 2,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.25,
+              "completedShare": 0.2,
+              "chosenWhenEligible": 0.25,
+              "completedWhenEligible": 0.2
+            },
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.333333,
+              "completedShare": 0.4,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.4
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 12,
+          "labels": {
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.333333,
+              "completedShare": 0.333333,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.333333
+            },
+            "watching_television": {
+              "eligible": 12,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.25,
+              "completedShare": 0.25,
+              "chosenWhenEligible": 0.25,
+              "completedWhenEligible": 0.25
+            },
+            "resting": {
+              "eligible": 12,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.25,
+              "completedShare": 0.25,
+              "chosenWhenEligible": 0.25,
+              "completedWhenEligible": 0.25
+            },
+            "gaming": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.166667,
+              "completedShare": 0.166667,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.166667
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-01",
+      "days": 14,
+      "events": 1500,
+      "rhythmEvents": 144,
+      "habitIncrements": 32,
+      "skippedDecisions": 1,
+      "maxActorBytes": {
+        "ashai": 2317,
+        "goaden": 2438
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "55af77f5328dd72f8fb336e6923642c8191d573c32241879b060942f1cf5b548",
+      "ledgerDigest": "6fac644bc26c6c0fad2053edbc7dad11124ab321467296b1ac31d2f3e09c787c",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 13,
+          "started": 13,
+          "completed": 13,
+          "labels": {
+            "watching_television": {
+              "eligible": 13,
+              "chosen": 6,
+              "started": 6,
+              "completed": 6,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.461538,
+              "completedShare": 0.461538,
+              "chosenWhenEligible": 0.461538,
+              "completedWhenEligible": 0.461538
+            },
+            "quiet_break": {
+              "eligible": 13,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.230769,
+              "completedShare": 0.230769,
+              "chosenWhenEligible": 0.230769,
+              "completedWhenEligible": 0.230769
+            },
+            "listening_to_music": {
+              "eligible": 13,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.153846,
+              "completedShare": 0.153846,
+              "chosenWhenEligible": 0.153846,
+              "completedWhenEligible": 0.153846
+            },
+            "gaming": {
+              "eligible": 13,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.153846,
+              "completedShare": 0.153846,
+              "chosenWhenEligible": 0.153846,
+              "completedWhenEligible": 0.153846
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 8,
+          "labels": {
+            "gaming": {
+              "eligible": 11,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.272727,
+              "completedShare": 0.375,
+              "chosenWhenEligible": 0.272727,
+              "completedWhenEligible": 0.375
+            },
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 3,
+              "started": 3,
+              "completed": 1,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.272727,
+              "completedShare": 0.125,
+              "chosenWhenEligible": 0.272727,
+              "completedWhenEligible": 0.125
+            },
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.181818,
+              "completedShare": 0.25,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.25
+            },
+            "playing_piano": {
+              "eligible": 11,
+              "chosen": 3,
+              "started": 3,
+              "completed": 2,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.272727,
+              "completedShare": 0.25,
+              "chosenWhenEligible": 0.272727,
+              "completedWhenEligible": 0.25
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 11,
+          "labels": {
+            "watching_television": {
+              "eligible": 11,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.272727,
+              "completedShare": 0.272727,
+              "chosenWhenEligible": 0.272727,
+              "completedWhenEligible": 0.272727
+            },
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.363636,
+              "completedShare": 0.363636,
+              "chosenWhenEligible": 0.363636,
+              "completedWhenEligible": 0.363636
+            },
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            },
+            "resting": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.181818,
+              "completedShare": 0.181818,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.181818
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-02",
+      "days": 14,
+      "events": 1439,
+      "rhythmEvents": 142,
+      "habitIncrements": 35,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 1662,
+        "goaden": 1807
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "d4bc0059f417e4eb142d7982c6cf8aeaea581692c5b25de7fdc6ec97e471e4e9",
+      "ledgerDigest": "6296793bfc006376a1994983e21aa8502190410a16afb8ef4cecc936c9d478f7",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.357143,
+              "completedShare": 0.357143,
+              "chosenWhenEligible": 0.357143,
+              "completedWhenEligible": 0.357143
+            },
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.214286,
+              "completedShare": 0.214286,
+              "chosenWhenEligible": 0.214286,
+              "completedWhenEligible": 0.214286
+            },
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.142857,
+              "completedShare": 0.142857,
+              "chosenWhenEligible": 0.142857,
+              "completedWhenEligible": 0.142857
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 10,
+          "labels": {
+            "gaming": {
+              "eligible": 11,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.272727,
+              "completedShare": 0.3,
+              "chosenWhenEligible": 0.272727,
+              "completedWhenEligible": 0.3
+            },
+            "playing_piano": {
+              "eligible": 11,
+              "chosen": 4,
+              "started": 4,
+              "completed": 3,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.363636,
+              "completedShare": 0.3,
+              "chosenWhenEligible": 0.363636,
+              "completedWhenEligible": 0.3
+            },
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.090909,
+              "completedShare": 0.1,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.1
+            },
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.272727,
+              "completedShare": 0.3,
+              "chosenWhenEligible": 0.272727,
+              "completedWhenEligible": 0.3
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 11,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.181818,
+              "completedShare": 0.181818,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.181818
+            },
+            "resting": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            },
+            "watching_television": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.181818,
+              "completedShare": 0.181818,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.181818
+            },
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.454545,
+              "completedShare": 0.454545,
+              "chosenWhenEligible": 0.454545,
+              "completedWhenEligible": 0.454545
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-03",
+      "days": 14,
+      "events": 1460,
+      "rhythmEvents": 139,
+      "habitIncrements": 32,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 2001,
+        "goaden": 2128
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "4f4c5c9207e7149c20c3a2fd31d0417a9bda6a52c82ea0f80e04e8dec4b11e69",
+      "ledgerDigest": "ef3fcdc594dce19c677210b877419e9baff83736d9a7a760ce0a9dc20f12672b",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.357143,
+              "completedShare": 0.357143,
+              "chosenWhenEligible": 0.357143,
+              "completedWhenEligible": 0.357143
+            },
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.071429,
+              "completedShare": 0.071429,
+              "chosenWhenEligible": 0.071429,
+              "completedWhenEligible": 0.071429
+            },
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 9,
+          "started": 9,
+          "completed": 9,
+          "labels": {
+            "gaming": {
+              "eligible": 9,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.222222,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.222222,
+              "completedWhenEligible": 0.222222
+            },
+            "quiet_break": {
+              "eligible": 9,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.333333,
+              "completedShare": 0.333333,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.333333
+            },
+            "playing_piano": {
+              "eligible": 9,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.333333,
+              "completedShare": 0.333333,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.333333
+            },
+            "listening_to_music": {
+              "eligible": 9,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.111111,
+              "completedShare": 0.111111,
+              "chosenWhenEligible": 0.111111,
+              "completedWhenEligible": 0.111111
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 9,
+          "started": 9,
+          "completed": 9,
+          "labels": {
+            "gaming": {
+              "eligible": 9,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.111111,
+              "completedShare": 0.111111,
+              "chosenWhenEligible": 0.111111,
+              "completedWhenEligible": 0.111111
+            },
+            "resting": {
+              "eligible": 9,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "watching_television": {
+              "eligible": 9,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.222222,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.222222,
+              "completedWhenEligible": 0.222222
+            },
+            "quiet_break": {
+              "eligible": 9,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.333333,
+              "completedShare": 0.333333,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.333333
+            },
+            "listening_to_music": {
+              "eligible": 9,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.333333,
+              "completedShare": 0.333333,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.333333
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-04",
+      "days": 14,
+      "events": 1471,
+      "rhythmEvents": 139,
+      "habitIncrements": 35,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 1678,
+        "goaden": 1798
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "d4979a6f2e88bc90ea37a0f953fb3186f478eec3663be0bf1e0221dc9ab12ff8",
+      "ledgerDigest": "029e95f553523e9e2cd4d615d84c14cf2c825d1489b66efe653029bc6acda2b0",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.357143,
+              "completedShare": 0.357143,
+              "chosenWhenEligible": 0.357143,
+              "completedWhenEligible": 0.357143
+            },
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 6,
+              "started": 6,
+              "completed": 6,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.428571,
+              "completedShare": 0.428571,
+              "chosenWhenEligible": 0.428571,
+              "completedWhenEligible": 0.428571
+            },
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.142857,
+              "completedShare": 0.142857,
+              "chosenWhenEligible": 0.142857,
+              "completedWhenEligible": 0.142857
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.071429,
+              "completedShare": 0.071429,
+              "chosenWhenEligible": 0.071429,
+              "completedWhenEligible": 0.071429
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 9,
+          "labels": {
+            "gaming": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.166667,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.222222
+            },
+            "playing_piano": {
+              "eligible": 12,
+              "chosen": 6,
+              "started": 6,
+              "completed": 5,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.5,
+              "completedShare": 0.555556,
+              "chosenWhenEligible": 0.5,
+              "completedWhenEligible": 0.555556
+            },
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 3,
+              "started": 3,
+              "completed": 1,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.25,
+              "completedShare": 0.111111,
+              "chosenWhenEligible": 0.25,
+              "completedWhenEligible": 0.111111
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.083333,
+              "completedShare": 0.111111,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.111111
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 12,
+          "labels": {
+            "gaming": {
+              "eligible": 12,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.416667,
+              "completedShare": 0.416667,
+              "chosenWhenEligible": 0.416667,
+              "completedWhenEligible": 0.416667
+            },
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "resting": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.166667,
+              "completedShare": 0.166667,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.166667
+            },
+            "watching_television": {
+              "eligible": 12,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.416667,
+              "completedShare": 0.416667,
+              "chosenWhenEligible": 0.416667,
+              "completedWhenEligible": 0.416667
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-05",
+      "days": 14,
+      "events": 1445,
+      "rhythmEvents": 141,
+      "habitIncrements": 33,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 2346,
+        "goaden": 2471
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "efd1a1cd5bdb455e36b51574e9f0aac8f6b90fb4361337b6abb13104d90449a5",
+      "ledgerDigest": "354c465300e8adeb76b22a9b5776da26e8869882d104fa816342a9fd787ff9fa",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.357143,
+              "completedShare": 0.357143,
+              "chosenWhenEligible": 0.357143,
+              "completedWhenEligible": 0.357143
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.142857,
+              "completedShare": 0.142857,
+              "chosenWhenEligible": 0.142857,
+              "completedWhenEligible": 0.142857
+            },
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.142857,
+              "completedShare": 0.142857,
+              "chosenWhenEligible": 0.142857,
+              "completedWhenEligible": 0.142857
+            },
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.357143,
+              "completedShare": 0.357143,
+              "chosenWhenEligible": 0.357143,
+              "completedWhenEligible": 0.357143
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 8,
+          "labels": {
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.181818,
+              "completedShare": 0.25,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.25
+            },
+            "playing_piano": {
+              "eligible": 11,
+              "chosen": 8,
+              "started": 8,
+              "completed": 5,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.727273,
+              "completedShare": 0.625,
+              "chosenWhenEligible": 0.727273,
+              "completedWhenEligible": 0.625
+            },
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.090909,
+              "completedShare": 0.125,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.125
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 11,
+          "labels": {
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.181818,
+              "completedShare": 0.181818,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.181818
+            },
+            "watching_television": {
+              "eligible": 11,
+              "chosen": 6,
+              "started": 6,
+              "completed": 6,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.545455,
+              "completedShare": 0.545455,
+              "chosenWhenEligible": 0.545455,
+              "completedWhenEligible": 0.545455
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            },
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "resting": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.181818,
+              "completedShare": 0.181818,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.181818
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-06",
+      "days": 14,
+      "events": 1461,
+      "rhythmEvents": 155,
+      "habitIncrements": 35,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 1687,
+        "goaden": 1795
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "105e0baf473e439c870afeb10a114286be5050c29b33bb64e183f07d8e22eca6",
+      "ledgerDigest": "7b14374d7f6ee5912252ce275a6441608cc9cf0cb1a05226aa61340a3a1ece8b",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 9,
+              "started": 9,
+              "completed": 9,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.642857,
+              "completedShare": 0.642857,
+              "chosenWhenEligible": 0.642857,
+              "completedWhenEligible": 0.642857
+            },
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            },
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.071429,
+              "completedShare": 0.071429,
+              "chosenWhenEligible": 0.071429,
+              "completedWhenEligible": 0.071429
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 10,
+          "labels": {
+            "gaming": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.181818,
+              "completedShare": 0.2,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.2
+            },
+            "playing_piano": {
+              "eligible": 11,
+              "chosen": 7,
+              "started": 7,
+              "completed": 6,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.636364,
+              "completedShare": 0.6,
+              "chosenWhenEligible": 0.636364,
+              "completedWhenEligible": 0.6
+            },
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.181818,
+              "completedShare": 0.2,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.2
+            },
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 11,
+          "labels": {
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.363636,
+              "completedShare": 0.363636,
+              "chosenWhenEligible": 0.363636,
+              "completedWhenEligible": 0.363636
+            },
+            "watching_television": {
+              "eligible": 11,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.454545,
+              "completedShare": 0.454545,
+              "chosenWhenEligible": 0.454545,
+              "completedWhenEligible": 0.454545
+            },
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            },
+            "resting": {
+              "eligible": 11,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-07",
+      "days": 14,
+      "events": 1507,
+      "rhythmEvents": 147,
+      "habitIncrements": 33,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 2280,
+        "goaden": 2440
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "f11dd81b6d83f5f6419abbd7d5b181199e6420e52af981864e3b04d39a8efb3b",
+      "ledgerDigest": "6b74755977abb23dc2212f6706370a42d80f4016d38b5776a3ef0e3d0be1d686",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 6,
+              "started": 6,
+              "completed": 6,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.428571,
+              "completedShare": 0.428571,
+              "chosenWhenEligible": 0.428571,
+              "completedWhenEligible": 0.428571
+            },
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 8,
+          "labels": {
+            "gaming": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.166667,
+              "completedShare": 0.25,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.25
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 1,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.166667,
+              "completedShare": 0.125,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.125
+            },
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 4,
+              "started": 4,
+              "completed": 2,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.333333,
+              "completedShare": 0.25,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.25
+            },
+            "playing_piano": {
+              "eligible": 12,
+              "chosen": 4,
+              "started": 4,
+              "completed": 3,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.333333,
+              "completedShare": 0.375,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.375
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 11,
+          "labels": {
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.166667,
+              "completedShare": 0.181818,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.181818
+            },
+            "watching_television": {
+              "eligible": 12,
+              "chosen": 5,
+              "started": 5,
+              "completed": 4,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.416667,
+              "completedShare": 0.363636,
+              "chosenWhenEligible": 0.416667,
+              "completedWhenEligible": 0.363636
+            },
+            "resting": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.083333,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.090909
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.083333,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.090909
+            },
+            "gaming": {
+              "eligible": 12,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.25,
+              "completedShare": 0.272727,
+              "chosenWhenEligible": 0.25,
+              "completedWhenEligible": 0.272727
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-08",
+      "days": 14,
+      "events": 1477,
+      "rhythmEvents": 141,
+      "habitIncrements": 30,
+      "skippedDecisions": 1,
+      "maxActorBytes": {
+        "ashai": 1821,
+        "goaden": 1907
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "07b07c841e293e77533ac41eba268c57f9062f6762685a79a38b055d47d74398",
+      "ledgerDigest": "8e9aeda307186b90278daf1a8c5544cef46e0a94dae3a8af7d523fb67f62410f",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 13,
+          "started": 13,
+          "completed": 13,
+          "labels": {
+            "quiet_break": {
+              "eligible": 13,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.307692,
+              "completedShare": 0.307692,
+              "chosenWhenEligible": 0.307692,
+              "completedWhenEligible": 0.307692
+            },
+            "watching_television": {
+              "eligible": 13,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.384615,
+              "completedShare": 0.384615,
+              "chosenWhenEligible": 0.384615,
+              "completedWhenEligible": 0.384615
+            },
+            "listening_to_music": {
+              "eligible": 13,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.076923,
+              "completedShare": 0.076923,
+              "chosenWhenEligible": 0.076923,
+              "completedWhenEligible": 0.076923
+            },
+            "gaming": {
+              "eligible": 13,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.230769,
+              "completedShare": 0.230769,
+              "chosenWhenEligible": 0.230769,
+              "completedWhenEligible": 0.230769
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 10,
+          "started": 10,
+          "completed": 7,
+          "labels": {
+            "quiet_break": {
+              "eligible": 10,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 7,
+              "chosenShare": 0.3,
+              "completedShare": 0.428571,
+              "chosenWhenEligible": 0.3,
+              "completedWhenEligible": 0.428571
+            },
+            "listening_to_music": {
+              "eligible": 10,
+              "chosen": 4,
+              "started": 4,
+              "completed": 3,
+              "eligibleCompletedSlots": 7,
+              "chosenShare": 0.4,
+              "completedShare": 0.428571,
+              "chosenWhenEligible": 0.4,
+              "completedWhenEligible": 0.428571
+            },
+            "playing_piano": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 1,
+              "eligibleCompletedSlots": 7,
+              "chosenShare": 0.2,
+              "completedShare": 0.142857,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.142857
+            },
+            "gaming": {
+              "eligible": 10,
+              "chosen": 1,
+              "started": 1,
+              "completed": 0,
+              "eligibleCompletedSlots": 7,
+              "chosenShare": 0.1,
+              "completedShare": 0,
+              "chosenWhenEligible": 0.1,
+              "completedWhenEligible": 0
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 10,
+          "started": 10,
+          "completed": 10,
+          "labels": {
+            "watching_television": {
+              "eligible": 10,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.4,
+              "completedShare": 0.4,
+              "chosenWhenEligible": 0.4,
+              "completedWhenEligible": 0.4
+            },
+            "gaming": {
+              "eligible": 10,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "listening_to_music": {
+              "eligible": 10,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "resting": {
+              "eligible": 10,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.4,
+              "completedShare": 0.4,
+              "chosenWhenEligible": 0.4,
+              "completedWhenEligible": 0.4
+            },
+            "quiet_break": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.2,
+              "completedShare": 0.2,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.2
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-09",
+      "days": 14,
+      "events": 1457,
+      "rhythmEvents": 152,
+      "habitIncrements": 33,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 1849,
+        "goaden": 1804
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "f563869f0679264d41a75c2a74fae2b032b82d9029685014b58a94df11c3df22",
+      "ledgerDigest": "45f728f3ac302eedaa38103ac2b0194a0dbb277c50839c8143f34e49ba5d2602",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.357143,
+              "completedShare": 0.357143,
+              "chosenWhenEligible": 0.357143,
+              "completedWhenEligible": 0.357143
+            },
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            },
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.071429,
+              "completedShare": 0.071429,
+              "chosenWhenEligible": 0.071429,
+              "completedWhenEligible": 0.071429
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 10,
+          "started": 10,
+          "completed": 9,
+          "labels": {
+            "gaming": {
+              "eligible": 10,
+              "chosen": 4,
+              "started": 4,
+              "completed": 3,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.4,
+              "completedShare": 0.333333,
+              "chosenWhenEligible": 0.4,
+              "completedWhenEligible": 0.333333
+            },
+            "quiet_break": {
+              "eligible": 10,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.1,
+              "completedShare": 0.111111,
+              "chosenWhenEligible": 0.1,
+              "completedWhenEligible": 0.111111
+            },
+            "playing_piano": {
+              "eligible": 10,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.3,
+              "completedShare": 0.333333,
+              "chosenWhenEligible": 0.3,
+              "completedWhenEligible": 0.333333
+            },
+            "listening_to_music": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.2,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.222222
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 10,
+          "started": 10,
+          "completed": 10,
+          "labels": {
+            "resting": {
+              "eligible": 10,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.1,
+              "completedShare": 0.1,
+              "chosenWhenEligible": 0.1,
+              "completedWhenEligible": 0.1
+            },
+            "gaming": {
+              "eligible": 10,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.1,
+              "completedShare": 0.1,
+              "chosenWhenEligible": 0.1,
+              "completedWhenEligible": 0.1
+            },
+            "watching_television": {
+              "eligible": 10,
+              "chosen": 6,
+              "started": 6,
+              "completed": 6,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.6,
+              "completedShare": 0.6,
+              "chosenWhenEligible": 0.6,
+              "completedWhenEligible": 0.6
+            },
+            "listening_to_music": {
+              "eligible": 10,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.1,
+              "completedShare": 0.1,
+              "chosenWhenEligible": 0.1,
+              "completedWhenEligible": 0.1
+            },
+            "quiet_break": {
+              "eligible": 10,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.1,
+              "completedShare": 0.1,
+              "chosenWhenEligible": 0.1,
+              "completedWhenEligible": 0.1
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-10",
+      "days": 14,
+      "events": 1480,
+      "rhythmEvents": 149,
+      "habitIncrements": 32,
+      "skippedDecisions": 1,
+      "maxActorBytes": {
+        "ashai": 2306,
+        "goaden": 2382
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "afedb10a4cb991a3f9803f6aab5caa8ead1cab05d11239e0c51db3c72cb44246",
+      "ledgerDigest": "56ebef48df5bea44650388ec5e5026063a1505c090868ace7144778c3670fa41",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 13,
+          "started": 13,
+          "completed": 13,
+          "labels": {
+            "watching_television": {
+              "eligible": 13,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.307692,
+              "completedShare": 0.307692,
+              "chosenWhenEligible": 0.307692,
+              "completedWhenEligible": 0.307692
+            },
+            "listening_to_music": {
+              "eligible": 13,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.076923,
+              "completedShare": 0.076923,
+              "chosenWhenEligible": 0.076923,
+              "completedWhenEligible": 0.076923
+            },
+            "quiet_break": {
+              "eligible": 13,
+              "chosen": 7,
+              "started": 7,
+              "completed": 7,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.538462,
+              "completedShare": 0.538462,
+              "chosenWhenEligible": 0.538462,
+              "completedWhenEligible": 0.538462
+            },
+            "gaming": {
+              "eligible": 13,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.076923,
+              "completedShare": 0.076923,
+              "chosenWhenEligible": 0.076923,
+              "completedWhenEligible": 0.076923
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 8,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 4,
+              "started": 4,
+              "completed": 3,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.333333,
+              "completedShare": 0.375,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.375
+            },
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 3,
+              "started": 3,
+              "completed": 1,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.25,
+              "completedShare": 0.125,
+              "chosenWhenEligible": 0.25,
+              "completedWhenEligible": 0.125
+            },
+            "playing_piano": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 0,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.083333,
+              "completedShare": 0,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0
+            },
+            "gaming": {
+              "eligible": 12,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.333333,
+              "completedShare": 0.5,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.5
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 11,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.333333,
+              "completedShare": 0.363636,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.363636
+            },
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.083333,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.090909
+            },
+            "watching_television": {
+              "eligible": 12,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.333333,
+              "completedShare": 0.363636,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.363636
+            },
+            "gaming": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 0,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.083333,
+              "completedShare": 0,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0
+            },
+            "resting": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.166667,
+              "completedShare": 0.181818,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.181818
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-11",
+      "days": 14,
+      "events": 1416,
+      "rhythmEvents": 143,
+      "habitIncrements": 30,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 2138,
+        "goaden": 2278
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "e223fc899078f242ca4f3aad8abebd398913006db0bd412a1ef3382ccd2fe090",
+      "ledgerDigest": "076fe8fbe03720c9459217bc9aa0637f8cba92d429368b6586c11173ba1bcc6c",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "gaming": {
+              "eligible": 14,
+              "chosen": 7,
+              "started": 7,
+              "completed": 7,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.5,
+              "completedShare": 0.5,
+              "chosenWhenEligible": 0.5,
+              "completedWhenEligible": 0.5
+            },
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            },
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.142857,
+              "completedShare": 0.142857,
+              "chosenWhenEligible": 0.142857,
+              "completedWhenEligible": 0.142857
+            },
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.071429,
+              "completedShare": 0.071429,
+              "chosenWhenEligible": 0.071429,
+              "completedWhenEligible": 0.071429
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 8,
+          "started": 8,
+          "completed": 8,
+          "labels": {
+            "playing_piano": {
+              "eligible": 8,
+              "chosen": 6,
+              "started": 6,
+              "completed": 6,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.75,
+              "completedShare": 0.75,
+              "chosenWhenEligible": 0.75,
+              "completedWhenEligible": 0.75
+            },
+            "listening_to_music": {
+              "eligible": 8,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "gaming": {
+              "eligible": 8,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.125,
+              "completedShare": 0.125,
+              "chosenWhenEligible": 0.125,
+              "completedWhenEligible": 0.125
+            },
+            "quiet_break": {
+              "eligible": 8,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.125,
+              "completedShare": 0.125,
+              "chosenWhenEligible": 0.125,
+              "completedWhenEligible": 0.125
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 8,
+          "started": 8,
+          "completed": 8,
+          "labels": {
+            "quiet_break": {
+              "eligible": 8,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.125,
+              "completedShare": 0.125,
+              "chosenWhenEligible": 0.125,
+              "completedWhenEligible": 0.125
+            },
+            "watching_television": {
+              "eligible": 8,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.375,
+              "completedShare": 0.375,
+              "chosenWhenEligible": 0.375,
+              "completedWhenEligible": 0.375
+            },
+            "listening_to_music": {
+              "eligible": 8,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.25,
+              "completedShare": 0.25,
+              "chosenWhenEligible": 0.25,
+              "completedWhenEligible": 0.25
+            },
+            "gaming": {
+              "eligible": 8,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.125,
+              "completedShare": 0.125,
+              "chosenWhenEligible": 0.125,
+              "completedWhenEligible": 0.125
+            },
+            "resting": {
+              "eligible": 8,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.125,
+              "completedShare": 0.125,
+              "chosenWhenEligible": 0.125,
+              "completedWhenEligible": 0.125
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-12",
+      "days": 14,
+      "events": 1503,
+      "rhythmEvents": 148,
+      "habitIncrements": 31,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 2625,
+        "goaden": 2595
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "4c1be4d7739f4164cc99dbdb450666d9049357103800d20e8cf6abaab5765f79",
+      "ledgerDigest": "6cc8fea3c3a429e21df8c880b0173a223c934b0c8b8685309737c3957c52b4d3",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 7,
+              "started": 7,
+              "completed": 7,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.5,
+              "completedShare": 0.5,
+              "chosenWhenEligible": 0.5,
+              "completedWhenEligible": 0.5
+            },
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.214286,
+              "completedShare": 0.214286,
+              "chosenWhenEligible": 0.214286,
+              "completedWhenEligible": 0.214286
+            },
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.214286,
+              "completedShare": 0.214286,
+              "chosenWhenEligible": 0.214286,
+              "completedWhenEligible": 0.214286
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.071429,
+              "completedShare": 0.071429,
+              "chosenWhenEligible": 0.071429,
+              "completedWhenEligible": 0.071429
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 10,
+          "started": 10,
+          "completed": 8,
+          "labels": {
+            "playing_piano": {
+              "eligible": 10,
+              "chosen": 3,
+              "started": 3,
+              "completed": 2,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.3,
+              "completedShare": 0.25,
+              "chosenWhenEligible": 0.3,
+              "completedWhenEligible": 0.25
+            },
+            "listening_to_music": {
+              "eligible": 10,
+              "chosen": 3,
+              "started": 3,
+              "completed": 2,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.3,
+              "completedShare": 0.25,
+              "chosenWhenEligible": 0.3,
+              "completedWhenEligible": 0.25
+            },
+            "gaming": {
+              "eligible": 10,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "quiet_break": {
+              "eligible": 10,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.4,
+              "completedShare": 0.5,
+              "chosenWhenEligible": 0.4,
+              "completedWhenEligible": 0.5
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 10,
+          "started": 10,
+          "completed": 9,
+          "labels": {
+            "gaming": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.2,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.222222
+            },
+            "quiet_break": {
+              "eligible": 10,
+              "chosen": 3,
+              "started": 3,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.3,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.3,
+              "completedWhenEligible": 0.222222
+            },
+            "listening_to_music": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.2,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.222222
+            },
+            "watching_television": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.2,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.222222
+            },
+            "resting": {
+              "eligible": 10,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.1,
+              "completedShare": 0.111111,
+              "chosenWhenEligible": 0.1,
+              "completedWhenEligible": 0.111111
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-13",
+      "days": 14,
+      "events": 1434,
+      "rhythmEvents": 144,
+      "habitIncrements": 34,
+      "skippedDecisions": 2,
+      "maxActorBytes": {
+        "ashai": 1981,
+        "goaden": 2262
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "138161e72e58d96203041d715c372c3fdf9899f9b5ac7ff691eda3e88dffcc0c",
+      "ledgerDigest": "9e31b06b05dfae0660385bd294cb351fdf31b31b9e9f882a21cf98909de8d744",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            },
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.357143,
+              "completedShare": 0.357143,
+              "chosenWhenEligible": 0.357143,
+              "completedWhenEligible": 0.357143
+            },
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.214286,
+              "completedShare": 0.214286,
+              "chosenWhenEligible": 0.214286,
+              "completedWhenEligible": 0.214286
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.142857,
+              "completedShare": 0.142857,
+              "chosenWhenEligible": 0.142857,
+              "completedWhenEligible": 0.142857
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 10,
+          "started": 10,
+          "completed": 10,
+          "labels": {
+            "playing_piano": {
+              "eligible": 10,
+              "chosen": 6,
+              "started": 6,
+              "completed": 6,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.6,
+              "completedShare": 0.6,
+              "chosenWhenEligible": 0.6,
+              "completedWhenEligible": 0.6
+            },
+            "gaming": {
+              "eligible": 10,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.3,
+              "completedShare": 0.3,
+              "chosenWhenEligible": 0.3,
+              "completedWhenEligible": 0.3
+            },
+            "quiet_break": {
+              "eligible": 10,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.1,
+              "completedShare": 0.1,
+              "chosenWhenEligible": 0.1,
+              "completedWhenEligible": 0.1
+            },
+            "listening_to_music": {
+              "eligible": 10,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 10,
+          "started": 10,
+          "completed": 10,
+          "labels": {
+            "gaming": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.2,
+              "completedShare": 0.2,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.2
+            },
+            "watching_television": {
+              "eligible": 10,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.5,
+              "completedShare": 0.5,
+              "chosenWhenEligible": 0.5,
+              "completedWhenEligible": 0.5
+            },
+            "resting": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.2,
+              "completedShare": 0.2,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.2
+            },
+            "quiet_break": {
+              "eligible": 10,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.1,
+              "completedShare": 0.1,
+              "chosenWhenEligible": 0.1,
+              "completedWhenEligible": 0.1
+            },
+            "listening_to_music": {
+              "eligible": 10,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-14",
+      "days": 14,
+      "events": 1484,
+      "rhythmEvents": 137,
+      "habitIncrements": 30,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 2326,
+        "goaden": 2444
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "aecef06da556f635987e40b025ca68236c698e8a2eee9186d2a6616725d9bb03",
+      "ledgerDigest": "5859d151cf1e0579548210f6e8892c0c345a9f133dfb42b3cd1b79340988f2fd",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 9,
+              "started": 9,
+              "completed": 9,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.642857,
+              "completedShare": 0.642857,
+              "chosenWhenEligible": 0.642857,
+              "completedWhenEligible": 0.642857
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.142857,
+              "completedShare": 0.142857,
+              "chosenWhenEligible": 0.142857,
+              "completedWhenEligible": 0.142857
+            },
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.214286,
+              "completedShare": 0.214286,
+              "chosenWhenEligible": 0.214286,
+              "completedWhenEligible": 0.214286
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 10,
+          "started": 10,
+          "completed": 7,
+          "labels": {
+            "quiet_break": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 7,
+              "chosenShare": 0.2,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.285714
+            },
+            "gaming": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 7,
+              "chosenShare": 0.2,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.285714
+            },
+            "listening_to_music": {
+              "eligible": 10,
+              "chosen": 1,
+              "started": 1,
+              "completed": 0,
+              "eligibleCompletedSlots": 7,
+              "chosenShare": 0.1,
+              "completedShare": 0,
+              "chosenWhenEligible": 0.1,
+              "completedWhenEligible": 0
+            },
+            "playing_piano": {
+              "eligible": 10,
+              "chosen": 5,
+              "started": 5,
+              "completed": 3,
+              "eligibleCompletedSlots": 7,
+              "chosenShare": 0.5,
+              "completedShare": 0.428571,
+              "chosenWhenEligible": 0.5,
+              "completedWhenEligible": 0.428571
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 10,
+          "started": 10,
+          "completed": 9,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 1,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.2,
+              "completedShare": 0.111111,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.111111
+            },
+            "resting": {
+              "eligible": 10,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "quiet_break": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.2,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.222222
+            },
+            "watching_television": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.2,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.222222
+            },
+            "gaming": {
+              "eligible": 10,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.4,
+              "completedShare": 0.444444,
+              "chosenWhenEligible": 0.4,
+              "completedWhenEligible": 0.444444
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-15",
+      "days": 14,
+      "events": 1448,
+      "rhythmEvents": 145,
+      "habitIncrements": 36,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 2166,
+        "goaden": 1990
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "874993a359fdbc8db4c9279b19f8def7a4338834b701736b3b06c4550cedabdc",
+      "ledgerDigest": "5d2c1dee8e9beb0e4af693e417eb4344aae77f54906ffd370091b9a90bc5422e",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 10,
+              "started": 10,
+              "completed": 10,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.714286,
+              "completedShare": 0.714286,
+              "chosenWhenEligible": 0.714286,
+              "completedWhenEligible": 0.714286
+            },
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.214286,
+              "completedShare": 0.214286,
+              "chosenWhenEligible": 0.214286,
+              "completedWhenEligible": 0.214286
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.071429,
+              "completedShare": 0.071429,
+              "chosenWhenEligible": 0.071429,
+              "completedWhenEligible": 0.071429
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 11,
+          "labels": {
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.272727,
+              "completedShare": 0.272727,
+              "chosenWhenEligible": 0.272727,
+              "completedWhenEligible": 0.272727
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            },
+            "playing_piano": {
+              "eligible": 11,
+              "chosen": 6,
+              "started": 6,
+              "completed": 6,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.545455,
+              "completedShare": 0.545455,
+              "chosenWhenEligible": 0.545455,
+              "completedWhenEligible": 0.545455
+            },
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 11,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.363636,
+              "completedShare": 0.363636,
+              "chosenWhenEligible": 0.363636,
+              "completedWhenEligible": 0.363636
+            },
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            },
+            "resting": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            },
+            "watching_television": {
+              "eligible": 11,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.363636,
+              "completedShare": 0.363636,
+              "chosenWhenEligible": 0.363636,
+              "completedWhenEligible": 0.363636
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-16",
+      "days": 14,
+      "events": 1449,
+      "rhythmEvents": 137,
+      "habitIncrements": 35,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 2014,
+        "goaden": 2126
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "2c1d7a81a6c3596939d795c6ec689d44fae4d0c6122e4d733d42c862ea6d56b1",
+      "ledgerDigest": "9257d0da94e54e046a2675737d66a347dc21957f7a6f1edc7e038aedfc7e2e58",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 7,
+              "started": 7,
+              "completed": 7,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.5,
+              "completedShare": 0.5,
+              "chosenWhenEligible": 0.5,
+              "completedWhenEligible": 0.5
+            },
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.071429,
+              "completedShare": 0.071429,
+              "chosenWhenEligible": 0.071429,
+              "completedWhenEligible": 0.071429
+            },
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.142857,
+              "completedShare": 0.142857,
+              "chosenWhenEligible": 0.142857,
+              "completedWhenEligible": 0.142857
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 9,
+          "labels": {
+            "gaming": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 0,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.166667,
+              "completedShare": 0,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0
+            },
+            "playing_piano": {
+              "eligible": 12,
+              "chosen": 6,
+              "started": 6,
+              "completed": 5,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.5,
+              "completedShare": 0.555556,
+              "chosenWhenEligible": 0.5,
+              "completedWhenEligible": 0.555556
+            },
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.166667,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.222222
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.166667,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.222222
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 12,
+          "labels": {
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.166667,
+              "completedShare": 0.166667,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.166667
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.083333,
+              "completedShare": 0.083333,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.083333
+            },
+            "resting": {
+              "eligible": 12,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "watching_television": {
+              "eligible": 12,
+              "chosen": 8,
+              "started": 8,
+              "completed": 8,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.666667,
+              "completedShare": 0.666667,
+              "chosenWhenEligible": 0.666667,
+              "completedWhenEligible": 0.666667
+            },
+            "gaming": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.083333,
+              "completedShare": 0.083333,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.083333
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-17",
+      "days": 14,
+      "events": 1457,
+      "rhythmEvents": 143,
+      "habitIncrements": 33,
+      "skippedDecisions": 1,
+      "maxActorBytes": {
+        "ashai": 2169,
+        "goaden": 2300
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "217aef11d90da22f66aab6dfca77738c7c2de2477de13a1e930b9670d9a86751",
+      "ledgerDigest": "03d09c154b42c7afd3dc956d6370511588f480ef8f5a0da718327d948769d15b",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 13,
+          "started": 13,
+          "completed": 13,
+          "labels": {
+            "quiet_break": {
+              "eligible": 13,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.153846,
+              "completedShare": 0.153846,
+              "chosenWhenEligible": 0.153846,
+              "completedWhenEligible": 0.153846
+            },
+            "watching_television": {
+              "eligible": 13,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.384615,
+              "completedShare": 0.384615,
+              "chosenWhenEligible": 0.384615,
+              "completedWhenEligible": 0.384615
+            },
+            "listening_to_music": {
+              "eligible": 13,
+              "chosen": 6,
+              "started": 6,
+              "completed": 6,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.461538,
+              "completedShare": 0.461538,
+              "chosenWhenEligible": 0.461538,
+              "completedWhenEligible": 0.461538
+            },
+            "gaming": {
+              "eligible": 13,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 9,
+          "labels": {
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 1,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.181818,
+              "completedShare": 0.111111,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.111111
+            },
+            "playing_piano": {
+              "eligible": 11,
+              "chosen": 4,
+              "started": 4,
+              "completed": 3,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.363636,
+              "completedShare": 0.333333,
+              "chosenWhenEligible": 0.363636,
+              "completedWhenEligible": 0.333333
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.181818,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.222222
+            },
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.272727,
+              "completedShare": 0.333333,
+              "chosenWhenEligible": 0.272727,
+              "completedWhenEligible": 0.333333
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 11,
+          "labels": {
+            "resting": {
+              "eligible": 11,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.272727,
+              "completedShare": 0.272727,
+              "chosenWhenEligible": 0.272727,
+              "completedWhenEligible": 0.272727
+            },
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.181818,
+              "completedShare": 0.181818,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.181818
+            },
+            "watching_television": {
+              "eligible": 11,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.363636,
+              "completedShare": 0.363636,
+              "chosenWhenEligible": 0.363636,
+              "completedWhenEligible": 0.363636
+            },
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.181818,
+              "completedShare": 0.181818,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.181818
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-18",
+      "days": 14,
+      "events": 1466,
+      "rhythmEvents": 136,
+      "habitIncrements": 33,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 1675,
+        "goaden": 1809
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "788805183b275d1908a5d0080629bb51a574f08832d5faa1bdbd6aa5a4de898a",
+      "ledgerDigest": "34069e2be3814ac1a74ef177885b8bc6460cd695f72489eaa3a9f155d0279000",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.214286,
+              "completedShare": 0.214286,
+              "chosenWhenEligible": 0.214286,
+              "completedWhenEligible": 0.214286
+            },
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            },
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.214286,
+              "completedShare": 0.214286,
+              "chosenWhenEligible": 0.214286,
+              "completedWhenEligible": 0.214286
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 8,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.272727,
+              "completedShare": 0.375,
+              "chosenWhenEligible": 0.272727,
+              "completedWhenEligible": 0.375
+            },
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 1,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.181818,
+              "completedShare": 0.125,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.125
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 1,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.181818,
+              "completedShare": 0.125,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.125
+            },
+            "playing_piano": {
+              "eligible": 11,
+              "chosen": 4,
+              "started": 4,
+              "completed": 3,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.363636,
+              "completedShare": 0.375,
+              "chosenWhenEligible": 0.363636,
+              "completedWhenEligible": 0.375
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 11,
+          "labels": {
+            "resting": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.181818,
+              "completedShare": 0.181818,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.181818
+            },
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            },
+            "watching_television": {
+              "eligible": 11,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.454545,
+              "completedShare": 0.454545,
+              "chosenWhenEligible": 0.454545,
+              "completedWhenEligible": 0.454545
+            },
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.181818,
+              "completedShare": 0.181818,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.181818
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-19",
+      "days": 14,
+      "events": 1421,
+      "rhythmEvents": 143,
+      "habitIncrements": 32,
+      "skippedDecisions": 1,
+      "maxActorBytes": {
+        "ashai": 1964,
+        "goaden": 2133
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "f9ca1501edd42ceb8fb81d6e6b5495145f3ef2ac593462c31cdc06436741e102",
+      "ledgerDigest": "1f2290d8f13aefe1035863438c17bbe80cb95b85fd5fcf8daf6c20ab9d09c7f9",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 13,
+          "started": 13,
+          "completed": 13,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 13,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.230769,
+              "completedShare": 0.230769,
+              "chosenWhenEligible": 0.230769,
+              "completedWhenEligible": 0.230769
+            },
+            "watching_television": {
+              "eligible": 13,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.307692,
+              "completedShare": 0.307692,
+              "chosenWhenEligible": 0.307692,
+              "completedWhenEligible": 0.307692
+            },
+            "quiet_break": {
+              "eligible": 13,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.307692,
+              "completedShare": 0.307692,
+              "chosenWhenEligible": 0.307692,
+              "completedWhenEligible": 0.307692
+            },
+            "gaming": {
+              "eligible": 13,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.153846,
+              "completedShare": 0.153846,
+              "chosenWhenEligible": 0.153846,
+              "completedWhenEligible": 0.153846
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 10,
+          "started": 10,
+          "completed": 9,
+          "labels": {
+            "quiet_break": {
+              "eligible": 10,
+              "chosen": 3,
+              "started": 3,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.3,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.3,
+              "completedWhenEligible": 0.222222
+            },
+            "playing_piano": {
+              "eligible": 10,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.4,
+              "completedShare": 0.444444,
+              "chosenWhenEligible": 0.4,
+              "completedWhenEligible": 0.444444
+            },
+            "listening_to_music": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.2,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.222222
+            },
+            "gaming": {
+              "eligible": 10,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.1,
+              "completedShare": 0.111111,
+              "chosenWhenEligible": 0.1,
+              "completedWhenEligible": 0.111111
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 10,
+          "started": 10,
+          "completed": 10,
+          "labels": {
+            "quiet_break": {
+              "eligible": 10,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.5,
+              "completedShare": 0.5,
+              "chosenWhenEligible": 0.5,
+              "completedWhenEligible": 0.5
+            },
+            "resting": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.2,
+              "completedShare": 0.2,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.2
+            },
+            "watching_television": {
+              "eligible": 10,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.1,
+              "completedShare": 0.1,
+              "chosenWhenEligible": 0.1,
+              "completedWhenEligible": 0.1
+            },
+            "gaming": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.2,
+              "completedShare": 0.2,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.2
+            },
+            "listening_to_music": {
+              "eligible": 10,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-20",
+      "days": 14,
+      "events": 1480,
+      "rhythmEvents": 158,
+      "habitIncrements": 36,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 2009,
+        "goaden": 2131
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "76ee3ce3beeceacbe3a95b0d37aadc0a121136b819542f4fb696fd821d0c7dd9",
+      "ledgerDigest": "49e4b382c5dee743c138630d3e436fe1c79fdfd32de99de3f1d3942c69ef70e2",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 8,
+              "started": 8,
+              "completed": 8,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.571429,
+              "completedShare": 0.571429,
+              "chosenWhenEligible": 0.571429,
+              "completedWhenEligible": 0.571429
+            },
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            },
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.142857,
+              "completedShare": 0.142857,
+              "chosenWhenEligible": 0.142857,
+              "completedWhenEligible": 0.142857
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 10,
+          "labels": {
+            "playing_piano": {
+              "eligible": 12,
+              "chosen": 6,
+              "started": 6,
+              "completed": 6,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.5,
+              "completedShare": 0.6,
+              "chosenWhenEligible": 0.5,
+              "completedWhenEligible": 0.6
+            },
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.083333,
+              "completedShare": 0.1,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.1
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 4,
+              "started": 4,
+              "completed": 2,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.333333,
+              "completedShare": 0.2,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.2
+            },
+            "gaming": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.083333,
+              "completedShare": 0.1,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.1
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 12,
+          "labels": {
+            "resting": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.083333,
+              "completedShare": 0.083333,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.083333
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.083333,
+              "completedShare": 0.083333,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.083333
+            },
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.166667,
+              "completedShare": 0.166667,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.166667
+            },
+            "watching_television": {
+              "eligible": 12,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.416667,
+              "completedShare": 0.416667,
+              "chosenWhenEligible": 0.416667,
+              "completedWhenEligible": 0.416667
+            },
+            "gaming": {
+              "eligible": 12,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.25,
+              "completedShare": 0.25,
+              "chosenWhenEligible": 0.25,
+              "completedWhenEligible": 0.25
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-21",
+      "days": 14,
+      "events": 1458,
+      "rhythmEvents": 163,
+      "habitIncrements": 36,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 1710,
+        "goaden": 1808
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "7db3ec20001ecd3190eba712e2630b0fb7c65533c12ee21b8844771d109be9d0",
+      "ledgerDigest": "fd9db9b240493baf03c3747816cb9b046f969a13555fd76bbfb94a2f1df37868",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.214286,
+              "completedShare": 0.214286,
+              "chosenWhenEligible": 0.214286,
+              "completedWhenEligible": 0.214286
+            },
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 7,
+              "started": 7,
+              "completed": 7,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.5,
+              "completedShare": 0.5,
+              "chosenWhenEligible": 0.5,
+              "completedWhenEligible": 0.5
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.142857,
+              "completedShare": 0.142857,
+              "chosenWhenEligible": 0.142857,
+              "completedWhenEligible": 0.142857
+            },
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.142857,
+              "completedShare": 0.142857,
+              "chosenWhenEligible": 0.142857,
+              "completedWhenEligible": 0.142857
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 10,
+          "labels": {
+            "playing_piano": {
+              "eligible": 12,
+              "chosen": 6,
+              "started": 6,
+              "completed": 4,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.5,
+              "completedShare": 0.4,
+              "chosenWhenEligible": 0.5,
+              "completedWhenEligible": 0.4
+            },
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.166667,
+              "completedShare": 0.2,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.2
+            },
+            "gaming": {
+              "eligible": 12,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.333333,
+              "completedShare": 0.4,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.4
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 12,
+          "labels": {
+            "resting": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.166667,
+              "completedShare": 0.166667,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.166667
+            },
+            "gaming": {
+              "eligible": 12,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.25,
+              "completedShare": 0.25,
+              "chosenWhenEligible": 0.25,
+              "completedWhenEligible": 0.25
+            },
+            "watching_television": {
+              "eligible": 12,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.333333,
+              "completedShare": 0.333333,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.333333
+            },
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.083333,
+              "completedShare": 0.083333,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.083333
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.166667,
+              "completedShare": 0.166667,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.166667
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-22",
+      "days": 14,
+      "events": 1448,
+      "rhythmEvents": 144,
+      "habitIncrements": 34,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 1685,
+        "goaden": 1805
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "b9a773bc6fa3a843435866c66396e517758efb306e13da81b97e67f9a26b4ad0",
+      "ledgerDigest": "c1dac2ef604f3022fa00da3f39cb566bba694f7b61e7f1ed46cb3bf9fa98e1e2",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 8,
+              "started": 8,
+              "completed": 8,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.571429,
+              "completedShare": 0.571429,
+              "chosenWhenEligible": 0.571429,
+              "completedWhenEligible": 0.571429
+            },
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.142857,
+              "completedShare": 0.142857,
+              "chosenWhenEligible": 0.142857,
+              "completedWhenEligible": 0.142857
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.214286,
+              "completedShare": 0.214286,
+              "chosenWhenEligible": 0.214286,
+              "completedWhenEligible": 0.214286
+            },
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.071429,
+              "completedShare": 0.071429,
+              "chosenWhenEligible": 0.071429,
+              "completedWhenEligible": 0.071429
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 9,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.090909,
+              "completedShare": 0.111111,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.111111
+            },
+            "playing_piano": {
+              "eligible": 11,
+              "chosen": 7,
+              "started": 7,
+              "completed": 5,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.636364,
+              "completedShare": 0.555556,
+              "chosenWhenEligible": 0.636364,
+              "completedWhenEligible": 0.555556
+            },
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.090909,
+              "completedShare": 0.111111,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.111111
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.181818,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.222222
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 11,
+          "labels": {
+            "watching_television": {
+              "eligible": 11,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.272727,
+              "completedShare": 0.272727,
+              "chosenWhenEligible": 0.272727,
+              "completedWhenEligible": 0.272727
+            },
+            "resting": {
+              "eligible": 11,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.272727,
+              "completedShare": 0.272727,
+              "chosenWhenEligible": 0.272727,
+              "completedWhenEligible": 0.272727
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.272727,
+              "completedShare": 0.272727,
+              "chosenWhenEligible": 0.272727,
+              "completedWhenEligible": 0.272727
+            },
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.181818,
+              "completedShare": 0.181818,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.181818
+            },
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-23",
+      "days": 14,
+      "events": 1445,
+      "rhythmEvents": 149,
+      "habitIncrements": 36,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 1701,
+        "goaden": 1804
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "43f12ad8eff3e3851c78dd2f69a38f04db4705d93b24e2bbf73297b09cfd7a4a",
+      "ledgerDigest": "02b81be5290e9ce41e2094ed03888b72d777ef8a567519c11391345ff0de35d0",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            },
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 8,
+              "started": 8,
+              "completed": 8,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.571429,
+              "completedShare": 0.571429,
+              "chosenWhenEligible": 0.571429,
+              "completedWhenEligible": 0.571429
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.071429,
+              "completedShare": 0.071429,
+              "chosenWhenEligible": 0.071429,
+              "completedWhenEligible": 0.071429
+            },
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.071429,
+              "completedShare": 0.071429,
+              "chosenWhenEligible": 0.071429,
+              "completedWhenEligible": 0.071429
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 11,
+          "labels": {
+            "gaming": {
+              "eligible": 11,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.272727,
+              "completedShare": 0.272727,
+              "chosenWhenEligible": 0.272727,
+              "completedWhenEligible": 0.272727
+            },
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.181818,
+              "completedShare": 0.181818,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.181818
+            },
+            "playing_piano": {
+              "eligible": 11,
+              "chosen": 6,
+              "started": 6,
+              "completed": 6,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.545455,
+              "completedShare": 0.545455,
+              "chosenWhenEligible": 0.545455,
+              "completedWhenEligible": 0.545455
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 11,
+          "labels": {
+            "watching_television": {
+              "eligible": 11,
+              "chosen": 6,
+              "started": 6,
+              "completed": 6,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.545455,
+              "completedShare": 0.545455,
+              "chosenWhenEligible": 0.545455,
+              "completedWhenEligible": 0.545455
+            },
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            },
+            "resting": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.181818,
+              "completedShare": 0.181818,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.181818
+            },
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-24",
+      "days": 14,
+      "events": 1466,
+      "rhythmEvents": 157,
+      "habitIncrements": 37,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 1685,
+        "goaden": 1805
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "86d146d85f9f004a3e2f0f7de620716b70ff5b83c743486e405012820bfcfb33",
+      "ledgerDigest": "f7fb838896840f0a8153d9a3c17130f7e439537c33d2abff73d37b7a19cdff43",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.142857,
+              "completedShare": 0.142857,
+              "chosenWhenEligible": 0.142857,
+              "completedWhenEligible": 0.142857
+            },
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            },
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 6,
+              "started": 6,
+              "completed": 6,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.428571,
+              "completedShare": 0.428571,
+              "chosenWhenEligible": 0.428571,
+              "completedWhenEligible": 0.428571
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.142857,
+              "completedShare": 0.142857,
+              "chosenWhenEligible": 0.142857,
+              "completedWhenEligible": 0.142857
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 11,
+          "labels": {
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 3,
+              "started": 3,
+              "completed": 2,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.25,
+              "completedShare": 0.181818,
+              "chosenWhenEligible": 0.25,
+              "completedWhenEligible": 0.181818
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.083333,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.090909
+            },
+            "gaming": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.083333,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.090909
+            },
+            "playing_piano": {
+              "eligible": 12,
+              "chosen": 7,
+              "started": 7,
+              "completed": 7,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.583333,
+              "completedShare": 0.636364,
+              "chosenWhenEligible": 0.583333,
+              "completedWhenEligible": 0.636364
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 12,
+          "labels": {
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.083333,
+              "completedShare": 0.083333,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.083333
+            },
+            "watching_television": {
+              "eligible": 12,
+              "chosen": 8,
+              "started": 8,
+              "completed": 8,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.666667,
+              "completedShare": 0.666667,
+              "chosenWhenEligible": 0.666667,
+              "completedWhenEligible": 0.666667
+            },
+            "resting": {
+              "eligible": 12,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.083333,
+              "completedShare": 0.083333,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.083333
+            },
+            "gaming": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.166667,
+              "completedShare": 0.166667,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.166667
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-25",
+      "days": 14,
+      "events": 1512,
+      "rhythmEvents": 147,
+      "habitIncrements": 31,
+      "skippedDecisions": 3,
+      "maxActorBytes": {
+        "ashai": 2362,
+        "goaden": 2097
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "ff96e71188e74b1186897751462ff820ff1735b82000b141c2e8a32f889388ca",
+      "ledgerDigest": "2467b6c36f899613c14bc47340431f6e16eb4beef05637c08a9dd6a97e676aa3",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 11,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 6,
+              "started": 6,
+              "completed": 6,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.545455,
+              "completedShare": 0.545455,
+              "chosenWhenEligible": 0.545455,
+              "completedWhenEligible": 0.545455
+            },
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            },
+            "watching_television": {
+              "eligible": 11,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.272727,
+              "completedShare": 0.272727,
+              "chosenWhenEligible": 0.272727,
+              "completedWhenEligible": 0.272727
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.090909,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.090909
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 8,
+          "labels": {
+            "playing_piano": {
+              "eligible": 12,
+              "chosen": 4,
+              "started": 4,
+              "completed": 2,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.333333,
+              "completedShare": 0.25,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.25
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 3,
+              "started": 3,
+              "completed": 2,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.25,
+              "completedShare": 0.25,
+              "chosenWhenEligible": 0.25,
+              "completedWhenEligible": 0.25
+            },
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.166667,
+              "completedShare": 0.25,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.25
+            },
+            "gaming": {
+              "eligible": 12,
+              "chosen": 3,
+              "started": 3,
+              "completed": 2,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.25,
+              "completedShare": 0.25,
+              "chosenWhenEligible": 0.25,
+              "completedWhenEligible": 0.25
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 12,
+          "labels": {
+            "resting": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.166667,
+              "completedShare": 0.166667,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.166667
+            },
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.166667,
+              "completedShare": 0.166667,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.166667
+            },
+            "gaming": {
+              "eligible": 12,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.083333,
+              "completedShare": 0.083333,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.083333
+            },
+            "watching_television": {
+              "eligible": 12,
+              "chosen": 7,
+              "started": 7,
+              "completed": 7,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.583333,
+              "completedShare": 0.583333,
+              "chosenWhenEligible": 0.583333,
+              "completedWhenEligible": 0.583333
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-26",
+      "days": 14,
+      "events": 1487,
+      "rhythmEvents": 144,
+      "habitIncrements": 31,
+      "skippedDecisions": 1,
+      "maxActorBytes": {
+        "ashai": 2143,
+        "goaden": 2289
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "508a6eebc26d3cd5e1f4f63d001efd89552e3870698482c57008ea1c9e6c3a0b",
+      "ledgerDigest": "e9ccd28808591f47699d85b8b47d80afc9737b7fa31640a0cb28a97b64ab93b4",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 13,
+          "started": 13,
+          "completed": 13,
+          "labels": {
+            "watching_television": {
+              "eligible": 13,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.307692,
+              "completedShare": 0.307692,
+              "chosenWhenEligible": 0.307692,
+              "completedWhenEligible": 0.307692
+            },
+            "quiet_break": {
+              "eligible": 13,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.307692,
+              "completedShare": 0.307692,
+              "chosenWhenEligible": 0.307692,
+              "completedWhenEligible": 0.307692
+            },
+            "listening_to_music": {
+              "eligible": 13,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "gaming": {
+              "eligible": 13,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 13,
+              "chosenShare": 0.384615,
+              "completedShare": 0.384615,
+              "chosenWhenEligible": 0.384615,
+              "completedWhenEligible": 0.384615
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 10,
+          "started": 10,
+          "completed": 8,
+          "labels": {
+            "playing_piano": {
+              "eligible": 10,
+              "chosen": 9,
+              "started": 9,
+              "completed": 7,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.9,
+              "completedShare": 0.875,
+              "chosenWhenEligible": 0.9,
+              "completedWhenEligible": 0.875
+            },
+            "listening_to_music": {
+              "eligible": 10,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.1,
+              "completedShare": 0.125,
+              "chosenWhenEligible": 0.1,
+              "completedWhenEligible": 0.125
+            },
+            "gaming": {
+              "eligible": 10,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "quiet_break": {
+              "eligible": 10,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 10,
+          "started": 10,
+          "completed": 10,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.2,
+              "completedShare": 0.2,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.2
+            },
+            "resting": {
+              "eligible": 10,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.2,
+              "completedShare": 0.2,
+              "chosenWhenEligible": 0.2,
+              "completedWhenEligible": 0.2
+            },
+            "watching_television": {
+              "eligible": 10,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.4,
+              "completedShare": 0.4,
+              "chosenWhenEligible": 0.4,
+              "completedWhenEligible": 0.4
+            },
+            "quiet_break": {
+              "eligible": 10,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.1,
+              "completedShare": 0.1,
+              "chosenWhenEligible": 0.1,
+              "completedWhenEligible": 0.1
+            },
+            "gaming": {
+              "eligible": 10,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.1,
+              "completedShare": 0.1,
+              "chosenWhenEligible": 0.1,
+              "completedWhenEligible": 0.1
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-27",
+      "days": 14,
+      "events": 1523,
+      "rhythmEvents": 153,
+      "habitIncrements": 31,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 2442,
+        "goaden": 2605
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "e7f82c0a5bd8728c3e4cc9e1af86e002e5df60844239f45bbc1553d1a4317c17",
+      "ledgerDigest": "86a232200c5bd7a918aca9c38fde316e17eed40800e4375b15225a951fc2673f",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            },
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.285714,
+              "completedShare": 0.285714,
+              "chosenWhenEligible": 0.285714,
+              "completedWhenEligible": 0.285714
+            },
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.142857,
+              "completedShare": 0.142857,
+              "chosenWhenEligible": 0.142857,
+              "completedWhenEligible": 0.142857
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 9,
+          "started": 9,
+          "completed": 8,
+          "labels": {
+            "quiet_break": {
+              "eligible": 9,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.555556,
+              "completedShare": 0.625,
+              "chosenWhenEligible": 0.555556,
+              "completedWhenEligible": 0.625
+            },
+            "playing_piano": {
+              "eligible": 9,
+              "chosen": 4,
+              "started": 4,
+              "completed": 3,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.444444,
+              "completedShare": 0.375,
+              "chosenWhenEligible": 0.444444,
+              "completedWhenEligible": 0.375
+            },
+            "gaming": {
+              "eligible": 9,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "listening_to_music": {
+              "eligible": 9,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 9,
+          "started": 9,
+          "completed": 9,
+          "labels": {
+            "resting": {
+              "eligible": 9,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.222222,
+              "completedShare": 0.222222,
+              "chosenWhenEligible": 0.222222,
+              "completedWhenEligible": 0.222222
+            },
+            "watching_television": {
+              "eligible": 9,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.333333,
+              "completedShare": 0.333333,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.333333
+            },
+            "listening_to_music": {
+              "eligible": 9,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "gaming": {
+              "eligible": 9,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.111111,
+              "completedShare": 0.111111,
+              "chosenWhenEligible": 0.111111,
+              "completedWhenEligible": 0.111111
+            },
+            "quiet_break": {
+              "eligible": 9,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 9,
+              "chosenShare": 0.333333,
+              "completedShare": 0.333333,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.333333
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-28",
+      "days": 14,
+      "events": 1478,
+      "rhythmEvents": 155,
+      "habitIncrements": 35,
+      "skippedDecisions": 2,
+      "maxActorBytes": {
+        "ashai": 1984,
+        "goaden": 2145
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "bf4a2039e1701eb22db87c0b55f0feaef593208d781805352ee0b6858c457bf0",
+      "ledgerDigest": "7413dfce1eef3883e2fa31b34fcb2f540a7c4f31749630e47891230009847ee3",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 12,
+          "labels": {
+            "watching_television": {
+              "eligible": 12,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.333333,
+              "completedShare": 0.333333,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.333333
+            },
+            "gaming": {
+              "eligible": 12,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.333333,
+              "completedShare": 0.333333,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.333333
+            },
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            },
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 4,
+              "started": 4,
+              "completed": 4,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.333333,
+              "completedShare": 0.333333,
+              "chosenWhenEligible": 0.333333,
+              "completedWhenEligible": 0.333333
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 11,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.25,
+              "completedShare": 0.272727,
+              "chosenWhenEligible": 0.25,
+              "completedWhenEligible": 0.272727
+            },
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 3,
+              "started": 3,
+              "completed": 2,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.25,
+              "completedShare": 0.181818,
+              "chosenWhenEligible": 0.25,
+              "completedWhenEligible": 0.181818
+            },
+            "playing_piano": {
+              "eligible": 12,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.416667,
+              "completedShare": 0.454545,
+              "chosenWhenEligible": 0.416667,
+              "completedWhenEligible": 0.454545
+            },
+            "gaming": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 11,
+              "chosenShare": 0.083333,
+              "completedShare": 0.090909,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.090909
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 12,
+          "started": 12,
+          "completed": 12,
+          "labels": {
+            "listening_to_music": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.083333,
+              "completedShare": 0.083333,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.083333
+            },
+            "gaming": {
+              "eligible": 12,
+              "chosen": 7,
+              "started": 7,
+              "completed": 7,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.583333,
+              "completedShare": 0.583333,
+              "chosenWhenEligible": 0.583333,
+              "completedWhenEligible": 0.583333
+            },
+            "quiet_break": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.083333,
+              "completedShare": 0.083333,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.083333
+            },
+            "resting": {
+              "eligible": 12,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.083333,
+              "completedShare": 0.083333,
+              "chosenWhenEligible": 0.083333,
+              "completedWhenEligible": 0.083333
+            },
+            "watching_television": {
+              "eligible": 12,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 12,
+              "chosenShare": 0.166667,
+              "completedShare": 0.166667,
+              "chosenWhenEligible": 0.166667,
+              "completedWhenEligible": 0.166667
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": "rhythm-acceptance-29",
+      "days": 14,
+      "events": 1507,
+      "rhythmEvents": 144,
+      "habitIncrements": 32,
+      "skippedDecisions": 0,
+      "maxActorBytes": {
+        "ashai": 2485,
+        "goaden": 2625
+      },
+      "replay": {
+        "forward": true,
+        "reverse": true
+      },
+      "stateDigest": "c36fa454b6d433df2ae0a98d5c66fd78e5ace7e03a9e030053678bcdef1045f8",
+      "ledgerDigest": "0d6f3329ba7011769cbcd8c40921a85c0d54a395706478c89adaf11d5ad309f7",
+      "summary": {
+        "ashai/daytime_leisure": {
+          "decisions": 14,
+          "started": 14,
+          "completed": 14,
+          "labels": {
+            "watching_television": {
+              "eligible": 14,
+              "chosen": 6,
+              "started": 6,
+              "completed": 6,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.428571,
+              "completedShare": 0.428571,
+              "chosenWhenEligible": 0.428571,
+              "completedWhenEligible": 0.428571
+            },
+            "quiet_break": {
+              "eligible": 14,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.357143,
+              "completedShare": 0.357143,
+              "chosenWhenEligible": 0.357143,
+              "completedWhenEligible": 0.357143
+            },
+            "listening_to_music": {
+              "eligible": 14,
+              "chosen": 3,
+              "started": 3,
+              "completed": 3,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0.214286,
+              "completedShare": 0.214286,
+              "chosenWhenEligible": 0.214286,
+              "completedWhenEligible": 0.214286
+            },
+            "gaming": {
+              "eligible": 14,
+              "chosen": 0,
+              "started": 0,
+              "completed": 0,
+              "eligibleCompletedSlots": 14,
+              "chosenShare": 0,
+              "completedShare": 0,
+              "chosenWhenEligible": 0,
+              "completedWhenEligible": 0
+            }
+          }
+        },
+        "goaden/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 8,
+          "labels": {
+            "playing_piano": {
+              "eligible": 11,
+              "chosen": 5,
+              "started": 5,
+              "completed": 5,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.454545,
+              "completedShare": 0.625,
+              "chosenWhenEligible": 0.454545,
+              "completedWhenEligible": 0.625
+            },
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.090909,
+              "completedShare": 0.125,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.125
+            },
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 4,
+              "started": 4,
+              "completed": 1,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.363636,
+              "completedShare": 0.125,
+              "chosenWhenEligible": 0.363636,
+              "completedWhenEligible": 0.125
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 8,
+              "chosenShare": 0.090909,
+              "completedShare": 0.125,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.125
+            }
+          }
+        },
+        "ashai/evening_leisure": {
+          "decisions": 11,
+          "started": 11,
+          "completed": 10,
+          "labels": {
+            "quiet_break": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.181818,
+              "completedShare": 0.2,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.2
+            },
+            "listening_to_music": {
+              "eligible": 11,
+              "chosen": 1,
+              "started": 1,
+              "completed": 1,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.090909,
+              "completedShare": 0.1,
+              "chosenWhenEligible": 0.090909,
+              "completedWhenEligible": 0.1
+            },
+            "watching_television": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.181818,
+              "completedShare": 0.2,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.2
+            },
+            "resting": {
+              "eligible": 11,
+              "chosen": 2,
+              "started": 2,
+              "completed": 2,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.181818,
+              "completedShare": 0.2,
+              "chosenWhenEligible": 0.181818,
+              "completedWhenEligible": 0.2
+            },
+            "gaming": {
+              "eligible": 11,
+              "chosen": 4,
+              "started": 4,
+              "completed": 3,
+              "eligibleCompletedSlots": 10,
+              "chosenShare": 0.363636,
+              "completedShare": 0.3,
+              "chosenWhenEligible": 0.363636,
+              "completedWhenEligible": 0.3
+            }
+          }
+        }
+      }
+    }
+  ],
+  "complete": true,
+  "pass": true,
+  "distribution": {
+    "ashai/daytime_leisure": {
+      "decisions": 408,
+      "started": 408,
+      "completed": 408,
+      "labels": {
+        "watching_television": {
+          "eligible": 408,
+          "chosen": 158,
+          "started": 158,
+          "completed": 158,
+          "eligibleCompletedSlots": 408,
+          "chosenShare": 0.387255,
+          "completedShare": 0.387255,
+          "chosenWhenEligible": 0.387255,
+          "completedWhenEligible": 0.387255
+        },
+        "quiet_break": {
+          "eligible": 408,
+          "chosen": 107,
+          "started": 107,
+          "completed": 107,
+          "eligibleCompletedSlots": 408,
+          "chosenShare": 0.262255,
+          "completedShare": 0.262255,
+          "chosenWhenEligible": 0.262255,
+          "completedWhenEligible": 0.262255
+        },
+        "listening_to_music": {
+          "eligible": 408,
+          "chosen": 82,
+          "started": 82,
+          "completed": 82,
+          "eligibleCompletedSlots": 408,
+          "chosenShare": 0.20098,
+          "completedShare": 0.20098,
+          "chosenWhenEligible": 0.20098,
+          "completedWhenEligible": 0.20098
+        },
+        "gaming": {
+          "eligible": 408,
+          "chosen": 61,
+          "started": 61,
+          "completed": 61,
+          "eligibleCompletedSlots": 408,
+          "chosenShare": 0.14951,
+          "completedShare": 0.14951,
+          "chosenWhenEligible": 0.14951,
+          "completedWhenEligible": 0.14951
+        }
+      }
+    },
+    "goaden/evening_leisure": {
+      "decisions": 326,
+      "started": 326,
+      "completed": 269,
+      "labels": {
+        "gaming": {
+          "eligible": 326,
+          "chosen": 55,
+          "started": 55,
+          "completed": 48,
+          "eligibleCompletedSlots": 269,
+          "chosenShare": 0.168712,
+          "completedShare": 0.178439,
+          "chosenWhenEligible": 0.168712,
+          "completedWhenEligible": 0.178439
+        },
+        "listening_to_music": {
+          "eligible": 326,
+          "chosen": 52,
+          "started": 52,
+          "completed": 44,
+          "eligibleCompletedSlots": 269,
+          "chosenShare": 0.159509,
+          "completedShare": 0.163569,
+          "chosenWhenEligible": 0.159509,
+          "completedWhenEligible": 0.163569
+        },
+        "playing_piano": {
+          "eligible": 326,
+          "chosen": 147,
+          "started": 147,
+          "completed": 121,
+          "eligibleCompletedSlots": 269,
+          "chosenShare": 0.45092,
+          "completedShare": 0.449814,
+          "chosenWhenEligible": 0.45092,
+          "completedWhenEligible": 0.449814
+        },
+        "quiet_break": {
+          "eligible": 326,
+          "chosen": 72,
+          "started": 72,
+          "completed": 56,
+          "eligibleCompletedSlots": 269,
+          "chosenShare": 0.220859,
+          "completedShare": 0.208178,
+          "chosenWhenEligible": 0.220859,
+          "completedWhenEligible": 0.208178
+        }
+      }
+    },
+    "ashai/evening_leisure": {
+      "decisions": 326,
+      "started": 326,
+      "completed": 321,
+      "labels": {
+        "quiet_break": {
+          "eligible": 326,
+          "chosen": 60,
+          "started": 60,
+          "completed": 59,
+          "eligibleCompletedSlots": 321,
+          "chosenShare": 0.184049,
+          "completedShare": 0.183801,
+          "chosenWhenEligible": 0.184049,
+          "completedWhenEligible": 0.183801
+        },
+        "watching_television": {
+          "eligible": 326,
+          "chosen": 123,
+          "started": 123,
+          "completed": 122,
+          "eligibleCompletedSlots": 321,
+          "chosenShare": 0.377301,
+          "completedShare": 0.380062,
+          "chosenWhenEligible": 0.377301,
+          "completedWhenEligible": 0.380062
+        },
+        "resting": {
+          "eligible": 326,
+          "chosen": 46,
+          "started": 46,
+          "completed": 46,
+          "eligibleCompletedSlots": 321,
+          "chosenShare": 0.141104,
+          "completedShare": 0.143302,
+          "chosenWhenEligible": 0.141104,
+          "completedWhenEligible": 0.143302
+        },
+        "gaming": {
+          "eligible": 326,
+          "chosen": 59,
+          "started": 59,
+          "completed": 57,
+          "eligibleCompletedSlots": 321,
+          "chosenShare": 0.180982,
+          "completedShare": 0.17757,
+          "chosenWhenEligible": 0.180982,
+          "completedWhenEligible": 0.17757
+        },
+        "listening_to_music": {
+          "eligible": 326,
+          "chosen": 38,
+          "started": 38,
+          "completed": 37,
+          "eligibleCompletedSlots": 321,
+          "chosenShare": 0.116564,
+          "completedShare": 0.115265,
+          "chosenWhenEligible": 0.116564,
+          "completedWhenEligible": 0.115265
+        }
+      }
+    }
+  },
+  "behaviourGates": [
+    {
+      "name": "goaden/evening_leisure/gaming/chosenWhenEligible in [0.05,0.70]",
+      "actual": 0.168712,
+      "pass": true
+    },
+    {
+      "name": "goaden/evening_leisure/gaming/completedWhenEligible in [0.05,0.70]",
+      "actual": 0.178439,
+      "pass": true
+    },
+    {
+      "name": "goaden/evening_leisure/listening_to_music/chosenWhenEligible in [0.05,0.70]",
+      "actual": 0.159509,
+      "pass": true
+    },
+    {
+      "name": "goaden/evening_leisure/listening_to_music/completedWhenEligible in [0.05,0.70]",
+      "actual": 0.163569,
+      "pass": true
+    },
+    {
+      "name": "goaden/evening_leisure/playing_piano/chosenWhenEligible in [0.05,0.70]",
+      "actual": 0.45092,
+      "pass": true
+    },
+    {
+      "name": "goaden/evening_leisure/playing_piano/completedWhenEligible in [0.05,0.70]",
+      "actual": 0.449814,
+      "pass": true
+    },
+    {
+      "name": "goaden/evening_leisure/quiet_break/chosenWhenEligible in [0.05,0.70]",
+      "actual": 0.220859,
+      "pass": true
+    },
+    {
+      "name": "goaden/evening_leisure/quiet_break/completedWhenEligible in [0.05,0.70]",
+      "actual": 0.208178,
+      "pass": true
+    },
+    {
+      "name": "ashai/evening_leisure/quiet_break/chosenWhenEligible in [0.05,0.70]",
+      "actual": 0.184049,
+      "pass": true
+    },
+    {
+      "name": "ashai/evening_leisure/quiet_break/completedWhenEligible in [0.05,0.70]",
+      "actual": 0.183801,
+      "pass": true
+    },
+    {
+      "name": "ashai/evening_leisure/watching_television/chosenWhenEligible in [0.05,0.70]",
+      "actual": 0.377301,
+      "pass": true
+    },
+    {
+      "name": "ashai/evening_leisure/watching_television/completedWhenEligible in [0.05,0.70]",
+      "actual": 0.380062,
+      "pass": true
+    },
+    {
+      "name": "ashai/evening_leisure/resting/chosenWhenEligible in [0.05,0.70]",
+      "actual": 0.141104,
+      "pass": true
+    },
+    {
+      "name": "ashai/evening_leisure/resting/completedWhenEligible in [0.05,0.70]",
+      "actual": 0.143302,
+      "pass": true
+    },
+    {
+      "name": "ashai/evening_leisure/gaming/chosenWhenEligible in [0.05,0.70]",
+      "actual": 0.180982,
+      "pass": true
+    },
+    {
+      "name": "ashai/evening_leisure/gaming/completedWhenEligible in [0.05,0.70]",
+      "actual": 0.17757,
+      "pass": true
+    },
+    {
+      "name": "ashai/evening_leisure/listening_to_music/chosenWhenEligible in [0.05,0.70]",
+      "actual": 0.116564,
+      "pass": true
+    },
+    {
+      "name": "ashai/evening_leisure/listening_to_music/completedWhenEligible in [0.05,0.70]",
+      "actual": 0.115265,
+      "pass": true
+    },
+    {
+      "name": "ashai/evening TV chosenShare in [0.35,0.60]",
+      "actual": 0.377301,
+      "pass": true
+    },
+    {
+      "name": "ashai/evening TV completedShare in [0.35,0.60]",
+      "actual": 0.380062,
+      "pass": true
+    }
+  ],
+  "determinism": {
+    "seed": "rhythm-acceptance-00",
+    "days": 7,
+    "events": 746,
+    "choices": 16,
+    "digests": {
+      "single": "75bb0ee525b6180f6368df9eb1ed916f846226a19b4e233f6572fc856e19763e",
+      "chunked": "75bb0ee525b6180f6368df9eb1ed916f846226a19b4e233f6572fc856e19763e",
+      "restarted": "75bb0ee525b6180f6368df9eb1ed916f846226a19b4e233f6572fc856e19763e"
+    },
+    "forward": true,
+    "reverse": true
+  },
+  "longRun": {
+    "seed": "rhythm-acceptance-long",
+    "days": 90,
+    "events": 9414,
+    "rhythmEvents": 931,
+    "habitIncrements": 213,
+    "skippedDecisions": 3,
+    "maxActorBytes": {
+      "ashai": 2661,
+      "goaden": 2626
+    },
+    "replay": {
+      "forward": true,
+      "reverse": true
+    },
+    "stateDigest": "e4407fe92828096e46dedd748210e6d3887e234d9210a1eb758851f0fea944f6",
+    "ledgerDigest": "df3d460ac7cd193553e99e44dae947cda180eae993ec059507abb7e785576fe8",
+    "summary": {
+      "ashai/daytime_leisure": {
+        "decisions": 87,
+        "started": 87,
+        "completed": 87,
+        "labels": {
+          "listening_to_music": {
+            "eligible": 87,
+            "chosen": 29,
+            "started": 29,
+            "completed": 29,
+            "eligibleCompletedSlots": 87,
+            "chosenShare": 0.333333,
+            "completedShare": 0.333333,
+            "chosenWhenEligible": 0.333333,
+            "completedWhenEligible": 0.333333
+          },
+          "watching_television": {
+            "eligible": 87,
+            "chosen": 23,
+            "started": 23,
+            "completed": 23,
+            "eligibleCompletedSlots": 87,
+            "chosenShare": 0.264368,
+            "completedShare": 0.264368,
+            "chosenWhenEligible": 0.264368,
+            "completedWhenEligible": 0.264368
+          },
+          "quiet_break": {
+            "eligible": 87,
+            "chosen": 18,
+            "started": 18,
+            "completed": 18,
+            "eligibleCompletedSlots": 87,
+            "chosenShare": 0.206897,
+            "completedShare": 0.206897,
+            "chosenWhenEligible": 0.206897,
+            "completedWhenEligible": 0.206897
+          },
+          "gaming": {
+            "eligible": 87,
+            "chosen": 17,
+            "started": 17,
+            "completed": 17,
+            "eligibleCompletedSlots": 87,
+            "chosenShare": 0.195402,
+            "completedShare": 0.195402,
+            "chosenWhenEligible": 0.195402,
+            "completedWhenEligible": 0.195402
+          }
+        }
+      },
+      "goaden/evening_leisure": {
+        "decisions": 70,
+        "started": 70,
+        "completed": 57,
+        "labels": {
+          "playing_piano": {
+            "eligible": 70,
+            "chosen": 35,
+            "started": 35,
+            "completed": 30,
+            "eligibleCompletedSlots": 57,
+            "chosenShare": 0.5,
+            "completedShare": 0.526316,
+            "chosenWhenEligible": 0.5,
+            "completedWhenEligible": 0.526316
+          },
+          "quiet_break": {
+            "eligible": 70,
+            "chosen": 23,
+            "started": 23,
+            "completed": 18,
+            "eligibleCompletedSlots": 57,
+            "chosenShare": 0.328571,
+            "completedShare": 0.315789,
+            "chosenWhenEligible": 0.328571,
+            "completedWhenEligible": 0.315789
+          },
+          "listening_to_music": {
+            "eligible": 70,
+            "chosen": 4,
+            "started": 4,
+            "completed": 2,
+            "eligibleCompletedSlots": 57,
+            "chosenShare": 0.057143,
+            "completedShare": 0.035088,
+            "chosenWhenEligible": 0.057143,
+            "completedWhenEligible": 0.035088
+          },
+          "gaming": {
+            "eligible": 70,
+            "chosen": 8,
+            "started": 8,
+            "completed": 7,
+            "eligibleCompletedSlots": 57,
+            "chosenShare": 0.114286,
+            "completedShare": 0.122807,
+            "chosenWhenEligible": 0.114286,
+            "completedWhenEligible": 0.122807
+          }
+        }
+      },
+      "ashai/evening_leisure": {
+        "decisions": 70,
+        "started": 70,
+        "completed": 69,
+        "labels": {
+          "quiet_break": {
+            "eligible": 70,
+            "chosen": 13,
+            "started": 13,
+            "completed": 12,
+            "eligibleCompletedSlots": 69,
+            "chosenShare": 0.185714,
+            "completedShare": 0.173913,
+            "chosenWhenEligible": 0.185714,
+            "completedWhenEligible": 0.173913
+          },
+          "listening_to_music": {
+            "eligible": 70,
+            "chosen": 18,
+            "started": 18,
+            "completed": 18,
+            "eligibleCompletedSlots": 69,
+            "chosenShare": 0.257143,
+            "completedShare": 0.26087,
+            "chosenWhenEligible": 0.257143,
+            "completedWhenEligible": 0.26087
+          },
+          "resting": {
+            "eligible": 70,
+            "chosen": 10,
+            "started": 10,
+            "completed": 10,
+            "eligibleCompletedSlots": 69,
+            "chosenShare": 0.142857,
+            "completedShare": 0.144928,
+            "chosenWhenEligible": 0.142857,
+            "completedWhenEligible": 0.144928
+          },
+          "watching_television": {
+            "eligible": 70,
+            "chosen": 19,
+            "started": 19,
+            "completed": 19,
+            "eligibleCompletedSlots": 69,
+            "chosenShare": 0.271429,
+            "completedShare": 0.275362,
+            "chosenWhenEligible": 0.271429,
+            "completedWhenEligible": 0.275362
+          },
+          "gaming": {
+            "eligible": 70,
+            "chosen": 10,
+            "started": 10,
+            "completed": 10,
+            "eligibleCompletedSlots": 69,
+            "chosenShare": 0.142857,
+            "completedShare": 0.144928,
+            "chosenWhenEligible": 0.142857,
+            "completedWhenEligible": 0.144928
+          }
+        }
+      }
+    }
+  },
+  "fetchAttempts": 0,
+  "elapsedSeconds": 374.081
+}

@@ -105,7 +105,12 @@ export function sideOf(change, side) {
 
 /** What the target currently holds at the change's position. */
 export function readChange(target, change) {
-  if (!Array.isArray(change.path)) return target[change.field] ?? null;
+  if (!Array.isArray(change.path)) {
+    // Legacy whole-value records always carry both sides and use null for an
+    // absent field. New omission-aware records retain genuine field absence.
+    if ('before' in change && 'after' in change) return target[change.field] ?? null;
+    return Object.hasOwn(target, change.field) ? target[change.field] : undefined;
+  }
   let node = target[change.field];
   for (const step of change.path) {
     if (!isContainer(node)) return undefined;
@@ -121,7 +126,8 @@ export function readChange(target, change) {
  */
 export function applyChange(target, change, side) {
   if (!Array.isArray(change.path)) {
-    target[change.field] = structuredClone(sideOf(change, side) ?? null);
+    if (side in change) target[change.field] = structuredClone(sideOf(change, side) ?? null);
+    else delete target[change.field];
     return;
   }
   let node = target[change.field];

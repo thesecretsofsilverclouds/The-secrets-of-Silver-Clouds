@@ -1,4 +1,4 @@
-﻿import { existsSync, readFileSync, writeFileSync, renameSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, renameSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
@@ -17,7 +17,7 @@ const pending = db => db.prepare('SELECT id,due_at,priority,action_json FROM sch
 // Does not fold into prior upgrades. Does not backfill historical site disturbances.
 export function upgradeLivingPlaces({ directory, backupPath } = {}) {
   if (typeof directory !== 'string' || !directory.trim()) throw new TypeError('An existing pinned directory is required');
-  if (RULES_VERSION !== TO) throw new Error('This upgrade belongs to release v27 only');
+  if (![TO, 'canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) throw new Error('This upgrade belongs to release v27 or later');
   directory = resolve(directory);
   const manifestPath = join(directory, 'active-world.json'), databasePath = join(directory, 'world.sqlite');
   if (!existsSync(manifestPath) || !existsSync(databasePath)) throw new Error('An existing pinned world is required');

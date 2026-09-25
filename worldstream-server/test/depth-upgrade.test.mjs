@@ -14,6 +14,9 @@ import { upgradeMeuCases } from '../src/meu-upgrade.mjs';
 import { upgradeLegionJobs } from '../src/legion-upgrade.mjs';
 import { upgradeDuskkinCompliance } from '../src/duskkin-upgrade.mjs';
 import { upgradeLivingPlaces } from '../src/living-places-upgrade.mjs';
+import { upgradeV28 } from '../src/v28-upgrade.mjs';
+import { upgradeRhythm } from '../src/rhythm-upgrade.mjs';
+import { upgradeNarrativeSystems } from '../src/narrative-upgrade.mjs';
 import { atLondon } from '../src/time.mjs';
 
 const OLD = 'canon-ambient-p183-v21', DEPTH = 'canon-ambient-p183-v22', day = '2026-09-05', start = atLondon(day,'00:00');
@@ -23,7 +26,7 @@ function legacy(t) {
   const directory = mkdtempSync(join(tmpdir(), 'silver-clouds-depth-upgrade-'));
   const dbPath = join(directory, 'world.sqlite'), backupPath = join(directory, 'backup.sqlite');
   const current = createFixture({ startMs:start }), initial = current.initialState();
-  for (const key of ['outingRecovery','supportingStories','nightStories','offscreenLives']) delete initial[key];
+  for (const key of ['outingRecovery','supportingStories','nightStories','offscreenLives','narrativeSignals','rhythm']) delete initial[key];
   const fixture = { ...current, rulesVersion:OLD, initialState:()=>structuredClone(initial),
     initialActions:()=>[
       {id:'old-notice',dueAt:start+1,priority:0,type:'INSTITUTION_NOTICE'},
@@ -79,12 +82,23 @@ test('v21 upgrade preserves every old ledger byte, seed, clock, character and pe
   assert.equal(duskkin.rulesVersion,'canon-ambient-p183-v26');
   assert.throws(()=>openPinnedWorld({directory:f.directory}),/differs/);
   const livingPlaces=upgradeLivingPlaces({directory:f.directory,backupPath:join(f.directory,'before-v27.sqlite')});
-  assert.equal(livingPlaces.rulesVersion,RULES_VERSION);
+  assert.equal(livingPlaces.rulesVersion,'canon-ambient-p183-v27');
+  assert.throws(()=>openPinnedWorld({directory:f.directory}),/differs/);
+  const v28=upgradeV28({directory:f.directory,backupPath:join(f.directory,'before-v28.sqlite')});
+  assert.equal(v28.rulesVersion,'canon-ambient-p183-v28');
+  assert.throws(()=>openPinnedWorld({directory:f.directory}),/differs/);
+  const v29=upgradeNarrativeSystems({directory:f.directory,backupPath:join(f.directory,'before-v29.sqlite')});
+  assert.equal(v29.rulesVersion,'canon-ambient-p183-v29');
+  assert.throws(()=>openPinnedWorld({directory:f.directory}),/differs/);
+  const v30=upgradeRhythm({directory:f.directory,backupPath:join(f.directory,'before-v30.sqlite')});
+  assert.equal(v30.rulesVersion,RULES_VERSION);
   assert.deepEqual(events(f.db),history);
   const world = openPinnedWorld({directory:f.directory});
   const continuity = world.publicProjection().continuityId;
   world.advance(before.resolved_through+1);
-  assert.equal(world.semanticSnapshot().events.length,history.length+6);
+  assert.equal(world.semanticSnapshot().events.length,history.length+8);
+  assert.equal(world.semanticSnapshot().events.filter(e=>e.type==='WORLD_NARRATIVE_ACTIVATE').length,1);
+  assert.equal(world.semanticSnapshot().events.filter(e=>e.type==='WORLD_RHYTHM_ACTIVATE').length,1);
   assert.equal(world.publicProjection().continuityId,continuity);
   assert.ok(world.semanticSnapshot().pendingActions.every(a=>a.dueAt>before.resolved_through+1));
   world.close();

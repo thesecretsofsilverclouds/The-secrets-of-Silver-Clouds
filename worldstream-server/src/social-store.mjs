@@ -24,7 +24,6 @@ const VALID_REACTIONS = new Set(['love', 'laugh', 'wow', 'eyes']);
 const REACTION_ALIASES = {
   '❤️': 'love',
   '\u2764': 'love',
-  '\u2764\uFE0F': 'love',
   heart: 'love',
   love: 'love',
   '😂': 'laugh',

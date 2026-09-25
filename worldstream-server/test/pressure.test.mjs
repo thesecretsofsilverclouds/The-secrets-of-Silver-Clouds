@@ -194,7 +194,9 @@ test('an incident costs something, and unease costs nothing', t => {
     // afternoon look busy to the director.
     assert.deepEqual(event.participants, [], 'unease was attributed to somebody');
     for (const change of event.changes) {
-      assert.ok(['director', 'pressure'].includes(change.entity), 'unease moved the world');
+      assert.ok(['director', 'pressure'].includes(change.entity)
+        || change.entity === 'story' && change.id === 'narrativeSignals' && change.field === 'narrativeSignals',
+      'unease moved the world');
     }
   }
   let interrupted = 0;

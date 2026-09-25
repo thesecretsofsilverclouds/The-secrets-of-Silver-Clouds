@@ -43,7 +43,29 @@ export function competingCommitments(state, who, startAt, endAt, ownKey = null) 
     && item.startAt < endAt && item.until > startAt).map(([key, item]) => ({ key, ...item }));
 }
 
-export function chooseIntentMotive(state, now, seed, key, startAt, endAt, ownKey = null) {
+// Real availability predicates, also used by the counterfactual feature view.
+// These are currently possible shared activities, never paraphrase counts.
+export function eligibleOrdinaryIntentFamilies(state, now) {
+  if (!window(now) || !together(state) || !['goaden', 'ashai'].every(who => free(state.characters[who]))
+    || Object.values(intentOf(state).instances).some(item => ACTIVE.has(item.status))
+    || ['goaden', 'ashai'].some(who => competingCommitments(state, who, now, now + DURATION).length)) return [];
+  return ['game', ...(['goaden', 'ashai'].every(who => !tired(state.characters[who], now)
+    && fatigueAt(state, who, now) < 3) ? ['practice'] : [])];
+}
+
+export function ordinaryIntentChoice(seed, key, logWeights = null) {
+  const bucket = hash(`${seed}|intent-v1|${key}/motive`) % 7;
+  const baseline = bucket < 4 ? 'loyalty' : 'ambition';
+  const loyalty = Number.isFinite(logWeights?.loyalty) ? logWeights.loyalty : 0;
+  const ambition = Number.isFinite(logWeights?.ambition) ? logWeights.ambition : 0;
+  const difference = Math.max(-Math.log(1.25), Math.min(Math.log(1.25), loyalty - ambition));
+  if (difference === 0) return baseline; // Exact legacy %7 < 4, including key/seed.
+  const fraction = (hash(`${seed}|csv-v1|${key}/within-motive-bucket`) + .5) / 0x100000000;
+  const loyaltyWeight = 4 * Math.exp(difference);
+  return (bucket + fraction) / 7 < loyaltyWeight / (loyaltyWeight + 3) ? 'loyalty' : 'ambition';
+}
+
+export function chooseIntentMotive(state, now, seed, key, startAt, endAt, ownKey = null, options = {}) {
   const goaden = state.characters.goaden;
   const competing = competingCommitments(state, 'goaden', startAt, endAt, ownKey);
   const duty = currentMemories(state, 'goaden', now, ['duty_callout']);
@@ -64,7 +86,12 @@ export function chooseIntentMotive(state, now, seed, key, startAt, endAt, ownKey
   const last = recent.find(item => item.value.outcome === 'completed' && now - item.learnedAt <= 2 * 24 * 60 * MIN);
   if (last) return { motive: last.value.activity === 'game' ? 'ambition' : 'loyalty',
     factKeys: [last.factKey], eventIds: [], reason: 'recent_shared_activity' };
-  return { motive: hash(`${seed}|intent-v1|${key}/motive`) % 7 < 4 ? 'loyalty' : 'ambition',
+  const baselineMotive = ordinaryIntentChoice(seed, key);
+  const override = options.intentOverride;
+  if (override?.key === key && ['loyalty', 'ambition'].includes(override.motive))
+    return { motive: override.motive, factKeys: [], eventIds: [], reason: 'ordinary_preference' };
+  const evaluated = options.counterfactualDecision?.({ key, baselineMotive });
+  return { motive: ordinaryIntentChoice(seed, key, evaluated?.status === 'evaluated' ? evaluated.logWeights : null),
     factKeys: [], eventIds: [], reason: 'ordinary_preference' };
 }
 
@@ -249,7 +276,8 @@ export function resolveIntentAction(ctx) {
     }
     if (a.type === 'INTENT_RESPONSE') {
       if (item.status !== 'offered') return refuse('No unanswered offer');
-      const decision = chooseIntentMotive(state, now, ctx.seed, item.id, item.startAt, item.endAt, item.arrangementKey);
+      const decision = chooseIntentMotive(state, now, ctx.seed, item.id, item.startAt, item.endAt, item.arrangementKey,
+        { counterfactualDecision: ctx.counterfactualDecision, intentOverride: ctx.intentOverride });
       evidence(ctx, decision);
       item = { ...item, privateDecision: decision };
       const selected = decision.motive === 'rest' ? 'quiet' : decision.motive === 'ambition' ? 'practice' : item.proposed;

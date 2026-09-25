@@ -2,6 +2,8 @@ import { createHash } from 'node:crypto';
 import { londonDate, MINUTE_MS as MIN } from './time.mjs';
 import { learnOffscreenFact, offscreenAvailable, offscreenAwakeAtNight, offscreenKnowsFact, offscreenNightPlace } from './offscreen-lives.mjs';
 import { AREAS_BY_LOCATION } from './places.mjs';
+import { advanceHabitatExposure, GARDEN_EXPOSURE_RULES } from './habitat-dynamics.mjs';
+export { GARDEN_EXPOSURE_RULES } from './habitat-dynamics.mjs';
 
 // Addon Four: Living Places / Onari Ecology & Recovery
 // Dedicated ecological source → site memory. Onari response is a separate
@@ -101,7 +103,19 @@ export const MAX_RECOVERED_SUMMARIES = 16;
 export const MAX_ENDED_SOURCE_SUMMARIES = 16;
 export const MAX_ISSUED = 24;
 
+// The plaza gardens are an existing living area (places.mjs). This deliberately
+// small ecological model records sustained root saturation, not random damage
+// on every rain event. Its evidence is the committed weather history; character
+// knowledge still requires a visit and an actual encounter with Yukon.
+const WEATHER_EVENTS = new Set(['WEATHER_CHANGE', 'WEATHER_OBSERVATION']);
+const OBSERVATION_EVENTS = new Set(['TRAVEL_ARRIVE', 'CITY_ACTIVITY_BEGIN', 'OFFSCREEN_START', 'OFFSCREEN_RESULT', 'OFFSCREEN_WITNESS']);
+const REFERRAL_ENCOUNTERS = new Set(['OFFSCREEN_ENCOUNTER', 'OFFSCREEN_RESULT', 'SUPPORTING_ENCOUNTER',
+  'SUPPORTING_OUTCOME', 'CROSS_PATHS', 'SCENE_BANK_BEAT']);
+
 const HASH = value => createHash('sha256').update(String(value)).digest('hex').slice(0, 24);
+const canonical = value => Array.isArray(value) ? value.map(canonical)
+  : value && typeof value === 'object' ? Object.fromEntries(Object.keys(value).sort().map(key => [key, canonical(value[key])])) : value;
+const actionFingerprint = action => HASH(JSON.stringify(canonical(action)));
 const TYPES = new Set(LIVING_PLACES_EVENT_TYPES);
 const VALID_CONSEQUENCE_KINDS = new Set(ECOLOGICAL_CONSEQUENCE_KINDS);
 const VALID_SITE_STATUSES = new Set(SITE_STATUSES);
@@ -288,12 +302,152 @@ export function issueLivingPlacesActions(ctx, proposals) {
       ...current,
       issued: {
         ...Object.fromEntries(retained),
-        [action.id]: { shape: shape(action), sourceEventId: ctx.id, consumed: false }
+        [action.id]: { shape: shape(action), fingerprint: actionFingerprint(action), sourceEventId: ctx.id, consumed: false }
       }
     });
     actions.push(action);
   }
   return actions;
+}
+
+/** Independent physical environment hook. Only committed weather drives damage;
+ * Onari participation and narrative scores cannot affect this transition. */
+export function habitatAfterAction(ctx) {
+  const { event, state, now, id, action } = ctx;
+  if (event.payload?.outcome === 'skipped' || event.payload?.skipped) return;
+  let exposure = of(state).habitatExposure ?? null;
+
+  if (WEATHER_EVENTS.has(event.type)) {
+    // WEATHER_OBSERVATION may be private when the code did not change: it is
+    // nevertheless real environmental evidence. Duplicate slots are excluded.
+    const code = event.payload?.weatherCode;
+    // A calendar repeating a cached external observation is not new evidence
+    // of a full day's rain. Live exposure advances on actual recorded samples.
+    if (event.type === 'WEATHER_CHANGE' && state.weather?.external) return;
+    if (!code || exposure?.lastWeatherEventId === id) return;
+    exposure = advanceHabitatExposure(exposure, { eventId: id, occurredAt: now, weatherCode: code,
+      maximumGapMs: (event.type === 'WEATHER_OBSERVATION' ? 3 : 26) * 60 * MIN });
+    save(ctx, { habitatExposure: exposure });
+
+    if (exposure.phase === 'draining' && exposure.sourceFactKey && !exposure.endPending
+      && of(state).sources[exposure.sourceFactKey]?.sourceActive) {
+      const [ending] = follow(ctx, ECOLOGICAL_SOURCE_END_TYPE, 'garden-drained', now + MIN,
+        { sourceFactKey: exposure.sourceFactKey, environmentalEnd: true, weatherEventId: id });
+      if (ending) {
+        ctx.followups.push(ending);
+        save(ctx, { habitatExposure: { ...of(state).habitatExposure, endPending: ending.id } });
+      }
+    }
+    if (exposure.phase === 'saturated' && !exposure.sourcePending
+      && !siteHasActiveDamage(state, GARDEN_EXPOSURE_RULES.locationId)
+      && now >= (exposure.nextEpisodeEligibleAt ?? 0)) {
+      const [source] = follow(ctx, ECOLOGICAL_SOURCE_EVENT_TYPE, 'garden-saturation', now + MIN, {
+        locationId: GARDEN_EXPOSURE_RULES.locationId, areaId: GARDEN_EXPOSURE_RULES.areaId,
+        consequenceKind: 'vegetation_damage', impact: 'minor', affectsLivingHabitat: true,
+        provenance: { path: 'observation', mechanism: 'sustained_root_saturation',
+          evidenceEventIds: [exposure.firstWetEventId, id], wetSince: exposure.wetSince, observedThrough: now },
+      });
+      if (source) {
+        ctx.followups.push(source);
+        save(ctx, { habitatExposure: { ...of(state).habitatExposure, sourcePending: source.id } });
+      }
+    }
+    return;
+  }
+
+  if (event.type === ECOLOGICAL_SOURCE_EVENT_TYPE && action.provenance?.mechanism === 'sustained_root_saturation') {
+    save(ctx, { habitatExposure: { ...exposure, sourcePending: null,
+      sourceFactKey: event.payload.sourceFactKey, endPending: null,
+      nextEpisodeEligibleAt: now + GARDEN_EXPOSURE_RULES.episodeCooldownMs } });
+    event.causedBy.push(...action.provenance.evidenceEventIds);
+    return;
+  }
+  if (event.type === ECOLOGICAL_SOURCE_END_TYPE && exposure?.sourceFactKey === action.sourceFactKey) {
+    save(ctx, { habitatExposure: { ...exposure, endPending: null } });
+    return;
+  }
+}
+
+/** Response hook: observe physical facts, then refer them through actual known
+ * encounters. It never creates environmental damage or changes weather. */
+export function livingPlacesAfterAction(ctx) {
+  const { event, state, now, id, action } = ctx;
+  if (event.payload?.outcome === 'skipped' || event.payload?.skipped) return;
+  const exposure = of(state).habitatExposure;
+  if (event.type === 'ONARI_ECOLOGY_REFERRAL' && exposure?.referralPending === action.id) {
+    save(ctx, { habitatExposure: { ...exposure, referralPending: null } });
+    return;
+  }
+  if (event.visibility !== 'public') return;
+
+  // The gardens border the plaza: arriving there or beginning an outdoor walk
+  // is a physical observation opportunity. No character learns from publication
+  // alone, a calendar tick, or being elsewhere in London.
+  if (OBSERVATION_EVENTS.has(event.type) && event.location === GARDEN_EXPOSURE_RULES.locationId) {
+    const site = of(state).sites[event.location];
+    if (site && site.status !== 'stable') {
+      for (const who of event.participants ?? []) {
+        const actor = state.characters?.[who];
+        if (!actor || actor.journey || actor.location !== event.location) continue;
+        for (const key of site.sourceFactIds ?? []) {
+          const fact = state.facts?.[key];
+          if (fact?.kind === ECOLOGICAL_SOURCE_FACT_KIND && fact.validUntil > now)
+            ctx.ops.learn(who, fact, 'observed_plaza_gardens');
+        }
+      }
+      // Emily's existing garden/swing appearances are physical presence. The
+      // source stays private knowledge until an actual later encounter shares
+      // it; her existence in the cast registry alone conveys nothing.
+      if (event.payload?.cast?.includes('emily')) {
+        for (const key of site.sourceFactIds ?? []) {
+          const fact = state.facts?.[key];
+          if (fact?.kind === ECOLOGICAL_SOURCE_FACT_KIND && fact.validUntil > now)
+            learnOffscreenFact(ctx, 'emily', fact);
+        }
+      }
+    }
+  }
+
+  if (!REFERRAL_ENCOUNTERS.has(event.type) || exposure?.referralPending) return;
+  if (event.type === 'SCENE_BANK_BEAT') {
+    const completed = state.sceneBank?.completed?.[event.payload?.sceneBankId];
+    if (completed?.lastEventId !== id || state.sceneBank?.session?.performanceEventId !== id) return;
+  }
+  const cast = [...(event.payload?.cast ?? []), ...(event.payload?.visitors ?? []),
+    ...(event.payload?.who ? [event.payload.who] : []), ...(event.participants ?? [])];
+  const site = of(state).sites[GARDEN_EXPOSURE_RULES.locationId];
+  if (!site || site.status === 'stable') return;
+  if (cast.includes('emily')) {
+    for (const lead of event.participants ?? []) {
+      const actor = state.characters?.[lead];
+      if (!actor || actor.journey || actor.location !== event.location || actor.area !== event.area) continue;
+      for (const key of site.sourceFactIds ?? []) {
+        const fact = state.facts?.[key];
+        if (fact?.validUntil > now && offscreenKnowsFact(state, 'emily', key, now)) {
+          ctx.ops.learn(lead, fact, 'told_by_emily');
+          event.payload.ecologicalReportFactKey = key;
+        }
+      }
+    }
+  }
+  if (!cast.includes('yukon') || onariKnowsEcologicalProblem(state, site.locationId, now)) return;
+  for (const lead of event.participants ?? []) {
+    const actor = state.characters?.[lead];
+    if (!actor || actor.journey || actor.location !== event.location || actor.area !== event.area) continue;
+    const key = (site.sourceFactIds ?? []).find(factKey =>
+      state.facts?.[factKey]?.validUntil > now
+      && actor.knowledge?.some(memory => memory.factKey === factKey && memory.learnedAt <= now && memory.validUntil > now));
+    if (!key) continue;
+    const [referral] = follow(ctx, 'ONARI_ECOLOGY_REFERRAL', 'garden-referral', now + MIN, {
+      locationId: site.locationId, sourceFactKey: key,
+      encounter: { eventId: id, occurredAt: now, lead, locationId: event.location, areaId: event.area },
+    });
+    if (referral) {
+      ctx.followups.push(referral);
+      save(ctx, { habitatExposure: { ...of(state).habitatExposure, referralPending: referral.id } });
+    }
+    return;
+  }
 }
 
 export function siteOpportunityActions({ state, now, parentActionId, parentEventId, sourceEvent }) {
@@ -399,14 +553,25 @@ export function resolveLivingPlacesAction(ctx) {
   const current = of(state), issuance = current.issued[a.id];
   const refuse = reason => { ops.skip(reason); return true; };
 
-  if (!issuance || issuance.consumed || a.version !== 1 || !equal(shape(a), issuance.shape)) {
+  if (!issuance || issuance.consumed || a.version !== 1 || !equal(shape(a), issuance.shape)
+    || issuance.fingerprint && issuance.fingerprint !== actionFingerprint(a)) {
     return refuse('No owned Living Places action');
   }
 
   save(ctx, { issued: { ...of(ctx.state).issued, [a.id]: { ...issuance, consumed: true } } });
+  const exposure = of(ctx.state).habitatExposure;
+  if (exposure?.referralPending === a.id) save(ctx, { habitatExposure: { ...exposure, referralPending: null } });
+  if (exposure?.endPending === a.id) save(ctx, { habitatExposure: { ...of(ctx.state).habitatExposure, endPending: null } });
   event.causedBy.push(issuance.sourceEventId);
 
   if (a.type === ECOLOGICAL_SOURCE_EVENT_TYPE) {
+    if (a.provenance?.mechanism === 'sustained_root_saturation') {
+      const exposure = of(state).habitatExposure;
+      if (exposure?.sourcePending !== a.id || exposure.phase !== 'saturated') {
+        if (exposure?.sourcePending === a.id) save(ctx, { habitatExposure: { ...exposure, sourcePending: null } });
+        return refuse('Sustained garden exposure no longer present');
+      }
+    }
     if (a.affectsLivingHabitat !== true) return refuse('Source does not affect living habitat');
     if (!VALID_CONSEQUENCE_KINDS.has(a.consequenceKind) || !VALID_IMPACTS.has(a.impact)) return refuse('Invalid ecological source fields');
     if (!isValidEcologicalProvenance(a.provenance)) return refuse('Ecological source missing provenance');
@@ -459,6 +624,8 @@ export function resolveLivingPlacesAction(ctx) {
   }
 
   if (a.type === ECOLOGICAL_SOURCE_END_TYPE) {
+    if (a.environmentalEnd && of(ctx.state).habitatExposure?.phase !== 'draining')
+      return refuse('Garden is exposed to saturating weather again');
     const key = a.sourceFactKey;
     const source = of(ctx.state).sources[key];
     if (!source || source.sourceActive !== true) return refuse('No active ecological source to end');
@@ -492,15 +659,18 @@ export function resolveLivingPlacesAction(ctx) {
   if (a.type === 'SITE_IMPACT_REGISTER') {
     const sourceFact = state.facts?.[a.sourceFactKey];
     const liveSource = of(ctx.state).sources[a.sourceFactKey];
+    const endedSource = of(ctx.state).endedSourceSummaries?.find(source => source.sourceFactKey === a.sourceFactKey);
     if (!sourceFact || sourceFact.kind !== ECOLOGICAL_SOURCE_FACT_KIND) return refuse('No committed ecological source fact');
-    if (!liveSource || liveSource.sourceActive !== true) return refuse('Ecological source is not active');
-    if (a.locationId !== liveSource.locationId) return refuse('Source location mismatch');
+    if (!liveSource && !endedSource) return refuse('Ecological source was never registered');
+    if (a.locationId !== (liveSource ?? endedSource).locationId || a.locationId !== sourceFact.value.locationId)
+      return refuse('Source location mismatch');
 
     const existing = current.sites[a.locationId];
     const impact = (existing?.impact === 'moderate' || a.impact === 'moderate') ? 'moderate' : 'minor';
-    const sourceEventIds = [...new Set([...(existing?.sourceEventIds ?? []), a.sourceEventId])].slice(-8);
+    const continuing = existing && existing.status !== 'stable';
+    const sourceEventIds = [...new Set([...(continuing ? existing.sourceEventIds ?? [] : []), a.sourceEventId])].slice(-8);
     const factKey = `${a.day}:site-impact-${a.locationId}-${HASH(a.sourceEventId)}`;
-    const sourceFactIds = [...new Set([...(existing?.sourceFactIds ?? []), a.sourceFactKey])].slice(-8);
+    const sourceFactIds = [...new Set([...(continuing ? existing.sourceFactIds ?? [] : []), a.sourceFactKey])].slice(-8);
 
     const siteRecord = {
       locationId: a.locationId,
@@ -527,7 +697,9 @@ export function resolveLivingPlacesAction(ctx) {
     event.participants = [];
     event.payload = { locationId: a.locationId, impact, consequenceKind: a.consequenceKind, status: 'disturbed', factKey, sourceFactKey: a.sourceFactKey };
     ops.publish(`Site disturbance registered at ${a.locationId}: ${a.consequenceKind.replace(/_/g, ' ')} (${impact}).`);
-    ctx.followups.push(...follow(ctx, 'SITE_RECOVERY_BEGIN', 'site-recovery-begin', now + 24 * 60 * MIN, {
+    // Cessation before the delayed register does not erase damage already
+    // committed by the source. Such a site can begin natural recovery now.
+    ctx.followups.push(...follow(ctx, 'SITE_RECOVERY_BEGIN', 'site-recovery-begin', now + (liveSource ? 24 * 60 : 10) * MIN, {
       locationId: a.locationId,
       expectedDisturbedAt: now
     }));
@@ -606,6 +778,11 @@ export function resolveLivingPlacesAction(ctx) {
     const sourceFact = state.facts?.[a.sourceFactKey];
     if (!site || site.status === 'stable') return refuse('No disturbed site to refer');
     if (!sourceFact || sourceFact.kind !== ECOLOGICAL_SOURCE_FACT_KIND) return refuse('No committed ecological source to refer');
+    if (sourceFact.value?.locationId !== a.locationId) return refuse('Ecological referral source location mismatch');
+    if (a.encounter && (a.encounter.eventId !== issuance.sourceEventId
+      || !state.characters?.[a.encounter.lead]?.knowledge?.some(memory => memory.factKey === a.sourceFactKey
+        && memory.learnedAt <= a.encounter.occurredAt && memory.validUntil > now)))
+      return refuse('Referral lacks a knowledgeable encounter witness');
     const taught = learnOffscreenFact(ctx, 'yukon', sourceFact);
     const factKey = `${a.day}:onari-referral-${a.locationId}-${HASH(a.sourceFactKey)}`;
     ops.createFact(factKey, 'onari_ecology_referral', 'onari', {

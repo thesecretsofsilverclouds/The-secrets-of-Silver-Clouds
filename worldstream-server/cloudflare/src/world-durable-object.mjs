@@ -18,6 +18,7 @@ import { CapacityTracker } from './capacity.mjs';
 import { createFixture, RULES_VERSION, DEFAULT_SEED, publicEvents } from '../../src/fixture.mjs';
 import { fixtureIdentity, matchesRulesIdentity, savedEpochStartMs } from '../../src/world-identity.mjs';
 import { atLondon, londonDate } from '../../src/time.mjs';
+import { fetchLondonWeather, londonWeatherSlot } from '../../src/weather-provider.mjs';
 import { evaluatePlotClocks } from '../../src/clocks.mjs';
 import {
   CINEMATIC_PROMPT_VERSION, CINEMATIC_RULES_VERSION,
@@ -141,6 +142,17 @@ export class WorldDurableObject {
         started_at INTEGER NOT NULL,
         last_seen INTEGER NOT NULL
       );
+
+      CREATE TABLE IF NOT EXISTS weather_observations (
+        slot_time TEXT PRIMARY KEY,
+        observed_at INTEGER NOT NULL,
+        code TEXT NOT NULL,
+        temperature_c REAL,
+        precipitation_mm REAL,
+        wind_speed_kph REAL,
+        data_json TEXT NOT NULL,
+        committed_at INTEGER NOT NULL
+      );
     `);
   }
 
@@ -193,10 +205,28 @@ export class WorldDurableObject {
       const startMs = savedEpochStartMs(existing.state_json);
       this.fixture = createFixture({ startMs });
       if (!matchesRulesIdentity(existing.rules_version, this.fixture)) {
-        throw new Error(`Saved world does not match rules ${RULES_VERSION}; refusing to reinterpret its history. Stop this Durable Object, export its SQLite, run the documented copy-upgrade on a pinned copy (v23→v24 MEU, then v24→v25 Legion, then v25→v26 Duskkin, then v26→v27 Living Places), then replace storage with the upgraded database.`);
+        throw new Error(`Saved world does not match rules ${RULES_VERSION}; refusing to reinterpret its history. Stop this Durable Object, export its SQLite, run the documented copy-upgrades on a pinned copy through v28, then scripts/upgrade-v29.mjs, and replace storage with the upgraded database.`);
       }
+
+      // Self-heal any legacy weather timestamps where observed_at > committed_at / resolved_through
+      try {
+        this.db.prepare('UPDATE weather_observations SET observed_at = committed_at WHERE observed_at > committed_at').run();
+        const currentSaved = this.db.prepare('SELECT state_json, resolved_through FROM world_state WHERE id = 1').get();
+        if (currentSaved) {
+          const st = JSON.parse(currentSaved.state_json);
+          if (st.weather?.observedAt && st.weather.observedAt > currentSaved.resolved_through) {
+            st.weather.observedAt = currentSaved.resolved_through;
+            this.db.prepare('UPDATE world_state SET state_json = ? WHERE id = 1').run(JSON.stringify(st));
+          }
+        }
+      } catch (_) {}
     }
     this.initialized = true;
+    if (this.ctx?.waitUntil) {
+      this.ctx.waitUntil(this.ensureAlarm());
+    } else {
+      this.ensureAlarm();
+    }
   }
 
   getResolvedThrough() {
@@ -238,7 +268,16 @@ export class WorldDurableObject {
         continue;
       }
 
-      const { event, followups } = this.fixture.reduceAction(state, action, row.seed);
+      // Match Node: a free routine checks queued duties when chosen and again
+      // when its concrete start runs; CSV still receives the unchanged full queue.
+      const needsDecisionContext = action.type === 'INTENT_RESPONSE' || action.type === 'RHYTHM_CHOOSE'
+        || Boolean(action.rhythm?.decisionEventId);
+      const decisionContext = needsDecisionContext ? {
+        pendingActions: this.db.prepare('SELECT action_json FROM scheduled_actions ORDER BY due_at,priority,id').all()
+          .map(entry => JSON.parse(entry.action_json)),
+        resolvedThrough: row.resolved_through, sequence: seq,
+      } : undefined;
+      const { event, followups } = this.fixture.reduceAction(state, action, row.seed, decisionContext);
       for (const followup of followups) {
         insertActionStmt.run(followup.id, followup.dueAt, followup.priority, JSON.stringify(followup));
       }
@@ -402,34 +441,88 @@ export class WorldDurableObject {
   /**
    * Alarm lifecycle handler: wakes every minute to advance world, ingest cinematics, and broadcast deltas.
    */
-  // One owner for the reservoir's durable refill state. Maintenance only:
-  // nothing on a read path or a socket touches this, and nothing here reads
-  // the audience. Off unless RESERVOIR_REFILL_ENABLED and a key are both set.
+  // Authored reservoir health only. Production never reserves or calls an LLM,
+  // even if legacy refill flags or provider keys are present.
   get sceneReservoir() {
     if (!this._sceneReservoir) this._sceneReservoir = createSceneReservoirRuntime({ db: this.db, env: this.env });
     return this._sceneReservoir;
   }
 
+  async pollScheduledWeather(nowMs = Date.now()) {
+    try {
+      const slot = londonWeatherSlot(nowMs);
+      const row = this.db.prepare('SELECT slot_time FROM weather_observations WHERE slot_time = ?').get(slot);
+      if (row) return;
+
+      const observation = await fetchLondonWeather({ now: nowMs, fetchFn: globalThis.fetch });
+      if (!observation) return;
+
+      this.db.prepare(`
+        INSERT INTO weather_observations (slot_time, observed_at, code, temperature_c, precipitation_mm, wind_speed_kph, data_json, committed_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `).run(
+        slot,
+        observation.observedAt,
+        observation.code,
+        observation.temperatureC,
+        observation.precipitationMm,
+        observation.windSpeedKph,
+        JSON.stringify(observation),
+        nowMs
+      );
+
+      const actionId = `weather-obs:${slot}`;
+      const existingAction = this.db.prepare('SELECT id FROM scheduled_actions WHERE id = ?').get(actionId);
+      if (!existingAction) {
+        const action = {
+          id: actionId,
+          type: 'WEATHER_OBSERVATION',
+          dueAt: nowMs,
+          priority: 5,
+          slotTime: slot,
+          observation,
+        };
+        this.db.prepare('INSERT INTO scheduled_actions VALUES (?, ?, ?, ?)').run(
+          action.id,
+          action.dueAt,
+          action.priority,
+          JSON.stringify(action)
+        );
+      }
+    } catch (err) {
+      console.error('Weather observation poll failed:', err);
+    }
+  }
+
   async alarm() {
     const startMs = Date.now();
     try {
+      await this.pollScheduledWeather(startMs);
       const newDeltas = this.advance(startMs);
       if (newDeltas.length > 0) {
         this.broadcastEvents(newDeltas);
       }
-      // Deliver prose first. A bounded refill must not delay the feed or
-      // multiply with requests; waitUntil keeps it alive through hibernation.
-      const refill = this.sceneReservoir.tick(this.presentationSnapshot(), startMs);
-      if (refill?.generation) {
-        if (this.ctx.waitUntil) this.ctx.waitUntil(refill.generation);
-        else await refill.generation;
-      }
+      // Read-only coverage measurement; authoring runs only in explicit offline tooling.
+      this.sceneReservoir.tick(this.presentationSnapshot(), startMs);
       this.capacity.recordRequest('alarms', Date.now() - startMs);
     } catch (err) {
       console.error('DO Alarm error:', err);
     } finally {
       // Schedule next alarm in 60 seconds
       await this.storage.setAlarm(Date.now() + ALARM_INTERVAL_MS);
+    }
+  }
+
+  async ensureAlarm() {
+    try {
+      if (this.storage?.getAlarm && this.storage?.setAlarm) {
+        const alarm = await this.storage.getAlarm();
+        if (!alarm) {
+          await this.storage.setAlarm(Date.now() + 1000);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to ensure alarm:', err);
     }
   }
 
@@ -607,8 +700,17 @@ export class WorldDurableObject {
       }
     }
 
-    // Advance world on demand for incoming HTTP requests
-    this.catchUp(Date.now());
+    if (this.ctx?.waitUntil) {
+      this.ctx.waitUntil(this.ensureAlarm());
+    } else {
+      this.ensureAlarm();
+    }
+
+    // Paging committed history and opening an old event are read-only. In
+    // particular, returning to an archived week must not advance the current
+    // world simply because the reader requested its next page.
+    const archivedRead = pathname === '/api/history' || /^\/api\/events\/[^/]+\/context$/.test(pathname);
+    if (!archivedRead && request.method !== 'OPTIONS') this.catchUp(Date.now());
 
     // CORS & response headers
     const corsHeaders = {

@@ -38,7 +38,7 @@ test('each configuration names a different world', () => {
   for (const [label, env] of [
     ['local', { WORLD_ID: 'authoritative-world' }],
     ['staging', { WORLD_ID: 'worldstream-staging' }],
-    ['production', { WORLD_ID: 'worldstream-production' }],
+    ['production', { WORLD_ID: 'worldstream-v27' }],
   ]) {
     const name = worldNameFor(env);
     assert.ok(!seen.has(name), `${label} reuses ${seen.get(name)}'s world`);
@@ -50,7 +50,16 @@ test('each configuration names a different world', () => {
 test('the declared deploy targets carry the required identities', () => {
   assert.match(wrangler, /WORLD_ID = "authoritative-world"/, 'local/default is preserved');
   assert.match(wrangler, /\[env\.staging\.vars\][\s\S]*?WORLD_ID = "worldstream-staging"/);
-  assert.match(wrangler, /\[env\.production\.vars\][\s\S]*?WORLD_ID = "worldstream-production"/);
+  const production = wrangler.match(/\[env\.production\]\s*([^]*?)(?=\n\[)/)?.[1];
+  const productionVars = wrangler.match(/\[env\.production\.vars\]\s*([^]*?)(?=\n\[)/)?.[1];
+  assert.match(production, /^main = "src\/production-worker\.mjs"$/m,
+    'production must use the controlled deployment entry point');
+  assert.match(productionVars, /^WORLD_ID = "worldstream-v30-preserved-20260920"$/m,
+    'production must select the verified preserved copy');
+  assert.match(productionVars, /^WORLD_MIGRATION_SOURCE_ID = "worldstream-v29-preserved-20260920"$/m,
+    'the source world must remain named for preservation and rollback');
+  assert.match(productionVars, /^WORLD_WRITER_PAUSED = "true"$/m,
+    'the production writer must fail closed until an explicit verified resume');
 });
 
 test('an unset or blank WORLD_ID keeps the existing local world', () => {

@@ -952,7 +952,7 @@ export function guardArcAction(ctx) {
   // Existing owned story actions retain their signed shape. Their usual
   // availability checks refuse a conflicting booking; an unforeseen physical
   // replacement is caught by the activity choke point.
-  if (/^(SUPPORTING_|INTENT_|ABILITY_|OFFSCREEN_|AGENDA_|OUTING_RECOVERY_|INK_)/.test(a.type)) return true;
+  if (/^(SUPPORTING_|INTENT_|ABILITY_|OFFSCREEN_|AGENDA_|OUTING_RECOVERY_|INK_|RHYTHM_)/.test(a.type)) return true;
   if (['ACTIVITY_COMPLETE', 'PRACTICE_END', 'END_ENCOUNTER'].includes(a.type)) {
     const dueAt = session.until + 1;
     ctx.followups.push({ ...a, id: `${a.id}/after-arc/${session.startEventId}`, dueAt, day: londonDate(dueAt) });

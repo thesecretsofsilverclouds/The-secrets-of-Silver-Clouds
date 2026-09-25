@@ -297,7 +297,16 @@ export class WorldStore {
         if (!pending) break;
         const action = JSON.parse(pending.action_json);
         if (action.dueAt <= row.resolved_through) throw new Error('Pending action behind committed watermark');
-        const { event, followups } = this.fixture.reduceAction(state, action, row.seed);
+        // Both an intention response and a free routine must see already queued
+        // duties. Recheck at the concrete start: new work may arrive after choice.
+        const needsDecisionContext = action.type === 'INTENT_RESPONSE' || action.type === 'RHYTHM_CHOOSE'
+          || Boolean(action.rhythm?.decisionEventId);
+        const decisionContext = needsDecisionContext ? {
+          pendingActions: this.db.prepare('SELECT action_json FROM scheduled_actions ORDER BY due_at,priority,id').all()
+            .map(entry => JSON.parse(entry.action_json)),
+          resolvedThrough: row.resolved_through, sequence: seq,
+        } : undefined;
+        const { event, followups } = this.fixture.reduceAction(state, action, row.seed, decisionContext);
         for (const followup of followups) {
           if (followup.dueAt <= action.dueAt) throw new Error('Follow-up must occur after its cause');
           insertAction.run(followup.id, followup.dueAt, followup.priority, JSON.stringify(followup));

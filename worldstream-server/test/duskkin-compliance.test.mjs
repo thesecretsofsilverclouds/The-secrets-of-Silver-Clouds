@@ -97,7 +97,7 @@ function firstCase(snap) {
 }
 
 test('Duskkin rules version is active under current release', () => {
-  assert.ok(['canon-ambient-p183-v26', 'canon-ambient-p183-v27'].includes(RULES_VERSION));
+  assert.ok(['canon-ambient-p183-v26', 'canon-ambient-p183-v27', 'canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION));
   assert.ok(DUSKKIN_COMPLIANCE_EVENT_TYPES.includes(DUSKKIN_SOURCE_EVENT_TYPE));
 });
 

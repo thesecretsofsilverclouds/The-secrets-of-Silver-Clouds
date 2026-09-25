@@ -878,9 +878,10 @@ test('conversations are authored, in the moment, and never disclose anything', t
     // Still nothing in the world: no knowledge, no relationship, no plan. The
     // director's pacing clock is its own ledger entity precisely so this rail
     // can keep saying that without having to make an exception for it.
-    assert.deepEqual(talk.changes.filter(change => change.entity !== 'director'), [],
+    assert.deepEqual(talk.changes.filter(change => change.entity !== 'director'
+      && !(change.entity === 'story' && change.id === 'narrativeSignals' && change.field === 'narrativeSignals')), [],
       'a conversation must not move state');
-    for (const change of talk.changes) assert.equal(change.field, 'director');
+    for (const change of talk.changes) assert.ok(['director','narrativeSignals'].includes(change.field));
     assert.deepEqual([...talk.participants].sort(), ['ashai', 'goaden']);
     for (const line of talk.payload.lines) {
       assert.ok(authored.has(line.text), `unauthored line: ${line.text}`);

@@ -11,6 +11,9 @@ import { initialDuskkinComplianceState } from '../src/duskkin-compliance.mjs';
 import { openPinnedWorld } from '../src/world-operations.mjs';
 import { upgradeDuskkinCompliance } from '../src/duskkin-upgrade.mjs';
 import { upgradeLivingPlaces } from '../src/living-places-upgrade.mjs';
+import { upgradeV28 } from '../src/v28-upgrade.mjs';
+import { upgradeRhythm } from '../src/rhythm-upgrade.mjs';
+import { upgradeNarrativeSystems } from '../src/narrative-upgrade.mjs';
 import { atLondon } from '../src/time.mjs';
 
 const OLD = 'canon-ambient-p183-v25', NEXT = 'canon-ambient-p183-v26';
@@ -30,6 +33,8 @@ function legacy(t) {
   const dbPath = join(directory, 'world.sqlite'), backupPath = join(directory, 'before-v26.sqlite');
   const current = createFixture({ startMs: start }), initial = current.initialState();
   delete initial.duskkinCompliance;
+  delete initial.narrativeSignals;
+  delete initial.rhythm;
   initial.meta.upgrades = [
     { from: 'canon-ambient-p183-v22', to: 'canon-ambient-p183-v23', cutoverAt: start,
       activatedAt: start + 1, activationActionId: `lives-v23/activate/${start}` },
@@ -60,6 +65,8 @@ function liveV25Pinned(t, { days = 3, seed = 'live-duskkin-upgrade-copy' } = {})
   const dbPath = join(directory, 'world.sqlite'), backupPath = join(directory, 'before-v26.sqlite');
   const current = createFixture({ startMs: start }), initial = current.initialState();
   delete initial.duskkinCompliance;
+  delete initial.narrativeSignals;
+  delete initial.rhythm;
   initial.meta.upgrades = [
     { from: 'canon-ambient-p183-v22', to: 'canon-ambient-p183-v23', cutoverAt: start,
       activatedAt: start + 1, activationActionId: `lives-v23/activate/${start}` },
@@ -85,7 +92,7 @@ function liveV25Pinned(t, { days = 3, seed = 'live-duskkin-upgrade-copy' } = {})
 
 test('v25 to v26 preserves old ledger bytes, memories, clock, seed and every existing pending action', t => {
   const f = legacy(t), before = snapshot(f);
-  assert.ok([NEXT, 'canon-ambient-p183-v27'].includes(RULES_VERSION));
+  assert.ok([NEXT, 'canon-ambient-p183-v27', 'canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION));
   assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
   const result = upgradeDuskkinCompliance(f), after = snapshot(f);
   assert.equal(result.status, 'upgraded'); assert.equal(result.rulesVersion, NEXT);
@@ -114,9 +121,21 @@ test('v26 upgrade is idempotent and activation is prospective', t => {
   assert.equal(second.cutoverAt, result.cutoverAt);
   assert.ok(existsSync(result.backupPath));
 
-  if (RULES_VERSION === 'canon-ambient-p183-v27') {
+  if (RULES_VERSION === 'canon-ambient-p183-v27' || ['canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
     assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
     upgradeLivingPlaces({ directory: f.directory, backupPath: join(f.directory, 'before-v27.sqlite') });
+  }
+  if (['canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeV28({ directory: f.directory, backupPath: join(f.directory, 'before-v28.sqlite') });
+  }
+  if (['canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeNarrativeSystems({ directory: f.directory, backupPath: join(f.directory, 'before-v29.sqlite') });
+  }
+  if (RULES_VERSION === 'canon-ambient-p183-v30') {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeRhythm({ directory: f.directory, backupPath: join(f.directory, 'before-v30.sqlite') });
   }
 
   const world = openPinnedWorld({ directory: f.directory });
@@ -148,9 +167,21 @@ test('copied live v25 world activates v26 prospectively without reseed, backfill
   assert.equal(after.pending.length, before.pending.length + 1);
   assert.deepEqual(after.pending.filter(row => row.id !== result.activationActionId), before.pending);
 
-  if (RULES_VERSION === 'canon-ambient-p183-v27') {
+  if (RULES_VERSION === 'canon-ambient-p183-v27' || ['canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
     assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
     upgradeLivingPlaces({ directory: f.directory, backupPath: join(f.directory, 'before-v27.sqlite') });
+  }
+  if (['canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeV28({ directory: f.directory, backupPath: join(f.directory, 'before-v28.sqlite') });
+  }
+  if (['canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeNarrativeSystems({ directory: f.directory, backupPath: join(f.directory, 'before-v29.sqlite') });
+  }
+  if (RULES_VERSION === 'canon-ambient-p183-v30') {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeRhythm({ directory: f.directory, backupPath: join(f.directory, 'before-v30.sqlite') });
   }
 
   const world = openPinnedWorld({ directory: f.directory });

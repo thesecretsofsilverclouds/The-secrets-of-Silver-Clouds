@@ -13,6 +13,9 @@ import { upgradeMeuCases } from '../src/meu-upgrade.mjs';
 import { upgradeLegionJobs } from '../src/legion-upgrade.mjs';
 import { upgradeDuskkinCompliance } from '../src/duskkin-upgrade.mjs';
 import { upgradeLivingPlaces } from '../src/living-places-upgrade.mjs';
+import { upgradeV28 } from '../src/v28-upgrade.mjs';
+import { upgradeRhythm } from '../src/rhythm-upgrade.mjs';
+import { upgradeNarrativeSystems } from '../src/narrative-upgrade.mjs';
 import { openPinnedWorld, restoreWorldBackup } from '../src/world-operations.mjs';
 import { atLondon } from '../src/time.mjs';
 
@@ -35,6 +38,8 @@ function legacy(t) {
   const dbPath = join(directory, 'world.sqlite'), backupPath = join(directory, 'before-v23.sqlite');
   const current = createFixture({ startMs: start }), initial = current.initialState();
   delete initial.offscreenLives;
+  delete initial.narrativeSignals;
+  delete initial.rhythm;
   initial.meta.upgrades = [{ from: 'canon-ambient-p183-v21', to: OLD, cutoverAt: start }];
   const fixture = { ...current, rulesVersion: OLD, initialState: () => structuredClone(initial),
     initialActions: () => [
@@ -55,7 +60,7 @@ function legacy(t) {
 
 test('v22 to v23 preserves old ledger bytes, memories, clock, seed and every existing pending action', t => {
   const f = legacy(t), before = snapshot(f);
-  assert.ok([NEXT, 'canon-ambient-p183-v24', 'canon-ambient-p183-v25', 'canon-ambient-p183-v26', 'canon-ambient-p183-v27'].includes(RULES_VERSION));
+  assert.ok([NEXT, 'canon-ambient-p183-v24', 'canon-ambient-p183-v25', 'canon-ambient-p183-v26', 'canon-ambient-p183-v27', 'canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION));
   assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
   const result = upgradeOffscreenLives(f), after = snapshot(f);
   assert.equal(result.status, 'upgraded'); assert.equal(result.rulesVersion, NEXT);
@@ -95,21 +100,33 @@ test('v22 to v23 preserves old ledger bytes, memories, clock, seed and every exi
 test('activation begins after the cutover without backfilling events or changing continuity', t => {
   const f = legacy(t), history = events(f.db);
   upgradeOffscreenLives(f);
-  if (RULES_VERSION === 'canon-ambient-p183-v24' || RULES_VERSION === 'canon-ambient-p183-v25' || RULES_VERSION === 'canon-ambient-p183-v26' || RULES_VERSION === 'canon-ambient-p183-v27') {
+  if (RULES_VERSION === 'canon-ambient-p183-v24' || RULES_VERSION === 'canon-ambient-p183-v25' || RULES_VERSION === 'canon-ambient-p183-v26' || RULES_VERSION === 'canon-ambient-p183-v27' || ['canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
     assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
     upgradeMeuCases({ directory: f.directory, backupPath: join(f.directory, 'before-v24.sqlite') });
   }
-  if (RULES_VERSION === 'canon-ambient-p183-v25' || RULES_VERSION === 'canon-ambient-p183-v26' || RULES_VERSION === 'canon-ambient-p183-v27') {
+  if (RULES_VERSION === 'canon-ambient-p183-v25' || RULES_VERSION === 'canon-ambient-p183-v26' || RULES_VERSION === 'canon-ambient-p183-v27' || ['canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
     assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
     upgradeLegionJobs({ directory: f.directory, backupPath: join(f.directory, 'before-v25.sqlite') });
   }
-  if (RULES_VERSION === 'canon-ambient-p183-v26' || RULES_VERSION === 'canon-ambient-p183-v27') {
+  if (RULES_VERSION === 'canon-ambient-p183-v26' || RULES_VERSION === 'canon-ambient-p183-v27' || ['canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
     assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
     upgradeDuskkinCompliance({ directory: f.directory, backupPath: join(f.directory, 'before-v26.sqlite') });
   }
-  if (RULES_VERSION === 'canon-ambient-p183-v27') {
+  if (RULES_VERSION === 'canon-ambient-p183-v27' || ['canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
     assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
     upgradeLivingPlaces({ directory: f.directory, backupPath: join(f.directory, 'before-v27.sqlite') });
+  }
+  if (['canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeV28({ directory: f.directory, backupPath: join(f.directory, 'before-v28.sqlite') });
+  }
+  if (['canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeNarrativeSystems({ directory: f.directory, backupPath: join(f.directory, 'before-v29.sqlite') });
+  }
+  if (RULES_VERSION === 'canon-ambient-p183-v30') {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeRhythm({ directory: f.directory, backupPath: join(f.directory, 'before-v30.sqlite') });
   }
   const world = openPinnedWorld({ directory: f.directory });
   try {
@@ -119,12 +136,12 @@ test('activation begins after the cutover without backfilling events or changing
     const after = world.semanticSnapshot();
     const activations = after.events.slice(history.length);
     assert.ok(activations.some(e => e.type === 'WORLD_LIVES_ACTIVATE'));
-    if (RULES_VERSION === 'canon-ambient-p183-v27') {
+    if (RULES_VERSION === 'canon-ambient-p183-v27' || ['canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
       assert.ok(activations.some(e => e.type === 'WORLD_MEU_ACTIVATE'));
       assert.ok(activations.some(e => e.type === 'WORLD_LEGION_ACTIVATE'));
       assert.ok(activations.some(e => e.type === 'WORLD_DUSKKIN_ACTIVATE'));
       assert.ok(activations.some(e => e.type === 'WORLD_LIVING_PLACES_ACTIVATE'));
-      assert.equal(activations.length, 5);
+      assert.equal(activations.length, RULES_VERSION === 'canon-ambient-p183-v30' ? 7 : RULES_VERSION === 'canon-ambient-p183-v29' ? 6 : 5);
     } else if (RULES_VERSION === 'canon-ambient-p183-v26') {
       assert.ok(activations.some(e => e.type === 'WORLD_MEU_ACTIVATE'));
       assert.ok(activations.some(e => e.type === 'WORLD_LEGION_ACTIVATE'));

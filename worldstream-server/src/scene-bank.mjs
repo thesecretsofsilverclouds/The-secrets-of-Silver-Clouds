@@ -1,4 +1,3 @@
-import { createHash } from 'node:crypto';
 import { SCENE_BANK_CATALOG, SCENE_BANK_BY_ID, sceneNarrativeParagraphs } from './scene-bank-catalog.mjs';
 import { reservoirSceneEligible } from './scene-reservoir-catalog.mjs';
 import { areaOf, permitsArea } from './places.mjs';
@@ -13,6 +12,7 @@ import { nightStoryAvailable } from './night-stories.mjs';
 import { outingRecoveryActorAvailable } from './outing-recovery.mjs';
 import { competingCommitments } from './intent.mjs';
 import { DIRECTOR_RULES } from './director.mjs';
+import { rankNarrativeScenes } from './narrative-selection.mjs';
 
 export const SCENE_BANK_EVENT_TYPES = Object.freeze(['SCENE_BANK_GATHER','SCENE_BANK_BEAT','SCENE_BANK_REJOIN']);
 export const SCENE_BANK_FACT_KINDS = Object.freeze(['scene_bank_observation']);
@@ -29,7 +29,6 @@ const ordinary = new Set(['unhurried_time','quiet_break','eating','gaming','watc
 const training = new Set(['training','unhurried_time']);
 const visits={ink_visit:['enchanted_ink','visiting_enchanted_ink'],cafe_outing:['cafe','at_the_silver_spoon'],
   city_walk:['big_ben_plaza','walking_the_city']};
-const hash = text => createHash('sha256').update(text).digest('hex').slice(0,24);
 const of = state => state.sceneBank ?? initialSceneBank();
 const completed = (state,id) => of(state).completed[id];
 
@@ -334,7 +333,7 @@ export function sceneBankAfterAction(ctx) {
   }
   if (bank.pending || bank.session?.until>ctx.now) return;
   const sceneContext={...ctx,state:ownView(ctx.state)};
-  let choice=null, booking=null;
+  let choice=null, booking=null, narrativeChoice=null;
   for(const scene of SCENE_BANK_CATALOG.filter(s=>s.id.startsWith('P') && (bank.nextNimbusAt??0)<=ctx.now)) {
     const gather=scene.id!=='P1', match=eligible(sceneContext,scene,{gather});
     if(match) {choice=scene;booking={...match,gather};break;}
@@ -351,9 +350,10 @@ export function sceneBankAfterAction(ctx) {
     // this world has never shown, which is the whole of the repetition rule.
     const fewest=Math.min(...options.map(scene=>playCount(bank.completed[scene.id])),Infinity);
     const fresh=options.filter(scene=>playCount(bank.completed[scene.id])===fewest);
-    fresh.sort((a,b)=>hash(`${ctx.seed}|scene-bank-v1|${a.id}|${londonDate(ctx.now)}`)
-      .localeCompare(hash(`${ctx.seed}|scene-bank-v1|${b.id}|${londonDate(ctx.now)}`)));
-    choice=fresh[0]; if(choice) booking={...eligible(sceneContext,choice),gather:false};
+    const ranked=rankNarrativeScenes(fresh,{state:ctx.state,now:ctx.now,disabled:ctx.disableNarrativeSignals,hashLength:24,
+      key:scene=>`${ctx.seed}|scene-bank-v1|${scene.id}|${londonDate(ctx.now)}`});
+    choice=ranked[0]?.scene; if(choice) booking={...eligible(sceneContext,choice),gather:false};
+    if(ranked[0]?.logWeight) narrativeChoice={version:1,logWeight:ranked[0].logWeight,evidence:ranked[0].evidence};
   }
   if (!choice) {
     if (['gardens','venue'].includes(bank.nimbus.place?.area) && ctx.state.characters.goaden?.location==='big_ben_plaza'
@@ -368,9 +368,12 @@ export function sceneBankAfterAction(ctx) {
   const action={id:`${ctx.action.id}/scene-bank/${choice.id}`,type:booking.gather?'SCENE_BANK_GATHER':'SCENE_BANK_BEAT',
     sceneBankId:choice.id,dueAt:ctx.now+1,day:londonDate(ctx.now+1),priority:33,actors:booking.actors,version:1};
   const causeIds=choice.dependencies.map(id=>bank.completed[id].eventId);
+  for(const proof of narrativeChoice?.evidence??[]) causeIds.push(...(typeof proof==='string'?[proof]:
+    [proof.sourceEventId,proof.acquisitionEventId,proof.otherSourceEventId,proof.otherAcquisitionEventId]));
   if (choice.id==='D1'||choice.id==='D5'||choice.id==='E14') causeIds.push(bank.proofs.north_face_alarm?.eventId);
   save(ctx,{...bank,pending:{shape:stamp(action),sourceEventId:ctx.id,sourceAt:ctx.now,expiresAt:ctx.now+MIN,
     sceneId:choice.id,cast:booking.cast,location:choice.location,area:choice.area,causes:causeIds.filter(Boolean),
+    ...(narrativeChoice?{narrativeChoice}:{}),
     leadActivityIds:Object.fromEntries(booking.actors.map(id=>[id,ctx.state.characters[id].activityId]))}});
   ctx.followups.push(action);
 }

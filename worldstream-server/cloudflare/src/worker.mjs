@@ -33,6 +33,12 @@ const WAKE_WINDOW_MS = 15 * 60_000;
 const worldName = (env) => (typeof env.WORLD_ID === 'string' && env.WORLD_ID.trim()
   ? env.WORLD_ID.trim() : 'authoritative-world');
 
+const varyByOrigin = (value) => {
+  const fields = (value || '').split(',').map(field => field.trim()).filter(Boolean);
+  if (fields.includes('*') || fields.some(field => field.toLowerCase() === 'origin')) return value;
+  return [...fields, 'Origin'].join(', ');
+};
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -54,6 +60,7 @@ export default {
       // feed at the preflight. Same-origin development never showed it.
       'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-client-id, x-viewer-token, Upgrade',
       'Access-Control-Max-Age': '86400',
+      'Vary': 'Origin',
     };
 
     // Preflight OPTIONS requests
@@ -119,8 +126,11 @@ export default {
     // Forward request to the authoritative DO
     const response = await worldStub.fetch(request);
 
-    // Add CORS headers to response if not already present
+    // The outer Worker's configured origin policy owns the public boundary.
+    // The Durable Object's standalone wildcard must not bypass that policy.
     const responseHeaders = new Headers(response.headers);
+    responseHeaders.set('Access-Control-Allow-Origin', allowOrigin);
+    responseHeaders.set('Vary', varyByOrigin(responseHeaders.get('Vary')));
     for (const [key, value] of Object.entries(corsHeaders)) {
       if (!responseHeaders.has(key)) {
         responseHeaders.set(key, value);

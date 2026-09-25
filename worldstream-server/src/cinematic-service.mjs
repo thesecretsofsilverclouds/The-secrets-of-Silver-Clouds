@@ -134,7 +134,7 @@ export class CinematicService {
    * the explicitly supplied registry snapshot; actual generation independently
    * rechecks the injected registry.
    */
-  ingest(snapshot, { presence = null, now = this.now() } = {}) {
+  ingest(snapshot, { presence = null, now = this.now(), canonicalOnly = false } = {}) {
     const records = [];
     const identity=JSON.stringify([snapshot?.world?.id,snapshot?.world?.seed,snapshot?.world?.rulesVersion]);
     if(identity!==this.indexedIdentity) {this.indexedIdentity=identity;this.indexedSequence=0;}
@@ -172,7 +172,7 @@ export class CinematicService {
         || a.eventId.localeCompare(b.eventId));
     const selected = eligible[0] ?? null;
     if (!selected) return { candidates: records, selected: null, generation: null };
-    if (!this.config.enabled || !this.client) {
+    if (canonicalOnly || !this.config.enabled || !this.client) {
       if (this.#presence(now).count <= 0) return { candidates: records, selected: null, generation: null };
       // The authored world can perform without a network connection. This is
       // cached presentation of an existing event, never a new simulation beat.

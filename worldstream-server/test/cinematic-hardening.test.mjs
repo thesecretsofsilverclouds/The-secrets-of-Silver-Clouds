@@ -199,7 +199,7 @@ test('rejected prose is retained in private diagnostics and never in a public fa
   assert.doesNotMatch(JSON.stringify(cinematicRecordForApi(row)), /REJECTED_SENTINEL|response_json/);
 });
 
-test('HTTP reads do not count as spectators; a heartbeat enables one shared cached scene and archive', async t => {
+test('HTTP reads do not count as spectators; a heartbeat enables one shared authored scene and archive without model calls', async t => {
   const canonical = snapshot();
   const sceneStore = openCinematicStore({ dbPath: ':memory:' });
   let calls = 0, clock = AT, advances = 0;
@@ -213,10 +213,15 @@ test('HTTP reads do not count as spectators; a heartbeat enables one shared cach
   for (const route of ['/api/world', '/api/cinematics/live', '/api/presence', '/api/cinematics/archive']) await fetch(base + route);
   await fetch(base + '/api/observe', { method: 'POST' });
   assert.equal(calls, 0);
+  assert.equal(sceneStore.get('evt:1').status, 'candidate', 'reader GETs do not authorize a performance');
   const ping = await fetch(base + '/api/presence/ping', { method: 'POST' }).then(r => r.json());
   assert.equal(typeof ping.viewerToken, 'string');
   await Promise.all(Array.from({ length: 20 }, () => fetch(base + '/api/observe', { method: 'POST' })));
-  assert.equal(calls, 1);
+  assert.equal(calls, 0, 'production remains authored-only even with enabled legacy cinematic options');
+  assert.equal(sceneStore.get('evt:1').status, 'fallback');
+  assert.equal(sceneStore.get('evt:1').scene.source, 'canonical');
+  assert.equal(sceneStore.get('evt:1').attempts, 0);
+  assert.equal(sceneStore.budget('2026-09-05').calls, 0);
   const records = await Promise.all(Array.from({ length: 20 }, () => fetch(base + '/api/cinematics/live').then(r => r.json())));
   assert.ok(records.every(row => row.cinematic?.eventId === 'evt:1'));
   assert.ok(records.every(row => JSON.stringify(row.cinematic) === JSON.stringify(records[0].cinematic)));
@@ -230,6 +235,7 @@ test('HTTP reads do not count as spectators; a heartbeat enables one shared cach
   assert.equal(advances, 21);
   clock += 61_000;
   const status = await fetch(base + '/api/cinematics/status').then(r => r.json());
+  assert.equal(status.enabled, false);
   assert.equal(Object.hasOwn(status, 'activeViewers'), false, 'Audience size is private, including after expiry');
 });
 

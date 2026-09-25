@@ -13,7 +13,7 @@ import {
 import { evaluatePlotClocks } from './src/clocks.mjs';
 import { openCinematicStore } from './src/cinematic-store.mjs';
 import { CinematicService, ViewerRegistry } from './src/cinematic-service.mjs';
-import { cinematicConfig, openAICinematicClient } from './src/cinematics.mjs';
+import { cinematicConfig } from './src/cinematics.mjs';
 import { editorialCinematicRecordForApi } from './src/editorial-cinematics.mjs';
 import { historyOptions } from './src/public-history.mjs';
 import { AMBIENT_ASSETS, isAmbientAudioFile, publicAmbientSources } from './src/ambient-assets.mjs';
@@ -140,12 +140,10 @@ export function createApp({ world, socialStore, feedbackStore, audienceStore, ci
   const feedback = feedbackStore || openFeedbackStore({ dbPath: ':memory:', now });
   const ownsCinematicStore = !cinematicStore && !cinematicService;
   const sceneStore = cinematicStore || (cinematicService ? null : openCinematicStore({ dbPath: ':memory:' }));
-  const sceneConfig = cinematicOptions || cinematicConfig();
-  const sceneClient = cinematicClient !== undefined ? cinematicClient
-    : sceneConfig.enabled ? openAICinematicClient({
-      apiKey: process.env.OPENAI_API_KEY, model: sceneConfig.model,
-      timeoutMs: sceneConfig.timeoutMs, maxOutputTokens: sceneConfig.maxOutputTokens,
-    }) : null;
+  // Runtime architecture is authored-only, including when an old deployment
+  // still has generation flags or a provider key. Offline tooling owns models.
+  const sceneConfig = { ...(cinematicOptions || cinematicConfig()), enabled: false, model: null };
+  const sceneClient = null;
   const viewers = viewerRegistry || new ViewerRegistry({
     ttlMs: sceneConfig.activeViewerTtlMs, reconnectGraceMs: sceneConfig.reconnectGraceMs,
   });
@@ -386,10 +384,10 @@ export function createApp({ world, socialStore, feedbackStore, audienceStore, ci
         try {
           const live = viewers.snapshot(serverTime);
           const indexed = cinematics.ingest(world.presentationSnapshot?.() ?? world.semanticSnapshot(), {
-            presence: live, now: serverTime,
+            presence: live, now: serverTime, canonicalOnly: true,
           });
-          // Model latency never holds the canonical observe request open. All
-          // current viewers consume the one cached result through /live.
+          // Existing prose is cached for presentation; this route cannot
+          // authorize generation even on an injected enabled service.
           indexed.generation?.catch(() => {});
         } catch {}
         const clocks = evaluatePlotClocks(world, serverTime);
@@ -484,7 +482,7 @@ export function createApp({ world, socialStore, feedbackStore, audienceStore, ci
           return;
         }
         const serverTime = now();
-        sendJson(response, 200, { ...cinematics.status(serverTime), serverTime });
+        sendJson(response, 200, { ...cinematics.status(serverTime), enabled: false, model: null, serverTime });
         return;
       }
 

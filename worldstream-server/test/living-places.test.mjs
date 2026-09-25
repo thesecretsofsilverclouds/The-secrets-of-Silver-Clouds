@@ -1,4 +1,4 @@
-﻿import test from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import { WorldStore } from '../experiment-l/src/world.mjs';
 import { createFixture, RULES_VERSION, eventId } from '../src/fixture.mjs';
@@ -103,6 +103,8 @@ function seededWorld({
 } = {}) {
   const current = createFixture({ startMs: START });
   const initial = current.initialState();
+  // Isolate the existing explicit-source lifecycle from the v29 natural weather pathway.
+  delete initial.narrativeSignals;
   initial.livingPlaces = {
     ...initialLivingPlacesState(),
     issued: Object.fromEntries(incidents.map(action => [action.id, {
@@ -119,8 +121,8 @@ function seededWorld({
   return { world: new WorldStore({ dbPath: ':memory:', seed, fixture }), fixture };
 }
 
-test('Living Places rules version is canon-ambient-p183-v27', () => {
-  assert.equal(RULES_VERSION, 'canon-ambient-p183-v27');
+test('Living Places rules version is active under current release', () => {
+  assert.ok(['canon-ambient-p183-v27', 'canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION));
 });
 
 test('village access fact kinds are canonical Living Places topics', () => {

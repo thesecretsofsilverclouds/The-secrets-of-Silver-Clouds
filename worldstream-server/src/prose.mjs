@@ -34,6 +34,7 @@ export const PROSE_TYPES = Object.freeze(new Set([
   'AGENDA_RESOLVE', 'AGENDA_DEADLINE', 'GROUND_WORK_COMPLETED', 'GROUND_WORK_INTERRUPTED',
   'SUPPORTING_OUTCOME', 'SUPPORTING_CALLBACK',
   'NIGHT_CALL', 'NIGHT_WORK_BEGIN', 'NIGHT_WORK_END', 'NIGHT_RETURN', 'NIGHT_DEBRIEF',
+  'DAVIS_BETRAYAL_DISCOVERY',
   // A shared moment is a paragraph by construction — the whole point of it is
   // one event described from inside a particular room — so it belongs in the
   // novel register. Caught on the live page: the Chimes landing on Ashai at her

@@ -1,4 +1,4 @@
-﻿import test from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -10,6 +10,9 @@ import { createFixture, eventId, RULES_VERSION } from '../src/fixture.mjs';
 import { initialLivingPlacesState } from '../src/living-places.mjs';
 import { openPinnedWorld } from '../src/world-operations.mjs';
 import { upgradeLivingPlaces } from '../src/living-places-upgrade.mjs';
+import { upgradeV28 } from '../src/v28-upgrade.mjs';
+import { upgradeRhythm } from '../src/rhythm-upgrade.mjs';
+import { upgradeNarrativeSystems } from '../src/narrative-upgrade.mjs';
 import { atLondon } from '../src/time.mjs';
 
 const OLD = 'canon-ambient-p183-v26', NEXT = 'canon-ambient-p183-v27';
@@ -29,6 +32,8 @@ function legacy(t) {
   const dbPath = join(directory, 'world.sqlite'), backupPath = join(directory, 'before-v27.sqlite');
   const current = createFixture({ startMs: start }), initial = current.initialState();
   delete initial.livingPlaces;
+  delete initial.narrativeSignals;
+  delete initial.rhythm;
   initial.meta.upgrades = [
     { from: 'canon-ambient-p183-v22', to: 'canon-ambient-p183-v23', cutoverAt: start,
       activatedAt: start + 1, activationActionId: `lives-v23/activate/${start}` },
@@ -61,6 +66,8 @@ function liveV26Pinned(t, { days = 3, seed = 'live-living-places-upgrade-copy' }
   const dbPath = join(directory, 'world.sqlite'), backupPath = join(directory, 'before-v27.sqlite');
   const current = createFixture({ startMs: start }), initial = current.initialState();
   delete initial.livingPlaces;
+  delete initial.narrativeSignals;
+  delete initial.rhythm;
   initial.meta.upgrades = [
     { from: 'canon-ambient-p183-v22', to: 'canon-ambient-p183-v23', cutoverAt: start,
       activatedAt: start + 1, activationActionId: `lives-v23/activate/${start}` },
@@ -88,7 +95,7 @@ function liveV26Pinned(t, { days = 3, seed = 'live-living-places-upgrade-copy' }
 
 test('v26 to v27 preserves old ledger bytes, memories, clock, seed and every existing pending action', t => {
   const f = legacy(t), before = snapshot(f);
-  assert.equal(RULES_VERSION, NEXT);
+  assert.ok([NEXT, 'canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION));
   assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
   const result = upgradeLivingPlaces(f), after = snapshot(f);
   assert.equal(result.status, 'upgraded'); assert.equal(result.rulesVersion, NEXT);
@@ -116,6 +123,19 @@ test('v27 upgrade is idempotent and activation is prospective', t => {
   assert.equal(second.rulesVersion, NEXT);
   assert.equal(second.cutoverAt, result.cutoverAt);
   assert.ok(existsSync(result.backupPath));
+
+  if (['canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeV28({ directory: f.directory, backupPath: join(f.directory, 'before-v28.sqlite') });
+  }
+  if (['canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeNarrativeSystems({ directory: f.directory, backupPath: join(f.directory, 'before-v29.sqlite') });
+  }
+  if (RULES_VERSION === 'canon-ambient-p183-v30') {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeRhythm({ directory: f.directory, backupPath: join(f.directory, 'before-v30.sqlite') });
+  }
 
   const world = openPinnedWorld({ directory: f.directory });
   world.advance(cutover + 2 * 60 * 60000);
@@ -146,9 +166,22 @@ test('copied live v26 world activates v27 prospectively without reseed, backfill
   assert.equal(after.pending.length, before.pending.length + 1);
   assert.deepEqual(after.pending.filter(row => row.id !== result.activationActionId), before.pending);
 
+  if (['canon-ambient-p183-v28', 'canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeV28({ directory: f.directory, backupPath: join(f.directory, 'before-v28.sqlite') });
+  }
+  if (['canon-ambient-p183-v29', 'canon-ambient-p183-v30'].includes(RULES_VERSION)) {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeNarrativeSystems({ directory: f.directory, backupPath: join(f.directory, 'before-v29.sqlite') });
+  }
+  if (RULES_VERSION === 'canon-ambient-p183-v30') {
+    assert.throws(() => openPinnedWorld({ directory: f.directory }), /differs/);
+    upgradeRhythm({ directory: f.directory, backupPath: join(f.directory, 'before-v30.sqlite') });
+  }
+
   const world = openPinnedWorld({ directory: f.directory });
   try {
-    assert.equal(world.semanticSnapshot().world.rulesVersion, NEXT);
+    assert.equal(world.semanticSnapshot().world.rulesVersion, RULES_VERSION);
     world.advance(before.row.resolved_through + 1);
     const activated = world.semanticSnapshot();
     assert.equal(activated.events.filter(e => e.type === 'WORLD_LIVING_PLACES_ACTIVATE').length, 1);

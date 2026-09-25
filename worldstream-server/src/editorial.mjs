@@ -377,6 +377,8 @@ export function editorialEvent(event, context = {}) {
     knownEventIds: context.knownEventIds ?? null,
     now: event.occurredAt,
     catalog: context.reservoirCatalog,
+    state: context.state,
+    hasDavisBetrayal: context.hasDavisBetrayal,
   });
   const fallback = worldEditorial(event) ?? generalEditorial(event) ?? domesticEditorial(event);
   const revision = exclusive ?? (reservoir
