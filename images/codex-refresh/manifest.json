@@ -20,6 +20,30 @@
         "thumb": "images/gallery-refresh/goaden-streamliner-thumb.webp",
         "caption": "Goaden on the Streamliner.",
         "alt": "Goaden sits by a blue-lit train window in a red jacket and headphones, with dark curls framing his face."
+      },
+      {
+        "src": "images/gallery-refresh/goaden-and-kai-storm-blade.webp",
+        "thumb": "images/gallery-refresh/goaden-and-kai-storm-blade-thumb.webp",
+        "alt": "Goaden, masked by his black bandana with glowing blue eyes, swings a jagged greatsword crackling with lightning while Kai coils behind him and the Sanctuary floats above London.",
+        "caption": "Goaden and Kai — the storm over London."
+      },
+      {
+        "src": "images/gallery-refresh/goaden-and-kai-lightning-orb.webp",
+        "thumb": "images/gallery-refresh/goaden-and-kai-lightning-orb-thumb.webp",
+        "alt": "Goaden draws his bandana over his face and holds a sphere of lightning in one hand, a chained greatsword at his side, with Kai looming behind him and Big Ben below.",
+        "caption": "Goaden and Kai — lightning in hand."
+      },
+      {
+        "src": "images/gallery-refresh/goaden-lightning-stance.webp",
+        "thumb": "images/gallery-refresh/goaden-lightning-stance-thumb.webp",
+        "alt": "Goaden stands in his red jacket and buckled boots, bandana masking his face and eyes glowing, holding a chained greatsword charged with blue lightning among floating stone.",
+        "caption": "Goaden, storm-charged."
+      },
+      {
+        "src": "images/gallery-refresh/goaden-bloodied-battlefield.webp",
+        "thumb": "images/gallery-refresh/goaden-bloodied-battlefield-thumb.webp",
+        "alt": "A blood-spattered Goaden lunges forward with a lightning-wreathed greatsword, his red jacket torn, among floating rubble and broken crosses.",
+        "caption": "Goaden on the battlefield."
       }
     ],
     "type": "character",
@@ -256,6 +280,24 @@
         "thumb": "images/codex-refresh/goaden-and-kai-thumb.webp",
         "alt": "Goaden in a red jacket sits beside Kai, a dark dragon, with the Sanctuary floating over London behind them.",
         "caption": "Goaden and Kai — Different Skies, Same Soul."
+      },
+      {
+        "src": "images/gallery-refresh/kai-true-guardian-form.webp",
+        "thumb": "images/gallery-refresh/kai-true-guardian-form-thumb.webp",
+        "alt": "Kai in his true guardian form: a vast dragon of black, blade-edged scales with blue lightning running through his wings and tail, and glowing blue eyes.",
+        "caption": "Kai in his true guardian form."
+      },
+      {
+        "src": "images/gallery-refresh/goaden-and-kai-storm-blade.webp",
+        "thumb": "images/gallery-refresh/goaden-and-kai-storm-blade-thumb.webp",
+        "alt": "Goaden, masked by his black bandana with glowing blue eyes, swings a jagged greatsword crackling with lightning while Kai coils behind him and the Sanctuary floats above London.",
+        "caption": "Goaden and Kai — the storm over London."
+      },
+      {
+        "src": "images/gallery-refresh/goaden-and-kai-lightning-orb.webp",
+        "thumb": "images/gallery-refresh/goaden-and-kai-lightning-orb-thumb.webp",
+        "alt": "Goaden draws his bandana over his face and holds a sphere of lightning in one hand, a chained greatsword at his side, with Kai looming behind him and Big Ben below.",
+        "caption": "Goaden and Kai — lightning in hand."
       }
     ],
     "type": "creature",
@@ -866,6 +908,18 @@
         "thumb": "images/codex-refresh/nameless-thumb.webp",
         "alt": "Existing illustration of ???.",
         "caption": "???."
+      },
+      {
+        "src": "images/gallery-refresh/nameless-crimson-chains.webp",
+        "thumb": "images/gallery-refresh/nameless-crimson-chains-thumb.webp",
+        "alt": "Nameless, hooded in a tattered cloak and a smiling gas mask, stands on a shattered stone pillar holding two battered broadswords as rusted chains and crimson energy swirl around him.",
+        "caption": "Nameless among the chains."
+      },
+      {
+        "src": "images/gallery-refresh/onari-titan-strikes-nameless.webp",
+        "thumb": "images/gallery-refresh/onari-titan-strikes-nameless-thumb.webp",
+        "alt": "A grey-skinned Onari Titan with glowing markings and a mountain axe drives his fist into Nameless’s gas mask, sending the chained figure and one broadsword flying.",
+        "caption": "An Onari Titan strikes Nameless."
       }
     ],
     "type": "character",
@@ -1522,6 +1576,12 @@
         "thumb": "images/codex-refresh/onari-titans-thumb.webp",
         "alt": "Existing illustration of Onari Titans.",
         "caption": "Onari Titans."
+      },
+      {
+        "src": "images/gallery-refresh/onari-titan-strikes-nameless.webp",
+        "thumb": "images/gallery-refresh/onari-titan-strikes-nameless-thumb.webp",
+        "alt": "A grey-skinned Onari Titan with glowing markings and a mountain axe drives his fist into Nameless’s gas mask, sending the chained figure and one broadsword flying.",
+        "caption": "An Onari Titan strikes Nameless."
       }
     ],
     "type": "creature",
