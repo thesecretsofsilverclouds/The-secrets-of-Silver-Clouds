@@ -840,6 +840,24 @@
         "thumb": "images/codex-refresh/shonen-kartia-thumb.webp",
         "alt": "Existing illustration of Shonen Kartia (The Singularity).",
         "caption": "Shonen Kartia (The Singularity)."
+      },
+      {
+        "src": "images/gallery-refresh/shonen-kartia-throne.webp",
+        "thumb": "images/gallery-refresh/shonen-kartia-throne-thumb.webp",
+        "alt": "Shonen Kartia sits on a ruined stone throne with glowing purple eyes, a purple-lit sword planted at his feet.",
+        "caption": "Kartia on the throne."
+      },
+      {
+        "src": "images/gallery-refresh/shonen-kartia-sword-drawn.webp",
+        "thumb": "images/gallery-refresh/shonen-kartia-sword-drawn-thumb.webp",
+        "alt": "Shonen Kartia strides forward through a swirling purple vortex, coat billowing, glowing sword in hand.",
+        "caption": "Kartia, sword drawn."
+      },
+      {
+        "src": "images/gallery-refresh/shonen-book-one-quote.webp",
+        "thumb": "images/gallery-refresh/shonen-book-one-quote-thumb.webp",
+        "alt": "Shonen Kartia with violet eyes and long braids in a ruined purple-lit hall, beside his words about heroes.",
+        "caption": "Shonen Kartia — Book One quote artwork."
       }
     ],
     "type": "character",
