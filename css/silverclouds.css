@@ -77,3 +77,4 @@
 #game .game-launcher:has(#gameIframe:not([hidden])) .game-lintel-art{display:none}
 #game .game-launcher:has(#gameIframe:not([hidden])) .game-welcome{display:block;margin-bottom:24px}
 @media(max-width:800px){#codex .curiosity-art{height:260px}#codex .curiosity-copy{padding:24px}#game .game-welcome{grid-template-columns:1fr;gap:14px}#game .game-lintel-art{min-height:0;padding:8px 0 20px}#game .game-lintel-art img{width:230px}#game .game-launch-copy h3{font-size:27px}}
+@media(min-width:801px){.home-hero.wide-cast{grid-template-columns:1.75fr 1fr}.home-hero.wide-cast .hero-art img{object-position:35% 30%}.home-hero.wide-cast .hero-art:after{background:linear-gradient(90deg,transparent 52%,rgba(7,11,18,.35) 60%,rgba(7,11,18,.9) 68%,#070b12 100%),linear-gradient(0deg,#070b12,transparent 18%)}}

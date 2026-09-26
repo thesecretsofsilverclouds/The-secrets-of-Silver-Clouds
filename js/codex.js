@@ -5,7 +5,7 @@ const loreEntries = [
     "type": "character",
     "faction": "MI6",
     "image": "images/codex-refresh/goaden-and-kai-thumb.webp",
-    "summary": "The Demon's Legion's former leader carries Vega, a dragon on his shoulder, and a reputation that reaches a room before he does.",
+    "summary": "Now an MI6 recruit, the Demon's Legion's former leader wields the sword Vega and borrows silver flames from his dragon guardian, Kai. London's music scene remembers him as Reever; leaving the crew has not erased the loyalties or the reputation.",
     "description": "Goaden would like to finish his music in peace. Unfortunately, someone on the Streamliner wants his jacket. A few broken bones later, the Magical Enforcement Unit recognises both his name and the class-four sword on his back. Kai wakes up to deliver a familiar complaint: must violence always come first? Goaden's answer rarely reassures him. The curls, torn jeans and lazy grin belong to the man London once knew as Reever, leader of the Demon's Legion. Leaving the crew has not erased the music or the loyalties. Nor has all that strength prepared him for a hospital chair beside Tait, where there is no enemy to hit and no promise he can safely make. Behind the swagger is someone terrified that power still will not be enough to keep his people alive.",
     "abilities": [
       "Silver Flames",
@@ -24,7 +24,7 @@ const loreEntries = [
     "type": "character",
     "faction": "Demon's Legion",
     "image": "images/codex-refresh/rose-thumb.webp",
-    "summary": "Rose talks to birds, cuts cameras down with living vines and knows exactly how dangerous Truth's need to prove himself can be.",
+    "summary": "A singer in the Demon's Legion with a gift for plants and animals, Rose talks to birds and cuts security cameras down with living vines. Her hardest task is getting Truth to understand that he has nothing to prove by risking his life.",
     "description": "At the warehouse, Rose sits on the drum kit with a bird in her palm. Inside an MI6 laboratory, a vine from her sleeve slices a camera from the wall; when guards tell the crew to freeze, she answers with a flower whose pollen makes them do just that. Her gifts fit both halves of Legion life: the moments of quiet between songs and the trouble waiting after dark. Red hair, green eyes and moving floral tattoos make her easy to recognise. What is harder to read is the feeling she keeps swallowing around Truth. She remembers friends who took dangerous dares too far, so his plan to drink pure Holy radiation frightens her long before it goes wrong. A joke and a near-confession are easier than telling him how much she stands to lose.",
     "abilities": [
       "Plant Manipulation",
@@ -40,7 +40,7 @@ const loreEntries = [
     "name": "Demon's Legion",
     "type": "faction",
     "image": "images/asset-injection-20260916/legion-hideout-approved-thumb.webp",
-    "summary": "A London crew with living tattoos, celestial bandanas and a talent for making both music and trouble. Their fiercest loyalty is to each other.",
+    "summary": "The Demon's Legion is a London crew whose music, living tattoos and celestial bandanas are as distinctive as their loyalty. Formerly led by Goaden Reeves, they close ranks around one another whether the night brings a concert or a fight.",
     "description": "The Demon’s Legion can turn a concert into an airborne sword fight and a leadership ceremony into a raid on MI6. Rose sings from a giant flower, Truth paints the crowd with light, and the same friends who heckle one another onstage close ranks when one of them falls.\n\nGoaden has left the leadership behind, but an old anthem can still pull him back towards the band. The Legion’s bonds survive arguments, dangerous dares and divided loyalties. Being one of them means having people who will cheer your worst idea—and stand beside you when it goes wrong.",
     "members": [
       "Goaden Reeves",
@@ -75,7 +75,7 @@ const loreEntries = [
     "name": "Vega",
     "type": "item",
     "image": "images/codex-refresh/vega-thumb.webp",
-    "summary": "Goaden’s celestial broadsword carries a star-shaped opening in its blade. In his hands, and with Kai’s power, it can burn with silver fire.",
+    "summary": "Vega is Goaden Reeves's Holy Item, a celestial broadsword with a star-shaped opening in its blade. With power shared by his dragon Guardian, Kai, the sword burns with silver flames that demand as much control as strength.",
     "description": "Vega first falls out of the sky and plants itself at a frightened child’s feet. The boy needs both hands to pull it free. Years later, the star-shaped opening in its blade is as recognisable as the warrior carrying it, and the weapon has followed Goaden into fights that leave little room for hesitation.\n\nIts silver flames depend on a bond as much as a grip. When Kai pours his power through Goaden, Vega burns with it. Learning to carry that fire is exhausting, dangerous work; being chosen by a celestial sword does not make its wielder ready for everything it can do.",
     "abilities": [
       "Energy Channelling",
@@ -102,7 +102,7 @@ const loreEntries = [
     "name": "Lintels",
     "type": "creature",
     "image": "images/codex-refresh/lintel-cloud-thumb.webp",
-    "summary": "Little living clouds drift over London, feeding on loose magic. When a market relic erupts, their gentle glow becomes part of the effort keeping the street intact.",
+    "summary": "Lintels are little living clouds formed from Holy Item radiation and atmospheric pollution. They drift over London feeding on loose magic, their gentle glow lighting market stalls while they absorb stray energy that could otherwise threaten the street.",
     "description": "A lintel can look like a scrap of cloud that has wandered too close to the rooftops. In the countryside, they drift towards lingering natural magic; in London, they gather above enchanted buildings and feed on the energy leaking into the air. Their existence begins with an unlikely mixture: celestial radiation and the pollution people leave behind.\n\nTheir softness is useful. When a relic runs wild in the night market, lintels float between the stalls, lighting the wares while absorbing the stray magic threatening the street. The creatures that make the city look gentler are helping it survive its own enchantments.",
     "abilities": [
       "Weather Manipulation",
@@ -123,7 +123,7 @@ const loreEntries = [
     "name": "Soul Sips",
     "type": "concept",
     "image": "images/codex-refresh/soul-sips-thumb.webp",
-    "summary": "The Sanctuary serves emotions by the shot: blue nostalgia, burning red glory, and a golden taste of coming home. The feeling may land harder than expected.",
+    "summary": "Soul Sips are glowing shots served at the Sanctuary in the Sky, each carrying the taste and feeling of an emotion. Blue nostalgia, fiery red glory and golden homecoming can turn a round of drinks into something unexpectedly personal.",
     "description": "Soul Sips arrive in glowing little glasses, each colour promising a feeling rather than an ordinary flavour. Ashai’s deep-blue choice brings a rush of bittersweet memories. Goaden swallows fiery red glory. Yukon chooses the warmth of a soldier coming home to his dog.\n\nA feeling in a glass still meets the person drinking it. The same round that draws delighted curiosity from one guest leaves another suddenly vulnerable, asking friends for reassurance. At the Sanctuary, ordering a drink can reveal more than starting a conversation.",
     "abilities": [
       "Instant Emotional Experience",
@@ -158,7 +158,7 @@ const loreEntries = [
     "name": "Technomagic",
     "type": "concept",
     "image": "images/codex-refresh/technomagic-approved-thumb.webp",
-    "summary": "A bookmark becomes a vehicle, a train passes through buildings, and a phone call appears in the air. Magic has become something London uses every day.",
+    "summary": "Technomagic combines human engineering with knowledge from the realms brought together by the Merging. A bookmark becomes a vehicle, a train passes through buildings and a phone call appears in the air: magic has become part of London's everyday machinery.",
     "description": "Technomagic is easiest to understand while commuting. The Streamliner slips through a building instead of going around it; a Rune Rider unfolds from a metallic bookmark; a smartphone puts a caller’s hologram into the space beside you. Spells are part of the machinery.\n\nThese conveniences grew from an exchange between humans and the beings who crossed into their world. Engineers acquired new forces to work with, and magical craftspeople acquired new tools. The result runs through everyday life, making the extraordinary familiar enough to miss your stop in.",
     "examples": [
       "Rune Riders",
@@ -181,8 +181,8 @@ const loreEntries = [
     "type": "character",
     "faction": "MI6",
     "image": "images/codex-refresh/ashai-and-greah-cutout-thumb.webp",
-    "summary": "With a life-bound pendant, her mother's carved doll and a bicycle folded into a bookmark, Ashai leaves home to find the truth about her family.",
-    "description": "Ashai can coax blue stars into the evening air, but at home even that small freedom is forbidden. Her uncle Slate has spent years keeping her safe and keeping her ignorant. When she learns that the accident which supposedly took her parents was a lie, she packs a satchel, wraps her mother's wooden doll in cloth and sets out for London with Greah tucked into a pocket. Thyia responds to the life around her: trees, insects, the pulse of the living world. Ashai wants to understand that connection instead of hiding it. She is frightened, grieving and capable of slamming a fist on the table when someone mistakes protection for the right to decide her future. The search that draws her into MI6 begins with a very personal demand: tell me what happened to my parents.",
+    "summary": "A new MI6 recruit and wielder of the life-bound pendant Thyia, Ashai leaves home to uncover the truth about her parents with her guardian Greah. Their bond carries into combat: both their eyes turn blue in battle mode.",
+    "description": "Ashai can coax blue stars into the evening air, but at home even that small freedom is forbidden. Her uncle Slate has spent years keeping her safe and keeping her ignorant. When she learns that the accident which supposedly took her parents was a lie, she packs a satchel, wraps her mother's wooden doll in cloth and sets out for London with Greah tucked into a pocket. Thyia responds to the life around her: trees, insects, the pulse of the living world. Ashai wants to understand that connection instead of hiding it. She is frightened, grieving and capable of slamming a fist on the table when someone mistakes protection for the right to decide her future. The search that draws her into MI6 begins with a very personal demand: tell me what happened to my parents. When Ashai and Greah enter battle mode, both their eyes turn blue.",
     "abilities": [
       "Starlight Energy Manipulation",
       "Healing Powers",
@@ -201,7 +201,7 @@ const loreEntries = [
     "type": "character",
     "faction": "Demon's Legion",
     "image": "images/codex-refresh/truth-throne-thumb.webp",
-    "summary": "The Legion votes Truth into Goaden's old place. He decides that earning it means stealing a vial of Holy radiation and drinking it.",
+    "summary": "The Demon's Legion's new leader, Truth Hughes, wants to earn the place Goaden left behind. Stealing and drinking Holy radiation gives him command of light, but it does little to settle his fear of never being enough for the crew—or Rose.",
     "description": "Truth has the cap, the confidence and the crew's vote. What he cannot shake is Goaden's shadow. Leading the Demon's Legion means proving himself to people who remember Reever's glory days, and to Rose, whose opinion matters more than he can comfortably admit. His answer is an MI6 laboratory heist and a dose of liquid Holy radiation that could kill him. Rose knows the odds; Truth drinks anyway. The light that follows becomes his to command, but the gamble exposes something powers cannot settle: his need to be enough. He can turn a corridor into a blaze of gold more easily than he can work out what Rose is trying to tell him.",
     "abilities": [
       "Light Manipulation",
@@ -220,8 +220,8 @@ const loreEntries = [
     "name": "Greah",
     "type": "creature",
     "image": "images/guardian-gallery-20260917/greah-portrait-thumb.webp",
-    "summary": "Ashai's tiny, sharp-tongued guardian can scold a starlight display, ride in a pocket and still find time to save a cathedral.",
-    "description": "Greah sees a beautiful cloud of blue stars and immediately asks who might have seen it. She hovers nose-to-nose with Ashai, crimson eyes narrowed, trying to keep a powerful young woman safe without extinguishing the very freedom she craves. Her familiar 'dear heart' can sound like comfort, an exasperated warning, or both in the same breath. When Ashai leaves home, Greah objects, argues, then settles into the satchel and comes along. The halo and delicate wings should not be mistaken for helplessness. On an outing with Kai she follows a failing energy grid to a cathedral, complains about flickering like a broken neon sign, and helps lay a magical trail that draws dangerous Tunnel Trolls away. Caring for Ashai does not stop her caring for the city around them.",
+    "summary": "Greah is Ashai's tiny, sharp-tongued guardian, as ready to scold a reckless starlight display as to follow her charge into danger. She can ride in a pocket and help save a cathedral; her eyes turn blue in battle mode, just like Ashai's.",
+    "description": "Greah sees a beautiful cloud of blue stars and immediately asks who might have seen it. She hovers nose-to-nose with Ashai, crimson eyes narrowed, trying to keep a powerful young woman safe without extinguishing the very freedom she craves. Her familiar 'dear heart' can sound like comfort, an exasperated warning, or both in the same breath. When Ashai leaves home, Greah objects, argues, then settles into the satchel and comes along. The halo and delicate wings should not be mistaken for helplessness. On an outing with Kai she follows a failing energy grid to a cathedral, complains about flickering like a broken neon sign, and helps lay a magical trail that draws dangerous Tunnel Trolls away. Caring for Ashai does not stop her caring for the city around them. Her eyes turn blue in battle mode, just like Ashai’s.",
     "abilities": [
       "Flight and Luminous Navigation",
       "Halo Illumination and Purification",
@@ -233,7 +233,7 @@ const loreEntries = [
     "name": "Kai",
     "type": "creature",
     "image": "images/codex-refresh/kai-rooftop-approved-thumb.webp",
-    "summary": "A shoulder-sized dragon with silver smoke in his nostrils and the exhausting job of teaching Goaden that strength includes restraint.",
+    "summary": "Kai is Goaden's dragon guardian and the source of the silver flames he channels through Vega. Usually small enough to sleep on a shoulder, he has the exhausting job of teaching his formidable companion that strength also includes restraint.",
     "description": "Kai can sleep through a Streamliner ride with his warmth seeping into Goaden's shoulder and sparks flicking from his tail. Waking to another violent altercation is less restful. His obsidian-and-ivory scales, tiny fangs and soft purrs make a gentle first impression; the silver fire he lends through Vega is another matter. He is more than a source of flame. Outside Tait's hospital room, Kai asks Goaden to listen to a friend whose suffering he cannot punch away. Elsewhere, he and Greah slip off to investigate London's failing magical grid, following its disturbances underground and leading Tunnel Trolls away from a cathedral. He argues for control, then demonstrates what it can accomplish.",
     "abilities": [
       "Power Amplification",
@@ -248,7 +248,7 @@ const loreEntries = [
     "type": "character",
     "faction": "MI6 (Onari Liaison)",
     "image": "images/codex-refresh/yukon-thumb.webp",
-    "summary": "MI6's shapeshifting Onari recruit can become an extinct animal, a grey fly or a very bad idea. The ears are a giveaway.",
+    "summary": "MI6's shapeshifting Onari recruit can take far more than his people's usual three forms. Yukon can become an extinct animal or a grey fly, but nerves—and those unmistakable ears—can complicate an otherwise clever disguise.",
     "description": "Yukon greets a new colleague by asking to be insulted: he plays better angry. Goaden obliges, and a friendship is off to a promising start. At home among MI6's games and technomagic, and recruited after a creative bank heist, this grey-skinned Onari can change into creatures far beyond his people's usual three forms, though his colour and pointed ears remain stubbornly his own. That extraordinary gift comes with an ordinary problem: nerves. An infiltration as a fly becomes a scramble through unwanted shapes when a cult ritual goes wrong, leaving Kai to talk him through his breathing. Yukon is also the fan who recognises Reever beneath Goaden's new MI6 life and immediately wants to talk about 'Stars at Night'. Mission briefings, poor decisions and the chance to meet his musical hero all compete for his attention.",
     "abilities": [
       "Resonance Perception",
@@ -262,7 +262,7 @@ const loreEntries = [
     "name": "MI6",
     "type": "faction",
     "image": "images/gallery-refresh/mi6-armadillo-hub-thumb.webp",
-    "summary": "MI6 offers Holy Item wielders training, pay and protection. Its barracks also have locked doors, armed guards and questions a new recruit is steered away from.",
+    "summary": "MI6 recruits and trains Holy Item wielders to handle supernatural threats, offering people such as Ashai and Goaden pay, protection and powerful equipment. Beyond the barracks' ordinary camaraderie lie restricted corridors and questions new recruits are encouraged to leave alone.",
     "description": "Cliff’s recruitment pitch is practical: better training, astonishing equipment and a salary. Inside MI6, Guardians patrol beside soldiers and off-duty agents argue over games in a room littered with sweet wrappers. The work may involve celestial weapons, but someone still has to brief the team.\n\nThen there are the corridors where only selected officers have clearance, and a chained basement door from behind which Goaden hears someone ask for help. For Ashai and Goaden, joining means gaining resources they need while deciding how much trust those resources deserve.",
     "members": [
       "Cliff Henderson",
@@ -297,7 +297,7 @@ const loreEntries = [
     "name": "The Church",
     "type": "faction",
     "image": "images/codex-refresh/the-church-thumb.webp",
-    "summary": "The Church’s holy refuge above London is filled with music, cocktails and strangers. Behind that welcome lies a history of corruption and reform.",
+    "summary": "The Church is a religious institution that built the Sanctuary in the Sky, a holy refuge above London whose public rooms welcome peaceful travellers. Music and cocktails coexist with sacred restrictions, while a history of corruption and reform complicates its authority.",
     "description": "The Church’s most surprising invitation hangs above London: a sacred building whose bar welcomes peaceful travellers and whose corridors open into a nightclub. Devotion still hums through the stone even when the bass is shaking it. The institution behind this welcome also carries the memory of Jedia the Faceless and the reformers who resisted his corruption.\n\nThat history makes its hospitality complicated. The Sanctuary’s public rooms can bring different beings together, while the holy Presence in its restricted depths can destroy a demon who crosses the wrong threshold. Faith here has doors, rules and consequences.",
     "members": [
       "High Cardinal",
@@ -324,7 +324,7 @@ const loreEntries = [
     "name": "The Order",
     "type": "faction",
     "image": "images/codex-refresh/the-order-thumb.webp",
-    "summary": "Shonen Kartia’s organisation sends disciplined operatives after dangerous powers. Serving it can mean facing an enemy—or getting close enough to wake its own immortal master.",
+    "summary": "Founded by Shonen Kartia, the Order is a powerful organisation whose disciplined operatives pursue supernatural threats and negotiate with MI6. Its immortal founder commands extraordinary power, but even waking him from a nightmare can put his own people in danger.",
     "description": "The Order’s agents arrive with instructions, blades and little patience for resistance. Its founder, Shonen Kartia, is powerful enough that even the people closest to him must measure every approach. When a nightmare tears through his control, the Head Captain fights his way across a room simply to wake him.\n\nThe organisation exists to manage a world crowded with supernatural power. Its own centre is an immortal man whose distress can bring buildings down. That tension follows its captains into every negotiation with MI6 and every pursuit conducted in the name of balance.",
     "members": [
       "Shonen Kartia",
@@ -353,7 +353,7 @@ const loreEntries = [
     "name": "The Celestial Shattering",
     "type": "concept",
     "image": "images/codex-refresh/celestial-shattering-thumb.webp",
-    "summary": "A star falls through the boundaries of existence. Its scattered fragments become Holy Items, each binding a mortal life to a Guardian and a dangerous celestial inheritance.",
+    "summary": "The Celestial Shattering, also called the Holy Tragedy, began when an ancient star fell through the boundaries between realms. Fate shaped its scattered fragments into Holy Items and gave their bearers Guardians, placing a dangerous celestial inheritance in mortal hands.",
     "description": "Magic begins with something breaking. An ancient astral being falls, scattering its matter through dimensions until fragments reach Earth. Fate gathers celestial shards and shapes them into Holy Items, giving each chosen bearer a Guardian forged from stardust.\n\nThe gifts attract awe, but also greed. Weapons and relics meant to protect and heal pass into a world willing to fight over them. Every Holy Item carries that uneasy inheritance: a piece of the heavens in human hands, and a purpose its wielder may honour or betray.",
     "relatedEntries": [
       "holy-tragedy",
@@ -377,7 +377,7 @@ const loreEntries = [
     "name": "The Merging",
     "type": "concept",
     "image": "images/codex-refresh/the-merging-thumb.webp",
-    "summary": "When the boundaries between realms opened, humans gained new neighbours—and both sides gained new tools. London’s magical machinery grew out of that exchange.",
+    "summary": "The Merging opened the boundaries between the human world and realms inhabited by fairies, demons and other beings. New neighbours brought new knowledge; human science and magical craft began an exchange that eventually put extraordinary machinery into everyday London life.",
     "description": "The Merging made another realm something you could come from, rather than merely imagine. Beings from the Fairy Realm, the Demon Realm and elsewhere crossed into the human world, bringing knowledge that changed what its people could build.\n\nThe exchange went both ways. Human science gave magical craftspeople unfamiliar tools; arcane knowledge gave engineers unfamiliar possibilities. Vehicles that fold into bookmarks and phones that project a caller into the air belong to this shared world, along with all the uneasy work of learning to live in it together.",
     "relatedEntries": [
       "celestial-shattering",
@@ -397,7 +397,7 @@ const loreEntries = [
     "name": "Duskkin",
     "type": "concept",
     "image": "images/asset-injection-20260916/duskkin-zara-portrait-thumb.webp",
-    "summary": "Cybernetic vampires power their armour with the blood of mythical prey. In their neon wilderness, passage can come at the price of a ritual hunt—and feeding on humans breaks their most sacred law.",
+    "summary": "The Duskkin are cybernetic vampires whose armour draws power from the blood of mythical prey; feeding on humans breaks their sacred law. In their Urban Jungle, visitors may earn passage through a ritual hunt that tests respect as well as strength.",
     "description": "Blood moves through the tubes of a Duskkin hunter’s armour, changing its colour with each pulse. Their machinery runs on the creatures they hunt: a powerful quarry can lend its strength to the hunter, and a successful hunt earns standing as well as sustenance. Human blood is forbidden. The appetite remains; their laws exist because restraint takes work.\n\nIn the Urban Jungle, steel grows tangled with ancient trees and the price of passage can be a ritual hunt. Eirik and Zara expect visitors to face a behemoth whose hide reflects magic. Surviving is only part of the test. The blood they collect carries resilience, but accepting it also means accepting a duty to protect the living city.",
     "relatedEntries": [
       "the-merging",
@@ -424,7 +424,7 @@ const loreEntries = [
     "type": "location",
     "faction": "The Church",
     "image": "images/codex-refresh/sanctuary-london-thumb.webp",
-    "summary": "A nightclub floats above London: cocktails taste like emotions, paintings walk off their canvases, and a wrong turn leads from the dance floor into corridors of sealed, watchful portals.",
+    "summary": "Built by the Church, the Sanctuary in the Sky is a holy site and nightclub floating above London. Cocktails taste like emotions and paintings walk off their canvases, while staff-only doors lead away from the revelry into corridors of sealed portals.",
     "description": "The VIP ticket looks like an ornate invitation until someone throws it against a wall. Then the concrete opens, a path crosses a gulf of galaxies, and the music draws guests into a nightclub held above London by clouds. The stone has a heartbeat. A ghostly bartender pours drinks beneath religious murals, while the Demon’s Legion turns a reunion into a sword dance over the crowd.\n\nBeyond the bar, Dreamscape gives imagination a floor to stand on: soft terrain changes beneath your feet and painted figures step out of their frames. But the staff doors lead elsewhere. Behind the revelry wait coded portals, a towering vault seal and powers that do not care whether an intruder was only looking for the next party.",
     "rooms": [
       "Dreamscape (Magical Paint Party)",
@@ -464,7 +464,7 @@ const loreEntries = [
     "name": "Thyia",
     "type": "item",
     "image": "images/codex-refresh/thyia-thumb.webp",
-    "summary": "A pendant full of blue stars answers Ashai’s touch. It connects her to life around her—and makes an ordinary, unnoticed life increasingly difficult.",
+    "summary": "Thyia, the Pendant of Life, is Ashai Bennet's Holy Item. It draws energy from the living world and releases tiny blue stars she can shape into weapons and shields; even a playful display beneath an oak can attract dangerous attention.",
     "description": "Thyia warms beneath Ashai’s fingers as she rests beside an oak. Its light answers the life in the tree, the insects and the earth, until tiny blue stars gather around her hands. For a moment, power feels like play. Then Greah notices the danger: someone might see.\n\nThe pendant appeared beside Ashai while she was still an infant, and it has shaped the life others have tried to keep hidden ever since. Carrying it means both an intimate connection to the living world and a celestial gift that cannot always stay concealed.",
     "abilities": [
       "Starlight Energy Projection",
@@ -500,7 +500,7 @@ const loreEntries = [
     "name": "The Streamliner",
     "type": "concept",
     "image": "images/codex-refresh/streamliner-thumb.webp",
-    "summary": "London’s enchanted train takes the direct route—even through buildings. Inside, noise-cancelling charms make passing through solid walls feel like an ordinary journey home.",
+    "summary": "The Streamliner is London's enchanted train, using spatial magic to pass straight through buildings along its route. Inside, plush seats and noise-cancelling charms make the impossible feel ordinary enough for Goaden to listen to music with Kai asleep on his shoulder.",
     "description": "Outside the window, a building is coming straight towards the carriage. The Streamliner passes through it, edges blurring into ghostly afterimages before the train becomes solid again. Spatial magic, directed through its control matrix, has made obstacles someone else’s problem.\n\nInside, arcane symbols glow around plush seats and noise-cancelling charms soften the city. Goaden listens to music with a small dragon asleep on his shoulder. The wonder of London’s transport is how quickly its passengers can become bored with the impossible.",
     "abilities": [
       "Phasing Through Solid Matter",
@@ -533,7 +533,7 @@ const loreEntries = [
     "name": "Road Sprites",
     "type": "creature",
     "image": "images/codex-refresh/road-sprites-orange-thumb.webp",
-    "summary": "London’s scrap-clad mischief-makers know its machinery and hidden corners. They can start a magical disaster with a stumble—and help repair it with whatever the city has thrown away.",
+    "summary": "Road Sprites are London's small urban scavengers, dressed in reclaimed scraps and skilled with machinery. Their mischief can send a market relic spinning out of control, but their knowledge of the city's discarded treasures also makes them a useful repair crew.",
     "description": "A road sprite’s outfit is a collection of reclaimed odds and ends, and its best workshop is the city itself. Skin textured like weathered street posters helps it blend into graffiti-covered walls. These quick little scavengers understand machines, shortcuts and the useful things everyone else overlooks. That makes them valuable neighbours, provided their enthusiasm does not knock a dangerous relic off a market stall.\n\nWhen exactly that happens, Yukon turns the culprits into a repair crew. They dart through the crowd to gather the strange components Whisper needs, trading aimless mischief for a job that matters. In London, the creatures making a mess may also know how to put it right.",
     "abilities": [
       "Urban Navigation Mastery",
@@ -563,7 +563,7 @@ const loreEntries = [
     "name": "Rune Rider",
     "type": "concept",
     "image": "images/codex-refresh/rune-rider-thumb.webp",
-    "summary": "A metallic bookmark unfolds into a swift vehicle of crystal and metal. Keep one close: in London, escape can begin in the palm of your hand.",
+    "summary": "The Rune Rider is a personal vehicle of crystal and metal that folds down to the size of a metallic bookmark. Glowing runes turn a touch into swift passage, carrying Ashai towards London and giving Amy a way to race towards trouble.",
     "description": "At rest, the Rune Rider is small enough to mistake for a bookmark. A touch wakes its gears; metal shifts, the frame expands, and a vehicle stands where a sliver of machinery was a moment before. Glowing runes turn that transformation into speed.\n\nAshai rides one towards London with her future still ahead of her. Later, Amy reaches for hers when the people she loves are in danger. It is a piece of everyday technomagic that becomes very important when staying still is no longer an option.",
     "abilities": [
       "Transforms from Bookmark to Velocipede",
@@ -595,7 +595,7 @@ const loreEntries = [
     "name": "Fade (Soul Stealing Protocol)",
     "type": "concept",
     "image": "images/asset-injection-20260916/fade-emily-garden-thumb.webp",
-    "summary": "Become a living shadow. Move with terrible speed. Lose ten years of life each time. Fade makes survival a bargain paid out of the future.",
+    "summary": "Fade is a forbidden technique associated with the Duskkin that gives its user extraordinary strength, speed and movement through shadow. Every use costs ten years of life, making survival in the next few seconds a bargain paid out of the future.",
     "description": "Fade offers the Duskkin dream of the perfect predator: strength, speed and the ability to disappear into shadow. Its cost is measured in years rather than fatigue. Each activation takes ten years from the user’s life, turning a moment’s advantage into a permanent loss.\n\nThat arithmetic does not mean the same thing to everyone. A fighter desperate to survive and an immortal desperate for an ending can both be tempted by it. The technique is forbidden because a body can win the immediate fight while losing the life that was supposed to follow.",
     "abilities": [
       "Superhuman Strength and Speed",
@@ -623,7 +623,7 @@ const loreEntries = [
     "type": "character",
     "faction": "The Order",
     "image": "images/codex-refresh/emily-curious-thumb.webp",
-    "summary": "A teddy-bear bag, a garden swing and shadows that move on their own: Emily Grimm makes an ordinary school run feel very unsafe.",
+    "summary": "Emily Grimm looks like a schoolgirl, but her father's experiments left her with a lifespan she never wanted. Behind the teddy-bear bag and garden swing is a shadow-wielding recluse whom The Order hopes to reach through a shared longing for release.",
     "description": "Emily leaves school clutching a grey teddy-bear bag. A man who mistakes her for an easy target follows her into a peeling, ivy-covered house; by the staircase, his shadow stops obeying him. Afterwards she goes out to the garden swing. That quiet return to play is more unnerving than any threat she could make. Her father's experiments left her with a lifespan she never asked for. She uses Fade despite its cost, hoping it will eventually exhaust the years forced upon her. When The Order sends Peris to recruit her, the offer that reaches her is neither rank nor power: Shonen Kartia may understand what it means to want an immortal life to end. Emily can terrify a neighbourhood, yet loneliness is what gives the visitor a chance.",
     "abilities": [
       "Fade (Forbidden Technique)",
@@ -644,7 +644,7 @@ const loreEntries = [
     "name": "Iron Glyph",
     "type": "location",
     "image": "images/gallery-refresh/iron-glyph-workshop-thumb.webp",
-    "summary": "Underground workshops scattered across London offering illegal technomagic upgrades and modifications",
+    "summary": "Iron Glyph workshops supply illegal technomagic upgrades from hidden premises across London. Rune Rider enthusiasts and Duskkin seeking suit enhancements come for modifications the authorities would never approve, relying on reputation and introductions to find an artificer willing to help.",
     "description": "Iron Glyph workshops operate in the shadowy margins of London's technomagic economy—part chop shop, part arcane forge, wholly illegal. These silo-like structures hide in plain sight: abandoned warehouses, forgotten Tube stations, even beneath seemingly legitimate storefronts. Inside, the air crackles with welding sparks and enchantment residue as skilled artificers—many of them Duskkin exiles or rogue alchemists—work their trade. Rune Rider enthusiasts flock here for performance upgrades the authorities would never approve: overclocked propulsion runes, shadow-phase modifications, or weapons integration. Duskkin seeking cheap suit enhancements come for cybernetic grafts and blood-magic circuits that bypass expensive legal channels—and the safety regulations that come with them. MI6 raids them regularly, but new Iron Glyphs spring up as fast as the old ones are shut down. The workshops operate on a reputation-based economy: you need to know someone who knows someone to find them, and one wrong word to the wrong person means permanent blacklisting—or worse.",
     "abilities": [
       "Rune Rider Performance Upgrades",
@@ -674,7 +674,7 @@ const loreEntries = [
     "type": "character",
     "faction": "The Order",
     "image": "images/codex-refresh/shonen-kartia-thumb.webp",
-    "summary": "The immortal master of The Order flies among the stars to think, borrows a blade to avoid making a scene, and keeps searching for a way to die.",
+    "summary": "Known as the Singularity, Shonen Kartia is the immortal leader of The Order. He flies among the stars to think and borrows another man's blade to avoid making a scene, yet all his power has failed to give him what he wants: a way to die.",
     "description": "Shonen comes down from the night sky with a shock wave and the air of a man returning from a walk. He says he takes flight to be alone with the stars. The weariness is real; so is the gulf between his power and everyone standing on the rooftop with him. An assassin's enchanted dagger gives him occasion for a conversation about good, evil and the stories people tell themselves. When he decides to end it, he borrows the Head Captain's katana: his own weapon would make a scene. Raised by The Church and changed by his imprisonment in Jedia's timeless void, the Singularity now leads The Order while pursuing a release his immense strength cannot simply force into being.",
     "abilities": [
       "Born with Holy Item",
@@ -699,7 +699,7 @@ const loreEntries = [
     "name": "Duskkin Shadow Beasts",
     "type": "creature",
     "image": "images/asset-injection-20260916/shadow-beast-approved-thumb.webp",
-    "summary": "A Duskkin warrior’s shadow can have teeth. These blood-bound familiars tear apart into mist and gather again, making a clean sword strike feel suddenly useless.",
+    "summary": "Duskkin Shadow Beasts are familiars bound to their warriors through blood magic, with their lives tied together. Their dark, shifting bodies can scatter into mist and gather again, turning what looked like a clean sword strike into an unnerving lesson.",
     "description": "At the Sanctuary, something dark moves between the armoured Duskkin: eyes burning inside a body of rolling vapour, smoky fangs showing as it studies the nearby guests. Goaden remembers fighting one. His blade cut through it, and the mist simply gathered itself again.\n\nShadow Beasts are bound to their partners through blood magic, with their lives tied together. A familiar can lend strength, carry stolen life force or merge with its warrior. The bond makes a formidable weapon, but losing the creature is also a personal catastrophe.",
     "abilities": [
       "Phase Through Solid Matter",
@@ -730,7 +730,7 @@ const loreEntries = [
     "name": "Typhon",
     "type": "creature",
     "image": "images/codex-refresh/typhon-thumb.webp",
-    "summary": "Shonen’s three-headed Guardian can terrify a battlefield. He also stood beside Shonen at birth, when the sight of him helped turn a beginning into abandonment.",
+    "summary": "Typhon is Shonen Kartia's enormous, three-headed, wolf-like Guardian, his blue, purple and crimson fur threaded with metallic adornments. He stands beside Shonen on the battlefield, but his presence also reaches back to the fear surrounding Shonen's birth and abandonment.",
     "description": "Typhon steps into a ruined street and takes his place beside Shonen, all three heads snarling at the danger before them. Blue, purple and crimson fur glows around intricate metallic adornments. The enormous wolf-like Guardian makes the scale of his master’s power visible. To an enemy, that arrival is a warning.\n\nTo Shonen, it belongs to a much older story. Typhon was there at his birth, and the fear surrounding the Guardian helped shape the child’s abandonment. The creature that stands ready to protect him is inseparable from the first wound in his long life.",
     "abilities": [
       "Psychic Energy Attacks",
@@ -756,7 +756,7 @@ const loreEntries = [
     "name": "Holy Item Radiation",
     "type": "concept",
     "image": "images/codex-refresh/holy-item-radiation-thumb.webp",
-    "summary": "The fallen star’s energy lingers in the world, awakening powers and changing bodies. Condense it into a drink, and the promise of transformation becomes a lethal gamble.",
+    "summary": "Holy Item radiation is the celestial energy that lingers after the fallen star's arrival, changing bodies and awakening powers beyond the relics' chosen wielders. Drinking a concentrated dose can force a transformation, but the Legion knows how often that gamble ends badly.",
     "description": "Holy Item radiation is the celestial disaster’s unfinished work. It remains in the atmosphere, helps give rise to living clouds and leaves its mark on people whose powers were never granted through a personal relic. London lives among its consequences.\n\nSome try to skip uncertainty by drinking a concentrated dose. The Legion sees what that choice does to Truth: convulsions, terror, then a burst of light he can suddenly command. Surviving makes him remarkable. The friends who remember those who did not survive are the reason the gamble never feels safe.",
     "abilities": [
       "Power Awakening (Grants supernatural abilities to affected individuals)",
@@ -787,7 +787,7 @@ const loreEntries = [
     "name": "The All-Seeing Eye",
     "type": "item",
     "image": "images/codex-refresh/the-all-seeing-eye-thumb.webp",
-    "summary": "An Infernal Item that reads an enemy’s intentions—and spreads madness through everyone caught in its gaze. Seeing the next strike does not make anyone nearby safe.",
+    "summary": "The All-Seeing Eye is an Infernal Item used by Nameless to read an opponent's intentions and anticipate their attacks. Its influence reaches beyond a duel: those caught in its gaze can turn on one another as its madness spreads.",
     "description": "Uncovering the All-Seeing Eye gives Nameless a terrifying advantage: he can read the intent behind Kira’s attacks and anticipate the movements that follow. The weapon changes the fight before a blade connects.\n\nIts influence does not stay between the two combatants. Around them, people from opposing factions turn on one another as the Eye feeds the chaos. The danger is wider than the person wearing it: allies can become enemies while the wielder is still concentrating on winning.",
     "abilities": [
       "Absolute Perception (Sees truth in its rawest, unfiltered form)",
@@ -814,7 +814,7 @@ const loreEntries = [
     "name": "Onari",
     "type": "concept",
     "image": "images/codex-refresh/onari-thumb.webp",
-    "summary": "Grey-skinned shapeshifters whose three animal forms honour Yuvan, the Onari carry their reverence for life into sacred dances, forest rites and combat.",
+    "summary": "The Onari are grey-skinned shapeshifters whose three animal forms honour Yuvan and their reverence for life. Beneath Yaluma's ancient Lifetree, sacred dances turn that belief into communal practice; in combat, the same transformations become a means of survival.",
     "description": "An Onari's three forms are more than a useful escape route or a weapon. Their traditions understand shapeshifting as Yuvan's gift: a way to know other living creatures from within. In Yaluma, beneath the ancient Lifetree, private transformations and communal dances turn that belief into something the whole village can practise. Their pointed ears and grey skin are recognisable; the rhythm of their combat is just as distinctive. Yet a culture built around preservation also lives with the intimidating power of the Onari Titans and the royal bloodlines able to take that form. Yukon carries a different surprise into London: where his people's gifts usually have three shapes, his seem to have no such limit.",
     "relatedEntries": [
       "yuvan",
@@ -830,7 +830,7 @@ const loreEntries = [
     "name": "Magical Enforcement Unit",
     "type": "concept",
     "image": "images/codex-refresh/magical-enforcement-unit-thumb.webp",
-    "summary": "When a market relic breaks loose, these are the armoured responders pushing through the crowd. The MEU polices a city where one accident can become a magical emergency.",
+    "summary": "The Magical Enforcement Unit, or MEU, is MI6's specialist branch for magical misuse, dangerous artefacts and public safety. Its armoured responders police a city where a sprite knocking over a market relic can turn an ordinary evening into an emergency.",
     "description": "A knocked-over market relic begins pulsing with uncontrolled power. Stalls topple, civilians scream, and the Magical Enforcement Unit advances through the confusion in disciplined ranks. This is where magical regulation stops being paperwork.\n\nThe MEU is MI6’s specialist branch for magical misuse, dangerous artefacts and threats to public safety. Its work crosses the space between everyday city life and powers that can ruin it in seconds. Sometimes keeping order means containing a rogue mage; sometimes it means answering a disaster started by a sprite’s clumsy feet.",
     "relatedEntries": [
       "mi6",
@@ -852,7 +852,7 @@ const loreEntries = [
     "name": "Presence",
     "type": "concept",
     "image": "images/codex-refresh/presence-thumb.webp",
-    "summary": "Power can fill a room before anyone draws a weapon. Presence can reveal a hidden threat, pin a body in place, or betray the emotions its owner cannot contain.",
+    "summary": "Presence is the power a being projects into the world, sensed, concealed and controlled by skilled fighters. It can expose a hidden threat or pin someone in place; Goaden's childhood training made even moving through his father's garden a test of strength.",
     "description": "Presence is what makes an apparently empty alley feel occupied, or an approaching opponent difficult to stand near. Skilled fighters recognise it, hide it and judge danger by it. Goaden remembers childhood training under pressure so heavy that simply moving through the garden became a test.\n\nControl matters as much as strength. Shonen’s sleeping mind can release enough Presence to shake buildings, while a carefully lowered signature helps a group remain unseen. In this world, how much power someone lets you feel may be very different from how much they have.",
     "relatedEntries": [
       "presence-chess",
@@ -880,7 +880,7 @@ const loreEntries = [
     "type": "character",
     "faction": "Independent",
     "image": "images/asset-injection-20260916/chill-cirrus-approved-thumb.webp",
-    "summary": "A wingless ice fairy rides a cloud into Goaden's hospital room, drops the temperature and behaves as though he is the charming part of the visit.",
+    "summary": "An exiled, wingless ice fairy taken in by Kane Reeves, Chill rides the cloud Cirrus and carries a touch cold enough to kill. His visit to Goaden's hospital room arrives with frost, flirtation and questions about where his loyalties lie.",
     "description": "Frost reaches the door handle before Chill does. Pale blue and crystalline, with white hair tipped in ice, he arrives aboard Cirrus and immediately takes an interest in Ashai. Goaden has to remind him that his touch can kill a human. Chill apologises, retreats on his cloud and resumes the banter. Kane Reeves took him in after his exile from the Fairy Realm. Gratitude keeps Chill close to the father Goaden distrusts, making every friendly errand carry an uncomfortable question: whose interests is he serving? Even news that Braum has overturned his banishment cannot easily draw him home. He can make light of his difference; revisiting what it cost him is harder.",
     "abilities": [
       "Ice Manipulation",
@@ -900,7 +900,7 @@ const loreEntries = [
     "name": "Max Prison",
     "type": "location",
     "image": "images/gallery-refresh/max-prison-fortress-thumb.webp",
-    "summary": "MAX is the prison Yukon warns even the Demon’s Legion could not escape. Its name is enough to interrupt a joke about the trouble they will cause next.",
+    "summary": "MAX is a prison designed to contain dangerous supernatural inmates in a world of teleportation, shapeshifting and Holy Items. Its reputation reaches well beyond its walls: Yukon warns that even the Demon's Legion should not expect to escape it.",
     "description": "The warning comes during the farewells after a night at the Sanctuary. Anarchy expects more chaos, and Yukon tells the Legion to stay out of prison: even they would not escape MAX. No one needs a guided tour for the name to spoil the joke.\n\nIn a city of teleporting fighters, shapeshifters and Holy Items, a prison people believe can keep the Legion inside is a place to take seriously.",
     "relatedEntries": [
       "mi6",
@@ -927,7 +927,7 @@ const loreEntries = [
     "type": "character",
     "faction": "???",
     "image": "images/codex-refresh/nameless-thumb.webp",
-    "summary": "A carved smile on an iron gas mask, chains sunk into his forearms and one finger raised for silence: Nameless leaves very little to reassure a witness.",
+    "summary": "An unidentified fighter behind a smiling iron gas mask, Nameless first crosses Goaden's path beside a dead cult leader. Chained broadswords emerge from his forearms, and his ability to Flicker out of reach makes every apparent opening uncertain.",
     "description": "Goaden finds him beside a dead cult leader, crouched at an open window. When challenged, Nameless tips backwards into the night, presses a finger to his mask and Flickers away. The gesture says almost nothing. The ease of the escape says enough for Kai to call him a monster. Later encounters make the sound of his weapons familiar: two battered broadswords on rusted chains that emerge from his own forearms. They sway and clink before he moves, while smoke coils from the filters of that smiling mask. His ragged appearance hides a fighter whose short-range disappearances turn every apparent opening into another uncertainty.",
     "abilities": [
       "Flicker (Spatial Teleportation)",
@@ -947,7 +947,7 @@ const loreEntries = [
     "name": "Mistwraith Stags",
     "type": "creature",
     "image": "images/asset-injection-20260916/mistwraith-stags-glade-approved-thumb.webp",
-    "summary": "Pale stags graze in Wooburn’s mist, fading towards translucence. They may study a visitor for a moment, then return to the grass as if the verdict is settled.",
+    "summary": "Mistwraith Stags are ethereal creatures of Wooburn Forest, with pale coats and antlers that seem shaped from mist. Their bodies drift towards translucence as they graze; a visitor who meets their gaze may receive a grave nod before the forest settles again.",
     "description": "In a glade of Wooburn Forest, the mist takes the shape of grazing stags. Pale coats and shifting antlers make them difficult to separate from the air around them. Their quiet lasts even when travellers stop to stare.\n\nAshai meets their gaze and receives a grave nod before they resume feeding, their bodies slipping towards spirit-like translucence. Among the Onari, such encounters are considered blessings. A Mistwraith does not need to lead a charge to make someone feel they have entered a place older and more watchful than themselves.",
     "abilities": [
       "Mistwalking (Silent, Trackless Movement)",
@@ -973,7 +973,7 @@ const loreEntries = [
     "name": "Wooburn Forest",
     "type": "location",
     "image": "images/gallery-refresh/wooburn-memory-trees-thumb.webp",
-    "summary": "A forest crowns a floating mountain, and memories wait inside its carved trees. Touch the right mark and the people you have lost may seem close enough to follow.",
+    "summary": "Wooburn Forest crowns a floating mountain, its roots hanging through the clouds and its trees preserving memories left by visitors. Among playful canopy sprites and mist-wraith stags, touching a glowing carving can bring a long-lost family moment vividly into the present.",
     "description": "Wooburn’s roots hang through the clouds beneath a floating mountain. Inside its canopy, sprites tug hair and scatter glowing pollen; mist-wraith stags pause in the glades to inspect the visitors. Reaching the forest is only the first encounter with its magic.\n\nPeople leave memories in its trees. When Ashai finds a glowing carving and touches it with Goaden’s hand in hers, the present gives way to a scene from her family’s past. A lover’s mark in the bark can become a living answer to a question someone has carried for years.",
     "relatedEntries": [
       "mistwraith-stags",
@@ -1001,7 +1001,7 @@ const loreEntries = [
     "name": "New Big Ben",
     "type": "location",
     "image": "images/codex-refresh/new-big-ben-thumb.webp",
-    "summary": "London rebuilt its clock tower with magic in the gears. Its bells send visible music across the square, above a city that remembers what destroyed the original.",
+    "summary": "New Big Ben is London's magical replacement for the clock tower destroyed in Shonen's battle with Jedia. Its enchanted gears keep time while the bells send visible arcs of music across Parliament Square, giving the rebuilt city a familiar voice with unfamiliar power.",
     "description": "When the new Big Ben strikes, you can see the notes. Shimmering arcs move through Parliament Square as the tower’s magical alloy and silver filigree catch the light. Within, pendulums and gears keep time in rhythm with the earth.\n\nThe beauty has an older wound beneath it. The original tower fell in the duel between Shonen and Jedia; its replacement belongs to a London that rebuilds around extraordinary violence. It can announce a festival with eight familiar chimes and still leave a newcomer wondering what power could have levelled the first one.",
     "relatedEntries": [
       "shonen-kartia",
@@ -1026,7 +1026,7 @@ const loreEntries = [
     "name": "Akri - The Wingless Wonder",
     "type": "creature",
     "image": "images/codex-refresh/akri-thumb.webp",
-    "summary": "The Onari's wingless bird flies through mastery of Presence—and gives MI6's trainees a rather awkward excuse to stop saying they cannot.",
+    "summary": "The akri is an Onari bird that flies without wings by directing Presence, the energy within living beings. Its effortless flight gives Professor Orion Hart a lesson for MI6's trainees—and leaves Goaden with little excuse to keep saying he cannot.",
     "description": "The akri has no wings. It flies anyway. Professor Orion Hart studied this Onari bird to learn how Presence can lift a body without a Holy Item, then brought the lesson into MI6's training chamber: feel the energy, direct it through your feet, and find the means to rise within yourself. For Goaden, that first inch above the floor is a revelation. For the akri, flight is simply how it moves through its world. Its place in Onari woods and Hart's teaching makes it more than an exotic creature to admire: a small, living example that power can be understood through attention as well as force.",
     "abilities": [
       "Gravity Defiance (Wingless Flight)",
@@ -1049,7 +1049,7 @@ const loreEntries = [
     "type": "character",
     "faction": "Demon's Legion",
     "image": "images/codex-refresh/gabriel-portrait-approved-thumb.webp",
-    "summary": "The Legion's loudest show-off turns his own blood into wings and makes a spectacular entrance even when the instruction is 'stealth first'.",
+    "summary": "A rapper in the Demon's Legion, Gabriel turns his own blood into wings and weapons. The crew's loudest show-off brings the same appetite for attention to music and break-ins, making a spectacular entrance even when the instruction is 'stealth first'.",
     "description": "Gabriel can clear a room's fast-food wrappers with one flap of his blood wings. Keeping a low profile proves harder: he unfolds a Rune Rider straight into the warehouse television, then approaches an MI6 break-in wearing elaborate climbing gear and dives through the window. His explanation is that he heard 'health first'. He had a salad that morning. Rarely short of a comeback, he brings the same hunger for attention to the Demon's Legion's music and its fights. Holy radiation gave him the ability to shape his blood into weapons; the stagecraft is all his own. His jokes keep arriving even when Truth is about to risk his life, but when the stolen radiation erupts, Gabriel's wings become cover against the glare.",
     "abilities": [
       "Blood Weaponisation",
@@ -1072,7 +1072,7 @@ const loreEntries = [
     "name": "Flicker",
     "type": "concept",
     "image": "images/codex-refresh/flicker-thumb.webp",
-    "summary": "Short-range teleportation turns a clean strike into an empty space. Mastering Flicker means choosing exactly where to reappear—and learning which barriers still hold.",
+    "summary": "Flicker is short-range teleportation, a technique that demands precise control of where its user will reappear. Nameless makes it look effortless in a fight; Goaden's attempts reveal both the danger of getting it wrong and the magical barriers it cannot cross.",
     "description": "An opponent who can Flicker is a problem that refuses to stay in front of you. Nameless uses the technique so readily that Goaden struggles to land a decisive blow, while Kai recognises that apparent ease as a warning of serious power.\n\nTrying it yourself is another matter. Goaden worries that imperfect control could send him somewhere disastrous, and later discovers that even a successful Flicker cannot carry him through every magical boundary. It offers a way across a battlefield, not a promise that every prison has an exit.",
     "relatedEntries": [
       "nameless",
@@ -1095,7 +1095,7 @@ const loreEntries = [
     "name": "Prowlers",
     "type": "creature",
     "image": "images/codex-refresh/prowlers-thumb.webp",
-    "summary": "Winged feline creatures wrapped in shadow and starlight. A Prowler’s camouflage can hide more than its own body, making the space beneath its wings a sudden refuge.",
+    "summary": "Prowlers are great winged felines from Duskkin territory, their fur a mixture of shadow and starlight. Their magical camouflage can shelter more than their own bodies: when Yukon takes this form, his wings become a hiding place for an entire group.",
     "description": "A Prowler brings together a great cat’s grace, an immense wingspan and fur that seems woven from darkness and stars. Its presence is tied to Duskkin territory, where the Duskkin honour it as a protector.\n\nYukon shows what that protection can look like in a London alley. Taking a form he once encountered on a mission, he spreads his wings around his companions and hides the entire group behind magical camouflage. Watching safely from beneath them makes the creature’s beauty immediately practical.",
     "abilities": [
       "Phase Through Solid Matter",
@@ -1127,7 +1127,7 @@ const loreEntries = [
     "name": "The Silver Cloud Grimoire",
     "type": "concept",
     "image": "images/codex-refresh/silver-cloud-grimoire-thumb.webp",
-    "summary": "An ancient book may hold a way to end an immortal’s curse and help a possessed friend. Getting to it means finding a key, a portal and someone who can open it.",
+    "summary": "The Silver Cloud Grimoire is an ancient collection of magical knowledge, guarded by the Church and moved through a network of portals. Its pages draw people seeking answers to possession and immortality, but reaching them requires a key, a demon and considerable nerve.",
     "description": "The Silver Cloud Grimoire draws desperate people towards the same hidden pages. Shonen hopes it can end his immortality. Kartel knows it carries the work of old mages, alchemists and scholars. Goaden’s friends need answers for a spirit that has taken hold of someone they love.\n\nKnowledge this valuable does not stay on an ordinary shelf. The book moves through a network of portals, and reaching its place in the Sanctuary requires a specific key and a demon to open the way. Even finding it leaves the harder question: what will using the answer cost?",
     "relatedEntries": [
       "the-church",
@@ -1152,7 +1152,7 @@ const loreEntries = [
     "name": "Mind Melters",
     "type": "concept",
     "image": "images/codex-refresh/mind-melters-thumb.webp",
-    "summary": "Share one of the Sanctuary’s bright little sweets and a conversation can move inside your head. For ten minutes, the dance floor has somewhere private to talk.",
+    "summary": "Mind Melters are colourful sweets served at the Sanctuary in the Sky that create a temporary telepathic link between people taking them together. For ten minutes, even a crowded dance floor can become a private place for confession and reassurance.",
     "description": "Mind Melters look like party sweets: glossy, colourful and offered with a smile. Take them together nearby, and the promise becomes stranger. For a short time, two people can share thoughts without trying to shout over the music.\n\nRose and Ashai use that link while dancing, turning a crowded floor into space for a painful confession and reassurance. Their connection lasts ten minutes. That is enough time for something a friend has struggled to say aloud to finally find its way across.",
     "abilities": [
       "Hours-Long Mental High",
@@ -1184,7 +1184,7 @@ const loreEntries = [
     "name": "Nimbus - The Cloud Rat",
     "type": "creature",
     "image": "images/codex-refresh/nimbus-thumb.webp",
-    "summary": "A mutated lintel transformed by Holy Item Radiation into an adorable yet catastrophically powerful apex anomaly",
+    "summary": "Nimbus, nicknamed the Cloud Rat, is a lintel mutated by prolonged exposure to Holy Item radiation. Beneath the cloudlike fur and playful appetite lies a creature that devours spells and releases them magnified, turning an apparently harmless pest into a formidable hazard.",
     "description": "Nimbus resembles a four-legged lintel whose body mutated under prolonged exposure to Holy Item Radiation. Its fur swirls like living stormclouds, threaded with leafy tufts and tiny blossoms that bloom with each breath. Wide, halo-bright eyes and a plumed tail give it the appearance of a child's toy brought to life—yet this illusion masks an apex anomaly that is equal parts pet, pest, and weapon. Civilians whisper the nickname 'Cloud Rat' after spotting it darting across London's chimneys, leaving trails of mist in its wake. Syndicates place absurd bounties on live capture. MI6's file marks it simply: Classified Hazardous Entity. Nimbus devours spells like candy, burping them back magnified by holy radiation. It disperses into storm vapour to slip through cracks, engulfs foes in fog, or inflates into a titanic storm-beast silhouette. When overfed on magic, it leaks weather phenomena—sparks from its tail, sudden rain showers, tornadoes from sneezes. In critical overload, it triggers miniature Holy Item Radiation Storms. It purrs like distant thunder, loves shiny objects and crumbs, and hides in coats. In battle, it acts without malice—but its 'play' can level buildings. Nimbus embodies the chaos of the post-Holy Tragedy world: adorable, coveted, impossibly dangerous.",
     "abilities": [
       "Spell Swallowing & Reflection (Kirby Effect)",
@@ -1209,7 +1209,7 @@ const loreEntries = [
     "type": "character",
     "faction": "MI6",
     "image": "images/codex-refresh/whisper-thumb.webp",
-    "summary": "Low power scores, black face bandages and an apparently limitless talent for avoiding work make Whisper MI6's easiest agent to underestimate.",
+    "summary": "Whisper is an MI6 agent whose low power scores, black face bandages and talent for avoiding work make him easy to underestimate. His unnerving guardian Igyni suggests a different story, but keeping everyone's expectations low seems to suit him perfectly.",
     "description": "Whisper occupies MI6's recreation area as if strenuous effort were a rumour. A beanie and black bandages leave only one eye visible. Cliff calls him the laziest soldier he has ever seen; a new mission is an opportunity for Whisper to suggest sitting this one out. Then there is Igyni, his guardian: a single eye surrounded by flaming wings, distinctly more alarming than its owner's exam results. The mismatch is worth remembering. Whisper notices more than his slouch suggests, and is remarkably invested in keeping everybody's expectations exactly where they are.",
     "abilities": [
       "???",
@@ -1229,7 +1229,7 @@ const loreEntries = [
     "type": "character",
     "faction": "Demon's Legion",
     "image": "images/codex-refresh/dread-twins-thumb.webp",
-    "summary": "Damien and Marley move through a laser grid like dancers and through a conversation like neither has ever needed a whole sentence.",
+    "summary": "Damien in orange and Marley in blue are the Demon's Legion's inseparable Dread Twins. Their coordination carries from music into mayhem: they cross a laser grid like dancers and move through a conversation as though neither has ever needed a whole sentence.",
     "description": "The Dread Twins stand against the warehouse wall in near-perfect symmetry, olive skin and matching dreadlocks lit by neon band posters. Their timing carries them from the Legion's music to an MI6 laser grid: one look, a coordinated leap, and the way is clear for everyone behind them. They are just as synchronised when Gabriel destroys the television or the heist starts unravelling. One begins the joke; the other sharpens it. Under the laughter, Marley is still hurt by Goaden's departure, and Damien knows when to put a hand on his shoulder instead of adding another line. Their closeness is a weapon, but it is also how they get each other through a changing crew.",
     "abilities": [
       "Proximity Power Amplification",
@@ -1255,7 +1255,7 @@ const loreEntries = [
     "type": "character",
     "faction": "Demon's Legion",
     "image": "images/codex-refresh/anarchy-balthazar-thumb.webp",
-    "summary": "Anarchy shares his soul with a demon who resents being summoned for favours. Getting along is optional; surviving each other is essential.",
+    "summary": "Anarchy, the Demon's Legion's drummer, shares his soul with Balthazar, a demon who resents being summoned for favours. Their bond lets him manifest demonic limbs, but sharing power has not given this easygoing musician and his sarcastic companion the same conscience.",
     "description": "A basketball turns lazily in Anarchy's hands while Balthazar's fingers flicker through his own. The bond that saved a dying demon now follows Cameron into every part of his life with the Legion, from opening a secured vault with a transformed arm to trying to persuade his passenger that helping friends is worth a risk. Balthazar arrives in green smoke and a fine jacket, immediately offended that anyone might mistake him for a genie. Anarchy can meet that contempt with a joke, but their fiercest disagreement is serious: the demon prizes the life he fought to preserve; Anarchy will put theirs on the line for Goaden. Sharing a soul has not given them the same conscience.",
     "abilities": [
       "Demon Limb Manifestation",
@@ -1284,7 +1284,7 @@ const loreEntries = [
     "type": "character",
     "faction": "Independent",
     "image": "images/codex-refresh/tait-iren-thumb.webp",
-    "summary": "Tait can see the Guardians most people cannot, but the soul that makes him exceptional is wearing out the body trying to contain it.",
+    "summary": "Goaden's friend Tait can see the Guardians most people cannot, but his unusually powerful soul is wearing out the body trying to contain it. Between hospital monitors and terrible jokes, he fights to keep an ordinary life with Amy—and to be heard.",
     "description": "Before the hospital monitors, there is a picnic, a terrible fart joke and Amy noticing that Tait's hand shakes on the basket. He wants to keep those small, ordinary moments. When Tunnel Trolls stampede through the street, he still steps in front of her and tries to raise a barrier, even though his failing magic cannot hold it. The diagnosis gives the illness a cruel shape: his soul is too powerful for his body. Tait can see Guardians, yet struggles with the daily work of being alive. Amy promises to stay; Goaden demands an enemy he can fight. Tait loves them both, but their determination does not make his pain smaller, and asking to be heard becomes its own kind of struggle.",
     "abilities": [
       "Soul Power (Overwhelming, Untapped)",
@@ -1304,7 +1304,7 @@ const loreEntries = [
     "name": "The Alchemical Society",
     "type": "location",
     "image": "images/codex-refresh/alchemical-society-thumb.webp",
-    "summary": "A city of magical invention powered by the Philosopher’s Stone became a ruin. Kartel carries its knowledge—and the silence he took on after its fall.",
+    "summary": "The Alchemical Society built a city powered by the Philosopher's Stone, joining magical knowledge with the command of matter. Its ruins mark the cost of a war over that power; the surviving alchemist Kartel carries both its knowledge and a vow of silence.",
     "description": "The Alchemical Society made a city possible through its command of matter and the power of the Philosopher’s Stone. That achievement also gave Kira something to covet. What remains is shattered stone, lost lives and knowledge scattered among the people who survived.\n\nKartel’s vow of silence makes that history personal long before the ruined city appears. When Kira returns to its broken pillars, he sees proof of what his hunger destroyed. The same place that once showed how magic and science could build a life together now measures the cost of someone wanting its power for himself.",
     "abilities": [
       "Gravity Manipulation Architecture",
@@ -1338,7 +1338,7 @@ const loreEntries = [
     "type": "character",
     "faction": "MI6",
     "image": "images/asset-injection-20260916/cliff-earth-powers-approved-thumb.webp",
-    "summary": "MI6's General offers training, protection and a salary to people who would rather insult him than join. He usually knows which offer will land.",
+    "summary": "The general leading MI6, Cliff Henderson recruits people who would often rather insult him than join. He offers Goaden and Ashai training, protection and a salary, balancing real concern for his young agents with a sharp understanding of what each one wants.",
     "description": "Cliff Henderson introduces himself after the street has already been torn apart. Goaden turns down his money; Ashai hears a man who recognises her mother's name. Cliff keeps talking, offering training and technology while an enormous black feline emerges at his side. Recruitment, with him, is a matter of understanding what each person wants badly enough to stay. Inside the Armoured-dillo, he knows where to find the gamers, which captain will refuse to answer, and how much cheek he is prepared to tolerate. His concern for young agents is real, but so are his calculations. A mission brief can move from missing cult members to the Grimoire with uncomfortable speed. Working for the General means learning where his warmth ends and his duty takes over.",
     "abilities": [
       "Earth Manipulation",
@@ -1363,7 +1363,7 @@ const loreEntries = [
     "type": "concept",
     "faction": "Silver Solace",
     "image": "images/asset-injection-20260916/silver-wing-nickel-approved-thumb.webp",
-    "summary": "Guardians of souls with synthetic silver feathers and the ability to open paths between dimensions. One can pass through a nightclub and leave the afterlife feeling alarmingly close.",
+    "summary": "Silver Wings are ancient guardians of souls, with synthetic silver feathers and the power to open passages between dimensions. One stepping out of a nightclub through a slit in reality makes the worlds beyond ordinary life feel suddenly, unsettlingly close.",
     "description": "Ashai almost collides with a Silver Wing in the Sanctuary. The stranger’s smoky robes, remote violet eyes and immense metallic wings make the surrounding party seem suddenly small. Then a slim opening splits the air, showing impossible vistas, and the being steps through.\n\nAnarchy knows them as ancient Guardians of souls. Their role reaches beyond the human habit of calling anything winged an angel: Silver Wings carry out the passage between lives and realms. Meeting one is a reminder that the worlds beyond the next doorway do not all belong to the living.",
     "abilities": [
       "Wormhole Creation",
@@ -1396,7 +1396,7 @@ const loreEntries = [
     "name": "Kira, The Spirit",
     "type": "character",
     "image": "images/codex-refresh/kira-thumb.webp",
-    "summary": "Inside an MI6 glass cage sits a doll with a demonic prisoner, an appetite for a living host and unfinished business with the Philosopher's Stone.",
+    "summary": "Kira is a demonic spirit imprisoned in a doll inside an MI6 laboratory. His hunger for the Philosopher's Stone helped destroy the Alchemical Society, and the glass cage cannot silence his search for a living host—or Kartel Hammond's memories of him.",
     "description": "Kira's prison looks small enough to carry. The laboratory log beside it is harder to stomach: a spirit from the Demon Realm, sustained through experiments involving the souls of orphans. The cage holds the doll; it does not keep his call from reaching someone beyond the glass. To Kartel Hammond, Kira is the voice of a catastrophe that has never ended. His pursuit of the Philosopher's Stone helped bring down the Alchemical Society, and being confined has done little to soften his hunger. A living vessel offers him movement, power and another chance. For the person whose body he enters, that opportunity is a sentence.",
     "abilities": [
       "Dark Magic Mastery",
@@ -1419,7 +1419,7 @@ const loreEntries = [
     "type": "character",
     "faction": "MI6",
     "image": "images/codex-refresh/isolde-thorn-thumb.webp",
-    "summary": "Kartel's former pupil combines alchemy with witchcraft and has little patience for the idea that understanding magic means belonging behind a desk.",
+    "summary": "An alchemist and witch trained by Kartel Hammond, Isolde Thorne advises MI6 on a magical world its officers do not always understand. Asked to take greater responsibility, she has little patience for the idea that expertise belongs behind a bureaucrat's desk.",
     "description": "Asked to consider responsibility for MI6, Isolde's first response is to point out that she is an alchemist, not a bureaucrat. She trained under Kartel Hammond and knows exactly how much she still respects her teacher. Cliff sees another qualification: she understands both the magical world and the people who must live alongside it. The Philosopher's Stone has left her looking much younger than her years. The alchemical markings at her neck are easier to read than the life behind them. Her expertise crosses into witchcraft, making her a sought-after consultant to MI6, The Order and even the Yakuza-Triads. At MI6, she meets doubts about her unconventional background with a steady gaze, careful terms and the willingness to take responsibility for her decisions.",
     "abilities": [
       "Alchemical Mastery",
@@ -1445,7 +1445,7 @@ const loreEntries = [
     "type": "character",
     "faction": "MI6",
     "image": "images/codex-refresh/kartel-hammond-thumb.webp",
-    "summary": "An MI6 captain whose silence began with a city's fall, Kartel keeps the remains of an alchemical lifetime close—and the cost closer.",
+    "summary": "An MI6 captain and one of the last alchemists, Kartel Hammond took a vow of silence after the Alchemical Society fell. His rooms hold the vials, books and remedies of a lost civilisation, each a reminder of knowledge too costly to waste.",
     "description": "Goaden's first attempt to get a rise out of Kartel Hammond produces nothing. No answer, no explanation, no acknowledgement of the insult. Cliff supplies the reason: this is one of the last alchemists, a survivor of the war over the Philosopher's Stone, who took a vow of silence after the Alchemical Society fell. His quarters are crowded with strange vials, old books and carved masks. Even the desk conceals a laboratory. What looks like a collection of curiosities is the working memory of a lost civilisation, and Kartel knows when a remedy is too precious to waste. He can put an irreplaceable fragment of that past into someone's hands, then insist they take only one sip a day.",
     "abilities": [
       "Alchemical Mastery",
@@ -1471,7 +1471,7 @@ const loreEntries = [
     "type": "location",
     "faction": "Independent",
     "image": "images/codex-refresh/fairy-realm-thumb.webp",
-    "summary": "Luminescent mushrooms and winged inhabitants make the Fairy Realm beautiful from a distance. Chill’s exile is a reminder that beauty does not guarantee a welcome.",
+    "summary": "The Fairy Realm is the homeland of the fairies, connected to human life through the Merging. Luminescent mushrooms, towering trees and delicate wings make it beautiful to behold, though Chill's exile shows that its society can be far less welcoming.",
     "description": "The Fairy Realm appears in a recorded battle as luminous mushrooms, towering trees and delicate wings beneath unfamiliar skies. It is a glimpse that leaves Ashai awestruck. The Merging brought its inhabitants and their knowledge into contact with human life, changing both worlds.\n\nChill gives that wonder an uncomfortable edge. The realm Goaden calls enchanted also banished his friend for being different. Its beauty and its people belong to the same place, and neither tells the whole story alone.",
     "abilities": [
       "Techno-Flight (Enhanced Wings with Thrusters)",
@@ -1508,7 +1508,7 @@ const loreEntries = [
     "type": "location",
     "faction": "Duskkin Clan",
     "image": "images/codex-refresh/urban-jungle-thumb.webp",
-    "summary": "Ancient trees wrap around steel, neon shines through vines, and hunters follow metal-skinned prey. The Duskkin’s living city demands respect from anyone hoping to pass through.",
+    "summary": "The Urban Jungle is the Duskkin's living city, where ancient trees wrap around steel and neon shines through tangled vines. Hunters, sprites and metal-skinned creatures share its streets; visitors must show respect for the land before expecting safe passage through it.",
     "description": "At the Urban Jungle’s edge, steel and old trees are already tangled together. Farther in, small sprites work digital interfaces with mechanical details sewn into their wings, while creatures watch travellers from the shadows. The city has wildlife, and the wildlife belongs to the city.\n\nEirik and Zara make that relationship clear by taking visitors on a hunt. Among the vine-wrapped remains of a skyscraper waits an Iron Bloom Behemoth. Passing through Duskkin land means understanding why hunting it is a ritual of responsibility as well as a contest of strength.",
     "abilities": [
       "Sanguine Forging (Blood-to-Energy Conversion)",
@@ -1549,7 +1549,7 @@ const loreEntries = [
     "type": "location",
     "faction": "Independent",
     "image": "images/codex-refresh/demon-realm-thumb.webp",
-    "summary": "A realm that offers human summoners answers at a dangerous price. Its weapons can carry a demon’s consciousness, and even useful visitors bring grievances of their own.",
+    "summary": "The Demon Realm is home to beings such as Balthazar and the source of dangerous Infernal Items. Human summoners seek its inhabitants for knowledge, but a useful answer can come with old grievances, hidden motives or a power that refuses to remain a tool.",
     "description": "For Goaden, the Demon Realm is a possible source of answers about his brother’s fate. Reaching for it means arranging a summoning and relying on a being whose reasons for cooperating are entirely its own. Balthazar can offer information, but his recognition of Goaden’s family is hardly comforting.\n\nThe realm also leaves traces in objects that cross its boundaries. The All-Seeing Eye is an Infernal Item; Oblivion carries a demon’s bound consciousness inside its blade. A crossing can bring knowledge, a weapon or a presence that refuses to remain a tool.",
     "abilities": [
       "Unique Aura Manifestation",
@@ -1586,7 +1586,7 @@ const loreEntries = [
     "type": "character",
     "faction": "Independent",
     "image": "images/codex-refresh/slate-bennet-thumb.webp",
-    "summary": "Ashai's uncle built a quiet home around an unbearable secret. The night he finally tells part of the truth, he begins to lose her trust.",
+    "summary": "Ashai's uncle and guardian, Slate Bennet raised her in a quiet home built around a secret about her parents. When he finally tells part of the truth, his attempt to protect her begins to cost him the trust he most wants to preserve.",
     "description": "Slate sits at the kitchen table with untouched tea while Ashai asks what happened to her parents. He removes his glasses, tries to choose his words, and gives her enough truth to destroy the story he raised her on. Her mother did not die in an accident. Her father disappeared. The rest, he insists, is too dangerous to tell. His fear comes from love, but Ashai is the one living inside its limits. Once she leaves for London, her silent guitar remains in the house with him. Slate can keep replaying the conversation, or follow his niece and face what his protection has cost. He has spent years trying to prevent another loss; now he has to learn how to ask for forgiveness.",
     "abilities": [
       "Protective Instincts",
@@ -1607,7 +1607,7 @@ const loreEntries = [
     "type": "character",
     "faction": "Independent",
     "image": "images/codex-refresh/amy-thumb.webp",
-    "summary": "Amy knows the tremor Tait tries to hide and the jokes he uses to cover it. She stays close as his extraordinary soul makes ordinary life harder.",
+    "summary": "Tait's partner, Amy, knows the tremor he tries to hide and the jokes he uses to cover it. As his powerful soul damages his body, her love becomes practical: steadying his hands, helping with ordinary tasks and listening when he says he is losing himself.",
     "description": "Amy catches the shaking hand before Tait can explain it away. One moment they are laughing beneath an oak; the next, after a street full of panicked Tunnel Trolls, she is holding his head in her lap and waiting for sirens. At the hospital she keeps hold of his hand while the doctors explain that his own soul is destroying his body. Her love is practical as well as fierce: helping with daily tasks, steadying limbs, listening on the couch when he says he is losing himself. She wants a cure, but she also wants the man who teased her over a picnic to know he is still wanted. That promise carries her into a crisis no amount of ordinary devotion can easily solve.",
     "abilities": [
       "Unwavering Loyalty",
@@ -1628,7 +1628,7 @@ const loreEntries = [
     "type": "character",
     "faction": "Ragnorir",
     "image": "images/codex-refresh/lad-ragnorir-thumb.webp",
-    "summary": "A battle-axe, a fur-lined collar and a serpent called Ten give Lad a fearsome entrance. He would still prefer to settle the border dispute with words.",
+    "summary": "A warrior of Ragnorir, Lad arrives at the Duskkin border with a glowing battle-axe and his serpent guardian, Ten. He has the strength to make a threat credible, but would still rather calm his companion and settle the dispute with words.",
     "description": "Lad stands before Duskkin scouts with one hand on a glowing axe and Ten coiled around his shoulders. Braids and beads dress his beard; a thick fur collar and the Viking-Scottish bearing of his followers leave little doubt that these strangers can fight. When weapons come out, the serpent is ready before anyone speaks. Lad's next move is to calm Ten, then laugh and ask why they are drawing blades when words will do. Eirik lowers the scouts' weapons; Lad sheathes his own. The encounter gives a useful measure of this leader: he carries the force to make a threat credible, and enough judgement to leave without making it necessary.",
     "abilities": [
       "Storm Summoning",
@@ -1654,7 +1654,7 @@ const loreEntries = [
     "type": "creature",
     "faction": "Ragnorir",
     "image": "images/codex-refresh/ten-lightning-serpent-thumb.webp",
-    "summary": "Lad’s serpentine Guardian is poised to strike before anyone settles the argument. A hand on his scales can turn that gathering storm back towards peace.",
+    "summary": "Ten, the Lightning Serpent, is Lad's Guardian, able to become living electricity and share that power with him. Usually coiled around Lad's shoulders, he can be ready to strike in an instant, then settle again beneath a familiar hand.",
     "description": "Ten rests around Lad’s shoulders until a border standoff brings blades out of their sheaths. Then the serpent uncoils, scales hissing, ready to defend his partner. Lad’s touch and a few familiar words bring him back to watchful stillness.\n\nKnown as the Lightning Serpent, Ten can become a bolt of living electricity and lend his magic to Lad. In the encounter at Duskkin’s border, that power stays restrained. The threat is real enough that choosing not to release it matters.",
     "abilities": [
       "Reality Perception (Sees Through Time and Probability)",
@@ -1688,7 +1688,7 @@ const loreEntries = [
     "name": "Ragnorir",
     "type": "faction",
     "image": "images/gallery-refresh/ragnorir-fortress-thumb.webp",
-    "summary": "Lad’s Viking-descended faction brings storm weapons and a formidable reputation to the northern borders. Its leader also knows when a raised hand is worth more than a drawn axe.",
+    "summary": "Ragnorir is Lad's faction, carrying Viking and Scottish heritage alongside a formidable reputation for storm power. At the Duskkin border, its warriors arrive ready for trouble, but their leader knows when a raised hand and a few words serve better than an axe.",
     "description": "When Lad’s men meet Duskkin scouts, the first impression is armour, tense voices and a heritage carried in Viking and Scottish dress. Their leader keeps a hand near his glowing axe; the serpent around his shoulders is already preparing for a fight.\n\nThen Lad laughs, settles his Guardian and offers words in place of blades. Ragnorir’s storm-wielding reputation makes the encounter dangerous, but its leader’s willingness to negotiate decides how it ends. Strength can make a border confrontation worse. It can also give a peaceful choice weight.",
     "abilities": [
       "Storm Manipulation and Channelling",
@@ -1724,7 +1724,7 @@ const loreEntries = [
     "name": "Stormcleaver",
     "type": "item",
     "image": "images/codex-refresh/stormcleaver-thumb.webp",
-    "summary": "Lad’s battleaxe calls thunder and lightning into a fight. Turn its energy another way, and the storm can fall as rain that restores wounded allies.",
+    "summary": "Stormcleaver is Lad's Holy Item, a battleaxe that channels thunder, lightning and fierce winds. Its power also has a gentler purpose: the storm can become healing rain, restoring wounded allies instead of sweeping an enemy from the field.",
     "description": "Stormcleaver puts the weather within reach of Lad’s hands. Its star-metal head crackles above a haft of Yggdrasil wood; a swing can carry thunder, lightning or a gale strong enough to sweep enemies away. In a tense meeting, merely reaching towards it says plenty.\n\nThe axe can also turn the storm towards a gentler purpose. Lad can turn its power into healing rain, restoring the people who stand beside him. The same storm that makes this weapon feared is also capable of bringing a battered fighting force back to its feet.",
     "abilities": [
       "Storm Summoning",
@@ -1757,7 +1757,7 @@ const loreEntries = [
     "name": "Might",
     "type": "item",
     "image": "images/codex-refresh/might-thumb.webp",
-    "summary": "Cliff’s Holy Items are a pair of military boots. One stamp turns the ground into an attack; another use of their power can raise shelter for the people behind him.",
+    "summary": "Might is the pair of military boots that serves as Cliff Henderson's Holy Items, giving him command over the earth. One stamp sends a shock wave across the training ground; the same power can raise barriers and shelter the people behind him.",
     "description": "Might looks like something a soldier would lace up before work. Then Cliff stamps, and a shock wave crosses the training ground towards Ashai. The boots make his stance a source of force, turning the earth beneath a fight into part of the fight itself.\n\nTheir power can raise barriers, open fissures or send rocks into the air. It can also shape a refuge for allies. In Cliff’s hands, the distinction between breaking ground and holding it is a decision about who needs protection.",
     "abilities": [
       "Earth Manipulation",
@@ -1791,7 +1791,7 @@ const loreEntries = [
     "name": "Oblivion",
     "type": "item",
     "image": "images/codex-refresh/oblivion-thumb.webp",
-    "summary": "A betrayed demon’s consciousness is trapped inside this infernal blade. Its wielder gains terrible power and an intimate enemy whispering from the weapon in their hand.",
+    "summary": "Oblivion is an Infernal sword containing a betrayed demon's consciousness, carried by Jedia before passing to Shonen. Its devastating power comes with an intimate danger: the rage alive inside the blade can wear away the sanity of the person holding it.",
     "description": "Oblivion was a demon before it was a sword. Rivals bound its essence into the forge, leaving rage and consciousness alive inside the metal. The result can cut with devastating power while wearing away the sanity of the person using it.\n\nJedia carried the blade into his confrontation with Shonen. The recorded battle ends with Shonen taking it from the fallen mage. Winning the weapon does not erase what inhabits it; mastery means continuing to hold a thing built to turn its bearer towards destruction.",
     "abilities": [
       "Reality Manipulation",
@@ -1824,7 +1824,7 @@ const loreEntries = [
     "name": "Fog Blade",
     "type": "item",
     "image": "images/codex-refresh/fogblade-thumb.webp",
-    "summary": "A Holy Item that transforms between a condensed silver sword and dozens of autonomous fog blades, forged from a star fragment infused with moonlight essence",
+    "summary": "The Fog Blade is Prince Lovell's Holy Item, forged from a star fragment infused with moonlight. It transforms from a silver longsword into many autonomous blades of mist, responding to his intent as they shield allies or seek openings in an enemy's defence.",
     "description": "Crafted by Fate in the aftermath of the Celestial Shattering, the Fog Blade emerged from a unique star fragment that fell in the fairy realm during a lunar eclipse—a shard already saturated with crystallised moonlight and the essence of morning mist. This convergence of celestial and atmospheric energies created a Holy Item of uncommon elegance, befitting the fairy Prince Lovell's progressive yet refined nature. The blade exists in perpetual transformation, a weapon unbound by fixed form. In its dormant state, the Fog Blade appears as a single elegant silver longsword that sheathes itself through harmonic resonance with its wielder. When called upon, it dissolves into dozens—sometimes hundreds—of smaller fog blades that dance through the air like liquid starlight, each moving with deadly precision and autonomous intelligence. These ethereal fragments catch and refract light beautifully, creating dazzling displays that belie their lethal purpose. The fog blades respond to Lovell's intent rather than direct control, flowing around allies to form protective barriers while simultaneously seeking vulnerabilities in enemy defences. They can create shields of swirling silver mist, open surgical gaps in opposing forces, and reform into the unified blade in an instant. Unlike traditional weapons bound by physical limitations, the Fog Blade embodies the principle that form follows function—it becomes whatever the wielder needs. The weapon's versatility mirrors Lovell's adaptability, his ability to navigate both the formal strictures of fairy court and the casual freedoms of the human realm. When wielded in concert with Lovell's mastery of Flicker, the fog blades can pursue enemies across short-range teleportation jumps, appearing where the prince appears, making him uniquely unpredictable despite his diplomatic nature.",
     "abilities": [
       "Form Transformation (Sword to Fog Blades)",
@@ -1854,7 +1854,7 @@ const loreEntries = [
     "type": "character",
     "faction": "Fairy Realm Royalty",
     "image": "images/codex-refresh/braum-thumb.webp",
-    "summary": "The warrior who takes the fairy crown overturns Chill's banishment at once. A royal invitation still cannot undo what exile has done.",
+    "summary": "Braum is the warrior who becomes king of the Fairy Realm and overturns Chill's banishment. His invitation offers the exiled ice fairy a way home, but a royal decree cannot easily undo the years that taught Chill he did not belong.",
     "description": "Chill remembers Braum as the warrior of the two royal brothers, which makes the news of his kingship a surprise. The first reported act that matters to the exiled fairy is personal: Braum overturned his banishment as soon as he took the crown. Neither Chill's appearance nor his power should keep him from belonging among the Fai. Claude brings that invitation while describing a realm in crisis. For Braum, opening the door is an act of repair; for Chill, walking back through it means confronting memories he has spent years avoiding. A ruler can reverse a decree in a moment. Winning back the trust it destroyed takes longer.",
     "abilities": [
       "Master Combat Tactician",
@@ -1882,7 +1882,7 @@ const loreEntries = [
     "name": "Onari Titans",
     "type": "creature",
     "image": "images/codex-refresh/onari-titans-thumb.webp",
-    "summary": "Royal Onari blood can turn a person into a colossal warrior. The transformation gives a ruler the power to defend a village—or make its people fear them.",
+    "summary": "Onari Titans are colossal warrior forms available to rare Onari of royal blood. The transformation gives rulers such as Zephyr Proctor the strength to defend their people or terrify them, changing the scale of a confrontation with a single swelling limb.",
     "description": "An Onari Titan changes the scale of an argument. Limbs swell, the ground shakes, and an opponent becomes small enough to seize in one hand. The transformation belongs to rare Onari of royal blood, a gift the Proctors have used to make their rule difficult to challenge.\n\nZephyr makes its danger especially clear. He retains a sharp mind within the enormous body, combining a ruler’s intent with strength capable of tearing through binding roots. The power itself does not decide whether the village gains a guardian or a tyrant.",
     "abilities": [
       "Colossal Size Transformation",
@@ -1917,7 +1917,7 @@ const loreEntries = [
     "name": "Grove Guardians",
     "type": "creature",
     "image": "images/codex-refresh/grove-guardians-thumb.webp",
-    "summary": "The sacred grove has defenders made of living bark, branches and roots. What looked like another ancient tree can become the force that stops an intruder.",
+    "summary": "Grove Guardians are living wooden protectors of the Onari's sacred forests, revered as expressions of Yuvan's will. Bark, branches and roots become formidable bodies; when Yukon assumes their shape, the grove's strength meets intruders with more than silent disapproval.",
     "description": "A Grove Guardian belongs so completely to its forest that stillness can hide it among the trees. Its body is living wood, and its protection extends through roots, growth and the life around it. The Onari revere these beings as expressions of Yuvan’s will.\n\nYukon’s transformation makes that old reverence immediate. Branches become limbs, bark becomes armour, and opponents who expected a small intruder find themselves facing the strength of the grove. Defending the forest is no longer an abstract duty when the forest can reach back.",
     "abilities": [
       "Nature Manipulation (Control plants and trees within Yaluma)",
@@ -1952,7 +1952,7 @@ const loreEntries = [
     "name": "Enchanted Ink",
     "type": "location",
     "image": "images/codex-refresh/enchanted-ink-thumb.webp",
-    "summary": "The only moving tattoo parlour in the universe, where beings from across realms seek living art etched in magic and starlight",
+    "summary": "Enchanted Ink is London's parlour for living tattoos, attracting clients from across the realms. Its magical designs move with their wearers, from the Demon's Legion's shifting patterns to Rose's blooming flowers, turning skin into art that never quite stands still.",
     "description": "Tucked between dimensional folds in London's ever-shifting streets, Enchanted Ink stands as the sole purveyor of living tattoos in existence—a parlour that weaves magic into flesh. Its storefront phases in and out of visibility, accessible only to those who know how to look between the cracks of reality. Inside, walls pulse with thousands of animated designs: dragons that breathe ethereal fire, flowers that bloom and wither in endless cycles, constellations that mirror actual star movements. The master artist—a figure whose own body serves as a canvas of impossibly intricate moving imagery—possesses a rare gift: the ability to bind ambient magical energies, particularly holy item radiation, directly into ink. Each tattoo is a unique creation, infused with fragments of the client's essence and attuned to their Presence. The Demon's Legion's iconic moving tattoos originated here, their designs shifting and flowing across skin like living art—Truth's light-infused patterns, Rose's botanical motifs that grow and bloom, Gabriel's crimson markings that pulse with his heartbeat. Beings travel from across realms: Duskkin seeking shadow-marked symbols, Onari wanting nature-blessed designs, even demons commissioning aura-enhanced marks. The waiting list spans years. Some tattoos grant minor enhancements; others serve as focal points for casting. All share one trait: they live, they breathe, they become part of their bearer's soul.",
     "abilities": [
       "Living Tattoo Creation",
@@ -1978,7 +1978,7 @@ const loreEntries = [
     "name": "Infinity's Quill",
     "type": "location",
     "image": "images/codex-refresh/infinitys-quill-thumb.webp",
-    "summary": "An underground library in the northern mountains stores more than books. Its records can put visitors inside an ancient battle—and expose a truth they were unprepared to find.",
+    "summary": "Infinity's Quill is a vast library carved into the northern mountains, collecting books and artefacts from across worlds. Its records can surround visitors with an ancient battle, making research feel immediate and offering answers that may be harder to face than expected.",
     "description": "Infinity’s Quill rises from the northern mountains in obsidian and silver, with carved scholars standing beside doors marked by an astrological chart. Beyond them lie cold archives, the smell of old bindings and artefacts gathered from different worlds.\n\nA device labelled Historical Battles can fill the room with the fight between Shonen and Jedia. For Goaden, it is a chance to study impossible swordsmanship. For Ashai, something within the same recording turns research into a personal crisis. Here, finding an answer can be more dangerous than getting lost among the shelves.",
     "abilities": [
       "Sentient Architecture (Corridors shift and change)",
@@ -2018,7 +2018,7 @@ const loreEntries = [
     "type": "character",
     "faction": "The Order",
     "image": "images/codex-refresh/head-captain-thumb.webp",
-    "summary": "The Order's Head Captain carries a katana, answers to an immortal and is beginning to mistake his own suspicions for permission.",
+    "summary": "Shonen Kartia's chief officer in The Order is a katana-wielding commander trained by the immortal himself. When told to watch Ashai, the Head Captain chooses capture instead, letting his curiosity about his master's interest turn obedience into dangerous initiative.",
     "description": "His boot heels break the silence of The Order's polished headquarters. Agents kneel, reports are delivered, and a failed assignment can become fatal before the katana returns to its sheath. The Head Captain's authority is exacting; his certainty is less secure than the people beneath him realise. Shonen orders Ashai watched. The Head Captain decides she should be captured. He wants to understand why his master is interested in her, and calls his disobedience necessary initiative. Privately trained by Shonen, he favours earned skill over a Holy Item, but proximity to that much power has left him with a dangerous question: when does serving the master's purpose mean defying the master's word?",
     "abilities": [
       "Master Strategist",
@@ -2039,7 +2039,7 @@ const loreEntries = [
     "name": "Titan Seedlings",
     "type": "creature",
     "image": "images/codex-refresh/titan-seedlings-thumb.webp",
-    "summary": "Small beings of soil, stone and growing things tend the Onari groves. Their emerald eyes shine at night, and their quiet work helps damaged plants live again.",
+    "summary": "Titan Seedlings are small beings of soil, stone and growing things that tend the Onari groves. Their emerald eyes shine at night as they coax damaged plants back to life, and Onari children learn to care for these curious little neighbours.",
     "description": "A Titan Seedling looks like a small patch of the grove has got up to explore: soil and stone beneath moss, flowering buds and gently luminous eyes. It may pause to tend a young tree, humming as it works, or coax life back into damaged vegetation with a touch.\n\nThe Onari teach children to care for them and protect them from removal or exploitation. Their gift is useful, but that is not permission to take one home. These curious little caretakers belong to the living places they help maintain.",
     "abilities": [
       "Growth Inducement (Quicken plant growth with touch)",
@@ -2069,7 +2069,7 @@ const loreEntries = [
     "type": "character",
     "faction": "The Order",
     "image": "images/codex-refresh/captain-ash-thumb.webp",
-    "summary": "Volcanic rock steams from Captain Ash's body. The Order gives him authority, but the Holy Item he wants remains out of reach.",
+    "summary": "An officer of The Order with volcanic stone fused into the left side of his body, Captain Ash combines a molten threat with patience. He watches Goaden and Ashai from above, weighing his moment to strike while resenting the Holy Item Shonen still withholds.",
     "description": "Ash waits above the street like a damaged gargoyle, molten stone fused with flesh and a claw flexing while he watches his targets. Gunta's arrival irritates him almost as much as the lieutenant's favourite taunt: Shonen still has not given his captain a Holy Item. He lets Gunta have his violent entrance while he studies the situation from above. When MI6 arrives, Ash withdraws with the fight unfinished. That ability to wait is part of the threat. His altered body makes him conspicuous, but beneath the heat and scar tissue is an officer weighing when to strike, when to leave and how to claim the power he believes he deserves.",
     "abilities": [
       "Volcanic Ash Transformation (Left side)",
@@ -2096,7 +2096,7 @@ const loreEntries = [
     "type": "character",
     "faction": "The Order",
     "image": "images/codex-refresh/gunta-thumb.webp",
-    "summary": "The Order's hulking lieutenant treats an ambush like an invitation to show off—and his own allies are not always clear of the landing.",
+    "summary": "Gunta is The Order's hulking lieutenant, serving under Captain Ash with enormous strength and very little restraint. He treats an ambush like an invitation to show off, smashing into the street with a shock wave his own allies are not always clear of.",
     "description": "Gunta announces himself by crashing onto a rooftop, annoying Captain Ash before they have even begun. He needles his superior about the Holy Item Shonen has withheld, slaps him on the back and refuses to be left out of the coming fight. Orders matter less to him than getting his share of the violence. When he drops into the street, concrete breaks and the shock wave flattens allies along with everything else nearby. Broad features, enormous bare feet and stone-crushing fists make his approach impossible to miss. Goaden's jokes can provoke him, but provoking a brute this fast and this hard to hurt is a risky way to buy an opening.",
     "abilities": [
       "Superhuman Strength (Can shatter steel with bare hands)",
@@ -2123,7 +2123,7 @@ const loreEntries = [
     "type": "character",
     "faction": "Duskkin / MI6 Ally",
     "image": "images/codex-refresh/zara-mi6-portrait-thumb.webp",
-    "summary": "A Duskkin hunter with crimson eyes and very little patience for visitors who mistake the Urban Jungle for a shortcut.",
+    "summary": "A Duskkin hunter who knows the Urban Jungle's dangerous creatures, Zara has little patience for visitors who mistake it for a shortcut. Beside Eirik, she makes outsiders earn their passage on a ritual hunt, taking her blade to the prey's weakest points.",
     "description": "Zara greets newcomers by deciding whether they are desperate or stupid. Hair held by metallic bands, a blade at her side and a stare that takes everyone's measure, she makes the terms of Duskkin hospitality clear: show respect, and earn your passage. Beside Eirik's measured welcome, her bluntness is its own useful warning. On the ritual hunt she does exactly what she expects of visitors. She watches the shadows, knows the Iron Bloom Behemoth's magic-reflecting hide, and takes her blade to its joints and underbelly while Eirik binds its legs. Hunting here is a shared responsibility. Even after the prey falls, Zara keeps a hand close to her weapon when strangers appear at the border.",
     "abilities": [
       "Master Hunter (Urban Jungle Expert)",
@@ -2155,7 +2155,7 @@ const loreEntries = [
     "type": "creature",
     "faction": "Duskkin",
     "image": "images/codex-refresh/kobu-thumb.webp",
-    "summary": "Zara's shadow beast companion—born from rage and grief, tempered into loyalty, and renowned as one of the most powerful shadow beasts in living memory",
+    "summary": "Kobu is Zara's shadow beast, bound to the Duskkin hunter through blood magic and deep loyalty. Born from her rage and grief, his immense, shifting form has become a disciplined partner in combat, scouting ahead or gathering around her as living armour.",
     "description": "Kobu is not merely a shadow beast; he is a living testament to transformation, to the possibility that even the darkest parts of ourselves can become sources of strength. When Eirik first taught Zara the ancient blood magic ritual to manifest a shadow beast, he warned her: 'What emerges will reflect who you are in this moment—every fear, every rage, every hidden darkness given form.' He expected her creation to be volatile, perhaps uncontrollable. What manifested exceeded even his worst fears. Kobu erupted into existence like a scream made flesh, a roiling mass of inky darkness so dense it seemed to devour light. Where most shadow beasts are roughly wolf-sized with fluid, ever-changing forms, Kobu towered, his presence so overwhelming that even experienced Duskkin hunters instinctively stepped back. His form writhed with barely contained fury, tendrils of shadow lashing out at nothing, and his eyes—those gleaming, intelligent eyes that mark all shadow beasts—burned with an intensity that mirrored Zara's rage. In those first moments, Eirik genuinely feared he had made a terrible mistake. But then something remarkable happened. As Zara locked eyes with her shadow beast, as she confronted the physical manifestation of her grief, her bloodlust, her rage at a world that had stolen her family—she didn't flinch. She didn't turn away. She reached out, placed her hand against that writhing darkness, and whispered: 'I see you.' The shadow beast stilled. The frantic lashing ceased. And in that moment, the bond was forged—not just the typical symbiotic connection between Duskkin and shadow beast, but something deeper. Zara named him Kobu, a word from an old Duskkin dialect meaning 'the strength that comes after breaking.' It was a promise to both of them. Over the years, as Zara transformed from a rage-filled child into a master hunter and eventually into MI6's most valued Duskkin ally, Kobu transformed with her. His size never diminished—if anything, he grew larger as her power and skill increased—but his movements became controlled, purposeful. Where he once lashed out indiscriminately, he now strikes with surgical precision. The burning intensity in his eyes cooled into focused determination. Even among the Duskkin, where shadow beasts are revered and respected, Kobu stands apart. Other shadow beasts sense his power and give him wide berth. In the Urban Jungle, there are whispered stories: Kobu tearing through an Iron Bloom Behemoth's supposedly impenetrable hide; Kobu dragging a Prowler out of its shadow-phase mid-hunt; Kobu standing between Zara and an entire pack of corrupted creatures, his form expanding until it became a wall of living darkness that nothing could penetrate. His loyalty to Zara borders on the absolute. The telepathic bond they share runs so deep that they often move as one entity in combat—Zara flowing through fighting forms while Kobu mirrors her movements in shadow, creating a devastating synchronised assault. When she's injured, he becomes a protective barrier, his form wrapping around her like living armour. When she hunts, he scouts ahead, his consciousness bleeding into hers so completely that she sees through his eyes as easily as her own. But perhaps Kobu's most remarkable quality is what he represents to other Duskkin struggling with their own darkness. Young Duskkin who manifest shadow beasts twisted by trauma or rage are sometimes brought to observe Zara and Kobu. Eirik, in his wisdom, understood that seeing Kobu—born from such profound darkness yet transformed into something noble—gives them hope. It shows them that the shadow beast ritual is not about denying one's darkness, but about confronting it, accepting it, and choosing what to become.",
     "abilities": [
       "Exceptional Size and Power (Twice normal shadow beast scale)",
@@ -2186,7 +2186,7 @@ const loreEntries = [
     "type": "character",
     "faction": "Duskkin Council",
     "image": "images/codex-refresh/eirik-thumb.webp",
-    "summary": "At the Duskkin border, Eirik sets the price of passage: join the hunt, understand the prey and learn what strength obliges you to protect.",
+    "summary": "A Duskkin elder, council member and seasoned hunter, Eirik guides visitors through the Urban Jungle alongside Zara. His price of passage is a shared hunt: understand the creature you face, and learn what taking its strength obliges you to protect.",
     "description": "Eirik welcomes travellers with braided silver hair, blood-fed armour and a staff crowned like a tree. His calm does not make the Urban Jungle safe. It makes the rules intelligible: outsiders must join a ritual hunt, and an Iron Bloom Behemoth is no creature to approach carelessly. While Zara works her blade towards its vulnerable points, Eirik calls up earth and vines to bind its legs. Afterwards he collects its essence with solemn care, teaching that the strength taken from a creature brings a responsibility to protect the balance it belonged to. At the border, the same principle becomes diplomacy. He can command the scouts to draw back as readily as he commands the ground to hold.",
     "abilities": [
       "Ancient Master Hunter (Centuries of Experience)",
@@ -2219,7 +2219,7 @@ const loreEntries = [
     "name": "Iron Bloom Behemoth",
     "type": "creature",
     "image": "images/codex-refresh/iron-bloom-behemoth-thumb.webp",
-    "summary": "The Duskkin hunt a creature whose hide reflects magic. Its blood grants resilience, but reaching it takes teamwork, nerve and an opening beneath the armour.",
+    "summary": "The Iron Bloom Behemoth is a powerful creature of the Duskkin's Urban Jungle whose metallic hide reflects magic. Hunting it is a ritual test of teamwork and respect; its blood grants resilience, but reaching it means finding the gaps beneath its armour.",
     "description": "Before the Iron Bloom appears, the ground shakes and the vines recoil. Its metallic hide makes a direct magical attack a dangerous assumption. Zara looks for joints and the underbelly while Eirik binds its legs and the Guardians keep it from crushing the hunters.\n\nThe quarry is part of the Urban Jungle’s life, and the ritual does not end when it falls. Eirik collects its blood with solemn care: the essence carries rejuvenation and resilience. The hunters gain strength, but the lesson they are meant to take away is responsibility towards the land that gave it.",
     "abilities": [
       "Near-Impenetrable Metallic Hide",
@@ -2263,7 +2263,7 @@ const loreEntries = [
     "name": "Fate",
     "type": "concept",
     "image": "images/codex-refresh/fate-thumb.webp",
-    "summary": "When the star shattered, Fate shaped its fragments into Holy Items and gave their bearers Guardians. Her gifts arrive with purpose; living up to it falls to mortal hands.",
+    "summary": "Fate is the cosmic being who shaped the fallen star's fragments into Holy Items and gave their chosen bearers Guardians. Her gifts were meant to protect, heal and enlighten; living up to that purpose remains a difficult responsibility in mortal hands.",
     "description": "Fate steps into the aftermath of the falling star. She gathers celestial fragments, gives them divine power and entrusts the resulting Holy Items to chosen souls. Each comes with a Guardian, a protector made from the same shattered heavens.\n\nThese gifts have a purpose: protection, healing and enlightenment. They pass into a world of people capable of fear, ambition and cruelty as well as courage. Fate can place power in someone’s hands; what those hands do with it becomes the difficult part.",
     "abilities": [
       "Cosmic Intervention (Acts at pivotal moments in reality)",
@@ -2304,8 +2304,8 @@ const loreEntries = [
     "name": "Demon's Legion Bandana",
     "type": "item",
     "image": "images/codex-refresh/legion-bandanna-approved-thumb.webp",
-    "summary": "Light-grey cloth, black sigils and a fragment of fallen star. Pulling the Legion’s bandana over the face can mean the jokes are over—and the fight is personal.",
-    "description": "The bandana is light grey, marked with black symbols and woven from a fragment of the star that fell during the Holy Tragedy. Goaden carries it in a pocket until a fight asks for more of him. When he ties it on, the sigils can glow and his Presence rises.\n\nIt also belongs to the Legion’s shared language. A spare flies into a concert crowd; a worn one becomes Truth’s silent promise to hold his ground for his friends. The cloth carries power, but recognition gives it another kind of force.",
+    "summary": "The Demon's Legion's celestial bandanas are black when unworn and take on the wearer's vibe when worn. Woven from fallen-star material, they carry power and shared identity; pulling one over the face signals that a Legion member is ready for a serious fight.",
+    "description": "The bandana is black when unworn and takes on its wearer’s vibe when worn. It is marked with sigils and woven from a fragment of the star that fell during the Holy Tragedy. Goaden carries it in a pocket until a fight asks for more of him. When he ties it on, the sigils can glow and his Presence rises.\n\nIt also belongs to the Legion’s shared language. A spare flies into a concert crowd; a worn one becomes Truth’s silent promise to hold his ground for his friends. The cloth carries power, but recognition gives it another kind of force.",
     "abilities": [
       "Power Enhancement (Subtle amplification of wearer's abilities)",
       "Holy Radiation Attunement (Connected to star fragments)",

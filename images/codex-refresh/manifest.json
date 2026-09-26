@@ -24,26 +24,50 @@
       {
         "src": "images/gallery-refresh/goaden-and-kai-storm-blade.webp",
         "thumb": "images/gallery-refresh/goaden-and-kai-storm-blade-thumb.webp",
-        "alt": "Goaden, masked by his black bandana with glowing blue eyes, swings a jagged greatsword crackling with lightning while Kai coils behind him and the Sanctuary floats above London.",
-        "caption": "Goaden and Kai — the storm over London."
+        "alt": "Goaden, masked by his black bandana with glowing blue eyes, swings a jagged greatsword burning with silver flames while Kai coils behind him and the Sanctuary floats above London.",
+        "caption": "Goaden and Kai — silver flames over London."
       },
       {
         "src": "images/gallery-refresh/goaden-and-kai-lightning-orb.webp",
         "thumb": "images/gallery-refresh/goaden-and-kai-lightning-orb-thumb.webp",
-        "alt": "Goaden draws his bandana over his face and holds a sphere of lightning in one hand, a chained greatsword at his side, with Kai looming behind him and Big Ben below.",
-        "caption": "Goaden and Kai — lightning in hand."
+        "alt": "Goaden draws his bandana over his face and holds a sphere of silver flames in one hand, a chained greatsword at his side, with Kai looming behind him and Big Ben below.",
+        "caption": "Goaden and Kai — silver flames in hand."
       },
       {
         "src": "images/gallery-refresh/goaden-lightning-stance.webp",
         "thumb": "images/gallery-refresh/goaden-lightning-stance-thumb.webp",
-        "alt": "Goaden stands in his red jacket and buckled boots, bandana masking his face and eyes glowing, holding a chained greatsword charged with blue lightning among floating stone.",
-        "caption": "Goaden, storm-charged."
+        "alt": "Goaden stands in his red jacket and buckled boots, bandana masking his face and eyes glowing, holding a chained greatsword burning with silver flames among floating stone.",
+        "caption": "Goaden, wreathed in silver flames."
       },
       {
         "src": "images/gallery-refresh/goaden-bloodied-battlefield.webp",
         "thumb": "images/gallery-refresh/goaden-bloodied-battlefield-thumb.webp",
-        "alt": "A blood-spattered Goaden lunges forward with a lightning-wreathed greatsword, his red jacket torn, among floating rubble and broken crosses.",
+        "alt": "A blood-spattered Goaden lunges forward with a greatsword wreathed in silver flames, his red jacket torn, among floating rubble and broken crosses.",
         "caption": "Goaden on the battlefield."
+      },
+      {
+        "src": "images/gallery-refresh/goaden-and-kai-streamliner.webp",
+        "thumb": "images/gallery-refresh/goaden-and-kai-streamliner-thumb.webp",
+        "alt": "Goaden in a red jacket and headphones rests his chin on his hand by a Streamliner window, Kai perched behind him, with Big Ben and the Sanctuary beyond.",
+        "caption": "Goaden and Kai on the Streamliner."
+      },
+      {
+        "src": "images/gallery-refresh/goaden-and-ashai-sunset-battle.webp",
+        "thumb": "images/gallery-refresh/goaden-and-ashai-sunset-battle-thumb.webp",
+        "alt": "Goaden, masked by his bandana, grips a greatsword wreathed in silver flames with Kai in his true guardian form behind him, while a bloodied Ashai draws a starlight bow and Greah flies above them at sunset.",
+        "caption": "Goaden and Ashai — guardians at their side."
+      },
+      {
+        "src": "images/gallery-refresh/goaden-storm-greatsword-cutout.webp",
+        "thumb": "images/gallery-refresh/goaden-storm-greatsword-cutout-thumb.webp",
+        "alt": "Goaden, masked by his bandana with glowing blue eyes, grips a jagged, chained greatsword burning with silver flames as his tattered red coat flares around him.",
+        "caption": "Goaden, blade drawn."
+      },
+      {
+        "src": "images/gallery-refresh/demons-legion-gothic-stage.webp",
+        "thumb": "images/gallery-refresh/demons-legion-gothic-stage-thumb.webp",
+        "alt": "Balthazar, Anarchy, Gabriel, Goaden, Rose, Truth and the Dread Twins pose on a candlelit stage in a gothic hall beneath a banner reading ‘Music Ritual Rebellion Forever’.",
+        "caption": "The Demon’s Legion — music, ritual, rebellion."
       }
     ],
     "type": "character",
@@ -70,6 +94,24 @@
         "thumb": "images/codex-refresh/gallery-rose2-thumb.webp",
         "alt": "Rose performing.",
         "caption": "Rose performing."
+      },
+      {
+        "src": "images/gallery-refresh/rose-at-the-mic-cutout.webp",
+        "thumb": "images/gallery-refresh/rose-at-the-mic-cutout-thumb.webp",
+        "alt": "Rose sings with her bandana pushed up as a headband, green eyes narrowed, long red hair flaring and rose petals falling around her black leather jacket and chains.",
+        "caption": "Rose at the mic."
+      },
+      {
+        "src": "images/gallery-refresh/rose-masked-mic-cutout.webp",
+        "thumb": "images/gallery-refresh/rose-masked-mic-cutout-thumb.webp",
+        "alt": "Rose sings into a corded microphone behind a pink-sigil bandana, her long red hair flaring out and rose petals falling around her chained cargo trousers and platform boots.",
+        "caption": "Rose, masked for the show."
+      },
+      {
+        "src": "images/gallery-refresh/demons-legion-gothic-stage.webp",
+        "thumb": "images/gallery-refresh/demons-legion-gothic-stage-thumb.webp",
+        "alt": "Balthazar, Anarchy, Gabriel, Goaden, Rose, Truth and the Dread Twins pose on a candlelit stage in a gothic hall beneath a banner reading ‘Music Ritual Rebellion Forever’.",
+        "caption": "The Demon’s Legion — music, ritual, rebellion."
       }
     ],
     "type": "character",
@@ -96,6 +138,18 @@
         "thumb": "images/gallery-refresh/legion-hideout-interior-thumb.webp",
         "caption": "Demon's Legion — hideout interior concept.",
         "alt": "Red leather seating, candles and stained glass fill a Gothic lounge beneath Demon's Legion banners."
+      },
+      {
+        "src": "images/gallery-refresh/demons-legion-gothic-stage.webp",
+        "thumb": "images/gallery-refresh/demons-legion-gothic-stage-thumb.webp",
+        "alt": "Balthazar, Anarchy, Gabriel, Goaden, Rose, Truth and the Dread Twins pose on a candlelit stage in a gothic hall beneath a banner reading ‘Music Ritual Rebellion Forever’.",
+        "caption": "The Demon’s Legion — music, ritual, rebellion."
+      },
+      {
+        "src": "images/gallery-refresh/demons-legion-crest.webp",
+        "thumb": "images/gallery-refresh/demons-legion-crest-thumb.webp",
+        "alt": "The Demon’s Legion crest: crossed silver-and-red swords over a horned demonic emblem, framed by spikes, chains and torn crimson cloth.",
+        "caption": "The Demon’s Legion crest."
       }
     ],
     "type": "faction",
@@ -196,6 +250,24 @@
         "thumb": "images/codex-refresh/ashai-and-greah-thumb.webp",
         "alt": "Ashai draws a luminous celestial bow while the small white-haired, halo-crowned Greah flies beside her above London.",
         "caption": "Ashai and Greah above London."
+      },
+      {
+        "src": "images/gallery-refresh/ashai-rooftop-bow.webp",
+        "thumb": "images/gallery-refresh/ashai-rooftop-bow-thumb.webp",
+        "alt": "Ashai crouches on a rooftop ledge drawing a glowing blue bow while Greah hovers beside her, London and the Sanctuary at sunset beyond.",
+        "caption": "Ashai and Greah on the rooftop."
+      },
+      {
+        "src": "images/gallery-refresh/goaden-and-ashai-sunset-battle.webp",
+        "thumb": "images/gallery-refresh/goaden-and-ashai-sunset-battle-thumb.webp",
+        "alt": "Goaden, masked by his bandana, grips a greatsword wreathed in silver flames with Kai in his true guardian form behind him, while a bloodied Ashai draws a starlight bow and Greah flies above them at sunset.",
+        "caption": "Goaden and Ashai — guardians at their side."
+      },
+      {
+        "src": "images/gallery-refresh/ashai-and-greah-starlight-blade.webp",
+        "thumb": "images/gallery-refresh/ashai-and-greah-starlight-blade-thumb.webp",
+        "alt": "A blood-spattered Ashai, long brown curls flying and eyes glowing blue, grips a star-hilted blade of light while the white-haired, halo-crowned Greah flies above her over stormy London.",
+        "caption": "Ashai and Greah — starlight in hand."
       }
     ],
     "type": "character",
@@ -212,10 +284,22 @@
         "caption": "Truth Hughes."
       },
       {
-        "src": "images/gallery-refresh/truth-golden-sigils.webp",
-        "thumb": "images/gallery-refresh/truth-golden-sigils-thumb.webp",
-        "caption": "Truth — golden sigils.",
-        "alt": "Truth stands bare-chested in a black cap and dark trousers, his torso covered in golden tattoos."
+        "src": "images/gallery-refresh/truth-golden-aura-cutout.webp",
+        "thumb": "images/gallery-refresh/truth-golden-aura-cutout-thumb.webp",
+        "alt": "Truth stands bare-chested in a black cap and cargo trousers, gold light spiralling around his tattooed body, a compass pendant on his chest and his bandana in one hand.",
+        "caption": "Truth, lit in gold."
+      },
+      {
+        "src": "images/gallery-refresh/truth-masked-golden-aura-cutout.webp",
+        "thumb": "images/gallery-refresh/truth-masked-golden-aura-cutout-thumb.webp",
+        "alt": "Truth, masked by a gold-starred bandana, his eyes glowing beneath a black cap, stands bare-chested among spirals of golden light with his thumbs hooked in his pockets.",
+        "caption": "Truth, masked in gold."
+      },
+      {
+        "src": "images/gallery-refresh/demons-legion-gothic-stage.webp",
+        "thumb": "images/gallery-refresh/demons-legion-gothic-stage-thumb.webp",
+        "alt": "Balthazar, Anarchy, Gabriel, Goaden, Rose, Truth and the Dread Twins pose on a candlelit stage in a gothic hall beneath a banner reading ‘Music Ritual Rebellion Forever’.",
+        "caption": "The Demon’s Legion — music, ritual, rebellion."
       }
     ],
     "type": "character",
@@ -254,6 +338,18 @@
         "thumb": "images/codex-refresh/ashai-and-greah-thumb.webp",
         "alt": "Ashai draws a luminous celestial bow while the small white-haired, halo-crowned Greah flies beside her above London.",
         "caption": "Ashai and Greah above London."
+      },
+      {
+        "src": "images/gallery-refresh/ashai-and-greah-starlight-blade.webp",
+        "thumb": "images/gallery-refresh/ashai-and-greah-starlight-blade-thumb.webp",
+        "alt": "A blood-spattered Ashai, long brown curls flying and eyes glowing blue, grips a star-hilted blade of light while the white-haired, halo-crowned Greah flies above her over stormy London.",
+        "caption": "Ashai and Greah — starlight in hand."
+      },
+      {
+        "src": "images/gallery-refresh/goaden-and-ashai-sunset-battle-portrait.webp",
+        "thumb": "images/gallery-refresh/goaden-and-ashai-sunset-battle-portrait-thumb.webp",
+        "alt": "Ashai shouts as she draws a starlight bow with Greah reaching out above her, while Goaden grips a greatsword wreathed in silver flames and Kai looms behind him, the sunset-lit Sanctuary above them.",
+        "caption": "Goaden and Ashai — into the fight."
       }
     ],
     "type": "creature",
@@ -284,20 +380,26 @@
       {
         "src": "images/gallery-refresh/kai-true-guardian-form.webp",
         "thumb": "images/gallery-refresh/kai-true-guardian-form-thumb.webp",
-        "alt": "Kai in his true guardian form: a vast dragon of black, blade-edged scales with blue lightning running through his wings and tail, and glowing blue eyes.",
+        "alt": "Kai in his true guardian form: a vast dragon of black, blade-edged scales with silver flames trailing from his wings and tail, and glowing blue eyes.",
         "caption": "Kai in his true guardian form."
       },
       {
         "src": "images/gallery-refresh/goaden-and-kai-storm-blade.webp",
         "thumb": "images/gallery-refresh/goaden-and-kai-storm-blade-thumb.webp",
-        "alt": "Goaden, masked by his black bandana with glowing blue eyes, swings a jagged greatsword crackling with lightning while Kai coils behind him and the Sanctuary floats above London.",
-        "caption": "Goaden and Kai — the storm over London."
+        "alt": "Goaden, masked by his black bandana with glowing blue eyes, swings a jagged greatsword burning with silver flames while Kai coils behind him and the Sanctuary floats above London.",
+        "caption": "Goaden and Kai — silver flames over London."
       },
       {
         "src": "images/gallery-refresh/goaden-and-kai-lightning-orb.webp",
         "thumb": "images/gallery-refresh/goaden-and-kai-lightning-orb-thumb.webp",
-        "alt": "Goaden draws his bandana over his face and holds a sphere of lightning in one hand, a chained greatsword at his side, with Kai looming behind him and Big Ben below.",
-        "caption": "Goaden and Kai — lightning in hand."
+        "alt": "Goaden draws his bandana over his face and holds a sphere of silver flames in one hand, a chained greatsword at his side, with Kai looming behind him and Big Ben below.",
+        "caption": "Goaden and Kai — silver flames in hand."
+      },
+      {
+        "src": "images/gallery-refresh/goaden-and-ashai-sunset-battle-portrait.webp",
+        "thumb": "images/gallery-refresh/goaden-and-ashai-sunset-battle-portrait-thumb.webp",
+        "alt": "Ashai shouts as she draws a starlight bow with Greah reaching out above her, while Goaden grips a greatsword wreathed in silver flames and Kai looms behind him, the sunset-lit Sanctuary above them.",
+        "caption": "Goaden and Ashai — into the fight."
       }
     ],
     "type": "creature",
@@ -1038,6 +1140,18 @@
         "thumb": "images/asset-injection-20260916/legion-hideout-approved-thumb.webp",
         "caption": "Rose, Truth Hughes and Gabriel at the hideout.",
         "alt": "Rose, Truth Hughes and Gabriel sit together on a crimson sofa in their candlelit Gothic studio, with guitars and stained glass behind them."
+      },
+      {
+        "src": "images/gallery-refresh/gabriel-blood-wings-halo.webp",
+        "thumb": "images/gallery-refresh/gabriel-blood-wings-halo-thumb.webp",
+        "alt": "Gabriel hovers with feathered crimson wings spread wide, a red halo above his silver hair and a sigil bandana over his face, reaching out in black leather and a red hoodie.",
+        "caption": "Gabriel, wings spread."
+      },
+      {
+        "src": "images/gallery-refresh/demons-legion-gothic-stage.webp",
+        "thumb": "images/gallery-refresh/demons-legion-gothic-stage-thumb.webp",
+        "alt": "Balthazar, Anarchy, Gabriel, Goaden, Rose, Truth and the Dread Twins pose on a candlelit stage in a gothic hall beneath a banner reading ‘Music Ritual Rebellion Forever’.",
+        "caption": "The Demon’s Legion — music, ritual, rebellion."
       }
     ],
     "type": "character",
@@ -1184,6 +1298,24 @@
         "thumb": "images/codex-refresh/gallery-dread-twins4-thumb.webp",
         "alt": "The twins in action.",
         "caption": "The twins in action."
+      },
+      {
+        "src": "images/gallery-refresh/dread-twins-orange-hoodie-cutout.webp",
+        "thumb": "images/gallery-refresh/dread-twins-orange-hoodie-cutout-thumb.webp",
+        "alt": "Damien flashes a hand sign in an orange hoodie and black cargo trousers, headphones round his neck and a crown-and-star bandana over his face.",
+        "caption": "Damien — in orange."
+      },
+      {
+        "src": "images/gallery-refresh/dread-twins-blue-hoodie-cutout.webp",
+        "thumb": "images/gallery-refresh/dread-twins-blue-hoodie-cutout-thumb.webp",
+        "alt": "Marley, hood up in royal blue, raises two fingers to his temple, headphones glowing at his neck and a strap on his cargo trousers reading ‘No stars in my crown’.",
+        "caption": "Marley — in blue."
+      },
+      {
+        "src": "images/gallery-refresh/demons-legion-gothic-stage.webp",
+        "thumb": "images/gallery-refresh/demons-legion-gothic-stage-thumb.webp",
+        "alt": "Balthazar, Anarchy, Gabriel, Goaden, Rose, Truth and the Dread Twins pose on a candlelit stage in a gothic hall beneath a banner reading ‘Music Ritual Rebellion Forever’.",
+        "caption": "The Demon’s Legion — music, ritual, rebellion."
       }
     ],
     "type": "character",
@@ -1210,6 +1342,24 @@
         "thumb": "images/gallery-refresh/anarchy-basketball-thumb.webp",
         "caption": "Anarchy — above the court.",
         "alt": "Anarchy rises towards a basketball hoop beneath storm clouds and a green spectral presence."
+      },
+      {
+        "src": "images/gallery-refresh/anarchy-green-flame-dribble-cutout.webp",
+        "thumb": "images/gallery-refresh/anarchy-green-flame-dribble-cutout-thumb.webp",
+        "alt": "Anarchy drives low with a basketball in a green jersey, headband and anarchy-sign bandana, green flame wrapping his arms and legs.",
+        "caption": "Anarchy on the drive."
+      },
+      {
+        "src": "images/gallery-refresh/balthazar-green-smoke-cutout.webp",
+        "thumb": "images/gallery-refresh/balthazar-green-smoke-cutout-thumb.webp",
+        "alt": "Horned Balthazar, in a long black brocade coat and waistcoat, draws on a cigarette with one hand in his pocket as emerald smoke curls around him.",
+        "caption": "Balthazar in emerald smoke."
+      },
+      {
+        "src": "images/gallery-refresh/demons-legion-gothic-stage.webp",
+        "thumb": "images/gallery-refresh/demons-legion-gothic-stage-thumb.webp",
+        "alt": "Balthazar, Anarchy, Gabriel, Goaden, Rose, Truth and the Dread Twins pose on a candlelit stage in a gothic hall beneath a banner reading ‘Music Ritual Rebellion Forever’.",
+        "caption": "The Demon’s Legion — music, ritual, rebellion."
       }
     ],
     "type": "character",
