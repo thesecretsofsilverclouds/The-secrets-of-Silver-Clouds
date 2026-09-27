@@ -337,3 +337,160 @@ test('controlled smoke advancement refuses a rewritten event prefix and remains 
   assert.equal(await target.control.isPaused(), true);
   assert.equal(target.kv.get(MAINTENANCE_IMPORT_KEY).resumeExpected, undefined);
 });
+
+async function currentResumeInput(h) {
+  const current = (await h.call('/__ops/export/current-storage')).body;
+  const schema = (await h.call('/__ops/export/schema')).body;
+  const tableFingerprints = {};
+  for (const table of schema.tables) {
+    const page = (await h.call(`/__ops/export/table?name=${encodeURIComponent(table.name)}&limit=128`)).body;
+    assert.equal(page.done, true);
+    tableFingerprints[table.name] = { rowCount: page.rows.length,
+      sha256: digest(page.rows.map(row => JSON.stringify(row) + '\n').join('')) };
+  }
+  return { smokeValidated: true, expected: current.identity, tableFingerprints, recoveryBookmark: current.bookmark };
+}
+
+async function pausedContinuation(t) {
+  const source = setup(t, { existing: true });
+  const h = setup(t, { env: { WORLD_OPS_ALLOW_RESUME: 'true' } });
+  const copy = await exportCopy(source);
+  assert.equal((await importCopy(h, copy)).status, 200);
+  assert.equal((await h.call('/__ops/resume', { smokeValidated: true, expected: EXPECTED,
+    tableFingerprints: copy.tableFingerprints })).status, 200);
+  h.db.prepare('UPDATE world_state SET resolved_through=?').run(EXPECTED.resolvedThrough + 86400000);
+  h.db.prepare('INSERT INTO events(seq,kind,payload) VALUES (?,?,?)').run(30, 'LIVE_EVENT', null);
+  assert.equal((await h.call('/__ops/pause', {})).status, 200);
+  h.storage.getCurrentBookmark = async () => 'fresh-paused-continuation-bookmark';
+  return h;
+}
+
+test('a previously running world resumes from a fresh verified backup without replacing original receipts or SQL', async t => {
+  const h = await pausedContinuation(t);
+  const importedBefore = structuredClone(h.kv.get(MAINTENANCE_IMPORT_KEY));
+  const controlBefore = structuredClone(h.kv.get(MAINTENANCE_CONTROL_KEY));
+  const sqlBefore = h.db.prepare('SELECT * FROM world_state').all();
+  const eventsBefore = h.db.prepare('SELECT * FROM events').all();
+  const input = await currentResumeInput(h);
+  const result = await h.call('/__ops/resume', input);
+  assert.equal(result.status, 200, JSON.stringify(result.body));
+  assert.equal(result.body.paused, false);
+  assert.deepEqual(result.body.identity, input.expected);
+  assert.deepEqual(h.db.prepare('SELECT * FROM world_state').all(), sqlBefore);
+  assert.deepEqual(h.db.prepare('SELECT * FROM events').all(), eventsBefore);
+  assert.deepEqual(h.kv.get(MAINTENANCE_IMPORT_KEY), importedBefore);
+  const { lastResume, paused, ...preserved } = h.kv.get(MAINTENANCE_CONTROL_KEY);
+  const { lastResume: oldResume, paused: oldPaused, ...oldPreserved } = controlBefore;
+  assert.deepEqual(preserved, oldPreserved, 'original bookmark, KV and recovery identity remain intact');
+  assert.deepEqual(lastResume, { expected: input.expected, tableFingerprints: input.tableFingerprints,
+    recoveryBookmark: input.recoveryBookmark });
+});
+
+test('recovery of a legacy running world uses the preserved import prefix without needing a newer control receipt', async t => {
+  const h = await pausedContinuation(t);
+  delete h.kv.get(MAINTENANCE_CONTROL_KEY).lastResume;
+  const input = await currentResumeInput(h);
+  assert.equal((await h.call('/__ops/resume', input)).status, 200);
+});
+
+test('continuation resume rejects incomplete fingerprints, stale backup bookmarks and mismatched identity without writes', async t => {
+  const h = await pausedContinuation(t);
+  const input = await currentResumeInput(h), writesBefore = structuredClone(h.writes);
+  const reject = async (body, pattern, status = 409) => {
+    const result = await h.call('/__ops/resume', body);
+    assert.equal(result.status, status, JSON.stringify(result.body));
+    assert.match(result.body.error, pattern);
+    assert.deepEqual(h.writes, writesBefore);
+    assert.equal(await h.control.isPaused(), true);
+  };
+  const withoutBookmark = structuredClone(input); delete withoutBookmark.recoveryBookmark;
+  await reject(withoutBookmark, /current exported recovery bookmark/);
+  await reject({ ...input, recoveryBookmark: 'outdated' }, /bookmark changed/);
+  await reject({ ...input, expected: { ...input.expected, resolvedThrough: input.expected.resolvedThrough - 1 } }, /identity mismatch/);
+  const missingTable = structuredClone(input); delete missingTable.tableFingerprints.audit;
+  await reject(missingTable, /Every current table/);
+  const extraTable = structuredClone(input); extraTable.tableFingerprints.unverified = input.tableFingerprints.events;
+  await reject(extraTable, /Every current table/);
+  const staleHash = structuredClone(input); staleHash.tableFingerprints.events.sha256 = '0'.repeat(64);
+  await reject(staleHash, /data changed in events/);
+  const invalidCount = structuredClone(input); invalidCount.tableFingerprints.events.rowCount = -1;
+  await reject(invalidCount, /Invalid current fingerprint/, 400);
+  await reject({ ...input, smokeValidated: false }, /explicit smoke validation/);
+});
+
+test('fresh current fingerprints cannot authorize changed continuity, schema or preserved event history', async t => {
+  for (const [name, mutate, pattern] of [
+    ['seed', h => h.db.prepare('UPDATE world_state SET seed=?').run('other-seed'), /preserve continuity/],
+    ['rules', h => h.db.prepare('UPDATE world_state SET rules_version=?').run('other-rules'), /preserve continuity/],
+    ['rewind', h => h.db.prepare('UPDATE world_state SET resolved_through=?').run(EXPECTED.resolvedThrough - 1), /cannot move backwards/],
+    ['schema', h => h.db.exec('CREATE TABLE unexpected(value TEXT)'), /schema differs/],
+    ['rewritten history', h => h.db.prepare('UPDATE events SET kind=? WHERE seq=7').run('TAMPERED'), /preserved event history/],
+    ['deleted history', h => h.db.prepare('DELETE FROM events WHERE seq=7').run(), /preserved event history/],
+  ]) {
+    await t.test(name, async t => {
+      const h = await pausedContinuation(t); mutate(h);
+      const input = await currentResumeInput(h), writesBefore = structuredClone(h.writes);
+      const result = await h.call('/__ops/resume', input);
+      assert.equal(result.status, 409, JSON.stringify(result.body));
+      assert.match(result.body.error, pattern);
+      assert.deepEqual(h.writes, writesBefore);
+      assert.equal(await h.control.isPaused(), true);
+    });
+  }
+});
+
+test('successive recovery protects the event prefix verified by the preceding resume', async t => {
+  const h = await pausedContinuation(t);
+  assert.equal((await h.call('/__ops/resume', await currentResumeInput(h))).status, 200);
+  h.db.prepare('UPDATE world_state SET resolved_through=resolved_through+60000').run();
+  h.db.prepare('UPDATE events SET kind=? WHERE seq=30').run('CHANGED_AFTER_RECOVERY');
+  await h.call('/__ops/pause', {});
+  const input = await currentResumeInput(h), writesBefore = structuredClone(h.writes);
+  const result = await h.call('/__ops/resume', input);
+  assert.equal(result.status, 409);
+  assert.match(result.body.error, /preserved event history/);
+  assert.deepEqual(h.writes, writesBefore);
+});
+
+test('an immediate repeat resume retains the last verified fingerprints at the same watermark', async t => {
+  const h = await pausedContinuation(t);
+  assert.equal((await h.call('/__ops/resume', await currentResumeInput(h))).status, 200);
+  await h.call('/__ops/pause', {});
+  h.db.prepare('INSERT INTO audit(seq,event_seq) VALUES (?,?)').run(99, 30);
+  const changed = await currentResumeInput(h), writesBefore = structuredClone(h.writes);
+  const rejected = await h.call('/__ops/resume', changed);
+  assert.equal(rejected.status, 409);
+  assert.match(rejected.body.error, /fingerprint confirmation missing for audit/);
+  assert.deepEqual(h.writes, writesBefore, 'fresh caller hashes cannot replace a same-watermark checkpoint');
+  h.db.prepare('DELETE FROM audit WHERE seq=99').run();
+  assert.equal((await h.call('/__ops/resume', await currentResumeInput(h))).status, 200);
+});
+
+test('controller restart preserves the latest continuation event-prefix checkpoint', async t => {
+  const h = await pausedContinuation(t);
+  assert.equal((await h.call('/__ops/resume', await currentResumeInput(h))).status, 200);
+  h.db.prepare('UPDATE world_state SET resolved_through=resolved_through+60000').run();
+  h.db.prepare('UPDATE events SET kind=? WHERE seq=30').run('REWRITTEN_LIVE_EVENT');
+  await h.call('/__ops/pause', {});
+  const input = await currentResumeInput(h), writesBefore = structuredClone(h.writes);
+  const restarted = createMaintenanceController(h.ctx, h.configured);
+  const result = await restarted.handle(h.request('/__ops/resume', input));
+  assert.equal(result.status, 409);
+  assert.match((await result.json()).error, /preserved event history/);
+  assert.deepEqual(h.writes, writesBefore);
+  assert.equal(await restarted.isPaused(), true);
+});
+
+test('continuation resume requires a paused drained writer and PITR support', async t => {
+  const h = await pausedContinuation(t);
+  const input = await currentResumeInput(h), writesBefore = structuredClone(h.writes);
+  h.kv.get(MAINTENANCE_CONTROL_KEY).paused = false;
+  assert.equal((await h.call('/__ops/resume', input)).status, 409);
+  h.kv.get(MAINTENANCE_CONTROL_KEY).paused = true;
+  h.storage.getAlarm = async () => EXPECTED.resolvedThrough + 60000;
+  assert.equal((await h.call('/__ops/resume', input)).status, 409);
+  h.storage.getAlarm = async () => null;
+  delete h.storage.getCurrentBookmark;
+  assert.equal((await h.call('/__ops/resume', input)).status, 503);
+  assert.deepEqual(h.writes, writesBefore);
+});

@@ -316,16 +316,59 @@ export function createMaintenanceController(ctx, env = {}) {
           demand(env.WORLD_OPS_ALLOW_RESUME === 'true', 'Resume is disabled for this deployment');
           const input = await body(request), imported = await storage.get(MAINTENANCE_IMPORT_KEY);
           demand(input.smokeValidated === true && imported?.status === 'verified', 'A verified import and explicit smoke validation are required');
-          demand(sameIdentity(identity(storage), imported.resumeExpected ?? imported.expected) && sameIdentity(identity(storage), input.expected), 'Resume identity mismatch');
-          for (const [name, expected] of Object.entries(imported.resumeFingerprints ?? imported.tableFingerprints)) {
+          await requirePause();
+          demand(await storage.getAlarm() === null, 'Resume requires a drained writer with no alarm');
+          const control = await readControl(); demand(control, 'Missing recovery checkpoint');
+          const actualIdentity = identity(storage);
+          demand(validExpected(input.expected) && sameIdentity(actualIdentity, input.expected), 'Resume identity mismatch');
+          const previous = control.lastResume?.expected ?? imported.resumeExpected ?? imported.expected;
+          const previousFingerprints = control.lastResume?.tableFingerprints ?? imported.resumeFingerprints ?? imported.tableFingerprints;
+          const continuing = !sameIdentity(actualIdentity, previous);
+          let fingerprints = previousFingerprints, recoveryBookmark;
+          if (continuing) {
+            // The import receipt describes the release cutover, not the moving
+            // watermark of a world that subsequently ran. A later pause needs
+            // a fresh, externally verified backup; the original receipt stays
+            // immutable and continues to protect the preserved event prefix.
+            demand(actualIdentity.seed === previous.seed && actualIdentity.rulesVersion === previous.rulesVersion
+              && actualIdentity.resolvedThrough > previous.resolvedThrough, 'Resume must preserve continuity and cannot move backwards');
+            demand(typeof input.recoveryBookmark === 'string' && input.recoveryBookmark.length > 0,
+              'A current exported recovery bookmark is required');
+            demand(typeof storage.getCurrentBookmark === 'function', 'PITR bookmark API is required before resume', 503);
+            const schema = schemaEntries(storage);
+            const canonicalSchema = entries => JSON.stringify(entries.map(({ type, name, tbl_name, sql }) => ({ type, name, tbl_name, sql }))
+              .sort((a, b) => a.name.localeCompare(b.name)));
+            demand(canonicalSchema(schema) === canonicalSchema(imported.schema), 'Resume schema differs from the verified import');
+            const names = schema.filter(entry => entry.type === 'table').map(entry => entry.name).sort();
+            demand(input.tableFingerprints && JSON.stringify(Object.keys(input.tableFingerprints).sort()) === JSON.stringify(names),
+              'Every current table requires an external fingerprint');
+            for (const name of names) {
+              const expected = input.tableFingerprints[name];
+              demand(Number.isSafeInteger(expected?.rowCount) && expected.rowCount >= 0 && /^[a-f0-9]{64}$/.test(expected.sha256),
+                `Invalid current fingerprint for ${name}`, 400);
+            }
+            for (const preserved of [imported.tableFingerprints.events, previousFingerprints.events]) {
+              demand(preserved, 'A preserved event history fingerprint is required');
+              const prefix = fingerprintTable(storage, 'events', preserved.rowCount);
+              demand(prefix.sha256 === preserved.sha256 && prefix.rowCount === preserved.rowCount,
+                'Resume would rewrite preserved event history');
+            }
+            fingerprints = input.tableFingerprints;
+            recoveryBookmark = await storage.getCurrentBookmark();
+            demand(recoveryBookmark === input.recoveryBookmark, 'Recovery bookmark changed since the verified export');
+          }
+          for (const [name, expected] of Object.entries(fingerprints)) {
             demand(input.tableFingerprints?.[name]?.sha256 === expected.sha256
               && input.tableFingerprints[name].rowCount === expected.rowCount, `External fingerprint confirmation missing for ${name}`);
             const actual = fingerprintTable(storage, name);
             demand(actual.sha256 === expected.sha256 && actual.rowCount === expected.rowCount, `Post-verification data changed in ${name}`);
           }
-          const control = await readControl(); demand(control, 'Missing recovery checkpoint');
-          await storage.put(MAINTENANCE_CONTROL_KEY, { ...control, paused: false });
-          return response({ paused: false, identity: identity(storage) });
+          await requirePause();
+          demand(await storage.getAlarm() === null && sameIdentity(identity(storage), actualIdentity), 'World changed during resume verification');
+          await storage.put(MAINTENANCE_CONTROL_KEY, { ...control, paused: false,
+            lastResume: { expected: actualIdentity, tableFingerprints: fingerprints,
+              ...(recoveryBookmark ? { recoveryBookmark } : {}) } });
+          return response({ paused: false, identity: actualIdentity });
         }
         return null;
       } catch (error) { return response({ error: error.message }, error.status ?? 500); }
