@@ -1072,7 +1072,7 @@ const loreEntries = [
     "name": "Flicker",
     "type": "concept",
     "image": "images/codex-refresh/flicker-thumb.webp",
-    "summary": "Flicker is short-range teleportation, a technique that demands precise control of where its user will reappear. Nameless makes it look effortless in a fight; Goaden's attempts reveal both the danger of getting it wrong and the magical barriers it cannot cross.",
+    "summary": "Flicker is short-range teleportation: the user vanishes from one spot and reappears at another in an instant, one body and never a copy. Nameless makes it look effortless in a fight; Goaden's attempts reveal both the danger of getting it wrong and the magical barriers it cannot cross.",
     "description": "An opponent who can Flicker is a problem that refuses to stay in front of you. Nameless uses the technique so readily that Goaden struggles to land a decisive blow, while Kai recognises that apparent ease as a warning of serious power.\n\nTrying it yourself is another matter. Goaden worries that imperfect control could send him somewhere disastrous, and later discovers that even a successful Flicker cannot carry him through every magical boundary. It offers a way across a battlefield, not a promise that every prison has an exit.",
     "relatedEntries": [
       "nameless",
