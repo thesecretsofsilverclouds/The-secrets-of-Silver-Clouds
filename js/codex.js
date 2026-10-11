@@ -1250,6 +1250,27 @@ const loreEntries = [
     ]
   },
   {
+    "id": "sugarsaint",
+    "name": "SUGARSAINT — Mina & Nari",
+    "type": "character",
+    "image": "images/sugarsaint/sugarsaint-thumb.webp",
+    "summary": "Raised singing gospel in The Church, Mina and Nari are loving and generous to their fans. On the battlefield, the sisters behind SUGARSAINT are absolute menaces. Their harmony lets them heal each other as they fight, and their sweetest smiles can be the start of something cruel.",
+    "description": "Inside the floating Sanctuary in the Sky, singing competitions are equal parts performance and magical combat. You can die in one. Like the Dread Twins, Mina and Nari become stronger the closer they stand. When they sing together, their voices reinforce their bond, allowing each sister to heal the other in real time. Broken bones, deep wounds, damage that should end a fight: as long as they stay close and keep singing, one sister can pull the other back together. They weren't always this ruthless. Early in their career, Mina had the chance to finish a fight and chose to hold back. Her opponent used that hesitation to attack Nari instead, nearly killing her while the crowd kept cheering because they thought it was part of the performance. Mina had to fight her way back to her sister before their bond could save her. Neither of them has held back since. Over time, the twins learned that mockery worked. Humiliation made opponents angry. Angry opponents rushed; they stopped listening, lost their timing and made mistakes. At first, the smiles, the taunts and the sugary little insults were strategy. Then Mina and Nari started enjoying it. Their kindness to their fans is real. So is their cruelty in combat. Rose kept finishing second behind them, so the twins turned it into a chorus. This time, Rose brought serious backup.",
+    "abilities": [
+      "Proximity Power Amplification",
+      "Harmony-Reinforced Twin Bond",
+      "Mutual Healing (While close and singing)",
+      "Magical Singing Combat",
+      "Tactical Taunts (Disrupt opponent timing)"
+    ],
+    "relatedEntries": [
+      "rose",
+      "dread-twins",
+      "the-church",
+      "sanctuary-in-the-sky"
+    ]
+  },
+  {
     "id": "anarchy-balthazar",
     "name": "Anarchy & Balthazar",
     "type": "character",
