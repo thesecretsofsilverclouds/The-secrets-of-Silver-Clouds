@@ -21,6 +21,12 @@
     motes.append(mote);
   }
   layer.append(motes);document.body.prepend(layer);document.body.classList.add('ss-nightlife-page');
+  // These washes sit above each card's solid background, below all its content.
+  // Artwork keeps its own opaque backing, so no beam is painted over a character.
+  const interiorLights=[host,document.querySelector('.ss-after-hours')].filter(Boolean).map(surface=>{
+    const wash=document.createElement('div');wash.className='ss-nightlife-interior-light';
+    wash.setAttribute('aria-hidden','true');surface.prepend(wash);return wash;
+  });
   const controls=[];
   for(const target of [document.querySelector('.ss-story-actions'),host.querySelector('.ss-bar-footer>div')].filter(Boolean)){
     const button=document.createElement('button');button.type='button';button.className='ss-lighting-control';
@@ -46,6 +52,7 @@
     if(key===themeKey)return;themeKey=key;
     beams.forEach((beam,index)=>{beam.style.color=values[index];});
     haze.style.color=values[2];
+    for(const wash of interiorLights){wash.style.setProperty('--ss-wash-first',values[0]);wash.style.setProperty('--ss-wash-second',values[1]);}
   }
   function loadData(){
     if(data)return Promise.resolve(data);
@@ -73,9 +80,11 @@
   function setEnergy(value){
     value=Math.round(value*1000)/1000;
     if(value===lastEnergy)return;lastEnergy=value;layer.style.setProperty('--ss-nightlife-energy',String(value));
+    for(const wash of interiorLights)wash.style.setProperty('--ss-nightlife-energy',String(value));
   }
   function settle(){
     cancelAnimationFrame(frame);frame=0;active=false;layer.dataset.active='false';
+    for(const wash of interiorLights){wash.dataset.active='false';wash.style.setProperty('--ss-wash-travel','45%');}
     setEnergy(0);lastPaintTime=-1;
     beams.forEach(beam=>{beam.style.transform='';});
     if(performance.now()>=mixUntil)paintPalette(base);
@@ -91,10 +100,11 @@
       if(Math.abs(time-lastPaintTime)>.06){
         lastPaintTime=time;
         beams.forEach((beam,index)=>{
-          const angle=Math.sin(time/(19+index*6)+index*2.1)*(14-index*2);
-          const shift=Math.sin(time/(31+index*7)+index)*5;
+          const angle=Math.sin(time/(11+index*4)+index*2.1)*(23-index*3);
+          const shift=Math.sin(time/(22+index*5)+index)*12;
           beam.style.transform=`translateX(${shift.toFixed(2)}vw) rotate(${angle.toFixed(2)}deg)`;
         });
+        for(const wash of interiorLights)wash.style.setProperty('--ss-wash-travel',`${(90+Math.sin(time/11)*95).toFixed(2)}%`);
       }
       if(now>=mixUntil)paintPalette(palette());
     }
@@ -102,6 +112,7 @@
   }
   function reconcile(){
     layer.hidden=!enabled;layer.dataset.reduced=String(!motionAllowed());
+    for(const wash of interiorLights){wash.hidden=!enabled;wash.dataset.reduced=String(!motionAllowed());}
     for(const button of controls){
       button.textContent=`Lighting ${enabled?'on':'off'}`;
       button.setAttribute('aria-pressed',String(enabled));
@@ -114,6 +125,7 @@
     }
     if(!available()||!motionAllowed()||!source()){settle();return;}
     active=true;layer.dataset.active='true';loadData();
+    for(const wash of interiorLights)wash.dataset.active='true';
     if(!frame)frame=requestAnimationFrame(tick);
   }
   function mixLight(event){

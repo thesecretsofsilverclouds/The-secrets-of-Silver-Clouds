@@ -2,12 +2,20 @@
 body.ss-nightlife-page { isolation:isolate; }
 .ss-nightlife-layer { --ss-nightlife-energy:0; position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;user-select:none;contain:strict; }
 .ss-nightlife-layer[hidden] { display:none!important; }
-.ss-nightlife-beam { position:absolute;top:-30vh;width:72vw;height:140vh;display:block;transform-origin:50% 0;background:linear-gradient(90deg,transparent 12%,currentColor 48%,transparent 85%);mask-image:linear-gradient(180deg,#0002,#000 24%,#0008 58%,transparent 90%);opacity:calc(.035 + var(--ss-nightlife-energy)*.09);transition:color 4s ease,opacity 1.8s ease,transform 2.5s linear; }
+.ss-nightlife-beam { position:absolute;top:-24vh;width:64vw;height:150vh;display:block;transform-origin:50% 0;background:linear-gradient(90deg,transparent 24%,currentColor 48%,transparent 76%);mask-image:linear-gradient(180deg,#0006,#000 24%,#000b 65%,transparent 94%);opacity:calc(.085 + var(--ss-nightlife-energy)*.25);transition:color 4s ease,opacity 1.8s ease,transform 1.2s linear; }
 .ss-nightlife-beam-1 { left:-32vw;rotate:24deg; }
 .ss-nightlife-beam-2 { right:-30vw;rotate:-28deg; }
-.ss-nightlife-beam-3 { left:27vw;top:-52vh;width:52vw;rotate:7deg;opacity:calc(.018 + var(--ss-nightlife-energy)*.045); }
-.ss-nightlife-haze { position:absolute;width:100vw;height:95vh;left:5vw;bottom:-50vh;background:radial-gradient(ellipse,currentColor,transparent 66%);opacity:calc(.025 + var(--ss-nightlife-energy)*.045);transition:color 4s ease,opacity 2.5s ease; }
-.ss-nightlife-mixing .ss-nightlife-beam { opacity:calc(.055 + var(--ss-nightlife-energy)*.09); }
+.ss-nightlife-beam-3 { left:27vw;top:-40vh;width:52vw;rotate:7deg;opacity:calc(.045 + var(--ss-nightlife-energy)*.13); }
+.ss-nightlife-haze { position:absolute;width:100vw;height:115vh;left:5vw;bottom:-48vh;background:radial-gradient(ellipse,currentColor,transparent 66%);opacity:calc(.045 + var(--ss-nightlife-energy)*.09);transition:color 4s ease,opacity 2.5s ease; }
+.ss-nightlife-mixing .ss-nightlife-beam { opacity:calc(.11 + var(--ss-nightlife-energy)*.25); }
+.ss-nightlife-page .ss-widget { position:relative; }
+.ss-after-hours { isolation:isolate; }
+.ss-nightlife-interior-light { --ss-nightlife-energy:0;--ss-wash-travel:45%;--ss-wash-first:#9660df;--ss-wash-second:#cb669f;position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none;user-select:none;border-radius:inherit;contain:strict; }
+.ss-nightlife-interior-light[hidden] { display:none!important; }
+.ss-nightlife-interior-light::before,.ss-nightlife-interior-light::after { content:'';position:absolute;left:-58%;top:-32%;width:82%;height:170%;transform:translateX(var(--ss-wash-travel)) rotate(-23deg);color:var(--ss-wash-first);background:linear-gradient(90deg,transparent 34%,currentColor 50%,transparent 66%);opacity:min(.26,calc(.13 + var(--ss-nightlife-energy)*.3));transition:transform 1.2s linear,opacity 2s ease,color 4s ease; }
+.ss-nightlife-interior-light::after { left:8%;top:-55%;width:73%;transform:translateX(calc(var(--ss-wash-travel)*-.45)) rotate(24deg);color:var(--ss-wash-second);background:linear-gradient(90deg,transparent 30%,currentColor 50%,transparent 70%);opacity:min(.1,calc(.045 + var(--ss-nightlife-energy)*.1)); }
+.ss-nightlife-interior-light[data-active='false']::before,.ss-nightlife-interior-light[data-active='false']::after { opacity:.018; }
+.ss-nightlife-interior-light[data-reduced='true']::before,.ss-nightlife-interior-light[data-reduced='true']::after { transition:none!important; }
 .ss-nightlife-motes { position:absolute;inset:0;opacity:0;transition:opacity 3s ease; }
 .ss-nightlife-layer[data-active='true'] .ss-nightlife-motes { opacity:1; }
 .ss-nightlife-motes i { position:absolute;left:var(--ss-mote-x);top:var(--ss-mote-y);width:2px;height:2px;border-radius:50%;background:#d4bbdf;opacity:.15;animation:ssNightlifeDrift var(--ss-mote-duration) ease-in-out var(--ss-mote-delay) infinite alternate;animation-play-state:paused; }
@@ -70,6 +78,7 @@ body.ss-nightlife-page { isolation:isolate; }
 .ss-jukebox-loop-label { display:inline-flex;align-items:center;gap:7px;min-height:36px;cursor:pointer; }
 .ss-jukebox-loop { accent-color:#b6a079;width:15px;height:15px; }
 .ss-jukebox-status { min-height:18px;margin:9px 0 0;font-size:10px;line-height:1.7;color:#748399; }
+.ss-nightlife-page .ss-jukebox-status,.ss-nightlife-page .ss-jukebox-progress { color:#9ba9bf; }
 .ss-after-hours-sr-only { position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important; }
 @media(max-width:760px) {
   .ss-nightlife-motes i:nth-child(n+5) { display:none; }
