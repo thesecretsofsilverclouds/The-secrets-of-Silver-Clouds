@@ -2,7 +2,7 @@
 body.ss-nightlife-page { isolation:isolate; }
 .ss-nightlife-layer { --ss-nightlife-energy:0; position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;user-select:none;contain:strict; }
 .ss-nightlife-layer[hidden] { display:none!important; }
-.ss-nightlife-beam { position:absolute;top:-24vh;width:64vw;height:150vh;display:block;transform-origin:50% 0;background:linear-gradient(90deg,transparent 24%,currentColor 48%,transparent 76%);mask-image:linear-gradient(180deg,#0006,#000 24%,#000b 65%,transparent 94%);opacity:calc(.085 + var(--ss-nightlife-energy)*.25);transition:color 4s ease,opacity 1.8s ease,transform 1.2s linear; }
+.ss-nightlife-beam { position:absolute;top:-24vh;width:64vw;height:150vh;display:block;transform-origin:50% 0;background:radial-gradient(ellipse closest-side,currentColor 0%,transparent 100%);opacity:calc(.085 + var(--ss-nightlife-energy)*.25);transition:color 4s ease,opacity 1.8s ease,transform 1.2s linear; }
 .ss-nightlife-beam-1 { left:-32vw;rotate:24deg; }
 .ss-nightlife-beam-2 { right:-30vw;rotate:-28deg; }
 .ss-nightlife-beam-3 { left:27vw;top:-40vh;width:52vw;rotate:7deg;opacity:calc(.045 + var(--ss-nightlife-energy)*.13); }
@@ -12,8 +12,10 @@ body.ss-nightlife-page { isolation:isolate; }
 .ss-after-hours { isolation:isolate; }
 .ss-nightlife-interior-light { --ss-nightlife-energy:0;--ss-wash-travel:45%;--ss-wash-first:#9660df;--ss-wash-second:#cb669f;position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none;user-select:none;border-radius:inherit;contain:strict; }
 .ss-nightlife-interior-light[hidden] { display:none!important; }
-.ss-nightlife-interior-light::before,.ss-nightlife-interior-light::after { content:'';position:absolute;left:-58%;top:-32%;width:82%;height:170%;transform:translateX(var(--ss-wash-travel)) rotate(-23deg);color:var(--ss-wash-first);background:linear-gradient(90deg,transparent 34%,currentColor 50%,transparent 66%);opacity:min(.26,calc(.13 + var(--ss-nightlife-energy)*.3));transition:transform 1.2s linear,opacity 2s ease,color 4s ease; }
-.ss-nightlife-interior-light::after { left:8%;top:-55%;width:73%;transform:translateX(calc(var(--ss-wash-travel)*-.45)) rotate(24deg);color:var(--ss-wash-second);background:linear-gradient(90deg,transparent 30%,currentColor 50%,transparent 70%);opacity:min(.1,calc(.045 + var(--ss-nightlife-energy)*.1)); }
+/* Every edge fades to zero: rotated light planes must never expose a rectangle.
+   One soft travelling beam plus stationary haze avoids crossed X/diamond shapes. */
+.ss-nightlife-interior-light::before,.ss-nightlife-interior-light::after { content:'';position:absolute;left:-55%;top:-70%;width:80%;height:240%;transform:translateX(var(--ss-wash-travel)) rotate(-20deg);color:var(--ss-wash-first);background:radial-gradient(ellipse closest-side,currentColor 0%,currentColor 12%,transparent 100%);opacity:min(.32,calc(.19 + var(--ss-nightlife-energy)*.3));transition:transform 1.2s linear,opacity 2s ease,color 4s ease; }
+.ss-nightlife-interior-light::after { inset:-30%;width:auto;height:auto;transform:none;color:var(--ss-wash-second);background:radial-gradient(ellipse at 75% 65%,currentColor 0%,transparent 64%);opacity:calc(.035 + var(--ss-nightlife-energy)*.05); }
 .ss-nightlife-interior-light[data-active='false']::before,.ss-nightlife-interior-light[data-active='false']::after { opacity:.018; }
 .ss-nightlife-interior-light[data-reduced='true']::before,.ss-nightlife-interior-light[data-reduced='true']::after { transition:none!important; }
 .ss-nightlife-motes { position:absolute;inset:0;opacity:0;transition:opacity 3s ease; }
