@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "artist": "Silent Silver",
+  "tracks": [
+    {
+      "id": "im-trouble",
+      "title": "I'm Trouble",
+      "src": "/audio/sanctuary-after-hours/im-trouble.mp3",
+      "duration": 143.6,
+      "mood": "Velvet magenta",
+      "palette": [
+        "#b05cff",
+        "#ef6cba",
+        "#477dff"
+      ]
+    },
+    {
+      "id": "epic-british-anime-fight-scene-music",
+      "title": "Epic British Anime Fight Scene Music",
+      "src": "/audio/sanctuary-after-hours/epic-british-anime-fight-scene-music.mp3",
+      "duration": 178.600167,
+      "mood": "Electric blue",
+      "palette": [
+        "#6574ff",
+        "#a05cff",
+        "#e5b663"
+      ]
+    },
+    {
+      "id": "be-my-friend",
+      "title": "Be My Friend",
+      "src": "/audio/sanctuary-after-hours/be-my-friend.mp3",
+      "duration": 117.320167,
+      "mood": "Golden warmth",
+      "palette": [
+        "#d6a85e",
+        "#ca7bbf",
+        "#636de2"
+      ]
+    },
+    {
+      "id": "redwings",
+      "title": "Redwings",
+      "src": "/audio/sanctuary-after-hours/redwings.mp3",
+      "duration": 96.240979,
+      "mood": "Ruby dusk",
+      "palette": [
+        "#dc687d",
+        "#a568d3",
+        "#557dec"
+      ]
+    },
+    {
+      "id": "dunk-no-jutsu",
+      "title": "Dunk No Jutsu",
+      "src": "/audio/sanctuary-after-hours/dunk-no-jutsu.mp3",
+      "duration": 80.720167,
+      "mood": "Azure current",
+      "palette": [
+        "#5c91ef",
+        "#af70e8",
+        "#e7bc71"
+      ]
+    },
+    {
+      "id": "cute-to-the-core",
+      "title": "Cute to the Core",
+      "src": "/audio/sanctuary-after-hours/cute-to-the-core.mp3",
+      "duration": 131.56,
+      "mood": "Rose quartz",
+      "palette": [
+        "#e58bd3",
+        "#ac82ef",
+        "#6d9cec"
+      ]
+    },
+    {
+      "id": "impact-drop-1",
+      "title": "Impact Drop 1",
+      "src": "/audio/sanctuary-after-hours/impact-drop-1.mp3",
+      "duration": 151.16,
+      "mood": "Amethyst surge",
+      "palette": [
+        "#ad65e5",
+        "#6d7fec",
+        "#d7ad69"
+      ]
+    },
+    {
+      "id": "impact-drop",
+      "title": "Impact Drop",
+      "src": "/audio/sanctuary-after-hours/impact-drop.mp3",
+      "duration": 140.32,
+      "mood": "Indigo embers",
+      "palette": [
+        "#7c6cdd",
+        "#ca76bb",
+        "#e6b764"
+      ]
+    },
+    {
+      "id": "second-looks-good-on-you",
+      "title": "Second Looks Good on You",
+      "src": "/audio/sanctuary-after-hours/second-looks-good-on-you.mp3",
+      "duration": 253.36,
+      "mood": "Midnight gold",
+      "palette": [
+        "#d6b16d",
+        "#9f74ce",
+        "#5b83c5"
+      ]
+    }
+  ]
+}

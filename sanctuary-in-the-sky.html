@@ -355,12 +355,15 @@
     <link rel="stylesheet" href="/css/soul-sips-bar.css?v=20261016-scenes">
     <link rel="stylesheet" href="/css/soul-sips-mixer-vfx.css?v=20261016-scenes">
     <link rel="stylesheet" href="/css/sanctuary-scenes.css?v=20261016-scenes">
-    <script src="/js/soul-sips-bar.js?v=20261016-scenes" defer></script>
+    <script src="/js/soul-sips-bar.js?v=20261016-after-hours" defer></script>
     <script src="/js/soul-sips-mixer-thoughts.js?v=20261016-scenes" defer></script>
     <script src="/js/soul-sips-mixer-melters.js?v=20261016-scenes" defer></script>
     <script src="/js/soul-sips-mixer-vfx.js?v=20261016-scenes" defer></script>
-    <script src="/js/soul-sips-mixer-room-audio.js?v=20261016-scenes" defer></script>
+    <script src="/js/soul-sips-mixer-room-audio.js?v=20261016-after-hours" defer></script>
     <script src="/js/sanctuary-scenes.js?v=20261016-scenes" defer></script>
+    <link rel="stylesheet" href="/css/sanctuary-nightlife.css?v=20261016-after-hours">
+    <script src="/js/sanctuary-after-hours.js?v=20261016-after-hours" defer></script>
+    <script src="/js/sanctuary-nightlife.js?v=20261016-after-hours" defer></script>
 </head>
 <body>
 
@@ -489,6 +492,37 @@
         <noscript><style>.ss-workbench,.ss-mobile-dock,.ss-bar-tabs,.ss-room-arrival,.ss-room-presence{display:none!important}</style><p class="ss-noscript">Enable JavaScript to mix your own Soul Sip or share a Mind Melter. At the Sanctuary, little glowing drinks hold brief, intense emotions, and magical sweets let two people share their thoughts.</p></noscript>
       </section>
 <div class="ss-integration-links"><span>Explore <a href="/soul-sips">the feelings inside a Soul Sip</a>.</span><span>Stay for a shift? <a href="/soulsip/">Play Magical Soul Sip ↗</a></span></div>
+<div class="ss-after-hours-route">
+  <p>Reading quietly? Stay for the music.</p>
+  <button type="button" class="ss-after-hours-open" data-after-hours-open aria-controls="ss-after-hours" aria-expanded="false">Continue to After Hours <span aria-hidden="true">↗</span></button>
+</div>
+<section id="ss-after-hours" class="ss-after-hours" aria-labelledby="ss-after-hours-title" data-playlist="/data/sanctuary-after-hours.json" hidden>
+  <header class="ss-after-hours-header">
+    <div><p class="ss-after-hours-kicker">A little longer above London</p><h2 id="ss-after-hours-title" class="ss-after-hours-heading" tabindex="-1">SANCTUARY: AFTER HOURS</h2><p class="ss-after-hours-subtitle">The story may be over. The night isn't.</p></div>
+    <span class="ss-after-hours-mark" aria-hidden="true">✧</span>
+  </header>
+  <div class="ss-jukebox" data-state="stopped">
+    <div class="ss-jukebox-artifact" aria-hidden="true"><span class="ss-jukebox-orbit"></span><span class="ss-jukebox-crystal">✧</span><span class="ss-jukebox-orbit ss-jukebox-orbit-inner"></span></div>
+    <div class="ss-jukebox-deck">
+      <div class="ss-jukebox-now"><p class="ss-jukebox-artist">Silent Silver · Sanctuary selections</p><h3 class="ss-jukebox-title">Choose your next moment</h3><p class="ss-jukebox-mood">Music begins when you press play.</p></div>
+      <label class="ss-jukebox-select-label" for="ss-jukebox-select">Sanctuary playlist</label>
+      <select id="ss-jukebox-select" class="ss-jukebox-select" disabled><option>Loading the playlist…</option></select>
+      <div class="ss-jukebox-progress" aria-hidden="true"><span class="ss-jukebox-elapsed">0:00</span><span class="ss-jukebox-progress-track"><i></i></span><span class="ss-jukebox-duration">—:—</span></div>
+      <div class="ss-jukebox-controls" role="group" aria-label="After Hours playback">
+        <button type="button" class="ss-jukebox-prev" aria-label="Previous track" disabled><span aria-hidden="true">↤</span><span class="ss-after-hours-sr-only">Previous track</span></button>
+        <button type="button" class="ss-jukebox-play" aria-label="Play After Hours music" disabled><span aria-hidden="true">▷</span> Play</button>
+        <button type="button" class="ss-jukebox-next" aria-label="Next track" disabled><span aria-hidden="true">↦</span><span class="ss-after-hours-sr-only">Next track</span></button>
+        <button type="button" class="ss-jukebox-replay" disabled>Replay</button>
+        <button type="button" class="ss-jukebox-stop" disabled>Stop <span class="ss-after-hours-sr-only">and return to ambient silence</span></button>
+      </div>
+      <div class="ss-jukebox-settings"><div class="ss-jukebox-level-control"><label for="ss-jukebox-volume">Music level</label><input id="ss-jukebox-volume" class="ss-jukebox-volume" type="range" min="0" max="100" step="1" value="32" aria-label="After Hours music volume"><output class="ss-jukebox-level" for="ss-jukebox-volume">32%</output></div><label class="ss-jukebox-loop-label"><input type="checkbox" class="ss-jukebox-loop"> Loop this track</label></div>
+      <p class="ss-jukebox-status" role="status" aria-live="polite" aria-atomic="true">Choose a track, then press play. Music is always optional.</p>
+    </div>
+    <audio class="ss-jukebox-track" preload="none" aria-hidden="true"></audio>
+  </div>
+  <noscript><p>Enable JavaScript to browse the optional After Hours playlist.</p></noscript>
+</section>
+
       <nav class="ss-mobile-dock" aria-label="Mixing controls"><button type="button" data-mobile-action="pour"><span class="ss-mobile-pour-label">Pour Nostalgia</span><span aria-hidden="true">↘</span></button><button type="button" data-mobile-action="stir" disabled>Stir <span aria-hidden="true">↻</span></button><button type="button" data-mobile-action="taste" disabled>Sip <span aria-hidden="true">✧</span></button><button type="button" data-mobile-action="clear" aria-label="Empty glass" disabled><span aria-hidden="true">↺</span></button></nav>
     <div class="ss-drag-ghost" aria-hidden="true"><span class="ss-bottle-neck"></span><span class="ss-bottle-body"><i></i></span></div>
 

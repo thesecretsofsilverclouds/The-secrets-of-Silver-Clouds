@@ -5,20 +5,23 @@
   const track=host?.querySelector('.ss-room-track');
   if(!host||!track)return;
   const $=selector=>host.querySelector(selector);
-  const ui={arrival:$('.ss-room-arrival'),enter:$('.ss-room-enter'),quiet:$('.ss-room-quiet'),presence:$('.ss-room-presence'),state:$('.ss-room-state'),detail:$('.ss-room-detail'),progress:$('.ss-room-progress i'),back:$('.ss-room-return'),volume:$('.ss-room-volume'),level:$('.ss-room-level'),scene:$('.ss-room-scene-text'),sound:$('.ss-sound'),announcement:$('.ss-room-announcement')};
+  const ui={arrival:$('.ss-room-arrival'),enter:$('.ss-room-enter'),quiet:$('.ss-room-quiet'),presence:$('.ss-room-presence'),state:$('.ss-room-state'),detail:$('.ss-room-detail'),progressBar:$('.ss-room-progress'),progress:$('.ss-room-progress i'),back:$('.ss-room-return'),volume:$('.ss-room-volume'),level:$('.ss-room-level'),scene:$('.ss-room-scene-text'),sound:$('.ss-sound'),announcement:$('.ss-room-announcement')};
   if(!ui.enter||!ui.quiet||!ui.sound||!ui.volume)return;
+  const initialSceneLabel=ui.scene?.textContent||'Immersive excerpt';
   const sceneEntries=[...document.querySelectorAll('[data-room-entry]')];
   const clamp=(value,lo=0,hi=1)=>Math.max(lo,Math.min(hi,value));
-  const surfaces=[host,document.getElementById('ss-sanctuary-story')].filter(Boolean);
+  const jukebox=document.querySelector('.ss-jukebox-track');
+  const surfaces=[host,document.getElementById('ss-sanctuary-story'),document.querySelector('.ss-after-hours')].filter(Boolean);
   const surfaceVisibility=new Map(surfaces.map(surface=>[surface,surfaceVisible(surface)]));
   const clipGains={pour:1,stir:1,taste:.8,clear:.25};
   const effects=new Map([...host.querySelectorAll('audio[data-ss-sfx]')].filter(media=>Object.hasOwn(clipGains,media.dataset.ssSfx)).map(media=>[media.dataset.ssSfx,{media,epoch:0}]));
-  const ownedMedia=new Set([track,...[...effects.values()].map(cue=>cue.media)]);
+  const ownedMedia=new Set([track,jukebox,...[...effects.values()].map(cue=>cue.media)].filter(Boolean));
   let level=clamp(Number(ui.volume.value)||0,0,100),lastNonzero=level||32;
   let entered=false,intent=false,blocked=false,failed=false,ended=false,pageAway=false;
   let hasPlayed=false,pending=null,playEpoch=0,fadeEpoch=0,fadeFrame=0,fadeTarget=null;
   let inView=visibleBounds(),otherMedia=false,expectedPauses=0,lastGesture=-Infinity;
   let activeEffect=null,duckUntil=0,duckTimer=0,initialFadeUntil=0;
+  let owner='narration',jukeboxState='stopped',jukeboxTitle='After Hours';
   const vision=$('.ss-mind-vision');
   track.loop=false;track.autoplay=false;track.volume=0;
   for(const {media} of effects.values()){media.loop=false;media.autoplay=false;media.volume=0;}
@@ -33,11 +36,17 @@
     return [...document.querySelectorAll('audio,video')].some(media=>!ownedMedia.has(media)&&!media.paused&&!media.ended&&!media.muted&&media.volume>0);
   }
   function roomAllowed(){return entered&&intent&&level>0&&!pageAway&&!document.hidden&&inView&&!otherMedia;}
-  function allowed(){return roomAllowed()&&!blocked&&!failed&&!ended;}
+  function allowed(){return owner==='narration'&&roomAllowed()&&!blocked&&!failed&&!ended;}
   function effectsAllowed(){return roomAllowed()&&host.dataset.mode!=='melters';}
   function duck(){return Math.min(host.dataset.mode==='melters'&&vision?.dataset.link==='linked'?.7:1,performance.now()<duckUntil?.82:1);}
   function target(){return level/100*duck();}
   function say(text){if(ui.announcement)ui.announcement.textContent=text;}
+  function roomEvent(name,detail){if(typeof CustomEvent==='function')document.dispatchEvent(new CustomEvent(name,{detail}));}
+  function claimNarration(){
+    owner='narration';
+    // Pause the jukebox before inspecting competitors or requesting narration.
+    if(jukebox)roomEvent('ss:jukebox-command',{action:'pause'});
+  }
   function cancelFade(){fadeEpoch++;cancelAnimationFrame(fadeFrame);fadeFrame=0;fadeTarget=null;}
   function setTrackLevel(value){try{track.volume=clamp(value);}catch{}}
   function fadeTo(value,duration,done){
@@ -78,7 +87,8 @@
     const zero=intent&&level===0;
     let state='unentered',title='The Sanctuary is waiting',detail='Step inside with the narrated scene, or explore quietly.';
     if(entered){
-      if(failed){state='error';title='The sound could not find you';detail='The narrated scene could not load. You can try again; the bar is still yours.';}
+      if(owner==='jukebox'){state=jukeboxState;title=intent?'After Hours, above the city':'After Hours is waiting';detail=intent?`Now playing: ${jukeboxTitle}.`:'Your music is paused. Resume it whenever you like, or return to the narrated scene.';}
+      else if(failed){state='error';title='The sound could not find you';detail='The narrated scene could not load. You can try again; the bar is still yours.';}
       else if(ended){state='ended';title='A moment, held in the clouds';detail='The narrated scene has ended. Return when you would like to hear it again.';}
       else if(blocked){state='blocked';title='The scene is waiting for you';detail='Your browser paused the sound. Return to it when you are ready.';}
       else if(!intent||zero){state='quiet';title=zero?'A quiet moment':'The Sanctuary, quietly';detail=zero?'Sound level is at zero. Raise it or restore the sound whenever you like.':'Explore at your own pace. You can enter with sound whenever you like.';}
@@ -87,6 +97,7 @@
       else{state='playing';title='You are inside the Sanctuary';detail=host.dataset.mode==='melters'&&vision?.dataset.link==='linked'?'The room softens around your shared thoughts.':'An immersive narrated scene, unfolding around the bar.';}
     }
     host.dataset.roomAudio=state;
+    host.dataset.roomOwner=owner;
     if(ui.arrival)ui.arrival.hidden=entered;
     if(ui.presence)ui.presence.hidden=!entered;
     if(ui.state)ui.state.textContent=title;
@@ -94,13 +105,14 @@
     if(ui.level)ui.level.textContent=`${Math.round(level)}%`;
     ui.volume.value=String(level);
     ui.sound.setAttribute('aria-pressed',String(intent));
-    const retry=entered&&(blocked||failed||ended);
-    const label=!entered?'Enter with sound':zero?'Restore sound':intent?'Sound on':'Sound off';
+    const retry=entered&&(owner==='jukebox'||blocked||failed||ended);
+    const label=owner==='jukebox'?(intent?'Pause After Hours':'Play After Hours'):!entered?'Enter with sound':zero?'Restore sound':intent?'Sound on':'Sound off';
     ui.sound.textContent=label;
-    ui.sound.setAttribute('aria-label',!entered?'Enter the Sanctuary with sound':zero?'Restore Sanctuary sound':intent?'Mute Sanctuary sound':'Enter the Sanctuary with sound');
-    if(ui.back){ui.back.hidden=!retry;ui.back.textContent=ended?'Return to the scene':failed?'Try the sound again':'Return to sound';}
-    const sceneLabel=!entered?'Enter with sound':ended?'Replay the scene':failed?'Try the sound again':blocked?'Return to sound':intent?'Quiet the scene':'Return to sound';
-    for(const button of sceneEntries){button.textContent=sceneLabel;button.setAttribute('aria-pressed',String(intent));button.setAttribute('aria-label',sceneLabel);}
+    ui.sound.setAttribute('aria-label',owner==='jukebox'?(intent?'Pause After Hours music':'Play After Hours music'):!entered?'Enter the Sanctuary with sound':zero?'Restore Sanctuary sound':intent?'Mute Sanctuary sound':'Enter the Sanctuary with sound');
+    if(ui.back){ui.back.hidden=!retry;ui.back.textContent=owner==='jukebox'||ended?'Return to the scene':failed?'Try the sound again':'Return to sound';}
+    const sceneLabel=!entered?'Enter with sound':ended?'Replay the scene':owner==='jukebox'?'Return to the scene':failed?'Try the sound again':blocked?'Return to sound':intent?'Quiet the scene':'Return to sound';
+    for(const button of sceneEntries){button.textContent=sceneLabel;button.setAttribute('aria-pressed',String(owner==='narration'&&intent));button.setAttribute('aria-label',sceneLabel);}
+    progress();
   }
   function start({direct=false,first=false}={}){
     if(!allowed()){render();return;}
@@ -139,7 +151,7 @@
   let retryPosition=null;
   function enterSound({replay=false}={}){
     const focus=ui.enter===document.activeElement||ui.quiet===document.activeElement?host.querySelector('[role="tab"][aria-selected="true"]'):ui.back===document.activeElement?ui.volume:null;
-    entered=true;intent=true;blocked=false;
+    claimNarration();entered=true;intent=true;blocked=false;
     if(!level){level=lastNonzero;ui.volume.value=String(level);}
     if(replay&&(ended||track.ended)){ended=false;try{track.currentTime=0;}catch{}}
     if(failed||track.error){
@@ -153,7 +165,7 @@
   }
   function enterQuiet(){
     const focus=ui.enter===document.activeElement||ui.quiet===document.activeElement?host.querySelector('[role="tab"][aria-selected="true"]'):null;
-    entered=true;intent=false;blocked=false;
+    claimNarration();entered=true;intent=false;blocked=false;
     host.classList.add('ss-room-visit');stopEffects();stop();render();say('Entered quietly. Sound can be enabled at any time.');
     focus?.focus({preventScroll:true});
   }
@@ -165,17 +177,36 @@
   ui.back?.addEventListener('click',()=>enterSound({replay:true}));
   sceneEntries.forEach(button=>button.addEventListener('click',event=>{
     if(!event.isTrusted)return;
-    if(ended||failed||blocked)enterSound({replay:true});
+    if(owner==='jukebox'||ended||failed||blocked)enterSound({replay:true});
     else if(intent){intent=false;stopEffects();stop();render();say('Sanctuary sound off. Your place is saved.');}
     else enterSound();
   }));
   ui.sound.addEventListener('click',()=>{
+    if(owner==='jukebox'){roomEvent('ss:jukebox-command',{action:'toggle'});return;}
     if(!entered||!intent||!level)enterSound();
     else{intent=false;stopEffects();stop();render();say('Sanctuary sound off. Your place is saved.');}
   });
   ui.volume.addEventListener('input',()=>{
     level=clamp(Number(ui.volume.value)||0,0,100);if(level>0)lastNonzero=level;
+    if(owner==='jukebox'){roomEvent('ss:jukebox-command',{action:'volume',value:level});effectLevels();render();return;}
     reconcile({direct:true});
+  });
+  document.addEventListener('ss:room-claim',event=>{
+    const requested=event.detail?.owner;
+    if(requested!=='jukebox'&&requested!=='quiet')return;
+    owner=requested;entered=true;intent=requested==='jukebox';
+    host.classList.add('ss-room-visit');stop(true);stopEffects();
+    otherMedia=competitor();refreshVisibility();render();
+    roomEvent('ss:room-owner',{owner,playing:false,level});
+  });
+  document.addEventListener('ss:jukebox-state',event=>{
+    if(owner!=='jukebox')return;
+    const detail=event.detail||{};
+    jukeboxState=detail.state||'stopped';jukeboxTitle=detail.track?.title||'After Hours';
+    intent=jukeboxState==='playing'||jukeboxState==='loading';
+    if(Number.isFinite(detail.volume)){level=clamp(detail.volume,0,100);if(level>0)lastNonzero=level;}
+    effectLevels();render();
+    roomEvent('ss:room-owner',{owner,playing:intent,level});
   });
   host.addEventListener('click',event=>{
     const sweet=event.target.closest?.('.ss-take-melter');
@@ -228,8 +259,10 @@
   track.addEventListener('ended',()=>{ended=true;blocked=false;stop(true);render();say('The narrated scene has ended. Return to the scene to hear it again.');});
   track.addEventListener('error',()=>{failed=true;blocked=false;stop(true);render();if(entered)say('The narrated scene could not load. You can try the sound again.');});
   function progress(){
+    if(ui.progressBar)ui.progressBar.hidden=owner==='jukebox';
+    if(owner==='jukebox'){if(ui.scene)ui.scene.textContent='After Hours music';return;}
     const duration=track.duration;
-    if(!Number.isFinite(duration)||duration<=0)return;
+    if(!Number.isFinite(duration)||duration<=0){if(ui.scene)ui.scene.textContent=initialSceneLabel;return;}
     if(ui.progress)ui.progress.style.width=`${clamp(track.currentTime/duration)*100}%`;
     if(ui.scene){const seconds=Math.round(duration);ui.scene.textContent=`Immersive excerpt · ${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;}
   }

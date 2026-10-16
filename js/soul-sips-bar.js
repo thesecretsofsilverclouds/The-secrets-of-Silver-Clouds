@@ -275,6 +275,12 @@
  }
  dock.hidden=true;
  if('IntersectionObserver' in window){
-  new IntersectionObserver(entries=>{dock.hidden=!entries[0].isIntersecting;},{rootMargin:'-95px 0px -15px 0px'}).observe(bar);
+  const afterHours=document.getElementById('ss-after-hours');
+  let barVisible=false,musicVisible=false;
+  const visibility=new IntersectionObserver(entries=>{
+   for(const entry of entries){if(entry.target===bar)barVisible=entry.isIntersecting;else if(entry.target===afterHours)musicVisible=entry.isIntersecting;}
+   dock.hidden=!barVisible||musicVisible;
+  },{rootMargin:'-95px 0px -15px 0px'});
+  visibility.observe(bar);if(afterHours)visibility.observe(afterHours);
  }else{dock.hidden=false;}
 })();
