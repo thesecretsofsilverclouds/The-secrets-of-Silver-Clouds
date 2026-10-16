@@ -352,6 +352,15 @@
     </script>
     <link rel="stylesheet" href="/css/lore-shell.css">
     <script src="/js/lore-shell.js?v=20260917" defer></script>
+    <link rel="stylesheet" href="/css/soul-sips-bar.css?v=20261016-scenes">
+    <link rel="stylesheet" href="/css/soul-sips-mixer-vfx.css?v=20261016-scenes">
+    <link rel="stylesheet" href="/css/sanctuary-scenes.css?v=20261016-scenes">
+    <script src="/js/soul-sips-bar.js?v=20261016-scenes" defer></script>
+    <script src="/js/soul-sips-mixer-thoughts.js?v=20261016-scenes" defer></script>
+    <script src="/js/soul-sips-mixer-melters.js?v=20261016-scenes" defer></script>
+    <script src="/js/soul-sips-mixer-vfx.js?v=20261016-scenes" defer></script>
+    <script src="/js/soul-sips-mixer-room-audio.js?v=20261016-scenes" defer></script>
+    <script src="/js/sanctuary-scenes.js?v=20261016-scenes" defer></script>
 </head>
 <body>
 
@@ -362,7 +371,20 @@
     </header>
 
     <main class="lore-container">
-        <section class="lore-hero" data-codex-art="20260916"><img width="1672" height="941" src="/images/codex-refresh/sanctuary-london.webp" alt="A luminous cathedral-like nightclub floats on clouds above the London skyline at sunset." decoding="async" fetchpriority="high"></section>
+        <section id="ss-sanctuary-story" class="lore-hero ss-story" aria-label="Sanctuary narrated scenes">
+  <div class="ss-story-frame" id="ss-sanctuary-scene-frame">
+    <figure class="ss-story-frame-item ss-scene-current" data-scene="0" data-at="0" data-title="Above London" data-caption="The Sanctuary in the Sky." aria-hidden="false"><img src="/images/sanctuary-scenes/exterior.webp" width="1672" height="941" alt="The cathedral-like Sanctuary floats on clouds above the London skyline at dusk." decoding="async" fetchpriority="high"></figure>
+    <figure class="ss-story-frame-item" data-scene="1" data-at="90" data-title="Ashai &amp; Rose" data-caption="On the Sanctuary dance floor." aria-hidden="true"><img src="/images/sanctuary-scenes/dance.webp" width="1122" height="1402" alt="Ashai, with natural hazel-green eyes and long dark textured braids, and red-haired Rose dance together in glamorous nightclub clothes beneath the Sanctuary’s stained glass." decoding="async" loading="lazy"></figure>
+    <figure class="ss-story-frame-item" data-scene="2" data-at="165" data-title="The Silver Wing" data-caption="An ancient guardian of souls." aria-hidden="true"><img src="/images/sanctuary-scenes/silver-wing.webp" width="1086" height="1448" alt="A hooded Silver Wing with violet eyes, dark robes and two vast metallic feathered wings stands beneath luminous stained glass." decoding="async" loading="lazy"></figure>
+  </div>
+  <div class="ss-story-copy"><p class="ss-story-kicker">Above London</p><p class="ss-story-caption">The Sanctuary in the Sky.</p></div>
+  <div class="ss-story-controls">
+    <div class="ss-scene-choices" role="group" aria-label="Preview the scene images"><button type="button" class="ss-scene-choice" data-view-scene="0" aria-pressed="true">Arrival</button><button type="button" class="ss-scene-choice" data-view-scene="1" aria-pressed="false">Dance floor</button><button type="button" class="ss-scene-choice" data-view-scene="2" aria-pressed="false">Silver Wing</button></div>
+    <div class="ss-story-actions"><button type="button" class="ss-story-follow" aria-pressed="true">Follow the audiobook</button><button type="button" data-room-entry>Enter with sound <span aria-hidden="true">↗</span></button></div>
+  </div>
+  <noscript><style>.ss-story-controls{display:none!important}</style><p class="ss-story-static-note">The scenes follow the audiobook: Ashai and Rose at 1:30; the Silver Wing at 2:45. Enable JavaScript to explore.</p></noscript>
+</section>
+
 
         <section class="lore-title">
             <h1>Sanctuary in the Sky</h1>
@@ -377,6 +399,99 @@
             <h2>Summary</h2>
             <p>Built by the Church, the Sanctuary in the Sky is a holy site and nightclub floating above London. Cocktails taste like emotions and paintings walk off their canvases, while staff-only doors lead away from the revelry into corridors of sealed portals.</p>
         </section>
+
+      <section id="soul-sips-bar" class="ss-widget" data-phase="empty" aria-label="The Sanctuary bar: Soul Sips and Mind Melters">
+        <header class="ss-bar-header"><div class="ss-bar-identity"><span class="ss-diamond" aria-hidden="true">◇</span><h2>The Sanctuary Bar <small>Something extraordinary, on the house</small></h2></div><span class="ss-menu-note">A feeling. A thought. A little closer.</span></header>
+        <audio class="ss-room-track" src="/audio/sanctuary-bar/sanctuary-audiobook.mp3" preload="none" aria-hidden="true"></audio>
+        <audio data-ss-sfx="pour" src="/audio/sanctuary-bar/sfx-pour.mp3" preload="none" aria-hidden="true"></audio>
+        <audio data-ss-sfx="stir" src="/audio/sanctuary-bar/sfx-stir.mp3" preload="none" aria-hidden="true"></audio>
+        <audio data-ss-sfx="taste" src="/audio/sanctuary-bar/sfx-taste.mp3" preload="none" aria-hidden="true"></audio>
+        <audio data-ss-sfx="clear" src="/audio/sanctuary-bar/sfx-clear.mp3" preload="none" aria-hidden="true"></audio>
+        <div class="ss-room-arrival">
+          <div class="ss-room-welcome"><span class="ss-room-mark" aria-hidden="true">✧</span><div><p class="ss-small-label">You’ve arrived</p><p class="ss-room-welcome-title">Leave the city below.</p><p class="ss-room-welcome-copy">Let an immersive audiobook scene surround you as you mix and explore.</p></div></div>
+          <div class="ss-room-entry-actions"><button type="button" class="ss-room-enter">Step inside <span aria-hidden="true">↗</span><small>With narrated sound</small></button><button type="button" class="ss-room-quiet">Find a quieter corner</button></div>
+        </div>
+        <div class="ss-room-presence" hidden>
+          <div class="ss-room-now"><span class="ss-room-waves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><div><p class="ss-room-state">The Sanctuary around you.</p><p class="ss-room-detail">Settle in. The world is still turning.</p><span class="ss-room-scene-text">Immersive audiobook · 4:17</span><a class="ss-room-watch" href="#ss-sanctuary-story">Watch the scene ↑</a></div></div>
+          <div class="ss-room-level-control"><button type="button" class="ss-room-return" hidden>Return to the scene <span aria-hidden="true">↶</span></button><label for="ss-room-volume">Room level</label><input type="range" class="ss-room-volume" id="ss-room-volume" min="0" max="100" value="32" step="1" aria-label="Sanctuary sound level"><output class="ss-room-level" for="ss-room-volume">32%</output></div>
+          <div class="ss-room-progress" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="ss-bar-tabs" role="tablist" aria-label="Experiences at the Sanctuary bar"><button type="button" id="ss-tab-sips" role="tab" aria-controls="ss-panel-sips" aria-selected="true" tabindex="0"><span aria-hidden="true">◇</span> Soul Sips <small>Mix a feeling</small></button><button type="button" id="ss-tab-melters" role="tab" aria-controls="ss-panel-melters" aria-selected="false" tabindex="-1"><span aria-hidden="true">✧</span> Mind Melters <small>Share a thought</small></button></div>
+        <div id="ss-panel-sips" role="tabpanel" aria-labelledby="ss-tab-sips">
+        <div class="ss-console">
+          <figure class="ss-stage" aria-labelledby="ss-art-caption">
+            <img class="ss-bar-art" src="/images/soul-sips-mixer/mixer-bar.webp" width="1122" height="1402" alt="An empty gold-trimmed crystal Soul Sip glass on the dark Sanctuary bar beneath stained glass." loading="lazy" decoding="async" draggable="false">
+            <div class="ss-stage-shade" aria-hidden="true"></div>
+            <div class="ss-stage-top"><span>The Sanctuary Bar</span><span class="ss-stage-state">Your glass awaits</span></div>
+            <div class="ss-liquid" aria-hidden="true">
+              <svg viewBox="0 0 100 200" preserveAspectRatio="none">
+                <defs>
+                  <clipPath id="ss-cup"><path d="M2 2 Q50 -4 98 2 L79 190 Q50 206 21 190 Z"/></clipPath>
+                  <linearGradient id="ss-fluid" x1="0" y1="0" x2=".2" y2="1"><stop class="ss-fluid-start" offset="0%" stop-color="#72b6ff"/><stop class="ss-fluid-mid" offset="52%" stop-color="#72b6ff"/><stop class="ss-fluid-end" offset="100%" stop-color="#72b6ff"/></linearGradient>
+                  <linearGradient id="ss-shine" x1="0" x2="1"><stop offset="0" stop-color="white" stop-opacity="0"/><stop offset=".2" stop-color="white" stop-opacity=".35"/><stop offset=".4" stop-color="white" stop-opacity="0"/><stop offset="1" stop-color="white" stop-opacity=".08"/></linearGradient>
+                </defs>
+                <g clip-path="url(#ss-cup)"><g class="ss-fluid-body" style="transform:translateY(205px)"><rect x="0" y="0" width="100" height="210" fill="url(#ss-fluid)" opacity=".74"/><ellipse class="ss-meniscus" cx="50" cy="4" rx="50" ry="5" fill="#c6e4ff" opacity=".8"/><g class="ss-fluid-currents" fill="none" stroke="white" stroke-width=".55"><path d="M-10 24 Q65 -3 109 25 Q57 52 -10 25"/><path d="M-4 64 Q70 32 104 65 Q50 92 -4 66"/><path d="M0 111 Q68 79 100 111 Q52 141 0 112"/><path d="M10 158 Q63 132 91 157 Q53 182 10 159"/></g></g><rect width="100" height="200" fill="url(#ss-shine)" opacity=".6"/></g>
+              </svg>
+            </div>
+            <div class="ss-spirits" aria-hidden="true"><img class="ss-spirit ss-spirit-one" alt="" draggable="false"><img class="ss-spirit ss-spirit-two" alt="" draggable="false"></div>
+            <button type="button" class="ss-glass-target" aria-label="Stir the drink in the glass" disabled><span class="ss-drop-cue">Drop a feeling here</span><span class="ss-stir-cue">Draw a circle to stir <span aria-hidden="true">↻</span></span></button>
+            <div class="ss-pour-bottle" aria-hidden="true"><span class="ss-bottle-neck"></span><span class="ss-bottle-body"><i></i></span></div><div class="ss-pour-stream" aria-hidden="true"></div>
+            <div class="ss-stir-spoon" aria-hidden="true"></div><div class="ss-rise-ring" aria-hidden="true"></div>
+            <figcaption id="ss-art-caption" class="ss-stage-caption"><span class="ss-caption-note">Make yourself something</span><span class="ss-caption-title">A glass of possibility.</span><span class="ss-caption-sub">Seven feelings. One little glass.</span></figcaption>
+            <p class="ss-art-status" role="status" hidden></p>
+          </figure>
+
+          <div class="ss-workbench">
+            <div class="ss-shelf-heading"><div><p class="ss-small-label">01 / The emotion shelf</p><h3>What goes in?</h3></div><span class="ss-shelf-count">VII <small>ESSENCES</small></span></div>
+            <div class="ss-choices" role="group" aria-label="Choose an emotion to pour"></div>
+            <p class="ss-drag-hint">Drag a bottle into the glass, or choose one and pour.</p>
+            <div class="ss-essence-note"><span class="ss-selected-name">Nostalgia</span><p class="ss-selected-description">Deep blue and bittersweet. Laughter and loss in the same mouthful.</p></div>
+
+            <section class="ss-recipe" aria-labelledby="ss-recipe-title"><div class="ss-recipe-heading"><h3 id="ss-recipe-title">In your glass</h3><span class="ss-fill-label">0 / 4 measures</span></div><div class="ss-fill-track" role="progressbar" aria-label="Glass fullness" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><div class="ss-recipe-list"><p class="ss-empty-recipe">Start with one feeling. Add another if you like.</p></div></section>
+            <div class="ss-mix-actions"><button type="button" class="ss-pour" data-action="pour"><span class="ss-pour-label">Pour Nostalgia</span><span aria-hidden="true">↘</span></button><button type="button" class="ss-clear" data-action="clear" aria-label="Empty the glass and start again" disabled>Empty glass <span aria-hidden="true">↺</span></button></div>
+            <p class="ss-pour-help">Each pour adds one measure. Blend up to two feelings.</p>
+            <div class="ss-finish-actions"><button type="button" class="ss-stir" data-action="stir" disabled><span aria-hidden="true">↻</span> <span class="ss-stir-label">Stir your blend</span></button><button type="button" class="ss-taste" data-action="taste" disabled><span class="ss-taste-label">Take a sip</span> <span aria-hidden="true">✧</span></button></div>
+            <div class="ss-aftertaste" aria-live="polite" aria-atomic="true"><p class="ss-aftertaste-kicker">A feeling is waiting to happen.</p><p class="ss-aftertaste-copy">Pour your first measure. The rest is yours.</p></div>
+          </div>
+        </div>
+        </div>
+        <div id="ss-panel-melters" role="tabpanel" aria-labelledby="ss-tab-melters" hidden>
+          <div class="ss-melter-console">
+            <div class="ss-mind-vision" data-link="unlinked">
+              <img class="ss-melter-art" src="/images/soul-sips-mixer/mind-melter-box.webp" width="941" height="1672" alt="A Sanctuary bartender offers a box of jewel-like Mind Melter sweets across the glowing bar." loading="lazy" decoding="async">
+              <div class="ss-mind-veil" aria-hidden="true"></div>
+              <div class="ss-link-orbits" aria-hidden="true"><i></i><i></i><i></i></div>
+              <div class="ss-mind-top"><span class="ss-link-indicator"><i aria-hidden="true"></i><span class="ss-link-state">Two sweets. Two minds.</span></span><span>THE SANCTUARY</span></div>
+              <div class="ss-mind-placeholder"><span class="ss-small-label">Beyond small talk</span><p>Every stranger<br>has a world inside.</p><span>Choose a neighbour. Share a sweet.<br>Let a little of their world into yours.</span></div>
+              <div class="ss-thought-experience" hidden>
+                <div class="ss-thought-source"><span class="ss-thought-person"></span><span class="ss-thought-emotion"></span></div>
+                <div class="ss-thought-stream" aria-live="polite" aria-atomic="true"></div>
+                <div class="ss-thought-controls"><button type="button" class="ss-drift">Let the thoughts drift <span aria-hidden="true">↝</span></button><span class="ss-thought-counter"></span></div>
+              </div>
+              <p class="ss-mind-art-caption">Mind Melters · a taste of someone else’s world</p>
+            </div>
+            <div class="ss-melter-workbench">
+              <p class="ss-small-label">Another kind of connection</p><h3>A little less<br><em>inside your own head.</em></h3>
+              <p class="ss-melter-intro">A sweet dissolves. The music falls away. For ten minutes, two people taking Mind Melters together can share their thoughts.</p>
+              <div class="ss-neighbours-heading"><p class="ss-small-label">Who’s beside you tonight?</p><button type="button" class="ss-new-neighbours" aria-label="Meet three different neighbours at the bar">New faces <span aria-hidden="true">↻</span></button></div>
+              <div class="ss-neighbours" role="group" aria-label="Choose a neighbour to share a Mind Melter with"></div>
+              <div class="ss-melter-invitation"><span class="ss-invitation-title"></span><p class="ss-invitation-copy"></p></div>
+              <button type="button" class="ss-take-melter">Take one together <span aria-hidden="true">✧</span></button>
+              <button type="button" class="ss-end-link" hidden>Come back to yourself <span aria-hidden="true">↶</span></button>
+              <p class="ss-melter-note">One neighbour at a time. Their Soul Sip colours the mood; the Mind Melter opens the connection.</p>
+              <details class="ss-mind-about"><summary>A note from behind the bar</summary><p>These are imagined glimpses of unnamed visitors, written for this experience, with details drawn from Silver Clouds lore. The ten-minute connection belongs to the story; here, you can linger and explore at your own pace.</p><p>Mind Melters are powerful magical sweets. Their effects can last longer than the shared thoughts, and they are not always gentle.</p></details>
+            </div>
+          </div>
+        </div>
+        <footer class="ss-bar-footer"><span><i aria-hidden="true"></i><span class="ss-bar-status">Choose a feeling to begin</span></span><div><button type="button" class="ss-sound" aria-label="Enter the Sanctuary with sound" aria-pressed="false">Enter with sound <span aria-hidden="true">♪</span></button><button type="button" class="ss-motion" aria-label="Turn off ambient motion" aria-pressed="true">Motion on <span aria-hidden="true">◌</span></button></div></footer>
+        <p class="ss-announcement ss-sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+        <p class="ss-room-announcement ss-announcement ss-sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+        <noscript><style>.ss-workbench,.ss-mobile-dock,.ss-bar-tabs,.ss-room-arrival,.ss-room-presence{display:none!important}</style><p class="ss-noscript">Enable JavaScript to mix your own Soul Sip or share a Mind Melter. At the Sanctuary, little glowing drinks hold brief, intense emotions, and magical sweets let two people share their thoughts.</p></noscript>
+      </section>
+<div class="ss-integration-links"><span>Explore <a href="/soul-sips">the feelings inside a Soul Sip</a>.</span><span>Stay for a shift? <a href="/soulsip/">Play Magical Soul Sip ↗</a></span></div>
+      <nav class="ss-mobile-dock" aria-label="Mixing controls"><button type="button" data-mobile-action="pour"><span class="ss-mobile-pour-label">Pour Nostalgia</span><span aria-hidden="true">↘</span></button><button type="button" data-mobile-action="stir" disabled>Stir <span aria-hidden="true">↻</span></button><button type="button" data-mobile-action="taste" disabled>Sip <span aria-hidden="true">✧</span></button><button type="button" data-mobile-action="clear" aria-label="Empty glass" disabled><span aria-hidden="true">↺</span></button></nav>
+    <div class="ss-drag-ghost" aria-hidden="true"><span class="ss-bottle-neck"></span><span class="ss-bottle-body"><i></i></span></div>
+
     
         <section class="lore-section">
             <h2>Description</h2>
@@ -410,7 +525,8 @@
         <section class="lore-section">
             <h2>Related Entries</h2>
             <div class="related-entries">
-                <a href="/the-church" class="related-link">→ The Church</a>
+                <a href="/soul-sips" class="related-link">→ Soul Sips</a>
+<a href="/the-church" class="related-link">→ The Church</a>
 <a href="/celestial-shattering" class="related-link">→ Holy Tragedy</a>
 <a href="/presence" class="related-link">→ Presence</a>
             </div>

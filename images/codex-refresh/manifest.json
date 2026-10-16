@@ -196,26 +196,38 @@
     "name": "Lintels"
   },
   "soul-sips": {
-    "hero": "images/codex-refresh/soul-sips.webp",
-    "thumb": "images/codex-refresh/soul-sips-thumb.webp",
+    "hero": "images/soul-sips-refresh-20261015/soul-sips-bar-hero.webp",
+    "thumb": "images/soul-sips-refresh-20261015/soul-sips-bar-hero-thumb.webp",
     "gallery": [
       {
-        "src": "images/codex-refresh/soul-sips.webp",
-        "thumb": "images/codex-refresh/soul-sips-thumb.webp",
-        "alt": "Existing illustration of Soul Sips.",
-        "caption": "Soul Sips."
+        "src": "images/soul-sips-refresh-20261015/soul-sips-bar-hero.webp",
+        "thumb": "images/soul-sips-refresh-20261015/soul-sips-bar-hero-thumb.webp",
+        "alt": "Blue nostalgia, red glory and golden homecoming in gold-trimmed crystal glasses at the Sanctuary bar.",
+        "caption": "Three feelings, by the glass."
       },
       {
-        "src": "images/codex-refresh/gallery-soul-sips0.webp",
-        "thumb": "images/codex-refresh/gallery-soul-sips0-thumb.webp",
-        "alt": "Soul Sips at the Sanctuary bar.",
-        "caption": "Soul Sips at the Sanctuary bar."
+        "src": "images/soul-sips-refresh-20261015/soul-sips-nostalgia.webp",
+        "thumb": "images/soul-sips-refresh-20261015/soul-sips-nostalgia-thumb.webp",
+        "alt": "A wistful blue spirit rises from a deep-blue Soul Sip.",
+        "caption": "Nostalgia · Ashai’s choice."
       },
       {
-        "src": "images/codex-refresh/gallery-soul-sips1.webp",
-        "thumb": "images/codex-refresh/gallery-soul-sips1-thumb.webp",
-        "alt": "Glowing drinks beneath stained glass.",
-        "caption": "Glowing drinks beneath stained glass."
+        "src": "images/soul-sips-refresh-20261015/soul-sips-glory.webp",
+        "thumb": "images/soul-sips-refresh-20261015/soul-sips-glory-thumb.webp",
+        "alt": "A triumphant fiery red spirit rises from a crimson Soul Sip.",
+        "caption": "Glory · Goaden’s choice."
+      },
+      {
+        "src": "images/soul-sips-refresh-20261015/soul-sips-homecoming.webp",
+        "thumb": "images/soul-sips-refresh-20261015/soul-sips-homecoming-thumb.webp",
+        "alt": "A welcoming golden spirit rises from a warm-gold Soul Sip.",
+        "caption": "Homecoming · Yukon’s choice."
+      },
+      {
+        "src": "images/soul-sips-refresh-20261015/soul-sips-love-sadness.webp",
+        "thumb": "images/soul-sips-refresh-20261015/soul-sips-love-sadness-thumb.webp",
+        "alt": "Rose-pink love and deep-blue sadness swirl together above one crystal Soul Sip glass.",
+        "caption": "Love + Sadness · a visitor’s blend."
       }
     ],
     "type": "concept",

@@ -122,7 +122,7 @@ const loreEntries = [
     "id": "soul-sips",
     "name": "Soul Sips",
     "type": "concept",
-    "image": "images/codex-refresh/soul-sips-thumb.webp",
+    "image": "images/soul-sips-refresh-20261015/soul-sips-bar-hero-thumb.webp",
     "summary": "Soul Sips are glowing shots served at the Sanctuary in the Sky, each carrying the taste and feeling of an emotion. Blue nostalgia, fiery red glory and golden homecoming can turn a round of drinks into something unexpectedly personal.",
     "description": "Soul Sips arrive in glowing little glasses, each colour promising a feeling rather than an ordinary flavour. Ashai’s deep-blue choice brings a rush of bittersweet memories. Goaden swallows fiery red glory. Yukon chooses the warmth of a soldier coming home to his dog.\n\nA feeling in a glass still meets the person drinking it. The same round that draws delighted curiosity from one guest leaves another suddenly vulnerable, asking friends for reassurance. At the Sanctuary, ordering a drink can reveal more than starting a conversation.",
     "abilities": [

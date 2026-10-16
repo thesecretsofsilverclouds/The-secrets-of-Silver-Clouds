@@ -1,0 +1,110 @@
+/* Optional effects stay inside this exhibit and never capture input. */
+.ss-widget.ss-vfx-enhanced .ss-stage {
+  isolation: isolate;
+}
+.ss-widget.ss-vfx-enhanced.ss-sipping .ss-stage {
+  animation: none;
+}
+.ss-widget.ss-vfx-enhanced .ss-vfx-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  mix-blend-mode: screen;
+  contain: strict;
+}
+.ss-widget.ss-vfx-enhanced.ss-vfx-tasting .ss-spirits.ss-visible .ss-spirit {
+  --ss-vfx-sip-color: var(--ss-accent);
+  transform-origin: 50% 72%;
+  animation: ssMixerVfxSipApproach 3.4s cubic-bezier(.2,.55,.3,1) both;
+}
+.ss-widget.ss-vfx-enhanced.ss-vfx-tasting.ss-has-blend .ss-spirits.ss-visible .ss-spirit-two {
+  --ss-vfx-sip-color: var(--ss-second);
+  --ss-vfx-spirit-opacity: .92;
+}
+.ss-widget.ss-vfx-enhanced.ss-vfx-tasting .ss-bar-art {
+  animation: ssMixerVfxSipBackdrop 3.4s ease both;
+}
+.ss-widget.ss-vfx-enhanced .ss-spirits {
+  z-index: 2;
+}
+.ss-widget.ss-vfx-enhanced .ss-stage-top,
+.ss-widget.ss-vfx-enhanced .ss-stage-caption,
+.ss-widget.ss-vfx-enhanced .ss-glass-target,
+.ss-widget.ss-vfx-enhanced .ss-art-status {
+  z-index: 3;
+}
+.ss-widget.ss-vfx-enhanced.ss-vfx-emerging .ss-visible .ss-spirit {
+  animation: ssMixerVfxSpiritReveal 1.35s cubic-bezier(.18,.65,.24,1) both;
+  animation-delay: .08s;
+}
+.ss-widget.ss-vfx-enhanced.ss-vfx-emerging.ss-has-blend .ss-visible .ss-spirit-two {
+  --ss-vfx-spirit-opacity: .92;
+  animation-delay: .3s;
+}
+.ss-widget.ss-vfx-enhanced.ss-vfx-paused.ss-vfx-emerging .ss-visible .ss-spirit {
+  animation-play-state: paused;
+}
+.ss-widget.ss-vfx-enhanced.ss-motion-off .ss-vfx-canvas,
+.ss-widget.ss-vfx-enhanced[data-mode="melters"] .ss-vfx-canvas {
+  display: none;
+}
+.ss-widget.ss-vfx-enhanced.ss-motion-off.ss-vfx-tasting .ss-spirits .ss-spirit,
+.ss-widget.ss-vfx-enhanced.ss-motion-off.ss-vfx-tasting .ss-bar-art {
+  animation: none !important;
+}
+@keyframes ssMixerVfxSpiritReveal {
+  0% { opacity: 0; transform: translateY(20px) scale(.955); }
+  25% { opacity: .14; }
+  100% { opacity: var(--ss-vfx-spirit-opacity,1); transform: translateY(0) scale(1); }
+}
+@keyframes ssMixerVfxSipApproach {
+  0%, 100% {
+    opacity: var(--ss-vfx-spirit-opacity,1);
+    transform: translateY(0) scale(1);
+    filter: brightness(1) drop-shadow(0 0 15px var(--ss-vfx-sip-color));
+  }
+  23% {
+    opacity: var(--ss-vfx-spirit-opacity,1);
+    transform: translateY(6px) scale(1.1);
+    filter: brightness(1.2) drop-shadow(0 0 22px var(--ss-vfx-sip-color));
+  }
+  46% {
+    opacity: .88;
+    transform: translateY(13px) scale(1.19);
+    filter: brightness(1.25) drop-shadow(0 0 25px var(--ss-vfx-sip-color));
+  }
+  63% {
+    opacity: 0;
+    transform: translateY(22px) scale(1.25);
+    filter: brightness(1.12) drop-shadow(0 0 25px var(--ss-vfx-sip-color));
+  }
+  65%, 71% {
+    opacity: 0;
+    transform: translateY(30px) scale(.86);
+    filter: brightness(1.08) drop-shadow(0 0 18px var(--ss-vfx-sip-color));
+  }
+  85% {
+    opacity: .5;
+    transform: translateY(12px) scale(.95);
+    filter: brightness(1.05) drop-shadow(0 0 17px var(--ss-vfx-sip-color));
+  }
+}
+@keyframes ssMixerVfxSipBackdrop {
+  0%, 100% { filter: brightness(1) saturate(1); }
+  23% { filter: brightness(.7) saturate(.88); }
+  50% { filter: brightness(.6) saturate(.8); }
+  78% { filter: brightness(.79) saturate(.9); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ss-widget.ss-vfx-enhanced .ss-vfx-canvas { display: none; }
+  .ss-widget.ss-vfx-enhanced.ss-vfx-emerging .ss-visible .ss-spirit,
+  .ss-widget.ss-vfx-enhanced.ss-vfx-tasting .ss-spirits .ss-spirit,
+  .ss-widget.ss-vfx-enhanced.ss-vfx-tasting .ss-bar-art {
+    animation: none !important;
+  }
+}
