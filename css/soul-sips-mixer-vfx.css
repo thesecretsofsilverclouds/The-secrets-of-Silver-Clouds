@@ -100,6 +100,56 @@
   50% { filter: brightness(.6) saturate(.8); }
   78% { filter: brightness(.79) saturate(.9); }
 }
+/* Keep transparent portraits on a steady layer on mobile GPUs. The canvas
+   supplies the coloured glow without filtering a moving image rectangle. */
+@media (max-width: 760px) {
+  .ss-widget.ss-vfx-enhanced .ss-spirits .ss-spirit {
+    filter: none;
+    backface-visibility: hidden;
+  }
+  .ss-widget.ss-vfx-enhanced.ss-vfx-tasting .ss-spirits.ss-visible .ss-spirit {
+    animation-name: ssMixerVfxSipMobile;
+    will-change: transform, opacity;
+  }
+  .ss-widget.ss-vfx-enhanced.ss-vfx-tasting .ss-bar-art {
+    animation: none;
+  }
+  .ss-widget.ss-vfx-enhanced .ss-stage::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: #060e1b;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .ss-widget.ss-vfx-enhanced.ss-vfx-tasting .ss-stage::after {
+    animation: ssMixerVfxSipShade 3.4s ease both;
+  }
+}
+@keyframes ssMixerVfxSipMobile {
+  0%, 100% {
+    opacity: var(--ss-vfx-spirit-opacity,1);
+    transform: translate3d(0,0,0) scale(1);
+  }
+  40% {
+    opacity: var(--ss-vfx-spirit-opacity,1);
+    transform: translate3d(0,6px,0) scale(1.085);
+  }
+  68% {
+    opacity: .9;
+    transform: translate3d(0,10px,0) scale(1.12);
+  }
+  85% {
+    opacity: var(--ss-vfx-spirit-opacity,1);
+    transform: translate3d(0,4px,0) scale(1.03);
+  }
+}
+@keyframes ssMixerVfxSipShade {
+  0%, 100% { opacity: 0; }
+  40% { opacity: .28; }
+  75% { opacity: .16; }
+}
 @media (prefers-reduced-motion: reduce) {
   .ss-widget.ss-vfx-enhanced .ss-vfx-canvas { display: none; }
   .ss-widget.ss-vfx-enhanced.ss-vfx-emerging .ss-visible .ss-spirit,

@@ -75,8 +75,12 @@
       const rect = stage.getBoundingClientRect();
       width = rect.width; height = rect.height;
       dpr = Math.min(devicePixelRatio || 1, compact() ? 1.5 : 2);
-      canvas.width = Math.max(1, Math.round(width*dpr));
-      canvas.height = Math.max(1, Math.round(height*dpr));
+      const pixelsWide = Math.max(1, Math.round(width*dpr));
+      const pixelsHigh = Math.max(1, Math.round(height*dpr));
+      // Mobile browser chrome can resize the viewport without resizing the glass.
+      // Reassigning either dimension discards the current canvas frame.
+      if (canvas.width !== pixelsWide) canvas.width = pixelsWide;
+      if (canvas.height !== pixelsHigh) canvas.height = pixelsHigh;
       ctx.setTransform(dpr,0,0,dpr,0,0);
       measure();
       if (running() && effects.length) requestFrame();

@@ -171,7 +171,7 @@
     'glory|joy':'Golden sunshine meets the burning intensity of glory. A vivid rush, held in one glass.'
   };
   function taste() {
-    if(state.busy||!['ready','tasted'].includes(state.phase))return;
+    if(state.busy||host.classList.contains('ss-sipping')||!['ready','tasted'].includes(state.phase))return;
     state.phase='tasted';host.classList.remove('ss-sipping');void host.offsetWidth;host.classList.add('ss-sipping');
     const fs=state.mix.map(item=>byId(item.id));
     const key=fs.map(f=>f.id).sort().join('|');
