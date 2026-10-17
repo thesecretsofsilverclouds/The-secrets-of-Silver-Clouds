@@ -326,7 +326,7 @@
     train.addEventListener('focusin', () => {
         focused = true;
         // A keyboard catch at either edge must not freeze the train off screen.
-        if (active && !active.still && (trainX + trainWidth < 80 || trainX > viewportWidth - 80)) {
+        if (active && !active.still && (trainX < 24 || trainX + trainWidth > viewportWidth - 24)) {
             active.elapsed = active.duration / 2;
             render();
         }
