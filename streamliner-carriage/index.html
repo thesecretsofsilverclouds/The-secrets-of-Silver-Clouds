@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>The Streamliner maintenance carriage | Silver Clouds</title>
+  <meta name="description" content="Step aboard the Streamliner, watch magical London pass the windows and help its tiny Road Sprite crew repair the carriage.">
+  <link rel="canonical" href="https://thesecretsofsilverclouds.com/streamliner-carriage/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="The Streamliner · Small crew. Impossible commute.">
+  <meta property="og:description" content="Step aboard the Streamliner, watch magical London pass the windows and help its tiny Road Sprite crew repair the carriage.">
+  <meta property="og:url" content="https://thesecretsofsilverclouds.com/streamliner-carriage/">
+  <meta property="og:image" content="https://thesecretsofsilverclouds.com/images/streamliner-discovery/maintenance-bay.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/images/favicon-32x32.png">
+  <link rel="stylesheet" href="streamliner.css">
+  <link rel="stylesheet" href="phase-transit.css">
+  <script src="maintenance-engine.js" defer></script>
+  <script src="crew-motion.js" defer></script>
+  <script src="phase-transit.js" defer></script>
+  <script src="living-carriage.js" defer></script>
+  <script src="streamliner.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#workbench">Skip to the workbench</a>
+  <header class="masthead wrap">
+    <a class="wordmark" href="/streamliner#maintenance-carriage" aria-label="Silver Clouds, return to the Streamliner">THE SECRETS OF <strong>SILVER CLOUDS</strong></a>
+    <div class="rail-identity"><svg viewBox="0 0 48 28" aria-hidden="true"><path d="M3 23h42M9 18h27l7-5-9-8H9zM15 5v13M23 5v13M31 5v13M8 26l7-5m19 0 7 5"/></svg><span>THE STREAMLINER<small>MAINTENANCE DIVISION</small></span></div>
+    <div class="preferences"><button id="sound-toggle" aria-pressed="false">Sound off</button><button id="motion-toggle" aria-pressed="true">Motion on</button><button id="open-logbook" class="logbook-link">Your logbook <span id="logbook-count">00</span></button></div>
+  </header>
+  <main id="arrival">
+    <section class="intro wrap" aria-labelledby="experience-title">
+      <div><p class="eyebrow"><span class="status-dot"></span> THE CITY DOESN’T KEEP ITSELF MOVING</p><h1 id="experience-title">Small crew.<br><em>Impossible commute.</em></h1></div>
+      <div class="intro-copy"><p>The smallest crew on Britain’s impossible railway.</p><p>Road Sprites are the Streamliner’s tiny maintenance crew. UK rail companies began training them because they can withstand its speed, scurrying over carriage roofs and into ducts too small for human hands. Solidified-light rails carry the train; protective wards let it phase through the city.</p><p>Inside, the carriage is bigger than it looks. There’s room at the workbench, if you fancy lending a hand.</p><a href="#workbench" class="join-link">Join the crew <span aria-hidden="true">↓</span></a></div>
+    </section>
+    <section class="journey wrap" aria-label="Inside the moving Streamliner maintenance bay">
+      <div class="scene" id="journey-scene">
+        <img class="bay-art" src="/images/streamliner-discovery/maintenance-bay.png" alt="An elegant brass and midnight-blue Streamliner maintenance bay, with tiny machinery, a broad floor and a window over London." width="1672" height="941" fetchpriority="high">
+        <div class="journey-window" aria-hidden="true"><div class="moving-london scene-layer" id="view-a"></div><div class="moving-london scene-layer" id="view-b"></div><div class="phase-echo"></div><div class="speed-streaks"></div><div class="window-mist"></div><div class="window-reflection"></div><div class="phase-wave"></div><div class="glass-prism"></div></div>
+        <div class="ward-aura" aria-hidden="true"></div><div class="phase-bloom" aria-hidden="true"></div>
+        <div class="phase-architecture" aria-hidden="true"><svg viewBox="0 0 1000 620" preserveAspectRatio="none"><defs><linearGradient id="wall-fade"><stop stop-color="#9bcae5" stop-opacity="0"/><stop offset=".25" stop-color="#9bcae5" stop-opacity=".55"/><stop offset=".7" stop-color="#d9d7b5" stop-opacity=".4"/><stop offset="1" stop-color="#9bcae5" stop-opacity="0"/></linearGradient></defs><g fill="url(#wall-fade)" stroke="#c7ebef" stroke-opacity=".4"><path d="M80 20h36v580H80zm260 0h30v580h-30zm260 0h30v580h-30zm260 0h36v580h-36zM50 165h880v18H50zm0 205h880v18H50zM50 575h880v25H50z"/><path d="M147 44h155v96H147zm260 0h155v96H407zm260 0h155v96H667zM147 215h155v120H147zm260 0h155v120H407zm260 0h155v120H667zM147 420h155v120H147zm260 0h155v120H407zm260 0h155v120H667z" fill-opacity=".18"/></g><g fill="none" stroke="#f3d5a0" stroke-opacity=".55" stroke-width="2"><path d="M147 90h155m-78-46v96m183-50h155m-77-46v96m182-50h155m-78-46v96M147 273h155m-78-58v120m183-62h155m-77-58v120m182-62h155m-78-58v120M147 478h155m-78-58v120m183-62h155m-77-58v120m182-62h155m-78-58v120"/></g></svg></div>
+        <div class="warmth" aria-hidden="true"></div><div class="scene-lightspill" aria-hidden="true"></div><div class="floor-reflections" aria-hidden="true"><div id="floor-a"></div><div id="floor-b"></div></div><div class="lamp-pool" aria-hidden="true"></div><div class="air-current" aria-hidden="true"><i></i><i></i><i></i></div><div class="service-glow" aria-hidden="true"></div><div class="access-duct" aria-hidden="true"><i></i><b></b><b></b><b></b></div><div class="chime-visual" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="scene-top"><span><i class="status-dot"></i> <span id="transit-state">AT THE PLATFORM</span></span><span id="journey-route">A hidden station</span><span>CAR 03 <b>•</b> <span id="shift-number">SHIFT 01</span></span></div>
+        <figure class="bay-mate"><canvas id="bay-portrait" width="140" height="250" aria-label="A cheerful Road Sprite in blue watches the ward gauges"></canvas><figcaption id="blue-caption">Wards holding. Probably.</figcaption></figure>
+        <canvas id="crew-runway" class="crew-runway" aria-label="Shades and Orange running through the maintenance bay"></canvas>
+        <div class="hatch-label" aria-hidden="true"><span></span>CREW ACCESS</div>
+        <div class="scene-bottom"><p id="journey-caption" aria-live="polite">A quiet platform. A little work before the city wakes.</p><span class="crossing-marker" id="crossing-marker">SPATIAL WARDS / STANDING BY</span></div>
+        <div class="installation-toast" id="installation-toast" role="status" hidden><span class="eyebrow">SIGNED OFF · CAR 03</span><strong id="installation-title">A little light, restored.</strong><span id="installation-note">Your circuit is now part of the journey.</span></div>
+      </div>
+      <div class="transit-console"><div class="transit-view"><span>BEYOND THE GLASS</span><strong id="view-title">A hidden station</strong></div><div class="transit-pace"><div><span>TRAVEL PACE</span><strong id="transit-speed">Stationary</strong></div><div class="pace-track" aria-hidden="true"><i id="pace-fill"></i></div></div><div class="transit-actions"><button id="hold-journey" aria-pressed="false">Linger here <span aria-hidden="true">Ⅱ</span></button><button id="watch-crossing">Depart &amp; phase <span aria-hidden="true">↗</span></button></div></div>
+      <div class="journey-footnote"><span><i></i> SPATIAL WARDS HOLDING</span><span id="crew-status">The small spaces are their speciality. The big ideas can be yours.</span><span>EVERYDAY MAGIC / LONDON</span></div>
+    </section>
+    <section class="crew-deck wrap" aria-label="The carriage crew">
+      <div class="crew-duty orange-duty"><span class="crew-bead" aria-hidden="true"></span><div><strong>Orange</strong><span id="orange-duty">Salvage &amp; retrieval</span></div></div>
+      <div class="crew-duty shades-duty"><span class="crew-bead" aria-hidden="true"></span><div><strong>Shades</strong><span id="shades-duty">Ducts, fittings &amp; small spaces</span></div></div>
+      <div class="crew-duty blue-duty"><span class="crew-bead" aria-hidden="true"></span><div><strong>Blue</strong><span id="blue-duty">Keeping an eye on the wards</span></div></div>
+      <button id="request-salvage" class="salvage-call">Send Orange for salvage <span aria-hidden="true">↗</span></button>
+    </section>
+    <div class="carriage-findings wrap" aria-label="Small things around the carriage">
+      <details class="carriage-find"><summary>A note by the hatch</summary><p>“Large hands: leave it here. Small hands: please bring it back working.” Underneath, in much smaller writing: “No promises.”</p></details>
+      <details class="carriage-find"><summary>The carriage plan</summary><p>The interior measurements run off the edge of the paper. Someone has added: “Yes, it fits. The outside is not your department.”</p></details>
+      <details class="carriage-find"><summary>A lost-property label</summary><p>One bent teaspoon. Three mismatched screws. A tag that reads: “If Orange calls it salvage, check the passenger’s pocket first.”</p></details>
+      <details class="carriage-find"><summary>The quiet-carriage notice</summary><p>“Noise-cancelling charms in service. Please do not tune the announcement ring to the same note as the kettle.”</p></details>
+    </div>
+    <section class="workshop wrap" id="workbench" aria-labelledby="workbench-title">
+      <div class="section-line"><p class="eyebrow">A PAIR OF HANDS MAKES A DIFFERENCE</p><span id="job-index">JOB 01 / THE READING LIGHTS</span></div>
+      <div class="workshop-grid">
+        <aside class="job-ticket" aria-labelledby="job-title">
+          <div class="ticket-head"><span>THE LITTLE JOB BOARD</span><span class="ticket-number">№ <b id="ticket-number">001</b></span></div><p class="dispatch-note" id="dispatch-note" role="status" hidden></p>
+          <p class="ticket-kicker" id="job-category">CARRIAGE COMFORT</p><h2 id="job-title">Steady the carriage lights</h2><p id="job-brief"></p>
+          <div class="job-needs" id="job-needs" aria-label="What this repair needs"></div>
+          <details class="hint"><summary>A word from the crew <span>+</span></summary><p id="job-hint"></p></details>
+          <div class="crew-conversation"><canvas id="shades-portrait" width="180" height="240" aria-label="Shades, wearing a grey beanie and dark glasses"></canvas><div><span>SHADES</span><p id="sprite-line">“Big hands. Small spaces. You’ll do nicely.”</p></div></div>
+          <div class="ticket-stamp" id="ticket-stamp" hidden>GOOD WORK,<br>CREW.</div>
+        </aside>
+        <div class="bench">
+          <div class="bench-heading"><div><p class="eyebrow">MAKE SOMETHING USEFUL</p><h2 id="workbench-title">Your little workbench.</h2></div><button id="clear-build" class="quiet-button">Clear the bench <span aria-hidden="true">↺</span></button></div>
+          <p class="bench-instruction">Choose a source, a control and an output from the drawer. Tune the energy, then test the charm against the job slip.</p>
+          <div class="rig" id="rig" aria-label="Three-part charm assembly">
+            <svg class="circuit-lines" viewBox="0 0 900 180" preserveAspectRatio="none" aria-hidden="true"><path class="circuit-bed" d="M110 90H790M110 104H790"/><path class="circuit-current" d="M110 90H790"/><circle cx="450" cy="90" r="70"/></svg>
+            <button class="socket" data-slot="power" aria-label="Power socket, empty"><span class="socket-label">01 / SOURCE</span><span class="socket-art">+</span><span class="socket-name">Give it a heartbeat</span><span class="socket-action">Choose a source below</span></button>
+            <button class="socket" data-slot="control" aria-label="Control socket, empty"><span class="socket-label">02 / CONTROL</span><span class="socket-art">+</span><span class="socket-name">Give it some manners</span><span class="socket-action">Choose a control below</span></button>
+            <button class="socket" data-slot="output" aria-label="Output socket, empty"><span class="socket-label">03 / OUTPUT</span><span class="socket-art">+</span><span class="socket-name">Give it a purpose</span><span class="socket-action">Choose an output below</span></button>
+            <div class="bench-output" id="bench-output" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="energy-control"><label for="energy">ENERGY <strong><span id="energy-value">50</span><small> / 100</small></strong></label><input id="energy" type="range" min="0" max="100" value="50" aria-describedby="energy-note"><span id="energy-note">A steady hand goes a long way.</span></div>
+          <div class="parts-label"><span>THE SALVAGE DRAWER</span><span id="salvage-status">Orange keeps the useful things.</span></div>
+          <div class="parts-drawer" id="parts-drawer" aria-label="Choose salvaged components"></div>
+          <div class="bench-actions"><button id="test-charm" class="primary-button">Test the charm <span aria-hidden="true">↗</span></button><button id="install-charm" class="install-button" disabled>Ask Shades to fit it <span aria-hidden="true">→</span></button><button id="next-job" class="install-button" hidden>Ask for the next job <span aria-hidden="true">→</span></button><span class="assembly-status" id="assembly-status">0 / 3 parts fitted</span></div>
+          <section class="bench-readout" id="bench-readout" aria-labelledby="readout-title" hidden><div class="readout-heading"><span class="eyebrow" id="readout-kicker">BENCH TEST</span><strong id="readout-title">Let’s see what it does.</strong></div><div class="readout-checks" id="readout-checks"></div><p id="readout-description" role="status"></p><p id="readout-behavior"></p></section>
+          <p class="bench-notice" id="bench-notice" role="status">A source, a control, an output. Your first circuit starts here.</p>
+        </div>
+      </div>
+    </section>
+    <section class="crew-note wrap"><div><p class="eyebrow">A PLACE FOR YOUR WORK</p><h2>Leave a little of yourself<br>between the stations.</h2></div><p>There’s no rush. Stay for a crossing, watch the crew, or lend a hand. The conductor sends fresh maintenance slips as the journey continues; your signed-off circuits stay in the logbook.</p><button id="open-logbook-bottom" class="join-link">Open your logbook <span aria-hidden="true">↗</span></button></section>
+    <footer class="footer wrap"><span>THE SECRETS OF SILVER CLOUDS</span><span>Between the extraordinary, someone has to change the lights.</span><span>THE STREAMLINER</span></footer>
+  </main>
+  <dialog id="logbook-dialog" aria-labelledby="logbook-title"><div class="logbook-top"><p class="eyebrow">THE STREAMLINER / YOUR WORK</p><button id="close-logbook" aria-label="Close logbook">×</button></div><h2 id="logbook-title">A little record<br>of useful things.</h2><p id="logbook-summary"></p><div id="logbook-entries"></div><div class="logbook-fineprint"><span id="save-status">Saved on this device.</span><button id="reset-progress">Start a fresh logbook</button></div><div id="reset-confirmation" hidden><p>This clears only your local repairs and discoveries. Start again?</p><button id="confirm-reset">Start fresh</button><button id="cancel-reset">Keep my logbook</button></div></dialog>
+  <div class="sr-only" id="action-announcement" role="status" aria-live="polite"></div>
+  <script id="phase-environments" type="application/json">[{"id":"hidden-station","title":"The platform between crossings","src":"assets/phase-hidden-station.webp","kind":"station","palette":["#6ec9df","#c6aa79","#596f87"],"caption":"The platform lamps hold steady. Somewhere beyond the doors, a passenger is looking for their ticket."},{"id":"london","title":"London riverside","src":"assets/phase-london.png","kind":"city","palette":["#d7a365","#6377b8","#314367"],"caption":"Warm windows slip past. The carriage follows its charmed rails through the city."},{"id":"big-ben-plaza","title":"New Big Ben, beyond the glass","src":"assets/phase-big-ben-plaza.webp","kind":"city","palette":["#d8ac78","#6d9fbb","#6c6c99"],"caption":"New Big Ben rises beyond the glass. The navigation charm quietly corrects the course."},{"id":"london-day","title":"London in the light","src":"assets/phase-london-day.jpg","kind":"city","palette":["#d0ba86","#8abdc8","#849da8"],"caption":"Sunlight settles on the rooftops. An expanded carriage still needs someone to check the small fittings."},{"id":"sanctuary","title":"The Sanctuary above London","src":"assets/phase-cloud-sanctuary.webp","kind":"cloud","palette":["#e7a16c","#a57dc8","#629ec4"],"caption":"Above London, the Sanctuary catches the last light. Down here, the wards keep their quiet watch."},{"id":"london-night","title":"The evening approach","src":"assets/phase-london-night.jpg","kind":"city","palette":["#8d9dc6","#b58ca6","#d7ab73"],"caption":"The city lights gather beneath the rails. The next platform is not far now."}]</script>
+</body>
+</html>
