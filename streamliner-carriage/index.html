@@ -16,11 +16,13 @@
   <link rel="icon" href="/images/favicon-32x32.png">
   <link rel="stylesheet" href="streamliner.css">
   <link rel="stylesheet" href="phase-transit.css">
+  <link rel="stylesheet" href="narration.css?v=20261018">
   <script src="maintenance-engine.js" defer></script>
   <script src="crew-motion.js" defer></script>
   <script src="phase-transit.js" defer></script>
   <script src="living-carriage.js" defer></script>
-  <script src="streamliner.js" defer></script>
+  <script src="narration.js?v=20261018" defer></script>
+  <script src="streamliner.js?v=20261018-narration" defer></script>
 </head>
 <body>
   <a class="skip" href="#workbench">Skip to the workbench</a>
@@ -32,7 +34,7 @@
   <main id="arrival">
     <section class="intro wrap" aria-labelledby="experience-title">
       <div><p class="eyebrow"><span class="status-dot"></span> THE CITY DOESN’T KEEP ITSELF MOVING</p><h1 id="experience-title">Small crew.<br><em>Impossible commute.</em></h1></div>
-      <div class="intro-copy"><p>The smallest crew on Britain’s impossible railway.</p><p>Road Sprites are the Streamliner’s tiny maintenance crew. UK rail companies began training them because they can withstand its speed, scurrying over carriage roofs and into ducts too small for human hands. Solidified-light rails carry the train; protective wards let it phase through the city.</p><p>Inside, the carriage is bigger than it looks. There’s room at the workbench, if you fancy lending a hand.</p><a href="#workbench" class="join-link">Join the crew <span aria-hidden="true">↓</span></a></div>
+      <div class="intro-copy"><p>The smallest crew on Britain’s impossible railway.</p><p>Road Sprites are the Streamliner’s tiny maintenance crew. UK rail companies began training them because they can withstand its speed, scurrying over carriage roofs and into ducts too small for human hands. Solidified-light rails carry the train; protective wards let it phase through the city.</p><p>Inside, the carriage is bigger than it looks. There’s room at the workbench, if you fancy lending a hand.</p><div class="carriage-entry"><button id="board-with-sound" class="join-link" aria-describedby="narration-status"><span id="boarding-label">Step aboard</span> <span aria-hidden="true">↓</span></button><button id="board-quietly" class="quiet-button">Join quietly</button></div><p class="narration-note"><span id="narration-status" role="status">With narrated sound · 5 minutes</span><a href="between-stops.html">Read the scene</a></p></div>
     </section>
     <section class="journey wrap" aria-label="Inside the moving Streamliner maintenance bay">
       <div class="scene" id="journey-scene">
@@ -98,6 +100,7 @@
   </main>
   <dialog id="logbook-dialog" aria-labelledby="logbook-title"><div class="logbook-top"><p class="eyebrow">THE STREAMLINER / YOUR WORK</p><button id="close-logbook" aria-label="Close logbook">×</button></div><h2 id="logbook-title">A little record<br>of useful things.</h2><p id="logbook-summary"></p><div id="logbook-entries"></div><div class="logbook-fineprint"><span id="save-status">Saved on this device.</span><button id="reset-progress">Start a fresh logbook</button></div><div id="reset-confirmation" hidden><p>This clears only your local repairs and discoveries. Start again?</p><button id="confirm-reset">Start fresh</button><button id="cancel-reset">Keep my logbook</button></div></dialog>
   <div class="sr-only" id="action-announcement" role="status" aria-live="polite"></div>
+  <audio id="carriage-narration" data-src="audio/between-stops.mp3" preload="none" hidden></audio>
   <script id="phase-environments" type="application/json">[{"id":"hidden-station","title":"The platform between crossings","src":"assets/phase-hidden-station.webp","kind":"station","palette":["#6ec9df","#c6aa79","#596f87"],"caption":"The platform lamps hold steady. Somewhere beyond the doors, a passenger is looking for their ticket."},{"id":"london","title":"London riverside","src":"assets/phase-london.png","kind":"city","palette":["#d7a365","#6377b8","#314367"],"caption":"Warm windows slip past. The carriage follows its charmed rails through the city."},{"id":"big-ben-plaza","title":"New Big Ben, beyond the glass","src":"assets/phase-big-ben-plaza.webp","kind":"city","palette":["#d8ac78","#6d9fbb","#6c6c99"],"caption":"New Big Ben rises beyond the glass. The navigation charm quietly corrects the course."},{"id":"london-day","title":"London in the light","src":"assets/phase-london-day.jpg","kind":"city","palette":["#d0ba86","#8abdc8","#849da8"],"caption":"Sunlight settles on the rooftops. An expanded carriage still needs someone to check the small fittings."},{"id":"sanctuary","title":"The Sanctuary above London","src":"assets/phase-cloud-sanctuary.webp","kind":"cloud","palette":["#e7a16c","#a57dc8","#629ec4"],"caption":"Above London, the Sanctuary catches the last light. Down here, the wards keep their quiet watch."},{"id":"london-night","title":"The evening approach","src":"assets/phase-london-night.jpg","kind":"city","palette":["#8d9dc6","#b58ca6","#d7ab73"],"caption":"The city lights gather beneath the rails. The next platform is not far now."}]</script>
 </body>
 </html>

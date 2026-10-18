@@ -21,7 +21,7 @@
   let busy=false,busyTimer=0,toastTimer=0,destroyed=false,state=null,crew=null,transit=null,living=null,salvageBusy=false,dragging=false;
   let hatchGeometry=null,fixtureObserver=null;
   const HATCH={x:548,y:606,width:141,height:59,artWidth:1672,artHeight:941};
-  let soundEnabled=false,audioContext=null,humGain=null,humOscillators=[],motorWobble=null;
+  let soundEnabled=false,soundWanted=false,narration=null,audioContext=null,humGain=null,humOscillators=[],motorWobble=null;
   let transitSpeed=0,soundRequest=0;
   const phaseVoices=new Set();
   let motion=true,manualMotion=null;
@@ -33,6 +33,8 @@
   const sockets=[...document.querySelectorAll('.socket')];
   const scene=$('journey-scene'),rig=$('rig'),dialog=$('logbook-dialog');
   const announce=text=>{$('action-announcement').textContent=text;};
+  narration=window.StreamlinerNarration.create({audio:$('carriage-narration'),onChange:()=>{renderSound();mixHum();},onInterrupted:()=>setSound(false)});
+  renderSound();
   const focusBench=()=>{document.querySelector('.bench').scrollIntoView({behavior:motion?'smooth':'auto',block:'center'});$('test-charm').focus({preventScroll:true});};
   function syncLivingActivity(){living?.activity({busy:busy||salvageBusy||dialog.open,editing:dragging||document.activeElement?.id==='energy'});}
   function setBusy(value){busy=value;document.body.dataset.busy=String(value);render(state);syncLivingActivity();}
@@ -49,6 +51,7 @@
   }
   function note(frequency,time=.25,delay=0,type='sine',volume=.025){
     if(!soundEnabled||!audioContext||audioContext.state!=='running')return;
+    if(narration.getState().playing)volume*=.45;
     const start=audioContext.currentTime+delay,osc=audioContext.createOscillator(),gain=audioContext.createGain();
     osc.type=type;osc.frequency.value=frequency;gain.gain.setValueAtTime(0,start);gain.gain.linearRampToValueAtTime(volume,start+.015);gain.gain.exponentialRampToValueAtTime(.0001,start+time);
     osc.connect(gain);gain.connect(audioContext.destination);osc.start(start);osc.stop(start+time+.03);
@@ -65,16 +68,38 @@
       note(220,.9,0,'sine',.022);note(329.63,1.2,.16,'sine',.015);
       const voice=audioContext.createOscillator(),gain=audioContext.createGain(),now=audioContext.currentTime;
       voice.type='sine';voice.frequency.setValueAtTime(73.4,now);voice.frequency.exponentialRampToValueAtTime(146.8,now+2.1);
-      gain.gain.setValueAtTime(0,now);gain.gain.linearRampToValueAtTime(.022,now+.8);gain.gain.exponentialRampToValueAtTime(.0001,now+3.1);
+      gain.gain.setValueAtTime(0,now);gain.gain.linearRampToValueAtTime(narration.getState().playing ? .01 : .022,now+.8);gain.gain.exponentialRampToValueAtTime(.0001,now+3.1);
       voice.connect(gain);gain.connect(audioContext.destination);phaseVoices.add(voice);voice.onended=()=>{phaseVoices.delete(voice);voice.disconnect();gain.disconnect();};voice.start(now);voice.stop(now+3.2);
     }else if(kind==='cross'){note(98,1.1,0,'triangle',.014);note(587.33,.8,.03,'sine',.014);}
     else if(kind==='resolve'){note(440,.9,0,'sine',.015);note(659.25,1.1,.13,'sine',.012);}
     else if(kind==='depart')note(174.61,1.3,0,'sine',.013);
     else if(kind==='arrive'){note(329.63,.6,0,'sine',.012);note(261.63,.9,.25,'sine',.01);}
   }
-  async function setSound(enabled){
+  function mixHum(){
+    if(!audioContext||!humGain||audioContext.state!=='running')return;
+    const target=soundEnabled?(.3+transitSpeed*.5)*(narration.getState().playing ? .4 : 1):0;
+    humGain.gain.setTargetAtTime(target,audioContext.currentTime,.5);
+  }
+  function renderSound(){
+    if(destroyed)return;
+    const voice=narration.getState();
+    $('sound-toggle').textContent=soundWanted?'Sound on':'Sound off';
+    $('sound-toggle').setAttribute('aria-pressed',String(soundWanted));
+    $('sound-toggle').setAttribute('aria-label',soundWanted?'Pause narration and carriage sound':voice.ended?'Turn carriage sound on':'Turn on narration and carriage sound');
+    $('boarding-label').textContent=voice.ended?'Hear the scene again':voice.failed||voice.blocked?'Try narrated sound':voice.playing?'You’re aboard':voice.entered?'Continue the scene':'Step aboard';
+    $('board-with-sound').dataset.playing=String(voice.playing);
+    $('board-with-sound').disabled=voice.pending;
+    const text=voice.failed?'The scene couldn’t load. Tap again to retry.':voice.blocked?'Tap again to hear the scene.':voice.ended?'The scene has ended. The journey continues.':voice.pending?'Opening the carriage…':voice.playing?'Between stops · A story in the carriage':voice.entered?'Narration paused. Your place is kept.':'With narrated sound · 5 minutes';
+    if($('narration-status').textContent!==text)$('narration-status').textContent=text;
+  }
+  async function setSound(enabled,{restartNarration=false}={}){
     const request=++soundRequest;
-    if(enabled){
+    soundWanted=Boolean(enabled)&&!destroyed&&!document.hidden;
+    // Start HTML audio inside the user's gesture, independently of Web Audio.
+    const voiceRequest=narration.setEnabled(soundWanted,{restart:restartNarration});
+    renderSound();
+    if(soundWanted){
+      let humReady=false;
       try{
         if(!audioContext){
           const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)throw Error('Sound unavailable');
@@ -84,18 +109,29 @@
           }
           const wobble=audioContext.createOscillator();motorWobble=audioContext.createGain();wobble.frequency.value=1.7;motorWobble.gain.value=scene.classList.contains('fault-lighting') ? .09 : .006;wobble.connect(motorWobble);motorWobble.connect(humGain.gain);wobble.start();humOscillators.push(wobble);
         }
-        await audioContext.resume();if(request!==soundRequest||destroyed||document.hidden)return;
-        humGain.gain.setTargetAtTime(.3+transitSpeed*.5,audioContext.currentTime,.5);soundEnabled=true;soundCue('fit');
-      }catch{if(request!==soundRequest||destroyed)return;soundEnabled=false;announce('Sound is unavailable in this browser. You can still work with the crew.');}
+        await audioContext.resume();
+        if(request!==soundRequest||destroyed||document.hidden)return;
+        humReady=audioContext.state==='running';soundEnabled=humReady;mixHum();
+      }catch{if(request!==soundRequest||destroyed)return;soundEnabled=false;}
+      const voiceReady=await voiceRequest;
+      if(request!==soundRequest||destroyed||document.hidden)return;
+      if(!humReady&&!voiceReady){soundWanted=false;announce('Sound could not start. Tap Step aboard to try again; the carriage is still yours to explore.');}
     }else{
       soundEnabled=false;
       for(const voice of phaseVoices){try{voice.stop();}catch{}}phaseVoices.clear();
       if(audioContext&&humGain){humGain.gain.cancelScheduledValues(audioContext.currentTime);humGain.gain.setValueAtTime(0,audioContext.currentTime);await audioContext.suspend().catch(()=>{});}
     }
     if(request!==soundRequest||destroyed)return;
-    $('sound-toggle').textContent=soundEnabled?'Sound on':'Sound off';$('sound-toggle').setAttribute('aria-pressed',String(soundEnabled));
+    renderSound();
   }
-  $('sound-toggle').addEventListener('click',()=>setSound(!soundEnabled));
+  $('sound-toggle').addEventListener('click',()=>setSound(!soundWanted));
+  function stepAboard(quiet){
+    if(quiet)setSound(false);
+    else if(!narration.getState().playing)setSound(true,{restartNarration:narration.getState().ended});
+    document.querySelector('.journey').scrollIntoView({behavior:motion?'smooth':'auto',block:'start'});
+  }
+  $('board-with-sound').addEventListener('click',()=>stepAboard(false));
+  $('board-quietly').addEventListener('click',()=>stepAboard(true));
   $('motion-toggle').addEventListener('click',()=>{manualMotion=!motion;try{localStorage.setItem('streamliner-local-motion',manualMotion?'on':'off');}catch{}applyMotion();});
   reduced.addEventListener('change',applyMotion);
   function resolveArt(src){return window.StreamlinerEmbeddedAssets?.[src.split('/').pop()]||src;}
@@ -153,7 +189,7 @@
         $('pace-fill').style.width=`${Math.min(100,speed/1.6*100).toFixed(1)}%`;
         $('transit-speed').textContent=!snapshot.motion?'At ease':speed<.015?'Stationary':snapshot.stage==='arriving'?'Slowing down':speed>1.08?'Phase surge':snapshot.stage==='departing'?'Pulling away':'Cruising';
         if(soundEnabled&&audioContext?.state==='running'){
-          humGain.gain.setTargetAtTime(.3+speed*.5,audioContext.currentTime,.4);
+          mixHum();
           humOscillators.slice(0,3).forEach((oscillator,index)=>oscillator.frequency.setTargetAtTime([73.4,110,146.8][index]*(1+speed*.11),audioContext.currentTime,.5));
         }
       },
@@ -395,7 +431,7 @@
   ]});living.start();
   prepareTransit().catch(()=>{$('transit-state').textContent='NAVIGATION CHARM RESTING';$('watch-crossing').disabled=true;});
   document.addEventListener('visibilitychange',()=>{document.body.classList.toggle('is-away',document.hidden);if(document.hidden)setSound(false);});
-  window.addEventListener('pagehide',()=>{destroyed=true;clearTimeout(busyTimer);clearTimeout(toastTimer);fixtureObserver?.disconnect();window.removeEventListener('resize',alignHatch);scene.querySelector('.bay-art').removeEventListener('load',alignHatch);scene.querySelector('.window-mist').removeEventListener('animationend',finishWindowClear);living?.destroy();crew?.destroy();transit?.destroy();setSound(false);});
+  window.addEventListener('pagehide',()=>{destroyed=true;clearTimeout(busyTimer);clearTimeout(toastTimer);fixtureObserver?.disconnect();window.removeEventListener('resize',alignHatch);scene.querySelector('.bay-art').removeEventListener('load',alignHatch);scene.querySelector('.window-mist').removeEventListener('animationend',finishWindowClear);living?.destroy();crew?.destroy();transit?.destroy();setSound(false);narration.destroy();if(audioContext)audioContext.close().catch(()=>{});});
   // A history-restored page must recreate timers/canvas rather than keep a destroyed controller.
   window.addEventListener('pageshow',event=>{if(event.persisted)location.reload();});
   // The test remains a classic-script page, so its assets also work from file://.
