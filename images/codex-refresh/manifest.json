@@ -594,6 +594,24 @@
         "thumb": "images/asset-injection-20260916/duskkin-hunt-hand-fixed-thumb.webp",
         "caption": "Zara faces the Iron Bloom Behemoth.",
         "alt": "Zara braces with her sword and a crimson blood-magic charge in her free hand, facing the armoured Iron Bloom Behemoth in an overgrown city."
+      },
+      {
+        "src": "images/gallery-refresh/duskkin-key-art-reaching.webp",
+        "thumb": "images/gallery-refresh/duskkin-key-art-reaching-thumb.webp",
+        "alt": "A red-haired Duskkin hunter in a black face mask, his red eyes glowing, reaches towards the viewer with a clawed gauntlet dripping blood, his spiked black armour threaded with glowing tubes of blood beneath a crimson moon and Gothic spires, beside the blood-spattered title ‘DUSKKIN’ and the line ‘Blood fuels a brighter tomorrow’.",
+        "caption": "A Duskkin hunter beneath the blood moon."
+      },
+      {
+        "src": "images/gallery-refresh/duskkin-key-art-title.webp",
+        "thumb": "images/gallery-refresh/duskkin-key-art-title-thumb.webp",
+        "alt": "A masked, red-haired Duskkin hunter in heavy black armour set with glass chambers of glowing blood looms behind the blood-spattered title ‘DUSKKIN’, stretching out a dripping clawed hand, with a red moon and bat-circled Gothic towers beyond.",
+        "caption": "Duskkin — armour that runs on blood."
+      },
+      {
+        "src": "images/gallery-refresh/duskkin-key-art-blood-core.webp",
+        "thumb": "images/gallery-refresh/duskkin-key-art-blood-core-thumb.webp",
+        "alt": "A Duskkin woman with waist-length red hair, a black face mask and a horned headpiece crouches on a stone ledge beneath the title ‘DUSKKIN’ and glances back over her shoulder, a glowing red core set into her red-veined black armour as ribbons of blood curl around her beneath a pale moon.",
+        "caption": "A Duskkin hunter keeps watch over the spires."
       }
     ],
     "type": "concept",
@@ -818,6 +836,12 @@
         "caption": "Emily Grimm — combat.",
         "thumb": "images/codex-refresh/emily-combat-thumb.webp",
         "alt": "Emily Grimm with violet eyes and short dark hair, combat expression, framed by purple shadow magic."
+      },
+      {
+        "src": "images/gallery-refresh/emily-westminster-shadow.webp",
+        "thumb": "images/gallery-refresh/emily-westminster-shadow-thumb.webp",
+        "alt": "Emily Grimm, violet-eyed in her black uniform and red bow, walks a rain-slicked, lamplit Westminster street as one side of her body unravels into shadow, while a towering mass of black, violet-flecked tendrils with glowing eyes looms behind her, a red double-decker bus and the clock tower beyond.",
+        "caption": "Emily Grimm — shadows over Westminster."
       }
     ],
     "type": "character",
@@ -1182,6 +1206,12 @@
         "thumb": "images/gallery-refresh/demons-legion-gothic-stage-thumb.webp",
         "alt": "Balthazar, Anarchy, Gabriel, Goaden, Rose, Truth and the Dread Twins pose on a candlelit stage in a gothic hall beneath a banner reading ‘Music Ritual Rebellion Forever’.",
         "caption": "The Demon’s Legion — music, ritual, rebellion."
+      },
+      {
+        "src": "images/gallery-refresh/gabriel-rooftop-blood-wings.webp",
+        "thumb": "images/gallery-refresh/gabriel-rooftop-blood-wings-thumb.webp",
+        "alt": "Gabriel stands on a moonlit rooftop beneath a red halo, blood spiralling from his raised tattooed hand into a crimson blade, dripping blood-red wings spread behind his black leather jacket and red hoodie, with a domed skyline glowing across the river.",
+        "caption": "Gabriel on the moonlit rooftops."
       }
     ],
     "type": "character",
