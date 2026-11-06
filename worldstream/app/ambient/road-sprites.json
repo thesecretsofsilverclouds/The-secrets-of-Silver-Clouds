@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "runners": [
+    {
+      "id": "orange",
+      "url": "road-sprite-orange-run-strip.webp",
+      "frameWidth": 192,
+      "frameHeight": 224,
+      "frames": 22,
+      "fps": 24,
+      "facing": "right",
+      "fallback": "road-sprite-orange-still.webp",
+      "baseline": 218
+    },
+    {
+      "id": "shades",
+      "url": "road-sprite-shades-run-strip.webp",
+      "frameWidth": 192,
+      "frameHeight": 224,
+      "frames": 16,
+      "fps": 24,
+      "facing": "right",
+      "fallback": "road-sprite-shades-still.webp",
+      "baseline": 218
+    }
+  ],
+  "sleepers": [
+    {
+      "id": "orange",
+      "url": "road-sprite-orange-sleep.webp",
+      "width": 512,
+      "height": 394,
+      "bakedZzz": false
+    },
+    {
+      "id": "shades",
+      "url": "road-sprite-shades-sleep.webp",
+      "width": 512,
+      "height": 414,
+      "bakedZzz": true
+    }
+  ]
+}

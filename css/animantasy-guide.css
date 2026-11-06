@@ -1,0 +1,44 @@
+/* Extend the existing Animantasy design without changing its palette or artwork. */
+html { scroll-padding-top: 24px; }
+a { color: var(--accent-blue); text-underline-offset: 4px; }
+.btn { color: #fff; }
+a:focus-visible, summary:focus-visible, .guide-table-wrap:focus-visible { outline: 2px solid var(--accent-blue); outline-offset: 5px; }
+.guide-skip { position: absolute; top: -80px; left: 20px; z-index: 10; background: var(--primary); padding: 12px 16px; }
+.guide-skip:focus { top: 12px; }
+.guide-home { margin-top: 24px; font-size: .95rem; }
+.guide-byline, .guide-disclosure, .guide-format { color: #b9c9dd; font-size: .9rem; }
+.guide-lede { font-size: 1.2rem; max-width: 850px; }
+.guide-jumps { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 28px; font-size: .95rem; }
+.guide-book-grid { grid-template-columns: repeat(2,minmax(0,1fr)); align-items: stretch; }
+.guide-book { display: flex; flex-direction: column; min-width: 0; scroll-margin-top: 24px; }
+.guide-book h3 span { display: block; margin-top: 7px; color: #d6c6e8; font-size: 1rem; font-weight: 400; }
+.guide-route { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--accent-blue); margin-top: 0; }
+.guide-link { display: inline-block; margin-top: auto; padding-top: 10px; font-weight: 600; }
+.guide-table-wrap { overflow-x: auto; border-radius: 16px; }
+.guide-table-wrap .comparison-table { margin: 20px 0; min-width: 600px; }
+.comparison-table tbody th { text-transform: none; font-size: 1rem; letter-spacing: 0; }
+.guide-sample { font-size: 1rem; padding: 15px 28px; }
+.guide-cast-details { margin-top: 32px; border-top: 1px solid rgba(0,240,255,.25); padding-top: 20px; }
+.guide-cast-details summary { cursor: pointer; color: var(--accent-blue); font-size: 1.1rem; }
+.cast-name a { color: inherit; }
+.guide-faq { grid-template-columns: repeat(2, minmax(0,1fr)); }
+.guide-editorial { padding-top: 24px; border-top: 1px solid rgba(255,255,255,.12); }
+.guide-editorial h2 { font-size: 1.6rem; }
+.guide-editorial p { font-size: .95rem; color: #c5d2e2; }
+@media (max-width: 600px) {
+  .hero { height: auto; min-height: 70svh; }
+  .guide-hero-copy { padding-block: 60px !important; }
+  .container { padding-inline: 20px; }
+  .grid, .guide-faq { grid-template-columns: minmax(0,1fr); gap: 22px; margin-block: 32px; }
+  .cast-grid { grid-template-columns: minmax(0,1fr); }
+  .card { padding: 24px; }
+  h2 { font-size: 2rem; }
+  .parallax-section { background-attachment: scroll; }
+  .parallax-text { padding: 26px; }
+  .guide-jumps { display: grid; gap: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card, .cast-card, .btn, .cast-card::before { transition: none; }
+  .card:hover, .cast-card:hover, .btn:hover { transform: none; }
+  .parallax-section { background-attachment: scroll; }
+}

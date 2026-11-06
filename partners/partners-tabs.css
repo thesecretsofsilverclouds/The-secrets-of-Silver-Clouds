@@ -1,0 +1,12 @@
+.partner-tabs-wrap{max-width:1200px;margin:0 auto;padding:24px 28px 0}
+.partner-tabs-label{margin:0 0 12px;color:#9ab0c6;font-size:10px;letter-spacing:.18em;text-transform:uppercase}
+.partner-tabs{display:flex;gap:28px;border-bottom:1px solid #ffffff26}
+.partner-tabs [role="tab"]{border:0;border-bottom:2px solid transparent;margin-bottom:-1px;padding:15px 2px;background:none;color:#9eafc1;font:inherit;font-size:14px;cursor:pointer;line-height:1.4}
+.partner-tabs [role="tab"][aria-selected="true"]{color:#e9e4d8;border-bottom-color:#78dce7}
+.partner-tabs [role="tab"]:hover{color:#e9e4d8}
+.partner-tabs [role="tab"]:focus-visible{outline:2px solid #78dce7;outline-offset:5px}
+.partner-tab-panel[hidden]{display:none!important}
+.partner-tab-panel:focus{outline:none}
+#audio-panel{margin-top:24px}
+
+@media(max-width:600px){.partner-tabs-wrap{padding:20px 20px 0}.partner-tabs{gap:23px}.partner-tabs [role="tab"]{font-size:12px;padding:13px 0}.partner-tabs-label{font-size:9px}#audio-panel{margin-top:20px}}

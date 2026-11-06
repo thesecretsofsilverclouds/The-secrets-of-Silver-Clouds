@@ -1,0 +1,59 @@
+# The repository had no .gitignore before Worldstream was integrated. It does
+# now, because the workshop project carries a great deal that must never reach a
+# public website repo.
+
+# ---------------------------------------------------------------- secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+.dev.vars
+.wrangler/
+
+# ------------------------------------------------------------ dependencies
+node_modules/
+
+# ------------------------------------------------------- runtime world data
+# Local simulation databases. These are a *local* world, not the authoritative
+# one: the deployed world lives in a Cloudflare Durable Object. Committing them
+# would publish a second, competing history.
+worldstream-server/data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+
+# ------------------------------------------------- workshop output, not runtime
+# Shadow-run records, review packets and generated reports. Evidence for
+# decisions already taken; nothing at runtime reads them.
+worldstream-server/lab/runs/
+worldstream-server/artifacts/
+# The same class, missed when the list above was written: 32MB of sprint
+# reports and raw test logs, the sprint handoff notes, the repetition-analysis
+# dump and the new-viewer audit. Nothing at runtime reads any of them, and a
+# public website repository is the wrong home for a workshop's working papers.
+worldstream-server/reports/
+worldstream-server/families.json
+handoff/
+NEW-VIEWER-STORY-EXPERIENCE.md
+
+# ------------------------------------------------- private: stays on this PC
+# This repository is public, so anything committed here can be read by anyone,
+# even if the site never links to it. Server code, notes and build inputs live
+# only on this machine. _config.yml keeps them out of the site build as well.
+worldstream-server/
+tools/
+partners-local/
+audio-partners-local/
+data/evidence.json
+data/animantasy-showcase/
+data/codex-character-copy.json
+data/codex-world-copy.json
+images/codex-refresh/manifest.json
+worldstream/app/atmosphere-preview.html
+worldstream/app/atmosphere-preview.js
+
+# ------------------------------------------------------------------ scratch
+*.log
+.DS_Store
+Thumbs.db

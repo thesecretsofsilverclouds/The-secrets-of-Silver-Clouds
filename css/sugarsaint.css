@@ -1,0 +1,60 @@
+/* Page-specific foundations and the pink/blue SUGARSAINT palette. */
+.sugarsaint-page, .sugarsaint-page * { box-sizing: border-box; }
+.sugarsaint-page { margin: 0; --sc-panel: #151223; --sc-line: rgba(204, 153, 213, .2); }
+.sugarsaint-page::before { background: radial-gradient(ellipse at 25% 20%, rgba(170, 45, 119, .16), transparent 65%), radial-gradient(ellipse at 85% 20%, rgba(82, 78, 177, .16), transparent 65%); }
+.sugarsaint-page h1, .sugarsaint-page h2, .sugarsaint-page h3 { font-family: 'Cinzel', Georgia, serif; }
+.sugarsaint-page h1, .sugarsaint-page h2, .sugarsaint-page h3, .sugarsaint-page p, .sugarsaint-page figure { margin-top: 0; }
+.sugarsaint-page a { color: #c7c4ff; }
+.sugarsaint-page .sc-lore-read { color: #08222b; }
+.sugarsaint-page .lore-header { position: sticky; top: 0; z-index: 100; }
+.sugarsaint-page .lore-nav { margin: 0 auto; display: flex; align-items: center; flex-wrap: wrap; }
+.sugarsaint-page .lore-container { margin: 0 auto; }
+.sugarsaint-page .lore-title h1 { font-size: clamp(2rem, 3.5vw, 3.35rem); letter-spacing: .035em; margin-bottom: 10px; }
+.sugarsaint-subtitle { color: #e7b4d8; font-size: 23px; letter-spacing: .04em; margin-bottom: 22px; }
+.sugarsaint-page .lore-tags { display: flex; flex-wrap: wrap; }
+.sugarsaint-page .lore-tag { color: #e5b9da; background: rgba(214, 92, 164, .07); border-color: rgba(228, 144, 202, .24); }
+.sugarsaint-page .sc-lore-opening { grid-template-columns: .95fr 1.15fr; gap: 38px; }
+.sugarsaint-page .sugarsaint-hero { overflow: hidden; }
+.sugarsaint-page .sugarsaint-hero img { aspect-ratio: auto; width: 100%; height: auto; display: block; }
+.sugarsaint-hero-caption { padding: 15px 18px; margin: 0; color: #cdaecb; font-size: 12px; letter-spacing: .025em; border-top: 1px solid var(--sc-line); }
+.sugarsaint-page .lore-section h2 { margin-bottom: 18px; }
+.sugarsaint-page .lore-section h3 { margin-top: 28px; margin-bottom: 12px; color: #e7b4d8; }
+.sugarsaint-page .lore-section p { margin-bottom: 16px; }
+.sugarsaint-page .lore-section > p:last-child { margin-bottom: 0; }
+.sugarsaint-film { overflow: hidden; }
+.sugarsaint-film-heading { display: grid; grid-template-columns: 1fr 240px; gap: 32px; align-items: center; margin-bottom: 22px; }
+.sugarsaint-film-heading p:last-child { margin-bottom: 0; max-width: 68ch; }
+.sugarsaint-page .sugarsaint-eyebrow { color: #d799c5; font-size: 11px; line-height: 1.6; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 10px; }
+.sugarsaint-logo { display: block; width: 100%; height: auto; }
+.sugarsaint-film-frame { overflow: hidden; background: #090911; border: 1px solid var(--sc-line); border-radius: 8px; margin: 0; }
+.sugarsaint-film-frame video { display: block; width: 100%; height: auto; max-height: 70vh; aspect-ratio: 16/9; object-fit: contain; background: #090911; }
+.sugarsaint-film-frame figcaption { padding: 14px 18px; font-size: 12px; color: #b6a9c1; border-top: 1px solid var(--sc-line); }
+.sugarsaint-page .abilities-list { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 24px 0; padding: 0; }
+.sugarsaint-page .abilities-list li { border-left-color: #bb79c7; border-radius: 7px; }
+.sugarsaint-page .abilities-list strong { display: block; margin-bottom: 8px; color: #e7b4d8; font-family: 'Cinzel', Georgia, serif; font-size: 16px; }
+.sugarsaint-page .abilities-list span { display: block; }
+.sugarsaint-page .sugarsaint-condition { padding-left: 18px; border-left: 2px solid #b78add; color: #dac6e9; }
+.sugarsaint-page .image-gallery { display: grid; margin-top: 20px; }
+.sugarsaint-page .sugarsaint-gallery .image-gallery { align-items: stretch; }
+.sugarsaint-page .sugarsaint-gallery .gallery-item img { flex: 1; min-height: 0; aspect-ratio: 4/3; height: 360px; object-fit: contain; }
+.sugarsaint-page .related-entries { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.sugarsaint-page .related-link { display: block; padding: 18px 20px; text-decoration: none; color: #dccbe8; font-size: 16px; }
+.sugarsaint-page .related-link span { display: block; color: #a798b6; font-size: 12px; margin-top: 5px; }
+.sugarsaint-page .lightbox { display: none; position: fixed; inset: 0; align-items: center; justify-content: center; padding: 24px; }
+.sugarsaint-page .lightbox.active { display: flex; }
+.sugarsaint-page .lightbox-close { position: absolute; top: 20px; right: 20px; border: 1px solid var(--sc-line); border-radius: 50%; background: #171321; cursor: pointer; line-height: 1; }
+@media (max-width: 900px) {
+  .sugarsaint-page .sc-lore-opening { gap: 24px; }
+  .sugarsaint-film-heading { grid-template-columns: 1fr 180px; gap: 24px; }
+  .sugarsaint-page .sugarsaint-gallery .gallery-item img { height: 290px; }
+}
+@media (max-width: 640px) {
+  .sugarsaint-page .lore-title h1 { font-size: clamp(1.8rem, 8vw, 2.6rem); }
+  .sugarsaint-subtitle { font-size: 21px; }
+  .sugarsaint-film-heading { grid-template-columns: 1fr; gap: 20px; }
+  .sugarsaint-logo { max-width: 220px; }
+  .sugarsaint-page .abilities-list, .sugarsaint-page .related-entries { grid-template-columns: 1fr; }
+  .sugarsaint-page .sugarsaint-gallery .image-gallery { grid-template-columns: 1fr; }
+  .sugarsaint-page .sugarsaint-gallery .gallery-item img { height: auto; max-height: 520px; aspect-ratio: auto; flex: none; }
+  .sugarsaint-film-frame figcaption { padding: 12px 14px; }
+}

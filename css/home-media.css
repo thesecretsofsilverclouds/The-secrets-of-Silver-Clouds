@@ -1,0 +1,55 @@
+/* The Duskkin film belongs to the world concept, alongside the ARPG artwork. */
+#arpg .arpg-music-film {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+  align-items: center;
+  margin-top: 36px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--night-950);
+}
+
+.arpg-music-film__screen {
+  min-width: 0;
+  background: #030810;
+}
+
+.arpg-music-film__screen video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+}
+
+.arpg-music-film__copy {
+  min-width: 0;
+  padding: 28px 32px;
+}
+
+.arpg-music-film__copy h3 {
+  font-family: Cinzel, Georgia, serif;
+  font-size: clamp(23px, 2.3vw, 30px);
+  font-weight: 400;
+}
+
+.arpg-music-film__copy > p:not(.caption) {
+  font-size: 14px;
+}
+
+.arpg-music-film__copy .caption {
+  margin-bottom: 0;
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  #arpg .arpg-music-film {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 28px;
+  }
+
+  .arpg-music-film__copy {
+    padding: 24px;
+  }
+}

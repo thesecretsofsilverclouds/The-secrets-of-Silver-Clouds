@@ -1,0 +1,29 @@
+.holy-gift-page main{background:radial-gradient(ellipse at 50% 0,rgba(215,183,126,.09),transparent 48%)}
+.gift-intro{padding-bottom:30px}.gift-intro .eyebrow,.gift-invitation .eyebrow,.gift-card .eyebrow,.gift-allegiance .eyebrow{color:var(--relic)}
+.gift-intro .page-title{margin-bottom:20px}.gift-intro .lede{margin-bottom:0}
+.gift-notice{max-width:740px;margin:24px 0 0;padding:18px 22px;border:1px solid var(--line);border-left:2px solid var(--relic);border-radius:4px;font-size:14px}
+.gift-empty,.gift-saved{padding-top:20px}
+.gift-invitation{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);align-items:center;gap:48px;padding:40px;border:1px solid var(--line);border-radius:8px;background:var(--night-900)}
+.gift-invitation h2{font-size:clamp(28px,3.2vw,42px)}.gift-invitation-copy>p:not(.eyebrow){max-width:48ch}
+.gift-save-note{margin:22px 0 0}
+.gift-preview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+.gift-preview figure{margin:0;border:1px solid rgba(215,183,126,.25);border-radius:6px;overflow:hidden;background:var(--night-950)}
+.gift-preview img{width:100%;height:auto;object-fit:contain}.gift-preview figcaption{padding:12px;text-align:center;font-size:11px;color:var(--relic);text-transform:uppercase;letter-spacing:.15em}
+.gift-preview>.caption{grid-column:1/-1;margin:0;text-align:center;font-size:12px}
+.gift-allegiance{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--line)}
+.gift-allegiance .eyebrow{margin-bottom:10px}.gift-allegiance h2{margin:0;font-size:clamp(26px,3vw,36px)}
+.gift-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;align-items:start}
+.gift-card{min-width:0;overflow:hidden;border:1px solid rgba(215,183,126,.26);border-radius:8px;background:var(--night-900)}
+.gift-card-heading{padding:28px 28px 22px}.gift-card-heading .eyebrow{margin-bottom:10px;font-size:10px}
+.gift-card h3{margin:0;font-family:Cinzel,Georgia,serif;font-size:clamp(22px,2.2vw,29px);line-height:1.35;overflow-wrap:anywhere}
+.gift-art-link{display:block;text-decoration:none;background:var(--night-950)}
+.gift-art-link img{width:100%;height:auto;max-height:650px;object-fit:contain;aspect-ratio:auto}
+.gift-full-label{display:block;padding:12px 20px;text-align:right;font-size:11px;color:var(--text-dim);border-block:1px solid var(--line)}
+.gift-art-link:hover .gift-full-label{color:var(--brand-400)}
+.gift-card-copy{padding:24px 28px 28px}.gift-card-copy>p{font-family:Georgia,serif;font-size:17px;line-height:1.8;overflow-wrap:anywhere;margin:0;white-space:pre-line}
+.gift-card-copy>.caption{font-family:Raleway,Arial,sans-serif;font-size:12px;margin-top:14px}
+.gift-return{margin-top:28px}.gift-return>.caption{margin-bottom:0}.gift-return .actions{margin-top:18px}
+.gift-rename-button{display:inline-block;margin-top:14px;padding:0;border:0;background:none;cursor:pointer;font:inherit;text-align:left}.gift-rename-form{margin-top:20px}.gift-rename-form label{display:block;margin-bottom:8px;font-size:14px}.gift-rename-form input{width:100%;min-width:0;padding:12px;border:1px solid var(--line);border-radius:4px;background:var(--night-950);color:var(--text-body);font:inherit}.gift-rename-form .caption{margin:10px 0}.gift-rename-form .actions{margin-top:16px;flex-wrap:wrap}.gift-rename-form button{white-space:normal}#gift-rename-status{margin:14px 0 0}
+@media(max-width:1000px){.gift-invitation{gap:28px;padding:28px}}
+@media(max-width:800px){.gift-intro{padding-bottom:24px}.gift-empty,.gift-saved{padding-top:10px}.gift-invitation{grid-template-columns:1fr;gap:32px;padding:25px}.gift-preview{max-width:560px}.gift-allegiance{align-items:flex-start;flex-direction:column;gap:14px}.gift-pair{grid-template-columns:1fr;gap:28px}.gift-card-heading{padding:24px}.gift-card-copy{padding:24px}.gift-art-link img{max-height:none}}
+@media(max-width:480px){.gift-invitation{padding:22px}.gift-preview{gap:10px}.gift-preview figcaption{font-size:9px}.gift-card h3{font-size:23px}}

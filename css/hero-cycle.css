@@ -1,0 +1,64 @@
+/* Only the artwork changes; the existing hero copy and layout stay anchored. */
+.home-hero.wide-cast .hero-cycle { z-index: auto; }
+.hero-cycle ~ .hero-copy, .hero-cycle ~ .hero-caption { z-index: 3; }
+body:has([data-hero-cycle]) .site-header { z-index: 762; }
+.hero-cycle .hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  z-index: 0;
+  transition: opacity 1.6s ease-in-out;
+}
+.hero-cycle .hero-slide.is-active { opacity: 1; z-index: 1; }
+.hero-cycle::after { z-index: 2; pointer-events: none; }
+.hero-cycle-controls {
+  position: absolute;
+  right: 32px;
+  bottom: 48px;
+  /* Keep the controls usable when the existing Streamliner passes by. */
+  z-index: 761;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border: 1px solid rgba(185,204,229,.28);
+  border-radius: 30px;
+  background: rgba(7,11,18,.88);
+  color: #e8eff7;
+}
+.hero-cycle-controls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 22px;
+  background: transparent;
+  color: inherit;
+  font-size: 11px;
+  line-height: 1;
+}
+.hero-cycle-controls button:hover { background: rgba(110,215,232,.12); }
+.hero-cycle-controls button:focus-visible { outline-offset: 0; }
+.hero-cycle-controls button:disabled { opacity: .35; }
+.hero-cycle-scenes { display: flex; }
+.hero-cycle-scenes button span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8e9eb2;
+}
+.hero-cycle-scenes button[aria-pressed="true"] span {
+  background: var(--brand-400);
+  box-shadow: 0 0 9px rgba(110,215,232,.6);
+}
+@media (max-width: 999px), (max-width: 1199px) and (max-aspect-ratio: 5/4) {
+  .hero-cycle-controls { left: auto; right: 12px; bottom: 10px; }
+  .hero-cycle-toggle [data-hero-toggle-text] { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-cycle .hero-slide { transition: none; }
+}

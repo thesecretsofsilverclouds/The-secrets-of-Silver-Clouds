@@ -1,0 +1,28 @@
+# Files kept in the repo but left out of the published site.
+# Jekyll matches these as path prefixes, so "tools" would also drop a future
+# tools.html, and this list replaces Jekyll's defaults, so they are repeated below.
+exclude:
+  # Internal: server code, working notes and build tools
+  - worldstream-server
+  - handoff
+  - tools
+  - README.md
+  - partners-local
+  - audio-partners-local
+  - worldstream/app/atmosphere-preview.html
+  - worldstream/app/atmosphere-preview.js
+  # Build inputs and working data that no page loads
+  - data/evidence.json
+  - data/animantasy-showcase
+  - data/codex-character-copy.json
+  - data/codex-world-copy.json
+  - images/codex-refresh/manifest.json
+  # Jekyll's and GitHub Pages' own defaults
+  - CNAME
+  - node_modules
+  - Gemfile
+  - Gemfile.lock
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/

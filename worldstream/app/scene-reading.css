@@ -1,0 +1,74 @@
+/* Reading is a separate, local presentation preference. No world animation or
+   shared scene record depends on these rules. Match SCENE_CLOSE_MS (1600). */
+@keyframes scene-reading-depart {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+#scene-layer.is-closing {
+  animation: scene-reading-depart 1600ms ease-in-out forwards;
+}
+#scene-layer.is-suspended,
+#scene-layer.is-suspended .backdrop,
+#scene-layer.is-suspended .scene-live-mark span {
+  animation-play-state: paused !important;
+}
+#scene-layer .line {
+  max-height: 300px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  scrollbar-gutter: stable;
+  overflow-wrap: anywhere;
+}
+#scene-layer .line:focus-visible {
+  outline: 1px solid rgba(240, 199, 107, .75);
+  outline-offset: 4px;
+}
+#scene-layer .scene-controls button:disabled { opacity: .55; }
+#scene-layer.is-compact .dialogue {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - max(70px, env(safe-area-inset-top)) - env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+#scene-layer.is-compact .line {
+  min-height: 0;
+  flex: 0 1 auto;
+  max-height: min(42dvh, 22rem);
+}
+#scene-layer.is-compact .speaker,
+#scene-layer.is-compact .hint,
+#scene-layer.is-compact .scene-excerpt-note,
+#scene-layer.is-compact .scene-controls { flex-shrink: 0; }
+
+/* A short landscape viewport must keep the prose and its controls in view.
+   The plates remain behind it, and long accepted lines scroll independently. */
+@media (max-height: 560px) {
+  #scene-layer.is-compact .scene-live-mark {
+    top: max(8px, env(safe-area-inset-top));
+    left: max(14px, env(safe-area-inset-left));
+    font-size: .64rem;
+  }
+  #scene-layer.is-compact .plate {
+    bottom: 0;
+    height: calc(100dvh - 30px);
+    max-height: calc(100dvh - 30px);
+    object-fit: contain;
+  }
+  #scene-layer.is-compact .dialogue {
+    left: max(12px, env(safe-area-inset-left));
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(8px, env(safe-area-inset-bottom));
+    max-height: calc(100dvh - max(42px, env(safe-area-inset-top)) - max(8px, env(safe-area-inset-bottom)));
+    padding: 10px 14px;
+  }
+  #scene-layer.is-compact .speaker { margin-bottom: 5px; font-size: .7rem; }
+  #scene-layer.is-compact .line { max-height: 34dvh; font-size: .94rem; line-height: 1.42; }
+  #scene-layer.is-compact .hint { margin-top: 6px; max-width: none; font-size: .67rem; }
+  #scene-layer.is-compact .scene-excerpt-note { margin-top: 4px; font-size: .65rem; }
+  #scene-layer.is-compact .scene-controls { margin-top: 7px; flex-wrap: nowrap; }
+  #scene-layer.is-compact .scene-controls button { min-height: 34px; padding: 6px 12px; font-size: .79rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #scene-layer.is-closing { animation: none !important; }
+}
