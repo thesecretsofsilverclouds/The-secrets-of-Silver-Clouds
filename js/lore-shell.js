@@ -159,4 +159,8 @@
   const footer = make('footer', 'sc-lore-footer');
   footer.append(make('p', '', 'The Secrets of Silver Clouds · Created by Silent Silver'), link('Read free', '/episode-one/', ''), link('Worldstream', '/worldstream/app/', ''), link('All experiences', '/read-play/', ''), link('Partners', '/partners/', ''));
   main.append(footer);
+  const discovery = document.createElement('script');
+  discovery.src = '/js/site-discovery.js?v=20261106';
+  discovery.async = false;
+  document.head.append(discovery);
 })();

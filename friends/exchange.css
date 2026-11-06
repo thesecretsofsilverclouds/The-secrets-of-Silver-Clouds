@@ -1,0 +1,67 @@
+/* The invitation is a small gift, before it becomes a page. */
+textarea{font:inherit;resize:vertical;max-width:100%;color:var(--paper)}
+textarea:focus-visible{outline:2px solid var(--gold);outline-offset:5px}
+.sealed-glass{position:relative;width:100%;height:100%;isolation:isolate;pointer-events:none}
+.sealed-glass>.sip-glass{position:absolute;inset:0}
+.sealed-aura{position:absolute;left:4%;right:4%;bottom:4%;height:65%;border-radius:50%;background:radial-gradient(ellipse,#a5b5ec24,transparent 68%);animation:sealedBreath 6s ease-in-out infinite}
+.soul-seal{position:absolute;z-index:5;left:50%;top:54%;display:grid;place-items:center;transform:translate(-50%,-50%) rotate(-9deg);width:33px;height:33px;border:1px solid #f1d9a6;border-radius:50%;background:radial-gradient(circle at 30% 25%,#cfab70,#755234);color:#fff0c9;font:23px/1 Georgia,serif;box-shadow:0 2px 5px #0007,0 0 20px #e3b97e44}
+.seal-thread{position:absolute;z-index:4;width:38%;height:24%;left:45%;top:51%;border-right:1px solid #e5cb92;border-top:1px solid #e5cb92;border-radius:0 90% 0 0;transform:rotate(-5deg);opacity:.8}
+.glass-name-tag{position:absolute;z-index:6;left:62%;top:67%;display:block;max-width:43%;min-width:68px;padding:9px 12px;background:linear-gradient(130deg,#eeddbb,#cfb688);border:1px solid #f5e2bb;color:#382b29;box-shadow:0 4px 12px #0005;transform:rotate(9deg);text-align:center}
+.glass-name-tag:before{content:'';position:absolute;left:4px;top:5px;width:3px;height:3px;border-radius:50%;background:#7d6543}
+.glass-name-tag small{display:block;font:7px/1.6 'Segoe UI',sans-serif;letter-spacing:.14em;white-space:nowrap}
+.glass-name-tag strong{display:block;font:italic 17px/1.2 Georgia,serif;overflow-wrap:anywhere}
+.glass-counter-light{position:absolute;left:5%;right:5%;bottom:3%;height:5%;border-radius:50%;background:#c0bded;filter:blur(13px);opacity:.17}
+.sealed-glass[data-vessel="glowing-vial"] .soul-seal{top:49%;width:27px;height:27px;font-size:19px}
+.sealed-glass[data-vessel="bone-glass"] .soul-seal{top:49%}
+.send-panel{position:relative;overflow:hidden;border-radius:70px 70px 8px 8px;padding-top:40px;background:radial-gradient(ellipse at 50% 27%,#34314b66,transparent 55%),linear-gradient(145deg,#121c2e,#0a101c)}
+.send-glass{position:relative;max-width:275px;height:280px;margin:-20px auto 0;filter:drop-shadow(0 0 20px #c8bded18)}
+.send-glass.slid-away{animation:slideTheirWay 1.5s cubic-bezier(.24,.65,.33,1) both}
+.unsigned-choice{display:flex;align-items:center;justify-content:flex-start;gap:9px;margin-top:17px;font-size:12px;color:#c4bcae;min-height:32px}
+.unsigned-choice input{accent-color:var(--gold);width:17px;height:17px}
+.name-fields{margin-top:0}
+.name-fields input:disabled{opacity:.35}
+#share-link,#return-link{display:block;width:100%;border:1px solid #c6b18b40;background:#080f1c;color:#d1d9e4;border-radius:4px;padding:15px;margin:13px 0 18px;font:12px/1.85 'Segoe UI',sans-serif;overflow-wrap:anywhere;word-break:break-word;text-align:left}
+#save-sealed{margin-top:20px}
+.send-panel .small-copy{line-height:1.8}
+.receiving[data-receive-phase="sealed"] .bar-header,.receiving[data-receive-phase="sealed"] .bar-footer,.receiving[data-receive-phase="returned"] .bar-header,.receiving[data-receive-phase="returned"] .bar-footer{display:none}
+.receiving .bar-header{position:absolute;right:18px;top:10px;min-height:44px;padding:0;background:transparent;border:0;z-index:10}
+.receiving .bar-header .wordmark,.receiving .bar-header .bar-sign,.receiving .bar-header .volume-label{display:none}
+.receiving .bar-header .room-controls button{font-size:10px;color:#899ab3}
+.receiving[data-receive-phase="sealed"] .arrival{min-height:100svh;max-width:850px;padding:40px 24px 45px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.receiving .arrival h1{margin:14px 0 17px;font-size:clamp(36px,4.8vw,59px);text-wrap:balance}
+.receiving .arrival-copy{max-width:430px}
+.receiving .arrival-glass{width:280px;height:320px;margin:-25px auto 0}
+.receiving .arrival .pour-time{font:italic 12px/1.7 Georgia,serif;color:#bcae98;margin:5px 0 20px}
+.receiving .arrival .entry-note{margin-top:9px;max-width:320px}
+.receiving #quiet-seat{min-height:40px;margin:0;padding-block:7px;font-size:11px}
+.receive-glass>.sealed-glass{width:100%;height:100%}
+.receive-bar.seal-broken:after{content:'';position:absolute;z-index:3;left:50%;top:60%;width:120px;height:120px;pointer-events:none;border:1px solid #ebd2ab90;border-radius:50%;transform:translate(-50%,-50%);animation:unsealedRing 1.8s ease-out both}
+.chosen-details{margin:20px auto 0;max-width:490px;padding:15px 12px 6px;border-top:1px solid #d9c19522}
+.chosen-details #chosen-glass{font:15px/1.6 Georgia,serif;color:#decdaf}
+.chosen-details #chosen-meaning{font:italic 12px/1.8 Georgia,serif;color:#a7b5c9;margin-top:5px}
+.chosen-details #chosen-song{font:11px/1.7 'Segoe UI',sans-serif;color:#d1bd96;margin-top:12px}
+.receive-ingredients{font:italic 17px/1.7 Georgia,serif;color:#e0cda9;max-width:520px;text-wrap:balance;padding:0 14px}
+.receive-heading>p{position:relative;z-index:3}
+.receiving[data-receive-phase="last"] .bar-header,.receiving[data-receive-phase="last"] .bar-footer,.receiving[data-receive-phase="last"] .receive-heading,.receiving[data-receive-phase="last"] .receive-bar,.receiving[data-receive-phase="last"] .receive-actions{display:none}
+.receiving[data-receive-phase="last"] .receiver{padding:0 24px;max-width:1000px}
+.receiving[data-receive-phase="last"] .bottom-reveal{margin:0 auto;border:0;padding:50px 0 40px;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.bottom-reveal>p{max-width:780px;font-size:clamp(34px,5vw,61px);line-height:1.45}
+.bottom-reveal>span{margin-top:24px;font-size:18px;color:#ccba9d}
+.last-song{border:0;background:transparent;color:#8e9db4;font-size:11px;min-height:44px;padding:12px;margin-top:25px;max-width:100%;overflow-wrap:anywhere}
+.afterglow-actions{width:100%;animation:afterglow 1.7s ease both;margin-top:20px}
+.afterglow-actions .return-actions{margin-top:10px}
+.afterglow-actions .include-last{font-size:11px;line-height:1.6}
+.afterglow-actions .small-copy{font-size:10px;margin:0 0 10px}
+.place-link{display:block;width:max-content;max-width:100%;font-size:11px;color:#c4af87;text-decoration:none;border-bottom:1px solid #c4af8744;margin:28px auto 0;padding:7px 0;min-height:38px}
+#return-link-panel{max-width:550px;margin:24px auto;padding:20px;border:1px solid var(--line);background:#10182999}
+#return-link-panel label{font-size:11px;color:#c4af87}
+.empty-return-view{min-height:100svh;max-width:700px;margin:auto;padding:55px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.empty-return-view h1{font-size:clamp(37px,4.8vw,58px);line-height:1.2;margin-top:20px;text-wrap:balance}
+.empty-return-view>.arrival-glass{width:260px;height:300px;margin:-30px auto 8px}
+.empty-return-view>p:not(.eyebrow){font:italic 16px/1.9 Georgia,serif;color:#b6b0b0;margin-bottom:28px}
+@keyframes sealedBreath{0%,100%{opacity:.55;transform:scale(.93)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes slideTheirWay{0%,15%{transform:translateX(0) rotate(0);opacity:1}to{transform:translateX(120vw) rotate(5deg);opacity:0}}
+@keyframes unsealedRing{from{transform:translate(-50%,-50%) scale(.15);opacity:.8;box-shadow:0 0 25px #efc78666}to{transform:translate(-50%,-50%) scale(3);opacity:0;box-shadow:0 0 80px #c8a0ef44}}
+@keyframes afterglow{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:740px){.send-panel{padding:30px 22px;border-radius:45px 45px 6px 6px}.send-glass{height:255px;width:245px;margin-top:-15px}.receiving[data-receive-phase="sealed"] .arrival{padding-top:26px}.receiving .arrival h1{font-size:36px}.receiving .arrival-glass{width:245px;height:280px;margin-top:-20px}.receiving .arrival .pour-time{font-size:11px;margin-bottom:16px}.glass-name-tag{padding:8px 10px}.glass-name-tag strong{font-size:15px}.chosen-details{margin-top:20px;padding-top:14px}.chosen-details #chosen-meaning{font-size:12px}.receive-ingredients{font-size:16px}.receiving[data-receive-phase="last"] .bottom-reveal{padding-top:35px}.bottom-reveal>p{font-size:clamp(31px,8vw,45px)}.return-actions{gap:10px}.return-actions>.button{font-size:12px}.include-last{max-width:280px;text-align:left}.empty-return-view{padding-top:35px}}
+@media(prefers-reduced-motion:reduce){.sealed-glass *,.send-glass,.afterglow-actions{animation:none!important}.send-glass.slid-away{transform:none;opacity:1}.receive-bar.seal-broken:after{display:none}}

@@ -1,0 +1,18 @@
+/* The third tab inherits the existing bar; its composer is an isolated same-origin seat. */
+.ss-friends-invitation{margin:18px 0 24px;font-size:13px;color:inherit}.ss-friends-invitation a{color:inherit;text-underline-offset:5px}.ss-friends-invitation a:focus-visible{outline:2px solid #cbb68e;outline-offset:5px}
+.ss-widget.ss-friends-enabled .ss-bar-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding-inline:14px}
+.ss-widget.ss-friends-enabled .ss-bar-tabs [role="tab"]{min-width:0;padding-inline:15px;gap:8px}
+.ss-widget.ss-friends-enabled .ss-bar-tabs [role="tab"] small{margin-left:0;white-space:nowrap}
+.ss-widget .ss-friends-panel{min-width:0;background:#0b121e;position:relative}
+.ss-widget .ss-friends-panel[hidden]{display:none!important}
+.ss-widget .ss-friends-panel:focus-visible{outline:2px solid #cbb68e;outline-offset:-3px}
+.ss-widget .ss-friends-frame{width:100%;display:block;border:0;min-height:400px;background:#080e18;color-scheme:dark}
+.ss-widget .ss-friends-loading{padding:32px 24px;text-align:center;margin:0;color:#b7c4d8;font:14px/1.6 Georgia,serif}
+.ss-widget .ss-friends-fallback{padding:10px 22px 18px;margin:0;text-align:right;color:#91a2bb;font:9px/1.6 Arial,sans-serif}
+.ss-widget .ss-friends-fallback a{color:inherit;text-underline-offset:4px}
+.ss-widget .ss-friends-fallback a:focus-visible{outline:2px solid #cbb68e;outline-offset:4px}
+.ss-widget[data-mode="friends"] .ss-bar-footer>span:first-child{display:none}
+.ss-widget[data-mode="friends"] .ss-bar-footer{justify-content:flex-end}
+.ss-widget[data-mode="friends"] .ss-mobile-dock,.ss-widget[data-mode="friends"]~.ss-mobile-dock,body[data-soul-sip-mode="friends"] .ss-mobile-dock{display:none!important}
+@media(max-width:1100px){.ss-widget.ss-friends-enabled .ss-bar-tabs [role="tab"]{font-size:14px;flex-wrap:wrap;gap:5px 7px;padding:13px 8px}.ss-widget.ss-friends-enabled .ss-bar-tabs [role="tab"] small{flex-basis:100%;font-size:8px;text-align:center}}
+@media(max-width:600px){.ss-widget.ss-friends-enabled .ss-bar-tabs{padding-inline:5px}.ss-widget.ss-friends-enabled .ss-bar-tabs [role="tab"]{font-size:12px;padding:12px 4px;min-height:74px;gap:3px 5px}.ss-widget.ss-friends-enabled .ss-bar-tabs [role="tab"]>span{font-size:16px}.ss-widget.ss-friends-enabled .ss-bar-tabs [role="tab"] small{font-size:7px}.ss-widget.ss-friends-enabled .ss-bar-tabs [aria-selected="true"]::after{left:8px;right:8px}.ss-widget .ss-friends-fallback{padding-inline:16px}}

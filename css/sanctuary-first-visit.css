@@ -1,0 +1,43 @@
+/* A calm gold invitation on the actual narration entries, once per browser. */
+#ss-sanctuary-story [data-room-entry].sc-sanctuary-first-visit,
+#soul-sips-bar .ss-room-enter.sc-sanctuary-first-visit {
+  color: #fbf1dd;
+  border-color: #d9c28bba;
+  background-color: #b69b5d14;
+  box-shadow: 0 0 0 1px #d9c28b18, 0 0 18px #d9c28b24, inset 0 0 15px #d9c28b0b;
+  animation: scSanctuaryFirstWelcome 6.4s ease-in-out infinite;
+}
+
+#ss-sanctuary-story [data-room-entry].sc-sanctuary-first-visit:hover,
+#soul-sips-bar .ss-room-enter.sc-sanctuary-first-visit:hover {
+  border-color: #ead8ac;
+  color: #fff7e8;
+}
+
+#ss-sanctuary-story [data-room-entry].sc-sanctuary-first-visit:focus-visible,
+#soul-sips-bar .ss-room-enter.sc-sanctuary-first-visit:focus-visible {
+  outline: 2px solid #d9f5ff;
+  outline-offset: 4px;
+  animation-play-state: paused;
+}
+
+.sc-sanctuary-first-visit.sc-sanctuary-hint-away {
+  animation-play-state: paused !important;
+}
+
+@keyframes scSanctuaryFirstWelcome {
+  0%, 100% {
+    box-shadow: 0 0 0 1px #d9c28b18, 0 0 15px #d9c28b20, inset 0 0 12px #d9c28b08;
+  }
+  50% {
+    box-shadow: 0 0 0 1px #d9c28b35, 0 0 26px #d9c28b40, inset 0 0 18px #d9c28b10;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #ss-sanctuary-story [data-room-entry].sc-sanctuary-first-visit,
+  #soul-sips-bar .ss-room-enter.sc-sanctuary-first-visit {
+    animation: none;
+    box-shadow: 0 0 0 1px #d9c28b26, 0 0 17px #d9c28b2b;
+  }
+}

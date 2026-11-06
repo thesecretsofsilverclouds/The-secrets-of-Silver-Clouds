@@ -1,4 +1,4 @@
-/* Local Streamliner prototype. Decorative surfaces never intercept the page. */
+/* Streamliner discovery. Decorative surfaces never intercept the page. */
 .sc-rail-invitation{display:flex;align-items:center;justify-content:center;gap:14px 22px;flex-wrap:wrap;padding:17px 24px;background:linear-gradient(90deg,#08101a,#102330,#08101a);border-block:1px solid #8fd8e21c;color:#a2b6c4;font:13px/1.65 Lato,Arial,sans-serif}
 .sc-rail-invitation>span:first-child{font-size:21px;color:#9adddf;text-shadow:0 0 17px #93efff77}
 .sc-rail-invitation a{color:#d1d9c6;text-decoration:none;border-bottom:1px solid #bcac784d;padding:4px 0;white-space:nowrap}
