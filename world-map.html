@@ -75,20 +75,12 @@
 
 
         /* Video Background Layer (Double Buffer) */
-        .bg-video {
+        /* The painted sky. The shader draws over it, and it stays as the fallback. */
+        .map-sky-still {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            inset: 0;
             z-index: 0;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-
-        .bg-video.active {
-            opacity: 1;
+            background: #05060f url('shaders/map/sky-painted.webp') center / cover no-repeat;
         }
 
         /* 3D Canvas Layer */
@@ -120,6 +112,12 @@
             max-width: 300px;
         }
 
+        p.subtitle.touch-hint {
+            display: block;
+            font-size: 0.8rem;
+            max-width: none;
+        }
+
         /* Detail Panel (Slide-in) */
         .detail-panel {
             position: fixed;
@@ -127,8 +125,7 @@
             right: 0;
             width: 400px;
             height: 100%;
-            background: rgba(26, 26, 46, 0.92);
-            backdrop-filter: blur(20px);
+            background: rgba(26, 26, 46, 0.95);
             border-left: 1px solid var(--accent-blue);
             z-index: 9005;
             /* Elevated above global shrine (9001) to prevent obscuring Visit button */
@@ -173,6 +170,51 @@
             object-fit: cover;
             position: relative;
             z-index: 2;
+        }
+
+        /* A painted still with its shader on top, in place of a clip */
+        .detail-living {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            z-index: 2;
+        }
+
+        .detail-living[hidden] {
+            display: none;
+        }
+
+        /* The name that appears when hovering a place on the map */
+        .map-label {
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 50;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--label-color, #7fb3e6);
+            background: rgba(12, 14, 30, 0.86);
+            box-shadow: 0 0 18px -4px var(--label-color, #7fb3e6);
+            color: #fff;
+            font: 600 0.85rem 'Cinzel', serif;
+            white-space: nowrap;
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        .map-label.show {
+            display: flex;
+        }
+
+        .map-label small {
+            font: 400 0.72rem 'Lato', sans-serif;
+            color: #b9bdd6;
         }
 
         .detail-header h2 {
@@ -245,6 +287,7 @@
 
         /* Loading Overlay */
         #loader {
+            pointer-events: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -533,6 +576,8 @@
     <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
     <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+    <script src="js/map-living-art.js"></script>
+    <script src="js/map-experience.js"></script>
 
 </head>
 
@@ -541,15 +586,7 @@
     <!-- Loading Screen -->
     <div id="loader">Initializing Map...</div>
 
-    <!-- Background Video (Double Buffer for Smooth Loop) -->
-    <video id="bg-video-1" class="bg-video active" muted playsinline>
-        <source src="videos/cosmicmapbackground.mp4" type="video/mp4">
-        <source src="videos/cosmicmapbackground.webm" type="video/webm">
-    </video>
-    <video id="bg-video-2" class="bg-video" muted playsinline>
-        <source src="videos/cosmicmapbackground.mp4" type="video/mp4">
-        <source src="videos/cosmicmapbackground.webm" type="video/webm">
-    </video>
+    <div class="map-sky-still" aria-hidden="true"></div>
 
     <!-- Ambient Music -->
     <audio id="bg-music" loop preload="auto">
@@ -575,7 +612,7 @@
         </div>
 
         <div class="detail-video-container">
-            <img src="images/cosmicmapbackground.png" class="panel-bg-static" alt="Starfield">
+            <img src="images/map-icons/panel-starfield.webp" class="panel-bg-static" alt="Starfield">
             <video id="d-video" class="detail-video" loop muted playsinline crossorigin="anonymous">
                 <!-- Source set dynamically -->
             </video>
@@ -624,7 +661,7 @@
                 flyHeight: 0.15,
                 color: 0x3282b8,
                 video: 'videos/map-icon-mi6hq.mp4',
-                icon: 'images/map-icon-mi6hq.png',
+                icon: 'images/map-icons/mi6hq.webp',
                 codexUrl: 'mi6'
             },
             {
@@ -638,7 +675,7 @@
                 flyHeight: 0.15,
                 color: 0xffd700,
                 video: 'videos/map-icon-sanctuary-in-the-sky.mp4',
-                icon: 'images/map-icon-sanctuary-in-the-sky.png',
+                icon: 'images/map-icons/sanctuary-in-the-sky.webp',
                 codexUrl: 'sanctuary-in-the-sky'
             },
             {
@@ -651,8 +688,11 @@
                 x: 0.42, y: -0.35,
                 flyHeight: 0.15,
                 color: 0x708090, // SlateGray for visibility
-                video: 'videos/map-icon-new-big-ben.mp4',
-                icon: 'images/map-icon-new-big-ben.png',
+                still: 'shaders/map/new-big-ben.webp',
+                shader: 'shaders/map/new-big-ben.glsl',
+                shaderStart: 7.5, // The first strike lands just after the panel opens.
+                shaderLabel: 'New Big Ben, with golden rings of visible music around the belfry. Tap to ring the bell.',
+                icon: 'images/map-icons/new-big-ben.webp',
                 codexUrl: 'new-big-ben'
             },
             {
@@ -666,7 +706,7 @@
                 flyHeight: 0.15,
                 color: 0x00ffff,
                 video: 'videos/map-icon-streamliner.mp4',
-                icon: 'images/map-icon-streamliner.png',
+                icon: 'images/map-icons/streamliner.webp',
                 codexUrl: 'streamliner'
             },
             {
@@ -680,7 +720,7 @@
                 flyHeight: 0.2,
                 color: 0x4a90d9,
                 video: 'videos/map-icon-ragnorir.mp4',
-                icon: 'images/map-icon-ragnorir.png',
+                icon: 'images/map-icons/ragnorir.webp',
                 codexUrl: 'ragnorir'
             },
             {
@@ -693,8 +733,11 @@
                 x: -0.64, y: 0.07,
                 flyHeight: 0.2,
                 color: 0x888888,
-                video: 'videos/map-icon-alchemical-society -ruins.mp4',
-                icon: 'images/map-icon-alchemical-society -ruins.png',
+                still: 'shaders/map/alchemical-ruins.webp',
+                shader: 'shaders/map/alchemical-ruins.glsl',
+                motion: 'shaders/map/alchemical-ruins-motion.webp',
+                shaderLabel: 'The ruins of the Alchemical Society under a moving sky. Tap for a surge of light.',
+                icon: 'images/map-icons/alchemical-society-ruins.webp',
                 codexUrl: 'alchemical-society'
             },
             {
@@ -707,7 +750,7 @@
                 x: -0.05, y: 0.30,
                 color: 0x9b59b6,
                 video: 'videos/map-icon-urban-jungle.mp4',
-                icon: 'images/map-icon-urban-jungle.png',
+                icon: 'images/map-icons/urban-jungle.webp',
                 codexUrl: 'urban-jungle'
             },
             {
@@ -720,7 +763,7 @@
                 x: -0.25, y: 0.59,
                 color: 0x708090, // SlateGray for visibility
                 video: 'videos/map-icon-infinitys-Quill.mp4',
-                icon: 'images/map-icon-infinitys-Quill.png',
+                icon: 'images/map-icons/infinitys-Quill.webp',
                 codexUrl: 'infinitys-quill'
             },
             {
@@ -733,7 +776,7 @@
                 x: 0.15, y: -0.40,
                 color: 0x2ecc71,
                 video: 'videos/map-icon-wooburn-forest.mp4',
-                icon: 'images/map-icon-wooburn-forest.png',
+                icon: 'images/map-icons/wooburn-forest.webp',
                 codexUrl: 'wooburn-forest'
             },
             {
@@ -746,7 +789,7 @@
                 x: 0.04, y: -0.52,
                 color: 0xffaa00,
                 video: 'videos/map-icon-onari-village.mp4',
-                icon: 'images/map-icon-onari-village.png',
+                icon: 'images/map-icons/onari-village.webp',
                 codexUrl: 'onari'
             },
             {
@@ -756,8 +799,11 @@
                 desc: 'A runic forge site where raw iron is etched with ancient glyphs of power. The symbols hum with latent energy, waiting to be awakened.',
                 x: -0.56, y: 0.49,
                 color: 0xb87333, // Copper
-                video: 'videos/map-icon-Iron-glyph.mp4',
-                icon: 'images/map-icon-Iron-glyph.png',
+                still: 'shaders/map/iron-glyph.webp',
+                shader: 'shaders/map/iron-glyph.glsl',
+                motion: 'shaders/map/iron-glyph-motion.webp',
+                shaderLabel: 'The Iron Glyph, with molten light running through its lines. Tap for a surge of light.',
+                icon: 'images/map-icons/Iron-glyph.webp',
                 spriteScale: 0.13,
                 codexUrl: 'iron-glyph'
             },
@@ -768,8 +814,11 @@
                 desc: 'A runic forge site where raw iron is etched with ancient glyphs of power. The symbols hum with latent energy, waiting to be awakened.',
                 x: -0.10, y: -0.25,
                 color: 0xb87333, // Copper
-                video: 'videos/map-icon-Iron-glyph.mp4',
-                icon: 'images/map-icon-Iron-glyph.png',
+                still: 'shaders/map/iron-glyph.webp',
+                shader: 'shaders/map/iron-glyph.glsl',
+                motion: 'shaders/map/iron-glyph-motion.webp',
+                shaderLabel: 'The Iron Glyph, with molten light running through its lines. Tap for a surge of light.',
+                icon: 'images/map-icons/Iron-glyph.webp',
                 spriteScale: 0.13,
                 codexUrl: 'iron-glyph'
             },
@@ -781,7 +830,7 @@
                 x: 0.32, y: -0.46,
                 color: 0x6a0dad, // Deep Purple
                 video: 'videos/map-icon-enchanted-Ink.mp4',
-                icon: 'images/map-icon-enchanted-Ink.png',
+                icon: 'images/map-icons/enchanted-Ink.webp',
                 codexUrl: 'enchanted-ink'
             },
             {
@@ -791,8 +840,11 @@
                 desc: 'A tear in the fabric of reality — a volatile gateway to the Demon Realm. Its crimson glow warns all who approach.',
                 x: 0.46, y: 0.37,
                 color: 0xff2200, // Demon Red
-                video: 'videos/map-icon-demon-realm-portal.mp4',
-                icon: 'images/map-icon-demon-realm-portal.png',
+                still: 'shaders/map/demon-realm-portal.webp',
+                shader: 'shaders/map/demon-realm-portal.glsl',
+                motion: 'shaders/map/demon-realm-portal-motion.webp',
+                shaderLabel: 'A portal to the demon realm, its dark centre slowly turning. Tap for a surge of light.',
+                icon: 'images/map-icons/demon-realm-portal.webp',
                 codexUrl: 'demon-realm'
             },
             {
@@ -803,7 +855,7 @@
                 x: 0.08, y: 0.11,
                 color: 0x00ff88, // Fairy Green
                 video: 'videos/map-icon-fairy-realm-portal.mp4',
-                icon: 'images/map-icon-fairy-realm-portal.png',
+                icon: 'images/map-icons/fairy-realm-portal.webp',
                 codexUrl: 'fairy-realm'
             },
             {
@@ -814,7 +866,7 @@
                 x: 0.68, y: -0.30,
                 color: 0x555555, // Dark Gray
                 video: 'videos/map-icon-max-prison.mp4',
-                icon: 'images/map-icon-max-prison.png',
+                icon: 'images/map-icons/max-prison.webp',
                 codexUrl: 'max-prison'
             }
         ];
@@ -844,6 +896,8 @@
         dirLight.position.set(5, 10, 5);
         scene.add(dirLight);
 
+        MapExperience.init({ scene, camera, renderer, controls });
+
         // --- Map Plane ---
         const textureLoader = new THREE.TextureLoader();
 
@@ -851,11 +905,7 @@
         textureLoader.load('images/map-outline.png', (tex) => {
             console.log('Map texture loaded');
             const geometry = new THREE.PlaneGeometry(3.2, 1.8);
-            const material = new THREE.MeshBasicMaterial({
-                map: tex,
-                transparent: true,
-                side: THREE.DoubleSide
-            });
+            const material = MapExperience.surface(tex);
             const plane = new THREE.Mesh(geometry, material);
             plane.rotation.x = -Math.PI / 2;
             scene.add(plane);
@@ -866,6 +916,7 @@
             undefined,
             (err) => {
                 console.error('Texture load error:', err);
+                MapExperience.skipIntro();
                 document.getElementById('loader').innerHTML = 'Texture Blocked by Browser Security.<br>Please run <b>start_map_server.bat</b> to view 3D textures.';
                 document.getElementById('loader').style.color = '#ffaa00';
 
@@ -930,7 +981,7 @@
             markers.push(group);
 
             // Add cache buster to avoid stuck textures
-            const iconUrl = (loc.icon || 'images/map-icon-mi6hq.png') + '?v=cache1';
+            const iconUrl = (loc.icon || 'images/map-icons/mi6hq.webp') + '?v=cache1';
 
             textureLoader.load(iconUrl, (tex) => {
                 // Process texture to circular sprite
@@ -947,8 +998,8 @@
                 const sc = loc.spriteScale || 0.18;
                 sprite.scale.set(sc, sc, sc);
                 sprite.position.y = flyY; // Use flyY
-                sprite.renderOrder = 1;
                 group.add(sprite);
+                MapExperience.spriteReady(group, sprite, sc);
 
                 group.userData.sprite = sprite;
                 group.userData.startY = flyY; // Use flyY
@@ -965,28 +1016,37 @@
             const flyY = loc.flyHeight || 0.1;
             const ringY = flyY * 0.2; // Keep ring proportional
 
-            const ringGeo = new THREE.RingGeometry(0.08, 0.12, 32);
-            const ringMat = new THREE.MeshBasicMaterial({
-                color: loc.color,
-                transparent: true,
-                opacity: 0.6,
-                side: THREE.DoubleSide
-            });
-            const ring = new THREE.Mesh(ringGeo, ringMat);
-            ring.rotation.x = -Math.PI / 2;
-            ring.position.y = ringY; // Use ringY
-            group.add(ring);
+            MapExperience.marker(group, loc, ringY, flyY);
         });
 
         // --- Interaction ---
         let selectedLocation = null;
 
-        function onPointerDown(event) {
-            // Skip if clicking on UI elements (panel, buttons, etc.)
-            const panel = document.getElementById('detail-panel');
-            const muteBtn = document.getElementById('mute-btn');
-            if (panel.contains(event.target) || event.target === muteBtn) return;
+        // A place opens on a tap or click. A drag or pinch that happens to start on an icon moves the map instead.
+        const press = { id: null, x: 0, y: 0, time: 0 };
 
+        function onPointerDown(event) {
+            // A second finger makes this a pinch, so nothing opens when the fingers lift.
+            if (!event.isPrimary) {
+                press.id = null;
+                return;
+            }
+            press.id = event.pointerId;
+            press.x = event.clientX;
+            press.y = event.clientY;
+            press.time = performance.now();
+        }
+
+        function onPointerUp(event) {
+            if (event.pointerId !== press.id) return;
+            press.id = null;
+            const moved = Math.hypot(event.clientX - press.x, event.clientY - press.y);
+            if (moved > 10 || performance.now() - press.time > 500) return;
+            // Only the map itself can be tapped, not the panel or the buttons above it.
+            if (event.target === canvas) pickLocation(event);
+        }
+
+        function pickLocation(event) {
             pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
             pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
@@ -1017,6 +1077,7 @@
         function focusLocation(group) {
             if (selectedLocation === group) return;
             selectedLocation = group;
+            MapExperience.select(group);
 
             const targetPos = {
                 x: group.position.x,
@@ -1039,13 +1100,15 @@
 
         function resetView() {
             selectedLocation = null;
+            MapExperience.clear();
+            const home = MapExperience.homeView();
             new TWEEN.Tween(camera.position)
-                .to({ x: 0, y: 3.5, z: 3.5 }, 1200)
+                .to(home.position, 1200)
                 .easing(TWEEN.Easing.Cubic.InOut)
                 .start();
 
             new TWEEN.Tween(controls.target)
-                .to({ x: 0, y: 0, z: 0 }, 1200)
+                .to(home.target, 1200)
                 .easing(TWEEN.Easing.Cubic.InOut)
                 .start();
 
@@ -1055,6 +1118,7 @@
         // --- UI Logic ---
         const panel = document.getElementById('detail-panel');
         const dVideo = document.getElementById('d-video');
+        MapLivingArt.attach(document.querySelector('.detail-video-container'));
         const dTitle = document.getElementById('d-title');
         const dFaction = document.getElementById('d-faction');
         const dDesc = document.getElementById('d-desc');
@@ -1066,19 +1130,28 @@
             dFaction.textContent = data.faction;
             dFaction.style.background = '#' + data.color.toString(16).padStart(6, '0');
             dDesc.textContent = data.desc;
-            // Prefer webm, fallback to mp4
-            const webmSrc = data.video.replace('.mp4', '.webm');
             dVideo.innerHTML = '';
-            const srcWebm = document.createElement('source');
-            srcWebm.src = webmSrc;
-            srcWebm.type = 'video/webm';
-            const srcMp4 = document.createElement('source');
-            srcMp4.src = data.video;
-            srcMp4.type = 'video/mp4';
-            dVideo.appendChild(srcWebm);
-            dVideo.appendChild(srcMp4);
-            dVideo.load();
-            dVideo.play().catch(e => console.log(e));
+            if (data.shader) {
+                // A living painting: dropping the old sources stops any earlier clip downloading.
+                dVideo.hidden = true;
+                dVideo.load();
+                MapLivingArt.show(data);
+            } else {
+                // Prefer webm, fallback to mp4
+                MapLivingArt.hide();
+                dVideo.hidden = false;
+                const webmSrc = data.video.replace('.mp4', '.webm');
+                const srcWebm = document.createElement('source');
+                srcWebm.src = webmSrc;
+                srcWebm.type = 'video/webm';
+                const srcMp4 = document.createElement('source');
+                srcMp4.src = data.video;
+                srcMp4.type = 'video/mp4';
+                dVideo.appendChild(srcWebm);
+                dVideo.appendChild(srcMp4);
+                dVideo.load();
+                dVideo.play().catch(e => console.log(e));
+            }
             // Set visit button
             const colorHex = '#' + data.color.toString(16).padStart(6, '0');
             dVisit.href = data.codexUrl || '#';
@@ -1091,47 +1164,12 @@
         function closePanel() {
             panel.classList.remove('active');
             dVideo.pause();
+            MapLivingArt.hide();
         }
 
         backBtn.addEventListener('click', resetView);
         window.addEventListener('pointerdown', onPointerDown);
-
-        // --- Video Loop Logic (Double Buffer) ---
-        const video1 = document.getElementById('bg-video-1');
-        const video2 = document.getElementById('bg-video-2');
-        let activeVideo = video1;
-        let inactiveVideo = video2;
-        let loopCheckInterval;
-
-        function startDoubleBufferLoop() {
-            // Ensure first video is playing
-            activeVideo.play().catch(e => console.log('Autoplay blocked:', e));
-
-            // Check every 100ms
-            clearInterval(loopCheckInterval);
-            loopCheckInterval = setInterval(() => {
-                if (!activeVideo.duration) return;
-
-                const timeLeft = activeVideo.duration - activeVideo.currentTime;
-                // Start crossfade 2 seconds before end
-                if (timeLeft < 2 && inactiveVideo.paused) {
-                    console.log('Crossfading video...');
-
-                    // Reset and play inactive video
-                    inactiveVideo.currentTime = 0;
-                    inactiveVideo.play();
-
-                    // Fade in active, Fade out inactive (CSS handles transition)
-                    inactiveVideo.classList.add('active');
-                    activeVideo.classList.remove('active');
-
-                    // Swap references
-                    const temp = activeVideo;
-                    activeVideo = inactiveVideo;
-                    inactiveVideo = temp;
-                }
-            }, 100);
-        }
+        window.addEventListener('pointerup', onPointerUp);
 
         // --- Loop ---
         const clock = new THREE.Clock();
@@ -1146,14 +1184,13 @@
 
             markers.forEach(m => {
                 if (m.userData.sprite) {
-                    m.userData.sprite.position.y = m.userData.startY + Math.sin(elapsed * 2 + m.userData.offset) * 0.05;
+                    m.userData.sprite.position.y = m.userData.startY + Math.sin(elapsed * 2 + m.userData.offset) * 0.05 * MapExperience.motion;
                 }
             });
 
-            renderer.render(scene, camera);
+            if (MapExperience.frame(dt, elapsed)) renderer.render(scene, camera);
         }
 
-        startDoubleBufferLoop();
         animate();
 
         // --- Ambient Music ---
