@@ -428,6 +428,7 @@
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       resizeSky();
+      if (selected) updatePanelCoverage();
       if (selected || userMoved || !surfaceUniforms) return;
       stopIntro();
       const home = homeView();
@@ -526,6 +527,10 @@
       }
     }
     // On a phone the panel fills the screen, so the map can rest once the panel has slid in.
+    updatePanelCoverage();
+  }
+
+  function updatePanelCoverage() {
     const panel = document.getElementById('detail-panel');
     coverAt = panel && panel.getBoundingClientRect().width >= window.innerWidth - 2 ? lastElapsed + 0.8 : Infinity;
   }

@@ -1,0 +1,43 @@
+/* Local review only: the shared glass keeps its two principal ending actions. */
+.sip-story-door {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: 30px auto 0;
+  padding: 16px 18px;
+  border: 0;
+  border-top: 1px solid #cdb58b36;
+  color: #decba9;
+  text-align: center;
+  text-decoration: none;
+  line-height: 1.5;
+  transition: color 180ms ease, background-color 180ms ease;
+}
+.sip-story-door-title { display: block; font-size: 14px; font-weight: 600; }
+.sip-story-door small { display: block; margin-top: 5px; font-size: 11px; font-weight: 400; color: #a6b1c4; }
+.sip-story-door:hover { color: #fff1d4; background: #d7b57809; }
+.sip-story-door:focus-visible { outline: 2px solid #ead3a7; outline-offset: 4px; border-radius: 3px; }
+.bar-footer .sip-story-door { margin: 0; padding: 8px 10px; border-top: 0; }
+.bar-footer .sip-story-door-title { font-size: 11px; }
+.bar-footer .sip-story-door small { font-size: 10px; }
+.mix-reading .sip-story-door { margin-top: 22px; }
+.sip-story-arrival-note { flex: 1 0 100%; margin: 8px 0 0; font: 12px/1.6 Arial, sans-serif; color: #bac6d8; }
+.ss-story-controls:has(.sip-story-arrival-note) { flex-wrap: wrap; }
+.sip-story-arrival-glow {
+  border-color: #d7bf8b !important;
+  box-shadow: 0 0 0 1px #dfc28d55, 0 0 24px #b1a3ff34;
+  animation: sip-story-door-breathe 3.4s ease-in-out 5;
+}
+.sip-story-arrival-glow.sip-story-arrival-away { animation-play-state: paused; }
+@keyframes sip-story-door-breathe {
+  0%, 100% { box-shadow: 0 0 0 1px #dfc28d55, 0 0 18px #b1a3ff24; }
+  50% { box-shadow: 0 0 0 1px #ffe2ad88, 0 0 32px #b1a3ff54, 0 0 12px #e7bd7d25; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sip-story-door { transition: none; }
+  .sip-story-arrival-glow { animation: none; }
+}
+@media (max-width: 600px) {
+  .sip-story-door { padding-inline: 10px; }
+  .sip-story-arrival-note { font-size: 11px; }
+}

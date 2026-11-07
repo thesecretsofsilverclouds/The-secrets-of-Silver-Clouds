@@ -24,7 +24,12 @@
     const rect = host.getBoundingClientRect();
     if (!rect.width) return;
     const size = Math.round(Math.min(rect.width * Math.min(window.devicePixelRatio || 1, 2), MAX_PIXELS));
-    if (canvas.width !== size) { canvas.width = size; canvas.height = size; }
+    if (canvas.width !== size) {
+      canvas.width = size;
+      canvas.height = size;
+      return true;
+    }
+    return false;
   };
 
   const draw = () => {
@@ -54,7 +59,14 @@
     raf = requestAnimationFrame(tick);
   };
 
-  const showCanvas = (on) => { if (canvas) canvas.style.display = on ? 'block' : 'none'; };
+  const showCanvas = (on) => {
+    if (canvas) canvas.style.display = on ? 'block' : 'none';
+    // The painting and its animated version describe the same place, once.
+    if (still) {
+      if (on) still.setAttribute('aria-hidden', 'true');
+      else still.removeAttribute('aria-hidden');
+    }
+  };
 
   const buildProgram = (fragmentText) => {
     const compile = (type, text) => {
@@ -103,7 +115,16 @@
     prepareGl();
 
     // Only while it's moving: a reader on reduced motion keeps one calm frame.
-    canvas.addEventListener('click', () => { if (raf) tapTime = time; });
+    const activate = () => { if (raf && loc.TAP_TIME) tapTime = time; };
+    canvas.addEventListener('click', activate);
+    canvas.addEventListener('keydown', (event) => {
+      if (!raf || !loc.TAP_TIME || (event.key !== 'Enter' && event.key !== ' ')) return;
+      event.preventDefault(); // Space rings the bell instead of scrolling the panel.
+      if (!event.repeat) activate();
+    });
+    canvas.style.outlineOffset = '-4px';
+    canvas.addEventListener('focus', () => { canvas.style.outline = '2px solid #ffd700'; });
+    canvas.addEventListener('blur', () => { canvas.style.outline = ''; });
     // A lost context leaves the painting showing. If the browser restores it, this rebuilds.
     canvas.addEventListener('webglcontextlost', (e) => {
       e.preventDefault();
@@ -115,7 +136,13 @@
       prepareGl();
       if (current) show(current);
     });
-    if ('ResizeObserver' in window) new ResizeObserver(fit).observe(host);
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(() => {
+        // Resizing clears the drawing buffer. A calm painting has no loop to repaint it.
+        const resized = fit();
+        if (resized && current && program && canvas.style.display !== 'none' && reducedMotion() && !gl.isContextLost()) draw();
+      }).observe(host);
+    }
     if ('IntersectionObserver' in window) {
       new IntersectionObserver((entries) => { visible = entries[entries.length - 1].isIntersecting; }).observe(canvas);
     }
@@ -168,11 +195,13 @@
       frame = 0;
       tapTime = -100;
       showCanvas(true);
-      canvas.style.cursor = loc.TAP_TIME && !reducedMotion() ? 'pointer' : '';
-      if (data.shaderLabel) {
-        canvas.setAttribute('role', 'img');
-        canvas.setAttribute('aria-label', data.shaderLabel);
-      }
+      const interactive = Boolean(loc.TAP_TIME) && !reducedMotion();
+      const label = data.shaderLabel || data.name;
+      canvas.style.cursor = interactive ? 'pointer' : '';
+      canvas.setAttribute('role', interactive ? 'button' : 'img');
+      canvas.setAttribute('aria-label', interactive ? label.replace(/\bTap to\b/i, 'Activate to') : label.replace(/\s*Tap to[^.]*\.?/i, ''));
+      if (interactive) canvas.setAttribute('tabindex', '0');
+      else canvas.removeAttribute('tabindex');
 
       if (reducedMotion()) {
         // One still moment with the light on it, and no movement.

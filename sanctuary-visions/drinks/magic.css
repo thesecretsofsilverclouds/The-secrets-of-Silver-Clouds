@@ -1,0 +1,6 @@
+/* Light layers belong to the existing glass; floating names and gift tags stay above them. */
+.sip-glass > .sip-magic-canvas {position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none!important;user-select:none;mix-blend-mode:screen;}
+.sip-glass > .sip-spirit-cloud {z-index:4;}
+.ss-stage > .sip-magic-canvas {position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none!important;user-select:none;mix-blend-mode:screen;}
+.sip-magic-canvas[hidden] {display:none!important;}
+.sip-pouring:has(.sip-magic-ready) #pour-stream {opacity:0;}
