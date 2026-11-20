@@ -1,10 +1,12 @@
 /* A listening preview of the existing recording, not the proposed unified engine. */
 (() => {
   'use strict';
+  function initialiseAudio(){
   const root=document.getElementById('audio-pitch-content')?.shadowRoot || document;
   const audio=root.getElementById('scene-audio');
   const status=root.getElementById('audio-status');
-  if(!audio)return;
+  if(!audio||audio.dataset.scReady)return;
+  audio.dataset.scReady='1';
   const scenes=[
     {at:0,id:'arrival',title:'The city falls away.',caption:'The Sanctuary in the Sky.'},
     {at:90,id:'dance',title:'Step onto the dance floor.',caption:'Ashai and Rose, beneath the stained glass.'},
@@ -62,4 +64,7 @@
   audio.addEventListener('error',()=>{status.textContent='This recording could not load. The full Sanctuary experience is linked below.';});
   root.querySelectorAll('[data-leave-audio]').forEach(link=>link.addEventListener('click',()=>audio.pause()));
   renderScene();
+  }
+  document.addEventListener('sc:audio-ready',initialiseAudio);
+  initialiseAudio();
 })();
