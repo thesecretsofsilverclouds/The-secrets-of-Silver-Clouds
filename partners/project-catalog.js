@@ -627,13 +627,14 @@ window.SCPartnerProjectCatalog = {
       ],
       "priority": "featured",
       "hook": "Offer an accessible visual-first entry into the original fantasy story.",
-      "existing": "The free Episode One reader already includes illustrated and cinematic modes, alongside a Founding Reader offer. A professionally finished sequential comic is proposed.",
+      "existing": "A published novel, an illustrated Episode One reader and the 10-page Silver Spoon Café concept manga are available to review.",
       "firstPilot": "Professionally finish one full digital comic episode with repeatable art, lettering and adaptation workflow.",
       "partnerBrings": "Sequential art team, editor, production manager and webcomic or publishing distributor.",
       "commercialRoute": "Episodic paid reading, collected editions and cross-media discovery.",
       "validation": "Do readers complete Episode One and return or pay for the next?",
-      "status": "Existing illustrated reader and published novel; professional sequential-comic production proposed",
+      "status": "Concept manga, illustrated reader and published novel available. A professionally produced episode is proposed.",
       "sources": [
+        "/partners/media/silver-clouds-manga-sample.pdf",
         "https://thesecretsofsilverclouds.com/episode-one/"
       ]
     },
@@ -675,13 +676,14 @@ window.SCPartnerProjectCatalog = {
       ],
       "priority": "explore",
       "hook": "A dangerous young swordsman and the small dragon that serves as his conscience offer action with an emotional anchor.",
-      "existing": "The Goaden and Kai entries detail Vega, silver flames, their bond and substantial visual concept art.",
+      "existing": "Goaden vs Whisper is an action animation proof of concept. The Goaden and Kai entries detail Vega, silver flames and the bond between swordsman and Guardian.",
       "firstPilot": "Produce a 90-second scene combining one sword encounter with a character exchange that reveals their relationship.",
       "partnerBrings": "Character animation team, fight choreographer, voice/sound producer and development partner.",
       "commercialRoute": "Action-character showcase, serialized shorts or series proof.",
       "validation": "Do viewers remember the relationship more than the spectacle?",
-      "status": "Established characters, art and short-form combat visuals; new pilot proposed",
+      "status": "Action animation proof of concept available. A new Goaden and Kai pilot is proposed.",
       "sources": [
+        "/partners/#animation",
         "https://thesecretsofsilverclouds.com/goaden-reeves",
         "https://thesecretsofsilverclouds.com/kai"
       ]

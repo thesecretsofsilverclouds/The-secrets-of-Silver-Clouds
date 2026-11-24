@@ -3,6 +3,7 @@
   'use strict';
   const host = document.getElementById('audio-pitch-content');
   const template = document.getElementById('audio-pitch-template');
+  const animation = document.querySelector('#animation video');
   const tabs = [...document.querySelectorAll('.partner-tabs [role="tab"]')];
   const panels = new Map(tabs.map(tab => [tab.dataset.partnerTab, document.getElementById(tab.getAttribute('aria-controls'))]));
   let root = null;
@@ -29,6 +30,7 @@
     if (!panels.has(name)) name = 'overview';
     if (name === 'audio') mountAudio();
     else root?.querySelector('audio')?.pause();
+    if (name !== 'overview' && animation && !animation.paused) animation.pause();
     panels.forEach((panel,key) => { if (panel) panel.hidden = key !== name; });
     tabs.forEach(tab => {
       const selected = tab.dataset.partnerTab === name;
@@ -43,9 +45,15 @@
     const hash = location.hash.slice(1);
     if (hash === 'main') return;
     if (hash === 'build' || hash.startsWith('build?')) { select('build'); return; }
+    if (hash === 'publishing') {
+      select('publishing');
+      document.getElementById(hash)?.scrollIntoView({block:'start',behavior:'instant'});
+      return;
+    }
     const audioIds = [...(template?.content.querySelectorAll('[id]') || [])].map(el => el.id);
     const inAudio = hash === 'audio' || audioIds.includes(hash) || Boolean(root?.getElementById(hash));
     select(inAudio ? 'audio' : 'overview');
+    if (hash === 'animation') document.getElementById(hash)?.scrollIntoView({block:'start',behavior:'instant'});
     if (inAudio && hash !== 'audio') {
       if (!root.querySelector('link[rel="stylesheet"]')?.sheet) return;
       const target = root.getElementById(hash);

@@ -215,8 +215,14 @@
   function proofLinks() {
     const existing=[...(story()?.proofLinks || []),...(pillar()?.proofLinks || [])];
     const key=url=>new URL(url,'https://thesecretsofsilverclouds.com').href;
-    const labels={'/partners/':'Explore the audio overview','/soulsip/':'Play a bar shift','/streamliner-carriage/':'Enter the maintenance carriage','/read-play/':'Explore the existing experiences','/faction-quiz':'Discover a Holy Gift','/holy-gift':'Open the Holy Gift shrine'};
-    const chosen=(selectedProject()?.sources || []).map(url=>({url,kind:'existing material',label:existing.find(l=>key(l.url)===key(url))?.label || labels[new URL(url,'https://thesecretsofsilverclouds.com').pathname] || 'Explore '+(new URL(url,'https://thesecretsofsilverclouds.com').pathname.split('/').filter(Boolean).pop() || 'Silver Clouds').replaceAll('-',' ')}));
+    const labels={'/partners/':'Explore the audio overview','/partners/#animation':'Watch Goaden vs Whisper','/partners/media/silver-clouds-manga-sample.pdf':'Read the Silver Spoon Café manga sample (PDF)','/soulsip/':'Play a bar shift','/streamliner-carriage/':'Enter the maintenance carriage','/read-play/':'Explore the existing experiences','/faction-quiz':'Discover a Holy Gift','/holy-gift':'Open the Holy Gift shrine'};
+    const chosen=(selectedProject()?.sources || []).map(url=>{
+      const {pathname, hash} = new URL(key(url));
+      const label = existing.find(link=>key(link.url)===key(url))?.label ||
+        labels[pathname + hash] || labels[pathname] ||
+        'Explore '+(pathname.split('/').filter(Boolean).pop() || 'Silver Clouds').replaceAll('-',' ');
+      return {url,kind:'existing material',label};
+    });
     return [...chosen,...existing].filter((item,i,all)=>all.findIndex(other=>key(other.url)===key(item.url))===i).slice(0,3);
   }
   function generateBrief() {

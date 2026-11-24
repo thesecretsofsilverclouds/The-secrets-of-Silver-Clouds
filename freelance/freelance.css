@@ -1,0 +1,177 @@
+.freelance-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.13fr);
+  gap: clamp(32px, 5vw, 76px);
+  align-items: center;
+}
+
+.freelance-label {
+  margin-bottom: 18px;
+  color: var(--relic);
+  font-weight: 700;
+  font-size: .9rem;
+  letter-spacing: .17em;
+  text-transform: uppercase;
+}
+
+.freelance-hero h1 {
+  margin-bottom: 22px;
+  font-size: clamp(2.4rem, 4.7vw, 4.1rem);
+  line-height: 1.1;
+}
+
+.freelance-main .button,
+.freelance-main .text-link {
+  font-size: .9375rem;
+}
+
+.freelance-hero-art {
+  margin: 0;
+}
+
+.freelance-hero-art img {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+}
+
+.freelance-hero-art figcaption {
+  margin-top: 13px;
+  color: var(--text-dim);
+  font-size: .875rem;
+}
+
+.freelance-services {
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+  gap: clamp(24px, 6vw, 84px);
+}
+
+.freelance-services p {
+  max-width: 40ch;
+  margin-bottom: 0;
+}
+
+.freelance-services dl {
+  margin: 0;
+}
+
+.freelance-services dl > div {
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+
+.freelance-services dl > div:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.freelance-services dt {
+  color: var(--text-hi);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.freelance-services dd {
+  margin: 4px 0 0;
+}
+
+.freelance-work-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.freelance-example {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--night-900);
+}
+
+.freelance-example img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 8;
+  object-fit: cover;
+  border-radius: 6px 6px 0 0;
+}
+
+.freelance-example > div {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 24px;
+}
+
+.freelance-example h3 {
+  font-family: Cinzel, Georgia, serif;
+  font-weight: 600;
+}
+
+.freelance-example .text-link {
+  margin-top: auto;
+  text-decoration: underline;
+}
+
+.freelance-contact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.freelance-contact p {
+  margin-bottom: 10px;
+}
+
+.freelance-contact .text-link {
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+}
+
+.freelance-contact .button {
+  flex-shrink: 0;
+}
+
+.freelance-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  padding-block: 28px;
+}
+
+.freelance-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  align-items: center;
+  font-size: .875rem;
+}
+
+@media (max-width: 800px) {
+  .freelance-hero,
+  .freelance-services {
+    grid-template-columns: 1fr;
+  }
+
+  .freelance-contact {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 580px) {
+  .freelance-work-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 360px) {
+  .freelance-hero h1 {
+    font-size: 2rem;
+  }
+}
