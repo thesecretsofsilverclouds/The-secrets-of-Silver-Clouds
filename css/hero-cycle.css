@@ -10,6 +10,10 @@ body:has([data-hero-cycle]) .site-header { z-index: 762; }
   transition: opacity 1.6s ease-in-out;
 }
 .hero-cycle .hero-slide.is-active { opacity: 1; z-index: 1; }
+#hero-scene-lotus-peak {
+  object-fit: contain;
+  object-position: center;
+}
 .hero-cycle::after { z-index: 2; pointer-events: none; }
 .hero-cycle-controls {
   position: absolute;

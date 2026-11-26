@@ -1,4 +1,4 @@
-/* A quiet, progressively enhanced rotation of the three selected artworks. */
+/* A quiet, progressively enhanced rotation of the selected artworks. */
 (() => {
   'use strict';
   const art = document.querySelector('[data-hero-cycle]');

@@ -133,6 +133,30 @@
         "#c07ad8",
         "#5f78d6"
       ]
+    },
+    {
+      "id": "mantle-of-the-blade",
+      "title": "Mantle of the Blade",
+      "src": "/audio/sanctuary-after-hours/mantle-of-the-blade.mp3",
+      "duration": 217.2,
+      "mood": "Crimson steel",
+      "palette": [
+        "#df415f",
+        "#ed8a57",
+        "#8c5cbd"
+      ]
+    },
+    {
+      "id": "mantle-of-the-many",
+      "title": "Mantle of the Many",
+      "src": "/audio/sanctuary-after-hours/mantle-of-the-many.mp3",
+      "duration": 220.8,
+      "mood": "Golden afterimages",
+      "palette": [
+        "#e8ba68",
+        "#61bc9c",
+        "#9682d7"
+      ]
     }
   ]
 }

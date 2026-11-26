@@ -2376,6 +2376,100 @@ const loreEntries = [
       "fairy-kingdom",
       "demons-legion"
     ]
+  },
+  {
+    "id": "lotus-peak",
+    "name": "Lotus Peak",
+    "type": "location",
+    "image": "images/lotus-peak/lotus-peak-thumb.webp",
+    "summary": "A realm reached through a portal in the Sanctuary in the Sky. Its martial lineages include the Mantle of the Blade and the Mantle of the Many.",
+    "relatedEntries": ["sanctuary-in-the-sky", "mantle-of-the-blade", "mantle-of-the-many"]
+  },
+  {
+    "id": "mantle-of-the-blade",
+    "name": "Mantle of the Blade",
+    "type": "faction",
+    "image": "images/lotus-peak/crimson-lotus-ivory-thumb.webp",
+    "summary": "A Lotus Peak sword tradition shaped by samurai-inspired discipline. The Crimson Lotus carry its heritage into London streetwear.",
+    "relatedEntries": ["lotus-peak", "crimson-lotus", "mercy"]
+  },
+  {
+    "id": "mantle-of-the-many",
+    "name": "Mantle of the Many",
+    "type": "faction",
+    "image": "images/lotus-peak/hisham-infinite-hands-thumb.webp",
+    "summary": "The monks of this Lotus Peak lineage move at superhuman speeds. Its masters can leave the impression of many hands acting in one moment.",
+    "relatedEntries": ["lotus-peak", "hisham", "gurjai", "nahla"]
+  },
+  {
+    "id": "crimson-lotus",
+    "name": "Crimson Lotus",
+    "type": "faction",
+    "image": "images/lotus-peak/crimson-lotus-banner-thumb.webp",
+    "summary": "Riku, Kenzo and Rei belong to a Lotus Peak group known for its swords, crimson accents and circular-brim caps.",
+    "relatedEntries": ["mantle-of-the-blade", "riku", "kenzo", "rei", "mercy"]
+  },
+  {
+    "id": "mercy",
+    "name": "Mercy",
+    "type": "character",
+    "image": "images/lotus-peak/mercy-london-thumb.webp",
+    "summary": "A rebellious figure with roots in the Mantle of the Blade of Lotus Peak, known for pink-and-black streetwear and a backwards wide-peak cap.",
+    "relatedEntries": ["lotus-peak", "mantle-of-the-blade", "crimson-lotus"]
+  },
+  {
+    "id": "hisham",
+    "name": "Hisham of Infinite Hands",
+    "type": "character",
+    "faction": "Mantle of the Many",
+    "image": "images/lotus-peak/hisham-infinite-hands-thumb.webp",
+    "summary": "An early master to reach Infinite Hands in Lotus Peak. He taught Gurjai how to practise restraint at extraordinary speeds.",
+    "relatedEntries": ["lotus-peak", "mantle-of-the-many", "gurjai"]
+  },
+  {
+    "id": "gurjai",
+    "name": "Gurjai of Ten Thousand Hands",
+    "type": "character",
+    "faction": "Mantle of the Many",
+    "image": "images/lotus-peak/gurjai-portrait-thumb.webp",
+    "summary": "This Lotus Peak prodigy and heir to the Mantle practises an unusual discipline. Between movements, he returns his hands to his pockets.",
+    "relatedEntries": ["lotus-peak", "mantle-of-the-many", "hisham", "nahla"]
+  },
+  {
+    "id": "nahla",
+    "name": "Nahla of Five Thousand Hands",
+    "type": "character",
+    "faction": "Mantle of the Many",
+    "image": "images/lotus-peak/nahla-portrait-thumb.webp",
+    "summary": "A Lotus Peak master of the Mantle of the Many, distinguished by her precision and economy of movement.",
+    "relatedEntries": ["lotus-peak", "mantle-of-the-many", "gurjai", "hisham"]
+  },
+  {
+    "id": "riku",
+    "name": "Riku",
+    "type": "character",
+    "faction": "Crimson Lotus",
+    "image": "images/lotus-peak/riku-solo-thumb.webp",
+    "summary": "A Crimson Lotus swordsman from the martial tradition of Lotus Peak, with tousled black hair and a signature circular-brim cap.",
+    "relatedEntries": ["crimson-lotus", "mantle-of-the-blade", "kenzo", "rei"]
+  },
+  {
+    "id": "kenzo",
+    "name": "Kenzo",
+    "type": "character",
+    "faction": "Crimson Lotus",
+    "image": "images/lotus-peak/kenzo-solo-thumb.webp",
+    "summary": "Recognisable by his braids, Kenzo is one of the Crimson Lotus, whose distinctive streetwear carries the traditions of Lotus Peak into London.",
+    "relatedEntries": ["crimson-lotus", "mantle-of-the-blade", "riku", "rei"]
+  },
+  {
+    "id": "rei",
+    "name": "Rei",
+    "type": "character",
+    "faction": "Crimson Lotus",
+    "image": "images/lotus-peak/rei-solo-thumb.webp",
+    "summary": "A Crimson Lotus swordswoman with her dark hair tied back, carrying the style of Lotus Peak into London.",
+    "relatedEntries": ["crimson-lotus", "mantle-of-the-blade", "riku", "kenzo"]
   }
 ];
 

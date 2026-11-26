@@ -15,6 +15,10 @@
 .world-sanctuary{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);border:1px solid var(--line);border-radius:7px;overflow:hidden;background:var(--night-950)}
 .world-sanctuary>a{display:flex;align-items:center;background:#071122}
 .world-sanctuary img{width:100%;height:auto;object-fit:contain}
+.world-lotus{margin-top:26px;border-color:#775066;background:radial-gradient(ellipse at right,#25152a,var(--night-950) 70%)}
+.world-lotus .eyebrow{color:#efb5ce}
+.world-lotus .button.secondary{border-color:#a9698a}
+.world-lotus .button.secondary:hover{border-color:#efb5ce;color:#efb5ce}
 .world-feature-copy{padding:36px;align-self:center}
 .world-feature-copy h3,.world-small h3{font-family:Cinzel,Georgia,serif;font-size:28px;line-height:1.25}
 .world-feature-copy p:not(.eyebrow),.world-small p:not(.eyebrow):not(.caption){font-size:15px}
